@@ -1,0 +1,44 @@
+#* @vtlvariable name="enumeratedType" type="com.digitalpetri.opcua.stack.codegen.EnumeratedType" *#
+
+package com.digitalpetri.opcua.stack.core.types.enumerated;
+
+import com.digitalpetri.opcua.stack.core.Identifiers;
+import com.digitalpetri.opcua.stack.core.serialization.*;
+import com.digitalpetri.opcua.stack.core.types.builtin.*;
+
+public enum ${enumeratedType.name} implements UaEnumeration {
+
+#foreach($field in ${enumeratedType.fields})
+    ${field.name}(${field.value})#if($foreach.hasNext),
+#else; #end
+#end
+
+
+	public static final NodeId TypeId = Identifiers.${enumeratedType.name};
+
+    private final int value;
+
+    private ${enumeratedType.name}(int value) {
+        this.value = value;
+    }
+
+    @Override
+    public int getValue() {
+        return value;
+    }
+
+	public static void encode(${enumeratedType.name} ${enumeratedType.javaName}, UaEncoder encoder) {
+		encoder.encodeInt32(null, ${enumeratedType.javaName}.ordinal());
+	}
+
+	public static ${enumeratedType.name} decode(UaDecoder decoder) {
+		int value = decoder.decodeInt32(null);
+		return ${enumeratedType.name}.values()[value];
+	}
+
+	static {
+		DelegateRegistry.registerEncoder(${enumeratedType.name}::encode, ${enumeratedType.name}.class);
+		DelegateRegistry.registerDecoder(${enumeratedType.name}::decode, ${enumeratedType.name}.class);
+	}
+
+}

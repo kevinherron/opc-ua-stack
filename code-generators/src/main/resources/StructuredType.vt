@@ -1,0 +1,89 @@
+#* @vtlvariable name="structuredType" type="com.digitalpetri.opcua.stack.codegen.StructuredType" *#
+package com.digitalpetri.opcua.stack.core.types.structured;
+
+import java.util.UUID;
+
+import com.digitalpetri.opcua.stack.core.Identifiers;
+import com.digitalpetri.opcua.stack.core.serialization.*;
+import com.digitalpetri.opcua.stack.core.types.builtin.*;
+import com.digitalpetri.opcua.stack.core.types.enumerated.*;
+import com.google.common.base.Objects;
+
+public class ${structuredType.name} ${structuredType.inheritanceBlurb} {
+
+	public static final NodeId TypeId = Identifiers.${structuredType.name};
+	public static final NodeId BinaryEncodingId = Identifiers.${structuredType.name}_Encoding_DefaultBinary;
+	public static final NodeId XmlEncodingId = Identifiers.${structuredType.name}_Encoding_DefaultXml;
+
+#foreach($field in ${structuredType.instanceFields})
+	protected final ${field.type.typeDeclaration} ${field.javaName};
+#end
+
+	public ${structuredType.name}(#foreach($field in ${structuredType.allFields})${field.type.typeDeclaration} ${field.javaName}#if( $foreach.hasNext ), #end#end) {
+#if(${structuredType.isSubType()})
+        super(#foreach($field in ${structuredType.inheritedFields})${field.javaName}#if( $foreach.hasNext ), #end#end);
+#end
+
+#foreach($field in ${structuredType.instanceFields})
+		this.${field.javaName} = ${field.javaName};
+#end
+	}
+
+#foreach($field in ${structuredType.instanceFields})
+	public ${field.type.typeDeclaration} get${field.name}() { return ${field.javaName}; }
+#end
+
+	@Override
+	public NodeId getTypeId() { return TypeId; }
+
+	@Override
+	public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+
+	@Override
+	public NodeId getXmlEncodingId() { return XmlEncodingId; }
+
+
+	public static void encode(${structuredType.name} ${structuredType.javaName}, UaEncoder encoder) {
+#foreach($field in ${structuredType.allFields})
+#if(${field.type.builtin})
+#if(${field.array})
+        encoder.encodeArray("${field.name}", ${structuredType.javaName}.${field.javaName}, encoder::encode${field.type.name});
+#else
+		encoder.encode${field.type.name}("${field.name}", ${structuredType.javaName}.${field.javaName});
+#end
+#else
+#if(${field.array})
+        encoder.encodeArray("${field.name}", ${structuredType.javaName}.${field.javaName}, encoder::encodeSerializable);
+#else
+        encoder.encodeSerializable("${field.name}", ${structuredType.javaName}.${field.javaName});
+#end
+#end
+#end
+	}
+
+	public static ${structuredType.name} decode(UaDecoder decoder) {
+#foreach($field in ${structuredType.allFields})
+#if(${field.type.builtin})
+#if(${field.array})
+        ${field.type.typeDeclaration} ${field.javaName} = decoder.decodeArray("${field.name}", decoder::decode${field.type.name}, ${field.type.javaClass}.class);
+#else
+        ${field.type.typeDeclaration} ${field.javaName} = decoder.decode${field.type.name}("${field.name}");
+#end
+#else
+#if(${field.array})
+        ${field.type.typeDeclaration} ${field.javaName} = decoder.decodeArray("${field.name}", decoder::decodeSerializable, ${field.type.javaClass}.class);
+#else
+        ${field.type.typeDeclaration} ${field.javaName} = decoder.decodeSerializable("${field.name}", ${field.type.javaClass}.class);
+#end
+#end
+#end
+
+		return new ${structuredType.name}(#foreach($field in ${structuredType.allFields})${field.javaName}#if( $foreach.hasNext ), #end#end);
+	}
+
+	static {
+		DelegateRegistry.registerEncoder(${structuredType.name}::encode, ${structuredType.name}.class, BinaryEncodingId, XmlEncodingId);
+		DelegateRegistry.registerDecoder(${structuredType.name}::decode, ${structuredType.name}.class, BinaryEncodingId, XmlEncodingId);
+	}
+
+}
