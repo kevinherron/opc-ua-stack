@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaRuntimeException;
-import com.digitalpetri.opcua.stack.core.channels.ChannelConfig;
+import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.EncoderDelegate;
 import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;

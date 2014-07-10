@@ -1,6 +1,6 @@
 package com.digitalpetri.opcua.stack;
 
-import com.digitalpetri.opcua.stack.core.channels.headers.SequenceHeader;
+import com.digitalpetri.opcua.stack.core.channel.headers.SequenceHeader;
 import com.google.common.primitives.UnsignedInteger;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
