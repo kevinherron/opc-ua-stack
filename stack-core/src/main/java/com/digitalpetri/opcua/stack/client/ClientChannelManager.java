@@ -8,6 +8,7 @@ import com.digitalpetri.opcua.stack.core.channels.UaTcpClientAcknowledgeHandler;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.SocketChannel;
@@ -59,6 +60,23 @@ public class ClientChannelManager extends AbstractChannelManager {
         return future;
     }
 
+    public CompletableFuture<Void> disconnect() {
+        CompletableFuture<Void> disconnect = new CompletableFuture<>();
 
+        if (isConnected()) {
+            getChannel().whenComplete((ch, ex) -> {
+                if (ch != null) {
+                    ChannelFuture closeFuture = ch.close();
+                    closeFuture.addListener(cf -> disconnect.complete(null));
+                } else {
+                    disconnect.completeExceptionally(ex);
+                }
+            });
+        } else {
+            disconnect.complete(null);
+        }
+
+        return disconnect;
+    }
 
 }

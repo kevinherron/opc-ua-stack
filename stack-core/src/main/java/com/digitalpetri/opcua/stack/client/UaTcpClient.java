@@ -119,15 +119,7 @@ public class UaTcpClient {
     }
 
     public CompletableFuture<Void> disconnect() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
-
-        if (channelManager.isConnected()) {
-            channelManager.getChannel().thenAccept(ch -> ch.close().addListener(cf -> future.complete(null)));
-        } else {
-            future.complete(null);
-        }
-
-        return future;
+        return channelManager.disconnect();
     }
 
     @SuppressWarnings("unchecked")
