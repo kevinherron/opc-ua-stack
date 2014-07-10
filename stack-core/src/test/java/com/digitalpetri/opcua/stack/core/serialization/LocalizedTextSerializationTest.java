@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 
-public class LocalizedTextSerializationTest extends SerializationFixture {
+public class LocalizedTextSerializationTest extends BinarySerializationFixture {
 
     @DataProvider
     public Object[][] getLocalizedTexts() {

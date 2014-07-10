@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 
-public class ExpandedNodeIdSerializationTest extends SerializationFixture {
+public class ExpandedNodeIdSerializationTest extends BinarySerializationFixture {
 
     @DataProvider
     public Object[][] getExpandedNodeIds() {

@@ -6,7 +6,7 @@ import com.digitalpetri.opcua.stack.core.types.builtin.XmlElement;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-public class XmlElementSerializationTest extends SerializationFixture {
+public class XmlElementSerializationTest extends BinarySerializationFixture {
 
     @DataProvider(name = "XmlElementProvider")
     public Object[][] getXmlElements() {

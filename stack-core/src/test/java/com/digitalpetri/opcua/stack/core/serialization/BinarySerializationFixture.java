@@ -8,7 +8,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import org.testng.annotations.BeforeMethod;
 
-public abstract class SerializationFixture {
+public abstract class BinarySerializationFixture {
 
     ByteBuf buffer;
     BinaryEncoder encoder;

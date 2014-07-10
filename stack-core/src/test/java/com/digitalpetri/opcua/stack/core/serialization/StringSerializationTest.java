@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 
-public class StringSerializationTest extends SerializationFixture {
+public class StringSerializationTest extends BinarySerializationFixture {
 
     @DataProvider(name = "StringProvider")
     public Object[][] getStrings() {

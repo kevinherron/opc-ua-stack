@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 
-public class VariantSerializationTest extends SerializationFixture {
+public class VariantSerializationTest extends BinarySerializationFixture {
 
     @DataProvider(name = "VariantProvider")
     public Object[][] getVariants() {

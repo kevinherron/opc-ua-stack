@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 
-public class GuidSerializationTest extends SerializationFixture {
+public class GuidSerializationTest extends BinarySerializationFixture {
 
     @DataProvider(name = "GuidProvider")
     public Object[][] getGuids() {

@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 
-public class DiagnosticInfoSerializationTest extends SerializationFixture {
+public class DiagnosticInfoSerializationTest extends BinarySerializationFixture {
 
     @DataProvider(name = "DiagnosticInfoProvider")
     public Object[][] getDiagnosticInfos() {

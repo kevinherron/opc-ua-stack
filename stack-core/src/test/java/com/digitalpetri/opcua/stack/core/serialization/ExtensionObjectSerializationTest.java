@@ -1,13 +1,12 @@
 package com.digitalpetri.opcua.stack.core.serialization;
 
 import com.digitalpetri.opcua.stack.core.types.builtin.*;
-import com.digitalpetri.opcua.stack.core.types.structured.ReadValueId;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
 
-public class ExtensionObjectSerializationTest extends SerializationFixture {
+public class ExtensionObjectSerializationTest extends BinarySerializationFixture {
 
     @DataProvider
     public Object[][] getExtensionObjects() {
