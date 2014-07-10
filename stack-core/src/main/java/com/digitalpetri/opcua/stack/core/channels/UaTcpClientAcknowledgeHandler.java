@@ -137,12 +137,15 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
         ctx.channel().attr(AWAITING_HANDSHAKE_KEY).set(awaitingHandshake);
 
         ctx.executor().execute(() -> {
+            int maxArrayLength = client.getChannelConfig().getMaxArrayLength();
+            int maxStringLength = client.getChannelConfig().getMaxStringLength();
+
             UaTcpClientAsymmetricHandler handler = new UaTcpClientAsymmetricHandler(
                     client,
-                    new SerializationQueue(parameters),
+                    new SerializationQueue(parameters, maxArrayLength, maxStringLength),
                     handshakeFuture
             );
-            
+
             ctx.pipeline().addLast(handler);
         });
     }

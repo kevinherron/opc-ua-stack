@@ -27,8 +27,8 @@ public class SerializationQueue {
         SerializationExecutor = Executors.newCachedThreadPool(threadFactory);
     }
 
-    private final BinaryEncoder binaryEncoder = new BinaryEncoder();
-    private final BinaryDecoder binaryDecoder = new BinaryDecoder();
+    private final BinaryEncoder binaryEncoder;
+    private final BinaryDecoder binaryDecoder;
 
     private final ChunkEncoder chunkEncoder;
     private final ChunkDecoder chunkDecoder;
@@ -38,8 +38,11 @@ public class SerializationQueue {
 
     private final ChannelParameters parameters;
 
-    public SerializationQueue(ChannelParameters parameters) {
+    public SerializationQueue(ChannelParameters parameters, int maxArrayLength, int maxStringLength) {
         this.parameters = parameters;
+
+        binaryEncoder = new BinaryEncoder();
+        binaryDecoder = new BinaryDecoder();
 
         chunkEncoder = new ChunkEncoder(parameters);
         chunkDecoder = new ChunkDecoder(parameters);

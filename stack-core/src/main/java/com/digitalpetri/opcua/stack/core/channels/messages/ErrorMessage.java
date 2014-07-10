@@ -44,11 +44,11 @@ public class ErrorMessage {
     }
 
     private static void encodeString(String s, ByteBuf buffer) {
-        new BinaryEncoder(buffer).encodeString(null, s);
+        new BinaryEncoder().setBuffer(buffer).encodeString(null, s);
     }
 
     private static String decodeString(ByteBuf buffer) {
-        return new BinaryDecoder(buffer).decodeString(null);
+        return new BinaryDecoder().setBuffer(buffer).decodeString(null);
     }
 
 }

@@ -10,10 +10,12 @@ import java.util.function.Function;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaRuntimeException;
+import com.digitalpetri.opcua.stack.core.channels.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.serialization.DecoderDelegate;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaSerializable;
+import com.digitalpetri.opcua.stack.core.serialization.UaSerializationException;
 import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
@@ -35,12 +37,16 @@ public class BinaryDecoder implements UaDecoder {
 
     private volatile ByteBuf buffer;
 
+    private final int maxArrayLength;
+    private final int maxStringLength;
+
     public BinaryDecoder() {
-        this(null);
+        this(ChannelConfig.DEFAULT_MAX_ARRAY_LENGTH, ChannelConfig.DEFAULT_MAX_STRING_LENGTH);
     }
 
-    public BinaryDecoder(ByteBuf buffer) {
-        this.buffer = buffer;
+    public BinaryDecoder(int maxArrayLength, int maxStringLength) {
+        this.maxArrayLength = maxArrayLength;
+        this.maxStringLength = maxStringLength;
     }
 
     public BinaryDecoder setBuffer(ByteBuf buffer) {
@@ -66,21 +72,6 @@ public class BinaryDecoder implements UaDecoder {
     @Override
     public Integer decodeInt32(String field) {
         return buffer.readInt();
-    }
-
-    @Override
-    public Integer[] decodeInt32Array(String field) {
-        int length = decodeInt32(null);
-
-        if (length == -1) {
-            return null;
-        } else {
-            Integer[] is = new Integer[length];
-            for (int i = 0; i < length; i++) {
-                is[i] = decodeInt32(null);
-            }
-            return is;
-        }
     }
 
     @Override
@@ -125,6 +116,11 @@ public class BinaryDecoder implements UaDecoder {
         if (length == -1) {
             return null;
         } else {
+            if (length > maxStringLength) {
+                throw new UaSerializationException(StatusCodes.Bad_EncodingLimitsExceeded,
+                        "max string length exceeded");
+            }
+
             String s = buffer.toString(buffer.readerIndex(), length, Charset.forName("UTF-8"));
             buffer.skipBytes(length);
             return s;
@@ -383,6 +379,11 @@ public class BinaryDecoder implements UaDecoder {
         if (length == -1) {
             return null;
         } else {
+            if (length > maxArrayLength) {
+                throw new UaSerializationException(StatusCodes.Bad_EncodingLimitsExceeded,
+                        "max array length exceeded");
+            }
+
             Object array = Array.newInstance(clazz, length);
 
             for (int i = 0; i < length; i++) {
@@ -401,6 +402,11 @@ public class BinaryDecoder implements UaDecoder {
         if (length == -1) {
             return null;
         } else {
+            if (length > maxArrayLength) {
+                throw new UaSerializationException(StatusCodes.Bad_EncodingLimitsExceeded,
+                        "max array length exceeded");
+            }
+
             T[] array = (T[]) Array.newInstance(clazz, length);
             for (int i = 0; i < length; i++) {
                 array[i] = decoder.apply(null, clazz);

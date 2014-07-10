@@ -1,7 +1,5 @@
 package com.digitalpetri.opcua.stack.core.channels.messages;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 import javax.annotation.Nonnull;
 
 import com.digitalpetri.opcua.stack.core.serialization.binary.BinaryDecoder;
@@ -9,6 +7,8 @@ import com.digitalpetri.opcua.stack.core.serialization.binary.BinaryEncoder;
 import com.digitalpetri.opcua.stack.core.util.annotations.UInt32;
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 public class HelloMessage {
 
@@ -151,11 +151,11 @@ public class HelloMessage {
     }
 
     private static void encodeString(String s, ByteBuf buffer) {
-        new BinaryEncoder(buffer).encodeString(null, s);
+        new BinaryEncoder().setBuffer(buffer).encodeString(null, s);
     }
 
     private static String decodeString(ByteBuf buffer) {
-        return new BinaryDecoder(buffer).decodeString(null);
+        return new BinaryDecoder().setBuffer(buffer).decodeString(null);
     }
 
 }

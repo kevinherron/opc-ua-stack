@@ -18,8 +18,8 @@ public abstract class SerializationFixture {
     public void setUp() {
         buffer = Unpooled.buffer().order(ByteOrder.LITTLE_ENDIAN);
 
-        encoder = new BinaryEncoder(buffer);
-        decoder = new BinaryDecoder(buffer);
+        encoder = new BinaryEncoder().setBuffer(buffer);
+        decoder = new BinaryDecoder().setBuffer(buffer);
     }
 
 }

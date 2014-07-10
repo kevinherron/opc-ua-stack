@@ -10,12 +10,26 @@ import java.util.function.BiConsumer;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaRuntimeException;
+import com.digitalpetri.opcua.stack.core.channels.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.EncoderDelegate;
 import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaSerializable;
+import com.digitalpetri.opcua.stack.core.serialization.UaSerializationException;
 import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
-import com.digitalpetri.opcua.stack.core.types.builtin.*;
+import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
+import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
+import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
+import com.digitalpetri.opcua.stack.core.types.builtin.DiagnosticInfo;
+import com.digitalpetri.opcua.stack.core.types.builtin.ExpandedNodeId;
+import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
+import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
+import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
+import com.digitalpetri.opcua.stack.core.types.builtin.OverloadedType;
+import com.digitalpetri.opcua.stack.core.types.builtin.QualifiedName;
+import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
+import com.digitalpetri.opcua.stack.core.types.builtin.Variant;
+import com.digitalpetri.opcua.stack.core.types.builtin.XmlElement;
 import com.digitalpetri.opcua.stack.core.types.enumerated.IdType;
 import com.digitalpetri.opcua.stack.core.util.ArrayUtil;
 import com.digitalpetri.opcua.stack.core.util.TypeUtil;
@@ -29,12 +43,16 @@ public class BinaryEncoder implements UaEncoder {
 
     private volatile ByteBuf buffer;
 
+    private final int maxArrayLength;
+    private final int maxStringLength;
+
     public BinaryEncoder() {
-        this(null);
+        this(ChannelConfig.DEFAULT_MAX_ARRAY_LENGTH, ChannelConfig.DEFAULT_MAX_STRING_LENGTH);
     }
 
-    public BinaryEncoder(ByteBuf buffer) {
-        this.buffer = buffer;
+    public BinaryEncoder(int maxArrayLength, int maxStringLength) {
+        this.maxArrayLength = maxArrayLength;
+        this.maxStringLength = maxStringLength;
     }
 
     public BinaryEncoder setBuffer(ByteBuf buffer) {
@@ -106,6 +124,11 @@ public class BinaryEncoder implements UaEncoder {
         if (value == null) {
             buffer.writeInt(-1);
         } else {
+            if (value.length() > maxStringLength) {
+                throw new UaSerializationException(StatusCodes.Bad_EncodingLimitsExceeded,
+                        "max string length exceeded");
+            }
+
             try {
                 // Record the current index and write a placeholder for the length.
                 int lengthIndex = buffer.writerIndex();
@@ -508,6 +531,11 @@ public class BinaryEncoder implements UaEncoder {
         if (values == null) {
             buffer.writeInt(-1);
         } else {
+            if (values.length > maxArrayLength) {
+                throw new UaSerializationException(StatusCodes.Bad_EncodingLimitsExceeded,
+                        "max array length exceeded");
+            }
+
             encodeInt32(null, values.length);
             for (T t : values) {
                 consumer.accept(null, t);

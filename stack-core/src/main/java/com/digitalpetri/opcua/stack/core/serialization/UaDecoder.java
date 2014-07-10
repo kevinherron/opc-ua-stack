@@ -4,7 +4,18 @@ import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import com.digitalpetri.opcua.stack.core.types.builtin.*;
+import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
+import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
+import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
+import com.digitalpetri.opcua.stack.core.types.builtin.DiagnosticInfo;
+import com.digitalpetri.opcua.stack.core.types.builtin.ExpandedNodeId;
+import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
+import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
+import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
+import com.digitalpetri.opcua.stack.core.types.builtin.QualifiedName;
+import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
+import com.digitalpetri.opcua.stack.core.types.builtin.Variant;
+import com.digitalpetri.opcua.stack.core.types.builtin.XmlElement;
 import com.digitalpetri.opcua.stack.core.util.annotations.UByte;
 import com.digitalpetri.opcua.stack.core.util.annotations.UInt16;
 import com.digitalpetri.opcua.stack.core.util.annotations.UInt32;
@@ -19,8 +30,6 @@ public interface UaDecoder {
     Short decodeInt16(String field);
 
     Integer decodeInt32(String field);
-
-    Integer[] decodeInt32Array(String field);
 
     Long decodeInt64(String field);
 

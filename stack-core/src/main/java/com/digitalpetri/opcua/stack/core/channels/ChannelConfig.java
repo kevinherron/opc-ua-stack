@@ -23,9 +23,14 @@ public class ChannelConfig {
      */
     public static final int DEFAULT_MAX_MESSAGE_SIZE = DEFAULT_MAX_CHUNK_COUNT * DEFAULT_MAX_CHUNK_SIZE;
 
+    public static final int DEFAULT_MAX_ARRAY_LENGTH = 65536;
+    public static final int DEFAULT_MAX_STRING_LENGTH = 65536;
+
     private final int maxChunkSize;
     private final int maxChunkCount;
     private final int maxMessageSize;
+    private final int maxArrayLength;
+    private final int maxStringLength;
 
     /**
      * Create a {@link ChannelConfig} using the default parameters.
@@ -33,9 +38,15 @@ public class ChannelConfig {
      * @see {@link ChannelConfig#DEFAULT_MAX_CHUNK_SIZE}
      * @see {@link ChannelConfig#DEFAULT_MAX_CHUNK_COUNT}
      * @see {@link ChannelConfig#DEFAULT_MAX_MESSAGE_SIZE}
+     * @see {@link ChannelConfig#DEFAULT_MAX_ARRAY_LENGTH}
+     * @see {@link ChannelConfig#DEFAULT_MAX_STRING_LENGTH}
      */
     public ChannelConfig() {
-        this(DEFAULT_MAX_CHUNK_SIZE, DEFAULT_MAX_CHUNK_COUNT, DEFAULT_MAX_MESSAGE_SIZE);
+        this(DEFAULT_MAX_CHUNK_SIZE,
+                DEFAULT_MAX_CHUNK_COUNT,
+                DEFAULT_MAX_MESSAGE_SIZE,
+                DEFAULT_MAX_ARRAY_LENGTH,
+                DEFAULT_MAX_STRING_LENGTH);
     }
 
     /**
@@ -43,13 +54,19 @@ public class ChannelConfig {
      * @param maxChunkCount  The maximum number of chunks that a message can break down into.
      * @param maxMessageSize The maximum size of a message after all chunks have been assembled.
      */
-    public ChannelConfig(int maxChunkSize, int maxChunkCount, int maxMessageSize) {
+    public ChannelConfig(int maxChunkSize,
+                         int maxChunkCount,
+                         int maxMessageSize,
+                         int maxArrayLength,
+                         int maxStringLength) {
         Preconditions.checkArgument(maxChunkSize > 8192,
                 "maxChunkSize must be greater than 8192");
 
         this.maxChunkSize = maxChunkSize;
         this.maxChunkCount = maxChunkCount;
         this.maxMessageSize = maxMessageSize;
+        this.maxArrayLength = maxArrayLength;
+        this.maxStringLength = maxStringLength;
     }
 
     public int getMaxChunkSize() {
@@ -62,6 +79,14 @@ public class ChannelConfig {
 
     public int getMaxMessageSize() {
         return maxMessageSize;
+    }
+
+    public int getMaxArrayLength() {
+        return maxArrayLength;
+    }
+
+    public int getMaxStringLength() {
+        return maxStringLength;
     }
 
 }
