@@ -4,6 +4,7 @@ import java.security.KeyPair;
 import java.security.cert.Certificate;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
@@ -72,9 +73,9 @@ public interface UaServer {
 
     void shutdown();
 
-    KeyPair getKeyPair(ByteString thumbprint);
+    Optional<KeyPair> getKeyPair(ByteString thumbprint);
 
-    Certificate getCertificate(ByteString thumbprint);
+    Optional<Certificate> getCertificate(ByteString thumbprint);
 
     ChannelConfig getChannelConfig();
 

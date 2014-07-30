@@ -4,6 +4,7 @@ import java.nio.ByteOrder;
 import java.security.KeyPair;
 import java.security.cert.Certificate;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
@@ -137,11 +138,16 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
             }
 
             if (!securityHeader.getReceiverThumbprint().isNull()) {
-                Certificate localCertificate = server.getCertificate(securityHeader.getReceiverThumbprint());
-                KeyPair keyPair = server.getKeyPair(securityHeader.getReceiverThumbprint());
+                Optional<Certificate> localCertificate = server.getCertificate(securityHeader.getReceiverThumbprint());
+                Optional<KeyPair> keyPair = server.getKeyPair(securityHeader.getReceiverThumbprint());
 
-                secureChannel.setLocalCertificate(localCertificate);
-                secureChannel.setKeyPair(keyPair);
+                if (localCertificate.isPresent() && keyPair.isPresent()) {
+                    secureChannel.setLocalCertificate(localCertificate.get());
+                    secureChannel.setKeyPair(keyPair.get());
+                } else {
+                    throw new UaException(StatusCodes.Bad_SecurityChecksFailed,
+                            "no certificate for provided thumbprint");
+                }
             }
 
             chunkBuffers.add(buffer.readerIndex(0).retain());

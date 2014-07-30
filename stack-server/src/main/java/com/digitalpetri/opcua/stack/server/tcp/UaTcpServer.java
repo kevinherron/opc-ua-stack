@@ -8,6 +8,7 @@ import java.security.cert.CertificateEncodingException;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +18,6 @@ import java.util.stream.Collectors;
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
-import com.digitalpetri.opcua.stack.server.channel.ServerSecureChannel;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
@@ -34,10 +34,12 @@ import com.digitalpetri.opcua.stack.core.types.structured.GetEndpointsResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
 import com.digitalpetri.opcua.stack.core.types.structured.SignedSoftwareCertificate;
 import com.digitalpetri.opcua.stack.core.types.structured.UserTokenPolicy;
+import com.digitalpetri.opcua.stack.core.util.DigestUtil;
 import com.digitalpetri.opcua.stack.server.Endpoint;
 import com.digitalpetri.opcua.stack.server.ServiceRequest;
 import com.digitalpetri.opcua.stack.server.ServiceResponse;
 import com.digitalpetri.opcua.stack.server.UaServer;
+import com.digitalpetri.opcua.stack.server.channel.ServerSecureChannel;
 import com.digitalpetri.opcua.stack.server.services.AttributeServiceSet;
 import com.digitalpetri.opcua.stack.server.services.DiscoveryServiceSet;
 import com.digitalpetri.opcua.stack.server.services.MethodServiceSet;
@@ -246,13 +248,29 @@ public class UaTcpServer implements UaServer {
     }
 
     @Override
-    public Certificate getCertificate(ByteString thumbprint) {
-        return certificate; // TODO validate/use thumbprint
+    public Optional<Certificate> getCertificate(ByteString thumbprint) {
+        try {
+            ByteString actualThumbprint = certificate != null ?
+                    ByteString.of(DigestUtil.sha1(certificate.getEncoded())) :
+                    ByteString.NullValue;
+
+            return Optional.ofNullable(actualThumbprint.equals(thumbprint) ? certificate : null);
+        } catch (CertificateEncodingException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
-    public KeyPair getKeyPair(ByteString thumbprint) {
-        return keyPair; // TODO validate/use thumbprint
+    public Optional<KeyPair> getKeyPair(ByteString thumbprint) {
+        try {
+            ByteString actualThumbprint = certificate != null ?
+                    ByteString.of(DigestUtil.sha1(certificate.getEncoded())) :
+                    ByteString.NullValue;
+
+            return Optional.ofNullable(actualThumbprint.equals(thumbprint) ? keyPair : null);
+        } catch (CertificateEncodingException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
