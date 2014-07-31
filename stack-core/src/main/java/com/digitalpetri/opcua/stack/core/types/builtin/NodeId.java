@@ -1,6 +1,7 @@
 package com.digitalpetri.opcua.stack.core.types.builtin;
 
 import javax.annotation.Nonnull;
+import javax.xml.bind.DatatypeConverter;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -125,6 +126,8 @@ public class NodeId {
                 .toString();
     }
 
+    // TODO Re-write this crap... or at the very least write some good unit tests.
+
     private static final Pattern INT_INT = Pattern.compile("ns=(\\d*);i=(\\d*)");
     private static final Pattern NONE_INT = Pattern.compile("i=(\\d*)");
 
@@ -138,8 +141,6 @@ public class NodeId {
     private static final Pattern NONE_OPAQUE = Pattern.compile("b=([0-9a-zA-Z\\+/=]*)");
 
     public static NodeId parse(@Nonnull String s) {
-        // TODO Re-write, match Opaque
-
         Matcher m;
 
         m = NONE_STRING.matcher(s);
@@ -158,6 +159,12 @@ public class NodeId {
         if (m.matches()) {
             UUID obj = UUID.fromString(m.group(1));
             return new NodeId(0, obj);
+        }
+
+        m = NONE_OPAQUE.matcher(s);
+        if (m.matches()) {
+            byte[] obj = DatatypeConverter.parseBase64Binary(m.group(1));
+            return new NodeId(0, ByteString.of(obj));
         }
 
         m = INT_INT.matcher(s);
@@ -181,7 +188,14 @@ public class NodeId {
             return new NodeId(nsi, obj);
         }
 
-        throw new IllegalArgumentException("Invalid string representation of a nodeId: " + s);
+        m = INT_OPAQUE.matcher(s);
+        if (m.matches()) {
+            Integer nsi = Integer.valueOf(m.group(1));
+            byte[] obj = DatatypeConverter.parseBase64Binary(m.group(2));
+            return new NodeId(nsi, ByteString.of(obj));
+        }
+
+        throw new IllegalArgumentException("invalid string representation of a nodeId: " + s);
     }
 
 }
