@@ -201,9 +201,11 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
 
                     ctx.executor().execute(() -> {
                         // SecureChannel is ready; remove the acknowledge handler and add the symmetric handler.
-                        ctx.pipeline().remove(UaTcpClientAcknowledgeHandler.class);
+                        if (ctx.pipeline().get(UaTcpClientAcknowledgeHandler.class) != null) {
+                            ctx.pipeline().remove(UaTcpClientAcknowledgeHandler.class);
+                        }
+
                         ctx.pipeline().addFirst(new UaTcpClientSymmetricHandler(client, serializationQueue, handshakeFuture));
-//                        ctx.pipeline().addFirst(new LoggingHandler("Client", LogLevel.INFO));
                     });
                 });
             }
