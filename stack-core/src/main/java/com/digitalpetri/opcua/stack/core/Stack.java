@@ -2,7 +2,6 @@ package com.digitalpetri.opcua.stack.core;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ScheduledExecutorService;
 
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -17,10 +16,7 @@ public final class Stack {
 
     public static final NioEventLoopGroup EVENT_LOOP = new NioEventLoopGroup();
 
-    public static final ExecutorService EXECUTOR_SERVICE = new ForkJoinPool(
-            Runtime.getRuntime().availableProcessors() * 2,
-            ForkJoinPool.defaultForkJoinWorkerThreadFactory,
-            null, true);
+    public static final ExecutorService EXECUTOR_SERVICE = Executors.newWorkStealingPool();
 
     public static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE =
             Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
