@@ -1,12 +1,14 @@
 package com.digitalpetri.opcua.stack;
 
-import com.digitalpetri.opcua.stack.core.channel.ChannelSecrets;
 import com.digitalpetri.opcua.stack.client.channel.ClientSecureChannel;
+import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
 import com.digitalpetri.opcua.stack.core.channel.SecureChannel;
-import com.digitalpetri.opcua.stack.server.channel.ServerSecureChannel;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
+import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
+import com.digitalpetri.opcua.stack.core.types.structured.ChannelSecurityToken;
+import com.digitalpetri.opcua.stack.server.channel.ServerSecureChannel;
 
 import static com.digitalpetri.opcua.stack.core.util.NonceUtil.generateNonce;
 import static com.digitalpetri.opcua.stack.core.util.NonceUtil.getNonceLength;
@@ -43,13 +45,16 @@ public abstract class SecureChannelFixture extends SecurityFixture {
             case Basic256Sha256:
             default:
                 if (messageSecurity != MessageSecurityMode.None) {
-                    ChannelSecrets clientSecrets = ChannelSecrets.forChannel(
+                    ChannelSecurity.SecuritySecrets clientSecrets = ChannelSecurity.generateKeyPair(
                             clientChannel,
                             clientChannel.getLocalNonce(),
                             clientChannel.getRemoteNonce()
                     );
 
-                    clientChannel.setChannelSecrets(clientSecrets);
+                    ChannelSecurityToken clientToken = new ChannelSecurityToken(
+                            0L, 1L, DateTime.now(), 60000L);
+
+                    clientChannel.setChannelSecurity(new ChannelSecurity(clientSecrets, clientToken));
                 }
 
 
@@ -58,13 +63,16 @@ public abstract class SecureChannelFixture extends SecurityFixture {
                 serverChannel.setRemoteCertificate(clientCertificate);
 
                 if (messageSecurity != MessageSecurityMode.None) {
-                    ChannelSecrets serverSecrets = ChannelSecrets.forChannel(
+                    ChannelSecurity.SecuritySecrets serverSecrets = ChannelSecurity.generateKeyPair(
                             serverChannel,
                             serverChannel.getRemoteNonce(),
                             serverChannel.getLocalNonce()
                     );
 
-                    serverChannel.setChannelSecrets(serverSecrets);
+                    ChannelSecurityToken serverToken = new ChannelSecurityToken(
+                            0L, 1L, DateTime.now(), 60000L);
+
+                    serverChannel.setChannelSecurity(new ChannelSecurity(serverSecrets, serverToken));
                 }
 
                 break;

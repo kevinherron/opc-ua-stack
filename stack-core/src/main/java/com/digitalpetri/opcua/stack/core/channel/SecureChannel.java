@@ -23,13 +23,12 @@ public interface SecureChannel {
     MessageSecurityMode getMessageSecurityMode();
 
     long getChannelId();
-    long getCurrentTokenId();
-    long getPreviousTokenId();
+    ChannelSecurity getChannelSecurity();
+    ChannelSecurity.SecretKeys getEncryptionKeys(ChannelSecurity.SecuritySecrets secretKeys);
+    ChannelSecurity.SecretKeys getDecryptionKeys(ChannelSecurity.SecuritySecrets secretKeys);
+
     ByteString getLocalNonce();
     ByteString getRemoteNonce();
-
-    ChannelSecrets.SecretKeys getEncryptionKeys();
-    ChannelSecrets.SecretKeys getDecryptionKeys();
 
     default ByteString getLocalCertificateBytes() {
         try {

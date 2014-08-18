@@ -3,8 +3,8 @@ package com.digitalpetri.opcua.stack.client;
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
-import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.client.channel.UaTcpClientAcknowledgeHandler;
+import com.digitalpetri.opcua.stack.core.Stack;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -13,8 +13,6 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.logging.LogLevel;
-import io.netty.handler.logging.LoggingHandler;
 
 public class ClientChannelManager extends AbstractChannelManager {
 
@@ -33,10 +31,10 @@ public class ClientChannelManager extends AbstractChannelManager {
         bootstrap.group(Stack.EVENT_LOOP)
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+                .option(ChannelOption.TCP_NODELAY, true)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel channel) throws Exception {
-                        channel.pipeline().addLast(new LoggingHandler("Client", LogLevel.TRACE));
                         channel.pipeline().addLast(new UaTcpClientAcknowledgeHandler(client, handshake));
                     }
                 });

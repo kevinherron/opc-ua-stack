@@ -22,6 +22,7 @@ import com.digitalpetri.opcua.stack.core.channel.headers.SequenceHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
 import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.security.SecurityAlgorithm;
+import com.digitalpetri.opcua.stack.core.types.structured.ChannelSecurityToken;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.digitalpetri.opcua.stack.core.util.SignatureUtil;
 import io.netty.buffer.ByteBuf;
@@ -66,7 +67,7 @@ public class ChunkDecoder implements HeaderConstants {
         for (ByteBuf chunkBuffer : chunkBuffers) {
             chunkBuffer.skipBytes(SecureMessageHeaderSize);
 
-            delegate.skipSecurityHeader(chunkBuffer);
+            delegate.readSecurityHeader(channel, chunkBuffer);
 
             if (encrypted) {
                 decryptChunk(delegate, channel, chunkBuffer);
@@ -170,7 +171,7 @@ public class ChunkDecoder implements HeaderConstants {
     }
 
     private static interface Delegate {
-        void skipSecurityHeader(ByteBuf chunkBuffer);
+        void readSecurityHeader(SecureChannel channel, ByteBuf chunkBuffer);
 
         Cipher getCipher(SecureChannel channel);
 
@@ -189,7 +190,7 @@ public class ChunkDecoder implements HeaderConstants {
     private class AsymmetricDelegate implements Delegate {
 
         @Override
-        public void skipSecurityHeader(ByteBuf chunkBuffer) {
+        public void readSecurityHeader(SecureChannel channel, ByteBuf chunkBuffer) {
             AsymmetricSecurityHeader.decode(chunkBuffer);
         }
 
@@ -257,19 +258,47 @@ public class ChunkDecoder implements HeaderConstants {
 
     private class SymmetricDelegate implements Delegate {
 
+        private volatile ChannelSecurity.SecuritySecrets securitySecrets;
+
         @Override
-        public void skipSecurityHeader(ByteBuf chunkBuffer) {
-            SymmetricSecurityHeader.decode(chunkBuffer);
+        public void readSecurityHeader(SecureChannel channel, ByteBuf chunkBuffer) {
+            long tokenId = SymmetricSecurityHeader.decode(chunkBuffer).getTokenId();
+
+            ChannelSecurity channelSecurity = channel.getChannelSecurity();
+
+            if (channelSecurity == null) {
+                if (tokenId != 0L) {
+                    throw new UaRuntimeException(StatusCodes.Bad_SecureChannelTokenUnknown,
+                            "unknown secure channel token: " + tokenId);
+                }
+            } else {
+                long currentTokenId = channelSecurity.getCurrentToken().getTokenId();
+
+                if (tokenId == currentTokenId) {
+                    securitySecrets = channelSecurity.getCurrentKeys();
+                } else {
+                    long previousTokenId = channelSecurity.getPreviousToken()
+                            .map(ChannelSecurityToken::getTokenId)
+                            .orElse(-1L);
+
+                    if (tokenId == previousTokenId && channelSecurity.getPreviousKeys().isPresent()) {
+                        securitySecrets = channelSecurity.getPreviousKeys().get();
+                    } else {
+                        throw new UaRuntimeException(StatusCodes.Bad_SecureChannelTokenUnknown,
+                                "unknown secure channel token: " + tokenId);
+                    }
+                }
+            }
         }
 
         @Override
         public Cipher getCipher(SecureChannel channel) {
             try {
                 String transformation = channel.getSecurityPolicy().getSymmetricEncryptionAlgorithm().getTransformation();
-                ChannelSecrets.SecretKeys secretKeys = channel.getDecryptionKeys();
+                ChannelSecurity.SecretKeys decryptionKeys = channel.getDecryptionKeys(securitySecrets);
 
-                SecretKeySpec keySpec = new SecretKeySpec(secretKeys.getEncryptionKey(), "AES");
-                IvParameterSpec ivSpec = new IvParameterSpec(secretKeys.getInitializationVector());
+                SecretKeySpec keySpec = new SecretKeySpec(decryptionKeys.getEncryptionKey(), "AES");
+                IvParameterSpec ivSpec = new IvParameterSpec(decryptionKeys.getInitializationVector());
 
                 Cipher cipher = Cipher.getInstance(transformation);
                 cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
@@ -293,7 +322,7 @@ public class ChunkDecoder implements HeaderConstants {
         @Override
         public void verifyChunk(SecureChannel channel, ByteBuf chunkBuffer) {
             SecurityAlgorithm securityAlgorithm = channel.getSecurityPolicy().getSymmetricSignatureAlgorithm();
-            byte[] secretKey = channel.getDecryptionKeys().getSignatureKey();
+            byte[] secretKey = channel.getDecryptionKeys(securitySecrets).getSignatureKey();
             int signatureSize = channel.getSymmetricSignatureSize();
 
             ByteBuffer chunkNioBuffer = chunkBuffer.nioBuffer(0, chunkBuffer.writerIndex());

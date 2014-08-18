@@ -3,7 +3,7 @@ package com.digitalpetri.opcua.stack.client.channel;
 import java.security.KeyPair;
 import java.security.cert.Certificate;
 
-import com.digitalpetri.opcua.stack.core.channel.ChannelSecrets;
+import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
 import com.digitalpetri.opcua.stack.core.channel.SecureChannel;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
@@ -12,11 +12,9 @@ import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
 public class ClientSecureChannel implements SecureChannel {
 
     private volatile long channelId = 0;
-    private volatile long currentTokenId = 0;
-    private volatile long previousTokenId = -1;
+    private volatile ChannelSecurity channelSecurity;
     private volatile ByteString localNonce = ByteString.NullValue;
     private volatile ByteString remoteNonce = ByteString.NullValue;
-    private volatile ChannelSecrets channelSecrets;
 
     private final KeyPair keyPair;
     private final Certificate localCertificate;
@@ -45,16 +43,8 @@ public class ClientSecureChannel implements SecureChannel {
         this.channelId = channelId;
     }
 
-    public void setCurrentTokenId(long currentTokenId) {
-        this.currentTokenId = currentTokenId;
-    }
-
-    public void setPreviousTokenId(long previousTokenId) {
-        this.previousTokenId = previousTokenId;
-    }
-
-    public void setChannelSecrets(ChannelSecrets channelSecrets) {
-        this.channelSecrets = channelSecrets;
+    public void setChannelSecurity(ChannelSecurity channelSecurity) {
+        this.channelSecurity = channelSecurity;
     }
 
     public void setLocalNonce(ByteString localNonce) {
@@ -76,16 +66,6 @@ public class ClientSecureChannel implements SecureChannel {
     }
 
     @Override
-    public long getCurrentTokenId() {
-        return currentTokenId;
-    }
-
-    @Override
-    public long getPreviousTokenId() {
-        return previousTokenId;
-    }
-
-    @Override
     public ByteString getLocalNonce() {
         return localNonce;
     }
@@ -93,16 +73,6 @@ public class ClientSecureChannel implements SecureChannel {
     @Override
     public ByteString getRemoteNonce() {
         return remoteNonce;
-    }
-
-    @Override
-    public ChannelSecrets.SecretKeys getEncryptionKeys() {
-        return channelSecrets.getClientSecretKeys();
-    }
-
-    @Override
-    public ChannelSecrets.SecretKeys getDecryptionKeys() {
-        return channelSecrets.getServerSecretKeys();
     }
 
     @Override
@@ -123,6 +93,21 @@ public class ClientSecureChannel implements SecureChannel {
     @Override
     public Certificate getRemoteCertificate() {
         return remoteCertificate;
+    }
+
+    @Override
+    public ChannelSecurity getChannelSecurity() {
+        return channelSecurity;
+    }
+
+    @Override
+    public ChannelSecurity.SecretKeys getEncryptionKeys(ChannelSecurity.SecuritySecrets secretKeys) {
+        return secretKeys.getClientKeys();
+    }
+
+    @Override
+    public ChannelSecurity.SecretKeys getDecryptionKeys(ChannelSecurity.SecuritySecrets secretKeys) {
+        return secretKeys.getServerKeys();
     }
 
 }

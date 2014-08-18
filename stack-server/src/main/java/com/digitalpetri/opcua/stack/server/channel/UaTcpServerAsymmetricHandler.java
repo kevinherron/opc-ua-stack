@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.UaRuntimeException;
-import com.digitalpetri.opcua.stack.core.channel.ChannelSecrets;
+import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
 import com.digitalpetri.opcua.stack.core.channel.ExceptionHandler;
 import com.digitalpetri.opcua.stack.core.channel.SerializationQueue;
 import com.digitalpetri.opcua.stack.core.channel.headers.AsymmetricSecurityHeader;
@@ -173,8 +173,8 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                     binaryDecoder.setBuffer(messageBuffer);
                     OpenSecureChannelRequest request = binaryDecoder.decodeMessage(null);
 
-                    logger.debug("Received OpenSecureChannelRequest ({}, id={}, token={}).",
-                            request.getRequestType(), secureChannelId, secureChannel.getCurrentTokenId());
+                    logger.debug("Received OpenSecureChannelRequest ({}, id={}).",
+                            request.getRequestType(), secureChannelId);
 
                     long requestId = chunkDecoder.getRequestId();
 
@@ -195,6 +195,15 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
     private void issueSecurityToken(ChannelHandlerContext ctx, OpenSecureChannelRequest request, long requestId) {
         secureChannel.setMessageSecurityMode(request.getSecurityMode());
 
+        ChannelSecurityToken currentToken = new ChannelSecurityToken(
+                secureChannel.getChannelId(),
+                server.nextTokenId(),
+                DateTime.now(),
+                SecureChannelLifetimeMillis
+        );
+
+        ChannelSecurity.SecuritySecrets currentKeys = null;
+
         if (secureChannel.isSymmetricSigningEnabled()) {
             SecurityAlgorithm algorithm = secureChannel.getSecurityPolicy().getSymmetricEncryptionAlgorithm();
             ByteString localNonce = generateNonce(getNonceLength(algorithm));
@@ -202,23 +211,14 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
             secureChannel.setLocalNonce(localNonce);
             secureChannel.setRemoteNonce(request.getClientNonce());
 
-            ChannelSecrets channelSecrets = ChannelSecrets.forChannel(
+            currentKeys = ChannelSecurity.generateKeyPair(
                     secureChannel,
                     secureChannel.getRemoteNonce(),
                     secureChannel.getLocalNonce()
             );
-
-            secureChannel.setChannelSecrets(channelSecrets);
         }
 
-        ChannelSecurityToken securityToken = new ChannelSecurityToken(
-                secureChannel.getChannelId(),
-                server.nextTokenId(),
-                DateTime.now(),
-                SecureChannelLifetimeMillis
-        );
-
-        secureChannel.setCurrentTokenId(securityToken.getTokenId());
+        secureChannel.setChannelSecurity(new ChannelSecurity(currentKeys, currentToken));
 
         ResponseHeader responseHeader = new ResponseHeader(
                 DateTime.now(),
@@ -230,7 +230,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
         OpenSecureChannelResponse response = new OpenSecureChannelResponse(
                 responseHeader,
                 PROTOCOL_VERSION,
-                securityToken,
+                currentToken,
                 secureChannel.getLocalNonce()
         );
 
@@ -238,15 +238,45 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
     }
 
     private void renewSecurityToken(ChannelHandlerContext ctx, OpenSecureChannelRequest request, long requestId) {
-        ChannelSecurityToken securityToken = new ChannelSecurityToken(
+        if (secureChannel.getMessageSecurityMode() != request.getSecurityMode()) {
+            // TODO Throw an exception... can't change security modes.
+        }
+
+        ChannelSecurityToken newToken = new ChannelSecurityToken(
                 secureChannel.getChannelId(),
                 server.nextTokenId(),
                 DateTime.now(),
                 SecureChannelLifetimeMillis
         );
 
-        secureChannel.setPreviousTokenId(secureChannel.getCurrentTokenId());
-        secureChannel.setCurrentTokenId(securityToken.getTokenId());
+        ChannelSecurity.SecuritySecrets newKeys = null;
+
+        if (secureChannel.isSymmetricSigningEnabled()) {
+            SecurityAlgorithm algorithm = secureChannel.getSecurityPolicy().getSymmetricEncryptionAlgorithm();
+            ByteString localNonce = generateNonce(getNonceLength(algorithm));
+
+            secureChannel.setRemoteNonce(request.getClientNonce());
+            secureChannel.setLocalNonce(localNonce);
+
+            newKeys = ChannelSecurity.generateKeyPair(
+                    secureChannel,
+                    secureChannel.getLocalNonce(),
+                    secureChannel.getRemoteNonce()
+            );
+        }
+
+        ChannelSecurity oldSecrets = secureChannel.getChannelSecurity();
+        ChannelSecurity.SecuritySecrets oldKeys = oldSecrets.getCurrentKeys();
+        ChannelSecurityToken oldToken = oldSecrets.getCurrentToken();
+
+        ChannelSecurity newSecrets = new ChannelSecurity(
+                newKeys,
+                newToken,
+                oldKeys,
+                oldToken
+        );
+
+        secureChannel.setChannelSecurity(newSecrets);
 
         ResponseHeader responseHeader = new ResponseHeader(
                 DateTime.now(),
@@ -258,7 +288,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
         OpenSecureChannelResponse response = new OpenSecureChannelResponse(
                 responseHeader,
                 PROTOCOL_VERSION,
-                securityToken,
+                newToken,
                 secureChannel.getLocalNonce()
         );
 

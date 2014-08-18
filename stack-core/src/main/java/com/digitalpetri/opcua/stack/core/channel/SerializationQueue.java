@@ -41,8 +41,8 @@ public class SerializationQueue {
     public SerializationQueue(ChannelParameters parameters, int maxArrayLength, int maxStringLength) {
         this.parameters = parameters;
 
-        binaryEncoder = new BinaryEncoder();
-        binaryDecoder = new BinaryDecoder();
+        binaryEncoder = new BinaryEncoder(maxArrayLength, maxStringLength);
+        binaryDecoder = new BinaryDecoder(maxArrayLength, maxStringLength);
 
         chunkEncoder = new ChunkEncoder(parameters);
         chunkDecoder = new ChunkDecoder(parameters);

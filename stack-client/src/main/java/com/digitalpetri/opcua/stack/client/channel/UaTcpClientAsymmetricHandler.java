@@ -11,20 +11,23 @@ import com.digitalpetri.opcua.stack.client.UaTcpClient;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.UaRuntimeException;
-import com.digitalpetri.opcua.stack.core.channel.ChannelSecrets;
+import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
 import com.digitalpetri.opcua.stack.core.channel.SerializationQueue;
 import com.digitalpetri.opcua.stack.core.channel.headers.AsymmetricSecurityHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.HeaderDecoder;
 import com.digitalpetri.opcua.stack.core.channel.messages.ErrorMessage;
 import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageDecoder;
+import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.enumerated.SecurityTokenRequestType;
+import com.digitalpetri.opcua.stack.core.types.structured.ChannelSecurityToken;
 import com.digitalpetri.opcua.stack.core.types.structured.CloseSecureChannelRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.OpenSecureChannelRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.OpenSecureChannelResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.RequestHeader;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
+import com.digitalpetri.opcua.stack.core.util.NonceUtil;
 import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -74,6 +77,12 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         SecurityTokenRequestType requestType = secureChannel.getChannelId() == 0 ?
                 SecurityTokenRequestType.Issue : SecurityTokenRequestType.Renew;
+
+        ByteString clientNonce = secureChannel.isSymmetricSigningEnabled() ?
+                NonceUtil.generateNonce(NonceUtil.getNonceLength(secureChannel.getSecurityPolicy().getSymmetricEncryptionAlgorithm())) :
+                ByteString.NullValue;
+
+        secureChannel.setLocalNonce(clientNonce);
 
         OpenSecureChannelRequest request = new OpenSecureChannelRequest(
                 new RequestHeader(null, DateTime.now(), 0L, 0L, null, 0L, null),
@@ -164,25 +173,35 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                     binaryDecoder.setBuffer(messageBuffer);
                     OpenSecureChannelResponse response = binaryDecoder.decodeMessage(null);
 
+                    secureChannel.setChannelId(response.getSecurityToken().getChannelId());
                     logger.debug("Received OpenSecureChannelResponse.");
 
-                    secureChannel.setPreviousTokenId(secureChannel.getCurrentTokenId());
-                    secureChannel.setCurrentTokenId(response.getSecurityToken().getTokenId());
+                    ChannelSecurityToken newToken = response.getSecurityToken();
 
-                    secureChannel.setChannelId(response.getSecurityToken().getChannelId());
-                    logger.debug("SecureChannel id={}", secureChannel.getChannelId());
+                    ChannelSecurity.SecuritySecrets newKeys = null;
 
                     if (secureChannel.isSymmetricSigningEnabled()) {
                         secureChannel.setRemoteNonce(response.getServerNonce());
 
-                        ChannelSecrets channelSecrets = ChannelSecrets.forChannel(
+                        newKeys = ChannelSecurity.generateKeyPair(
                                 secureChannel,
                                 secureChannel.getLocalNonce(),
                                 secureChannel.getRemoteNonce()
                         );
-
-                        secureChannel.setChannelSecrets(channelSecrets);
                     }
+
+                    ChannelSecurity oldSecrets = secureChannel.getChannelSecurity();
+                    ChannelSecurity.SecuritySecrets oldKeys = oldSecrets != null ? oldSecrets.getCurrentKeys() : null;
+                    ChannelSecurityToken oldToken = oldSecrets != null ? oldSecrets.getCurrentToken() : null;
+
+                    ChannelSecurity newSecrets = new ChannelSecurity(
+                            newKeys,
+                            newToken,
+                            oldKeys,
+                            oldToken
+                    );
+
+                    secureChannel.setChannelSecurity(newSecrets);
 
                     if (response.getServerProtocolVersion() < PROTOCOL_VERSION) {
                         throw new UaRuntimeException(StatusCodes.Bad_ProtocolVersionUnsupported,
@@ -194,6 +213,8 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                     long renewAt = (long) (revisedLifetime * 0.75);
 
                     renewFuture = ctx.executor().schedule(() -> renewSecureChannel(ctx), renewAt, TimeUnit.MILLISECONDS);
+
+                    logger.debug("SecureChannel id={} createdAt={}", secureChannel.getChannelId(), createdAt);
 
                     // messageBuffer is a composite; releasing it releases components as well.
                     messageBuffer.release();
@@ -264,6 +285,12 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
     }
 
     private void renewSecureChannel(ChannelHandlerContext ctx) {
+        ByteString clientNonce = secureChannel.isSymmetricSigningEnabled() ?
+                NonceUtil.generateNonce(NonceUtil.getNonceLength(secureChannel.getSecurityPolicy().getSymmetricEncryptionAlgorithm())) :
+                ByteString.NullValue;
+
+        secureChannel.setLocalNonce(clientNonce);
+
         OpenSecureChannelRequest request = new OpenSecureChannelRequest(
                 new RequestHeader(null, DateTime.now(), 0L, 0L, null, 0L, null),
                 PROTOCOL_VERSION,
@@ -281,8 +308,6 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
 
         if (error.getError() == StatusCodes.Bad_TcpSecureChannelUnknown) {
             secureChannel.setChannelId(0);
-            secureChannel.setCurrentTokenId(0);
-            secureChannel.setPreviousTokenId(-1);
         }
 
         logger.error("Received error message: " + error);

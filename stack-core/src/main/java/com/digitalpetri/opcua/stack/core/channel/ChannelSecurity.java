@@ -1,30 +1,54 @@
 package com.digitalpetri.opcua.stack.core.channel;
 
+import java.util.Optional;
+
 import com.digitalpetri.opcua.stack.core.security.SecurityAlgorithm;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
+import com.digitalpetri.opcua.stack.core.types.structured.ChannelSecurityToken;
 import com.digitalpetri.opcua.stack.core.util.PShaUtil;
 
-public class ChannelSecrets {
+public class ChannelSecurity {
 
-    private final SecretKeys clientSecretKeys;
-    private final SecretKeys serverSecretKeys;
+    private final SecuritySecrets currentKeys;
+    private final ChannelSecurityToken currentToken;
 
-    public ChannelSecrets(SecretKeys clientSecretKeys, SecretKeys serverSecretKeys) {
-        this.clientSecretKeys = clientSecretKeys;
-        this.serverSecretKeys = serverSecretKeys;
+    private final Optional<SecuritySecrets> previousKeys;
+    private final Optional<ChannelSecurityToken> previousToken;
+
+    public ChannelSecurity(SecuritySecrets currentSecuritySecrets, ChannelSecurityToken currentToken) {
+        this(currentSecuritySecrets, currentToken, null, null);
     }
 
-    public SecretKeys getClientSecretKeys() {
-        return clientSecretKeys;
+    public ChannelSecurity(SecuritySecrets currentKeys,
+                           ChannelSecurityToken currentToken,
+                           SecuritySecrets previousKeys,
+                           ChannelSecurityToken previousToken) {
+
+        this.currentKeys = currentKeys;
+        this.currentToken = currentToken;
+        this.previousKeys = Optional.ofNullable(previousKeys);
+        this.previousToken = Optional.ofNullable(previousToken);
     }
 
-    public SecretKeys getServerSecretKeys() {
-        return serverSecretKeys;
+    public SecuritySecrets getCurrentKeys() {
+        return currentKeys;
     }
 
-    public static ChannelSecrets forChannel(SecureChannel channel,
-                                            ByteString clientNonce,
-                                            ByteString serverNonce) {
+    public ChannelSecurityToken getCurrentToken() {
+        return currentToken;
+    }
+
+    public Optional<SecuritySecrets> getPreviousKeys() {
+        return previousKeys;
+    }
+
+    public Optional<ChannelSecurityToken> getPreviousToken() {
+        return previousToken;
+    }
+
+    public static SecuritySecrets generateKeyPair(SecureChannel channel,
+                                                 ByteString clientNonce,
+                                                 ByteString serverNonce) {
 
         SecurityAlgorithm keyDerivation = channel.getSecurityPolicy().getKeyDerivationAlgorithm();
 
@@ -36,7 +60,7 @@ public class ChannelSecrets {
         assert (serverNonce != null);
 
         byte[] clientSignatureKey = (keyDerivation == SecurityAlgorithm.PSha1) ?
-                PShaUtil.createPSha1Key(serverNonce.bytes(), clientNonce.bytes(),  0, signatureKeySize) :
+                PShaUtil.createPSha1Key(serverNonce.bytes(), clientNonce.bytes(), 0, signatureKeySize) :
                 PShaUtil.createPSha256Key(serverNonce.bytes(), clientNonce.bytes(), 0, signatureKeySize);
 
         byte[] clientEncryptionKey = (keyDerivation == SecurityAlgorithm.PSha1) ?
@@ -59,11 +83,28 @@ public class ChannelSecrets {
                 PShaUtil.createPSha1Key(clientNonce.bytes(), serverNonce.bytes(), signatureKeySize + encryptionKeySize, cipherTextBlockSize) :
                 PShaUtil.createPSha256Key(clientNonce.bytes(), serverNonce.bytes(), signatureKeySize + encryptionKeySize, cipherTextBlockSize);
 
-
-        return new ChannelSecrets(
+        return new SecuritySecrets(
                 new SecretKeys(clientSignatureKey, clientEncryptionKey, clientInitializationVector),
                 new SecretKeys(serverSignatureKey, serverEncryptionKey, serverInitializationVector)
         );
+    }
+
+    public static class SecuritySecrets {
+        private final SecretKeys clientKeys;
+        private final SecretKeys serverKeys;
+
+        public SecuritySecrets(SecretKeys clientKeys, SecretKeys serverKeys) {
+            this.clientKeys = clientKeys;
+            this.serverKeys = serverKeys;
+        }
+
+        public SecretKeys getClientKeys() {
+            return clientKeys;
+        }
+
+        public SecretKeys getServerKeys() {
+            return serverKeys;
+        }
     }
 
     public static class SecretKeys {
@@ -89,5 +130,4 @@ public class ChannelSecrets {
             return initializationVector;
         }
     }
-
 }

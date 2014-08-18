@@ -17,6 +17,7 @@ import com.digitalpetri.opcua.stack.core.channel.headers.SecureMessageHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.SequenceHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
 import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
+import com.digitalpetri.opcua.stack.core.security.SecurityAlgorithm;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.digitalpetri.opcua.stack.core.util.LongSequence;
 import com.digitalpetri.opcua.stack.core.util.SignatureUtil;
@@ -293,27 +294,35 @@ public class ChunkEncoder implements HeaderConstants {
 
     private class SymmetricDelegate implements Delegate {
 
-        @Override
-        public byte[] signChunk(SecureChannel channel, ByteBuffer chunkNioBuffer) {
-            return SignatureUtil.hmac(
-                    channel.getSecurityPolicy().getSymmetricSignatureAlgorithm(),
-                    channel.getEncryptionKeys().getSignatureKey(),
-                    chunkNioBuffer
-            );
-        }
+        private volatile ChannelSecurity.SecuritySecrets securitySecrets;
 
         @Override
         public void encodeSecurityHeader(SecureChannel channel, ByteBuf buffer) {
-            SymmetricSecurityHeader header = new SymmetricSecurityHeader(channel.getCurrentTokenId());
+            ChannelSecurity channelSecurity = channel.getChannelSecurity();
+            long tokenId = channelSecurity != null ? channelSecurity.getCurrentToken().getTokenId() : 0L;
 
-            SymmetricSecurityHeader.encode(header, buffer);
+            SymmetricSecurityHeader.encode(new SymmetricSecurityHeader(tokenId), buffer);
+
+            securitySecrets = channelSecurity != null ? channelSecurity.getCurrentKeys() : null;
+        }
+
+        @Override
+        public byte[] signChunk(SecureChannel channel, ByteBuffer chunkNioBuffer) {
+            SecurityAlgorithm signatureAlgorithm = channel.getSecurityPolicy().getSymmetricSignatureAlgorithm();
+            byte[] signatureKey = channel.getEncryptionKeys(securitySecrets).getSignatureKey();
+
+            return SignatureUtil.hmac(
+                    signatureAlgorithm,
+                    signatureKey,
+                    chunkNioBuffer
+            );
         }
 
         @Override
         public Cipher getAndInitializeCipher(SecureChannel channel) {
             try {
                 String transformation = channel.getSecurityPolicy().getSymmetricEncryptionAlgorithm().getTransformation();
-                ChannelSecrets.SecretKeys secretKeys = channel.getEncryptionKeys();
+                ChannelSecurity.SecretKeys secretKeys = channel.getEncryptionKeys(securitySecrets);
 
                 SecretKeySpec keySpec = new SecretKeySpec(secretKeys.getEncryptionKey(), "AES");
                 IvParameterSpec ivSpec = new IvParameterSpec(secretKeys.getInitializationVector());

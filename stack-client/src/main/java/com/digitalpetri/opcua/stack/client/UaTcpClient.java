@@ -2,12 +2,10 @@ package com.digitalpetri.opcua.stack.client;
 
 import java.security.KeyPair;
 import java.security.cert.Certificate;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -19,7 +17,6 @@ import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
-import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
@@ -31,7 +28,6 @@ import com.digitalpetri.opcua.stack.core.types.structured.RequestHeader;
 import com.digitalpetri.opcua.stack.core.types.structured.ResponseHeader;
 import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
 import com.digitalpetri.opcua.stack.core.util.CertificateUtil;
-import com.digitalpetri.opcua.stack.core.util.NonceUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import io.netty.channel.Channel;
@@ -102,12 +98,6 @@ public class UaTcpClient {
                 SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()),
                 endpoint.getSecurityMode()
         );
-
-        ByteString clientNonce = secureChannel.isSymmetricSigningEnabled() ?
-                NonceUtil.generateNonce(NonceUtil.getNonceLength(secureChannel.getSecurityPolicy().getSymmetricEncryptionAlgorithm())) :
-                ByteString.NullValue;
-
-        secureChannel.setLocalNonce(clientNonce);
 
         channelManager = new ClientChannelManager(this);
     }
@@ -196,7 +186,8 @@ public class UaTcpClient {
             future.complete(response);
         }
 
-        timeouts.remove(requestHandle);
+        Timeout timeout = timeouts.remove(requestHandle);
+        if (timeout != null) timeout.cancel();
     }
 
     public void receiveServiceFault(ServiceFault serviceFault) {
@@ -211,9 +202,9 @@ public class UaTcpClient {
             future.completeExceptionally(new UaException(serviceResult.getValue(), "service fault"));
         }
 
-        timeouts.remove(requestHandle);
+        Timeout timeout = timeouts.remove(requestHandle);
+        if (timeout != null) timeout.cancel();
     }
-
 
     public ChannelConfig getChannelConfig() {
         return channelConfig;
@@ -265,22 +256,6 @@ public class UaTcpClient {
         });
 
         return endpointsFuture;
-    }
-
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        Logger logger = LoggerFactory.getLogger(UaTcpClient.class);
-
-        CompletableFuture<EndpointDescription[]> future = UaTcpClient.getEndpoints("opc.tcp://localhost:12685/test");
-
-        future.whenComplete((endpoints, ex) -> {
-            if (endpoints != null) {
-                Arrays.stream(endpoints).forEach(endpoint ->
-                                                         logger.info("{} {} {}",
-                                                                     endpoint.getEndpointUrl(), endpoint.getSecurityPolicyUri(), endpoint.getSecurityMode()));
-            } else {
-                logger.error("Error getting endpoints: {}", ex.getMessage());
-            }
-        });
     }
 
 }

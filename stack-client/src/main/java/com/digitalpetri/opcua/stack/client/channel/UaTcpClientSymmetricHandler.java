@@ -7,6 +7,7 @@ import java.util.concurrent.CompletableFuture;
 import com.digitalpetri.opcua.stack.client.UaTcpClient;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
 import com.digitalpetri.opcua.stack.core.channel.SerializationQueue;
 import com.digitalpetri.opcua.stack.core.channel.headers.HeaderDecoder;
 import com.digitalpetri.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
@@ -17,6 +18,7 @@ import com.digitalpetri.opcua.stack.core.serialization.UaMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
+import com.digitalpetri.opcua.stack.core.types.structured.ChannelSecurityToken;
 import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.google.common.collect.Lists;
@@ -134,13 +136,19 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
             }
 
             SymmetricSecurityHeader securityHeader = SymmetricSecurityHeader.decode(buffer);
-            if (securityHeader.getTokenId() != secureChannel.getCurrentTokenId()) {
-                if (securityHeader.getTokenId() != secureChannel.getPreviousTokenId()) {
+
+            ChannelSecurity channelSecurity = secureChannel.getChannelSecurity();
+            long currentTokenId = channelSecurity.getCurrentToken().getTokenId();
+
+            if (securityHeader.getTokenId() != currentTokenId) {
+                long previousTokenId = channelSecurity.getPreviousToken()
+                        .map(ChannelSecurityToken::getTokenId)
+                        .orElse(-1L);
+
+                if (securityHeader.getTokenId() != previousTokenId) {
                     throw new UaException(StatusCodes.Bad_SecureChannelTokenUnknown,
                             "unknown secure channel token: " + securityHeader.getTokenId());
                 }
-            } else {
-                secureChannel.setPreviousTokenId(-1L);
             }
 
             chunkBuffers.add(buffer.readerIndex(0).retain());
