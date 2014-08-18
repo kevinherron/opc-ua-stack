@@ -38,6 +38,7 @@
     <modules>
         <module>code-generators</module>
         <module>stack-client</module>
+        <module>stack-codec</module>
         <module>stack-core</module>
         <module>stack-server</module>
         <module>stack-tests</module>
