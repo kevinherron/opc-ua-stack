@@ -13,9 +13,8 @@ import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.digitalpetri.opcua.stack.core.util.DigestUtil;
-import io.netty.util.AttributeMap;
 
-public interface SecureChannel extends AttributeMap {
+public interface SecureChannel {
 
     KeyPair getKeyPair();
 

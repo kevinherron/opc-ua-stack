@@ -189,7 +189,7 @@ public class UaTcpServer implements UaServer {
                     new ServiceResponse(response, requestId) :
                     new ServiceResponse(serviceRequest.createServiceFault(throwable), requestId);
 
-            SecureChannel secureChannel = serviceRequest.getSecureChannel();
+            ServerSecureChannel secureChannel = serviceRequest.getSecureChannel();
             boolean secureChannelValid = secureChannels.containsKey(secureChannel.getChannelId());
 
             if (secureChannelValid) {

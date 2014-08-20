@@ -4,7 +4,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.application.UaServer;
-import com.digitalpetri.opcua.stack.core.channel.SecureChannel;
+import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
@@ -21,12 +21,12 @@ public class ServiceRequest<ReqT extends UaRequestMessage, ResT extends UaRespon
     private final ReqT request;
     private final long requestId;
     private final UaServer server;
-    private final SecureChannel secureChannel;
+    private final ServerSecureChannel secureChannel;
 
     public ServiceRequest(ReqT request,
                           long requestId,
                           UaServer server,
-                          SecureChannel secureChannel) {
+                          ServerSecureChannel secureChannel) {
 
         this.request = request;
         this.requestId = requestId;
@@ -50,7 +50,7 @@ public class ServiceRequest<ReqT extends UaRequestMessage, ResT extends UaRespon
         return server;
     }
 
-    public SecureChannel getSecureChannel() {
+    public ServerSecureChannel getSecureChannel() {
         return secureChannel;
     }
 
