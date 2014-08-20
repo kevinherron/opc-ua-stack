@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import com.digitalpetri.opcua.stack.core.Stack;
-import com.digitalpetri.opcua.stack.server.channel.UaTcpServerHelloHandler;
+import com.digitalpetri.opcua.stack.server.handlers.UaTcpServerHelloHandler;
 import com.google.common.collect.Maps;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;

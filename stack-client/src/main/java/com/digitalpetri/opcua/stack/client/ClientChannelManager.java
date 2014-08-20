@@ -3,7 +3,7 @@ package com.digitalpetri.opcua.stack.client;
 import java.net.URI;
 import java.util.concurrent.CompletableFuture;
 
-import com.digitalpetri.opcua.stack.client.channel.UaTcpClientAcknowledgeHandler;
+import com.digitalpetri.opcua.stack.client.handlers.UaTcpClientAcknowledgeHandler;
 import com.digitalpetri.opcua.stack.core.Stack;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;

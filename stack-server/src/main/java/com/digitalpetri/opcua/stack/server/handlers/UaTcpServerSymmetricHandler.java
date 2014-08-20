@@ -1,89 +1,87 @@
-package com.digitalpetri.opcua.stack.client.channel;
+package com.digitalpetri.opcua.stack.server.handlers;
 
 import java.nio.ByteOrder;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
-import com.digitalpetri.opcua.stack.client.UaTcpClient;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
-import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
+import com.digitalpetri.opcua.stack.core.channel.ExceptionHandler;
 import com.digitalpetri.opcua.stack.core.channel.SerializationQueue;
+import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
 import com.digitalpetri.opcua.stack.core.channel.headers.HeaderDecoder;
 import com.digitalpetri.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
-import com.digitalpetri.opcua.stack.core.channel.messages.ErrorMessage;
 import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
-import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageDecoder;
-import com.digitalpetri.opcua.stack.core.serialization.UaMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
-import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
 import com.digitalpetri.opcua.stack.core.types.structured.ChannelSecurityToken;
-import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
+import com.digitalpetri.opcua.stack.core.application.services.ServiceRequest;
+import com.digitalpetri.opcua.stack.core.application.services.ServiceResponse;
+import com.digitalpetri.opcua.stack.server.tcp.UaTcpServer;
 import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMessage> implements HeaderDecoder {
+public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceResponse> implements HeaderDecoder {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private List<ByteBuf> chunkBuffers;
 
     private final int maxChunkCount;
-    private final ClientSecureChannel secureChannel;
 
-    private final UaTcpClient client;
+    private final UaTcpServer server;
     private final SerializationQueue serializationQueue;
-    private final CompletableFuture<Channel> handshakeFuture;
+    private final ServerSecureChannel secureChannel;
 
-    public UaTcpClientSymmetricHandler(UaTcpClient client,
+    public UaTcpServerSymmetricHandler(UaTcpServer server,
                                        SerializationQueue serializationQueue,
-                                       CompletableFuture<Channel> handshakeFuture) {
-        this.client = client;
+                                       ServerSecureChannel secureChannel) {
+
+        this.server = server;
         this.serializationQueue = serializationQueue;
-        this.handshakeFuture = handshakeFuture;
+        this.secureChannel = secureChannel;
 
         maxChunkCount = serializationQueue.getParameters().getLocalMaxChunkCount();
         chunkBuffers = Lists.newArrayListWithCapacity(maxChunkCount);
-        secureChannel = client.getSecureChannel();
     }
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        List<UaMessage> awaitingHandshake = ctx.channel().attr(UaTcpClientAcknowledgeHandler.AWAITING_HANDSHAKE_KEY).get();
-
-        if (awaitingHandshake != null) {
-            logger.debug("{} message(s) queued before handshake completed; sending now.", awaitingHandshake.size());
-            awaitingHandshake.forEach(m -> ctx.pipeline().write(m));
-            ctx.flush();
-
-            ctx.channel().attr(UaTcpClientAcknowledgeHandler.AWAITING_HANDSHAKE_KEY).set(null);
+        if (secureChannel != null) {
+            secureChannel.attr(UaTcpServer.BoundChannelKey).set(ctx.channel());
         }
 
-        client.getExecutor().execute(() -> handshakeFuture.complete(ctx.channel()));
+        super.channelActive(ctx);
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, UaRequestMessage message, ByteBuf out) throws Exception {
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        if (secureChannel != null) {
+            secureChannel.attr(UaTcpServer.BoundChannelKey).remove();
+        }
+
+        super.channelInactive(ctx);
+    }
+
+    @Override
+    protected void encode(ChannelHandlerContext ctx, ServiceResponse message, ByteBuf out) throws Exception {
         serializationQueue.encode((binaryEncoder, chunkEncoder) -> {
             ByteBuf messageBuffer = BufferUtil.buffer();
 
             try {
                 binaryEncoder.setBuffer(messageBuffer);
-                binaryEncoder.encodeMessage(null, message);
+                binaryEncoder.encodeMessage(null, message.getResponse());
 
-                List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
+                final List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
                         secureChannel,
                         MessageType.SecureMessage,
                         messageBuffer,
-                        chunkEncoder.nextRequestId()
+                        message.getRequestId()
                 );
 
                 ctx.executor().execute(() -> {
@@ -91,7 +89,7 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
                     ctx.flush();
                 });
             } catch (UaException e) {
-                logger.error("Error encoding {}: {}", message.getClass(), e.getMessage(), e);
+                logger.error("Error encoding {}: {}", message.getResponse().getClass(), e.getMessage(), e);
                 ctx.close();
             } finally {
                 messageBuffer.release();
@@ -114,10 +112,6 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
                     onSecureMessage(ctx, buffer.readSlice(messageLength), out);
                     break;
 
-                case Error:
-                    onError(ctx, buffer.readSlice(messageLength));
-                    break;
-
                 default:
                     out.add(buffer.readSlice(messageLength).retain());
             }
@@ -133,7 +127,7 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
             chunkBuffers.forEach(ByteBuf::release);
             chunkBuffers.clear();
         } else {
-            buffer.skipBytes(4);
+            buffer.skipBytes(4); // Skip messageSize
 
             long secureChannelId = buffer.readUnsignedInt();
             if (secureChannelId != secureChannel.getChannelId()) {
@@ -177,15 +171,16 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
                         );
 
                         binaryDecoder.setBuffer(messageBuffer);
-                        UaStructure response = binaryDecoder.decodeMessage(null);
+                        UaRequestMessage request = binaryDecoder.decodeMessage(null);
 
-                        if (response instanceof ServiceFault) {
-                            client.getExecutor().execute(() -> client.receiveServiceFault((ServiceFault) response));
-                        } else if (response instanceof UaResponseMessage) {
-                            client.getExecutor().execute(() -> client.receiveResponse((UaResponseMessage) response));
-                        } else {
-                            logger.error("Unexpected response: {}", response);
-                        }
+                        ServiceRequest<UaRequestMessage, UaResponseMessage> serviceRequest = new ServiceRequest<>(
+                                request,
+                                chunkDecoder.getRequestId(),
+                                server,
+                                secureChannel
+                        );
+
+                        server.getExecutorService().execute(() -> server.receiveRequest(serviceRequest));
 
                         messageBuffer.release();
                         buffersToDecode.clear();
@@ -198,21 +193,12 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
         }
     }
 
-    private void onError(ChannelHandlerContext ctx, ByteBuf buffer) {
-        try {
-            ErrorMessage error = TcpMessageDecoder.decodeError(buffer);
-
-            logger.error("Received error message: " + error);
-        } catch (UaException e) {
-            logger.error("An exception occurred while decoding an error message: {}", e.getMessage(), e);
-        } finally {
-            ctx.close();
-        }
-    }
-
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("Exception caught: {}", cause.getMessage(), cause);
-        ctx.close();
+        chunkBuffers.forEach(ByteBuf::release);
+        chunkBuffers.clear();
+
+        ExceptionHandler.exceptionCaught(ctx, cause);
     }
+
 }

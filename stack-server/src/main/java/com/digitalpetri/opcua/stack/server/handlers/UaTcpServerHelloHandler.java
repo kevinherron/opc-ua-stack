@@ -1,4 +1,4 @@
-package com.digitalpetri.opcua.stack.server.channel;
+package com.digitalpetri.opcua.stack.server.handlers;
 
 import java.nio.ByteOrder;
 import java.util.List;

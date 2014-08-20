@@ -1,4 +1,4 @@
-package com.digitalpetri.opcua.stack.server.channel;
+package com.digitalpetri.opcua.stack.server.handlers;
 
 import static com.digitalpetri.opcua.stack.core.util.NonceUtil.generateNonce;
 import static com.digitalpetri.opcua.stack.core.util.NonceUtil.getNonceLength;
