@@ -1,6 +1,5 @@
 package com.digitalpetri.opcua.stack.core.serialization;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
@@ -68,9 +67,15 @@ public class DelegateRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    @Nullable
-    public static <T extends UaSerializable> EncoderDelegate<T> getEncoder(NodeId encodingId) {
-        return (EncoderDelegate<T>) encodersById.get(encodingId);
+    public static <T extends UaSerializable> EncoderDelegate<T> getEncoder(NodeId encodingId) throws UaSerializationException {
+        EncoderDelegate<T> encoder = (EncoderDelegate<T>) encodersById.get(encodingId);
+
+        if (encoder == null) {
+            throw new UaSerializationException(StatusCodes.Bad_EncodingError,
+                    "no encoder registered for encodingId=" + encodingId);
+        }
+
+        return encoder;
     }
 
     @SuppressWarnings("unchecked")
@@ -95,10 +100,15 @@ public class DelegateRegistry {
         return decoder;
     }
 
-    @SuppressWarnings("unchecked")
-    @Nullable
     public static DecoderDelegate<? extends UaSerializable> getDecoder(NodeId encodingId) {
-        return decodersById.get(encodingId);
+        DecoderDelegate<? extends UaSerializable> decoder = decodersById.get(encodingId);
+
+        if (decoder == null) {
+            throw new UaSerializationException(StatusCodes.Bad_DecodingError,
+                    "no decoder registered for encodingId=" + encodingId);
+        }
+
+        return decoder;
     }
 
     static {

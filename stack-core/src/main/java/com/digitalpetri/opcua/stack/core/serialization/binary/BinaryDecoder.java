@@ -9,12 +9,12 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
+import com.digitalpetri.opcua.stack.core.UaSerializationException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.serialization.DecoderDelegate;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaSerializable;
-import com.digitalpetri.opcua.stack.core.UaSerializationException;
 import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
@@ -259,15 +259,15 @@ public class BinaryDecoder implements UaDecoder {
         if (encoding == 0) {
             return new ExtensionObject((UaSerializable) null, dataTypeEncodingId);
         } else if (encoding == 1) {
-            DecoderDelegate<?> delegate = DelegateRegistry.getDecoder(dataTypeEncodingId);
+            try {
+                DecoderDelegate<?> delegate = DelegateRegistry.getDecoder(dataTypeEncodingId);
 
-            if (delegate != null) {
                 buffer.skipBytes(4); // Length; not needed since we know what's coming.
 
                 UaSerializable serializable = delegate.decode(this);
 
                 return new ExtensionObject(serializable, dataTypeEncodingId);
-            } else {
+            } catch (UaSerializationException e) {
                 ByteString byteString = decodeByteString(null);
 
                 return new ExtensionObject(byteString, dataTypeEncodingId);
