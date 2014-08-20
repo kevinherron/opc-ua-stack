@@ -1,4 +1,4 @@
-package com.digitalpetri.opcua.stack.server.channel;
+package com.digitalpetri.opcua.stack.core.channel;
 
 import java.security.KeyPair;
 import java.security.cert.Certificate;
@@ -8,11 +8,9 @@ import com.digitalpetri.opcua.stack.core.channel.SecureChannel;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
-import io.netty.channel.Channel;
+import io.netty.util.DefaultAttributeMap;
 
-public class ServerSecureChannel implements SecureChannel {
-
-    private volatile Channel channel;
+public class ServerSecureChannel extends DefaultAttributeMap implements SecureChannel {
 
     private volatile long channelId = 0;
     private volatile ChannelSecurity channelSecurity;
@@ -24,18 +22,6 @@ public class ServerSecureChannel implements SecureChannel {
     private volatile Certificate remoteCertificate;
     private volatile SecurityPolicy securityPolicy;
     private volatile MessageSecurityMode messageSecurityMode;
-
-    public void bind(Channel channel) {
-        this.channel = channel;
-    }
-
-    public void unbind() {
-        this.channel = null;
-    }
-
-    public Channel getBoundChannel() {
-        return channel;
-    }
 
     public void setChannelId(long channelId) {
         this.channelId = channelId;
@@ -122,10 +108,10 @@ public class ServerSecureChannel implements SecureChannel {
     public ByteString getLocalNonce() {
         return localNonce;
     }
+
     @Override
     public ByteString getRemoteNonce() {
         return remoteNonce;
     }
-
 
 }

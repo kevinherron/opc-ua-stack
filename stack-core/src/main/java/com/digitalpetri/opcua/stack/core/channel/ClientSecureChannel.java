@@ -1,4 +1,4 @@
-package com.digitalpetri.opcua.stack.client.channel;
+package com.digitalpetri.opcua.stack.core.channel;
 
 import java.security.KeyPair;
 import java.security.cert.Certificate;
@@ -8,8 +8,9 @@ import com.digitalpetri.opcua.stack.core.channel.SecureChannel;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
+import io.netty.util.DefaultAttributeMap;
 
-public class ClientSecureChannel implements SecureChannel {
+public class ClientSecureChannel extends DefaultAttributeMap implements SecureChannel {
 
     private volatile long channelId = 0;
     private volatile ChannelSecurity channelSecurity;

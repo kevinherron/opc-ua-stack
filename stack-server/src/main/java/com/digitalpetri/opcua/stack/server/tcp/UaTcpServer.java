@@ -39,7 +39,7 @@ import com.digitalpetri.opcua.stack.server.Endpoint;
 import com.digitalpetri.opcua.stack.server.ServiceRequest;
 import com.digitalpetri.opcua.stack.server.ServiceResponse;
 import com.digitalpetri.opcua.stack.server.UaServer;
-import com.digitalpetri.opcua.stack.server.channel.ServerSecureChannel;
+import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
 import com.digitalpetri.opcua.stack.server.services.AttributeServiceSet;
 import com.digitalpetri.opcua.stack.server.services.DiscoveryServiceSet;
 import com.digitalpetri.opcua.stack.server.services.MethodServiceSet;
@@ -58,12 +58,18 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 import io.netty.channel.Channel;
+import io.netty.util.AttributeKey;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UaTcpServer implements UaServer {
+
+    /**
+     * The {@link AttributeKey} that maps to the {@link Channel} bound to a {@link ServerSecureChannel}.
+     */
+    public static AttributeKey<Channel> BoundChannelKey = AttributeKey.valueOf("bound-channel");
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -186,7 +192,7 @@ public class UaTcpServer implements UaServer {
             boolean secureChannelValid = secureChannels.containsKey(secureChannel.getChannelId());
 
             if (secureChannelValid) {
-                Channel channel = secureChannel.getBoundChannel();
+                Channel channel = secureChannel.attr(BoundChannelKey).get();
                 if (channel != null) {
                     logger.trace("Sending {} on {}.", serviceResponse, secureChannel);
                     channel.writeAndFlush(serviceResponse);
@@ -303,7 +309,7 @@ public class UaTcpServer implements UaServer {
     @Override
     public void closeSecureChannel(ServerSecureChannel secureChannel) {
         secureChannels.remove(secureChannel.getChannelId());
-        Channel channel = secureChannel.getBoundChannel();
+        Channel channel = secureChannel.attr(BoundChannelKey).get();
         if (channel != null) channel.close();
     }
 
@@ -325,7 +331,7 @@ public class UaTcpServer implements UaServer {
             /*
              * If this is a reconnect there might be responses queued, so drain those.
              */
-            Channel channel = secureChannel.getBoundChannel();
+            Channel channel = secureChannel.attr(BoundChannelKey).get();
 
             if (channel != null) {
                 List<ServiceResponse> responses = responseQueues.removeAll(channelId);

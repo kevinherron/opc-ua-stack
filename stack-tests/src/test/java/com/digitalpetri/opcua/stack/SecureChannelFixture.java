@@ -1,6 +1,6 @@
 package com.digitalpetri.opcua.stack;
 
-import com.digitalpetri.opcua.stack.client.channel.ClientSecureChannel;
+import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
 import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
 import com.digitalpetri.opcua.stack.core.channel.SecureChannel;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
@@ -8,7 +8,7 @@ import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.digitalpetri.opcua.stack.core.types.structured.ChannelSecurityToken;
-import com.digitalpetri.opcua.stack.server.channel.ServerSecureChannel;
+import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
 
 import static com.digitalpetri.opcua.stack.core.util.NonceUtil.generateNonce;
 import static com.digitalpetri.opcua.stack.core.util.NonceUtil.getNonceLength;

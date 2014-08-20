@@ -8,6 +8,7 @@ import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
 import com.digitalpetri.opcua.stack.core.channel.ExceptionHandler;
 import com.digitalpetri.opcua.stack.core.channel.SerializationQueue;
+import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
 import com.digitalpetri.opcua.stack.core.channel.headers.HeaderDecoder;
 import com.digitalpetri.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
 import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
@@ -51,14 +52,18 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        if (secureChannel != null) secureChannel.bind(ctx.channel());
+        if (secureChannel != null) {
+            secureChannel.attr(UaTcpServer.BoundChannelKey).set(ctx.channel());
+        }
 
         super.channelActive(ctx);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        if (secureChannel != null) secureChannel.unbind();
+        if (secureChannel != null) {
+            secureChannel.attr(UaTcpServer.BoundChannelKey).remove();
+        }
 
         super.channelInactive(ctx);
     }

@@ -9,7 +9,7 @@ import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import com.digitalpetri.opcua.stack.core.types.structured.ResponseHeader;
 import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
-import com.digitalpetri.opcua.stack.server.channel.ServerSecureChannel;
+import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
 import com.google.common.base.Objects;
 import io.netty.util.DefaultAttributeMap;
 

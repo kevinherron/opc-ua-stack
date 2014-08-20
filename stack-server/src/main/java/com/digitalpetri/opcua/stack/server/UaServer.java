@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
-import com.digitalpetri.opcua.stack.server.channel.ServerSecureChannel;
+import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
