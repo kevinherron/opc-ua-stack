@@ -17,7 +17,23 @@ import java.util.stream.Collectors;
 
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.application.UaServer;
+import com.digitalpetri.opcua.stack.core.application.services.AttributeServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.DiscoveryServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.MethodServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.MonitoredItemServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.NodeManagementServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.QueryServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.ServiceRequest;
+import com.digitalpetri.opcua.stack.core.application.services.ServiceRequestHandler;
+import com.digitalpetri.opcua.stack.core.application.services.ServiceResponse;
+import com.digitalpetri.opcua.stack.core.application.services.SessionServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.SubscriptionServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.TestServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.ViewServiceSet;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
+import com.digitalpetri.opcua.stack.core.channel.SecureChannel;
+import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
@@ -36,21 +52,6 @@ import com.digitalpetri.opcua.stack.core.types.structured.SignedSoftwareCertific
 import com.digitalpetri.opcua.stack.core.types.structured.UserTokenPolicy;
 import com.digitalpetri.opcua.stack.core.util.DigestUtil;
 import com.digitalpetri.opcua.stack.server.Endpoint;
-import com.digitalpetri.opcua.stack.server.ServiceRequest;
-import com.digitalpetri.opcua.stack.server.ServiceResponse;
-import com.digitalpetri.opcua.stack.server.UaServer;
-import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
-import com.digitalpetri.opcua.stack.server.services.AttributeServiceSet;
-import com.digitalpetri.opcua.stack.server.services.DiscoveryServiceSet;
-import com.digitalpetri.opcua.stack.server.services.MethodServiceSet;
-import com.digitalpetri.opcua.stack.server.services.MonitoredItemServiceSet;
-import com.digitalpetri.opcua.stack.server.services.NodeManagementServiceSet;
-import com.digitalpetri.opcua.stack.server.services.QueryServiceSet;
-import com.digitalpetri.opcua.stack.server.services.ServiceRequestHandler;
-import com.digitalpetri.opcua.stack.server.services.SessionServiceSet;
-import com.digitalpetri.opcua.stack.server.services.SubscriptionServiceSet;
-import com.digitalpetri.opcua.stack.server.services.TestServiceSet;
-import com.digitalpetri.opcua.stack.server.services.ViewServiceSet;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
@@ -134,7 +135,7 @@ public class UaTcpServer implements UaServer {
     }
 
     @Override
-    public void bind() {
+    public void startup() {
         List<Endpoint> validEndpoints = endpoints.stream()
                 .filter(e -> e.getSecurityPolicy() == SecurityPolicy.None || certificate != null)
                 .collect(Collectors.toList());
@@ -188,17 +189,17 @@ public class UaTcpServer implements UaServer {
                     new ServiceResponse(response, requestId) :
                     new ServiceResponse(serviceRequest.createServiceFault(throwable), requestId);
 
-            ServerSecureChannel secureChannel = serviceRequest.getSecureChannel();
+            SecureChannel secureChannel = serviceRequest.getSecureChannel();
             boolean secureChannelValid = secureChannels.containsKey(secureChannel.getChannelId());
 
             if (secureChannelValid) {
                 Channel channel = secureChannel.attr(BoundChannelKey).get();
+
                 if (channel != null) {
                     logger.trace("Sending {} on {}.", serviceResponse, secureChannel);
                     channel.writeAndFlush(serviceResponse);
                 } else {
                     logger.trace("Queueing {} for unbound {}.", serviceResponse, secureChannel);
-
                     responseQueues.put(secureChannel.getChannelId(), serviceResponse);
                 }
             }

@@ -1,14 +1,12 @@
-package com.digitalpetri.opcua.stack.server.services;
+package com.digitalpetri.opcua.stack.core.application.services;
+
+import static com.digitalpetri.opcua.stack.core.StatusCodes.Bad_ServiceUnsupported;
 
 import com.digitalpetri.opcua.stack.core.UaException;
-import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import com.digitalpetri.opcua.stack.core.types.structured.QueryFirstRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.QueryFirstResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.QueryNextRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.QueryNextResponse;
-import com.digitalpetri.opcua.stack.server.ServiceRequest;
-
-import static com.digitalpetri.opcua.stack.core.StatusCodes.Bad_ServiceUnsupported;
 
 public interface QueryServiceSet {
 

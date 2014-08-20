@@ -1,11 +1,16 @@
-package com.digitalpetri.opcua.stack.server.services;
-
-import com.digitalpetri.opcua.stack.core.UaException;
-import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
-import com.digitalpetri.opcua.stack.core.types.structured.*;
-import com.digitalpetri.opcua.stack.server.ServiceRequest;
+package com.digitalpetri.opcua.stack.core.application.services;
 
 import static com.digitalpetri.opcua.stack.core.StatusCodes.Bad_ServiceUnsupported;
+
+import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.types.structured.ActivateSessionRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.ActivateSessionResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.CancelRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.CancelResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.CloseSessionRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.CloseSessionResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.CreateSessionRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.CreateSessionResponse;
 
 public interface SessionServiceSet {
 

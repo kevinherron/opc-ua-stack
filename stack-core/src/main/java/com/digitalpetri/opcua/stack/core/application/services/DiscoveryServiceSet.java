@@ -1,11 +1,14 @@
-package com.digitalpetri.opcua.stack.server.services;
-
-import com.digitalpetri.opcua.stack.core.UaException;
-import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
-import com.digitalpetri.opcua.stack.core.types.structured.*;
-import com.digitalpetri.opcua.stack.server.ServiceRequest;
+package com.digitalpetri.opcua.stack.core.application.services;
 
 import static com.digitalpetri.opcua.stack.core.StatusCodes.Bad_ServiceUnsupported;
+
+import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.types.structured.FindServersRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.FindServersResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.GetEndpointsRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.GetEndpointsResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.RegisterServerRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.RegisterServerResponse;
 
 public interface DiscoveryServiceSet {
 

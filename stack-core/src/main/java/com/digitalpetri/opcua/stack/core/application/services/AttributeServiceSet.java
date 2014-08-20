@@ -1,10 +1,16 @@
-package com.digitalpetri.opcua.stack.server.services;
-
-import com.digitalpetri.opcua.stack.core.UaException;
-import com.digitalpetri.opcua.stack.core.types.structured.*;
-import com.digitalpetri.opcua.stack.server.ServiceRequest;
+package com.digitalpetri.opcua.stack.core.application.services;
 
 import static com.digitalpetri.opcua.stack.core.StatusCodes.Bad_ServiceUnsupported;
+
+import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.types.structured.HistoryReadRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.HistoryReadResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.HistoryUpdateRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.HistoryUpdateResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.ReadRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.ReadResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.WriteRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.WriteResponse;
 
 public interface AttributeServiceSet {
 

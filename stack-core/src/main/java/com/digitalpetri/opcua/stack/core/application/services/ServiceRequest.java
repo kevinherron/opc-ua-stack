@@ -1,15 +1,16 @@
-package com.digitalpetri.opcua.stack.server;
+package com.digitalpetri.opcua.stack.core.application.services;
 
 import java.util.concurrent.CompletableFuture;
 
 import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.application.UaServer;
+import com.digitalpetri.opcua.stack.core.channel.SecureChannel;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import com.digitalpetri.opcua.stack.core.types.structured.ResponseHeader;
 import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
-import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
 import com.google.common.base.Objects;
 import io.netty.util.DefaultAttributeMap;
 
@@ -20,12 +21,12 @@ public class ServiceRequest<ReqT extends UaRequestMessage, ResT extends UaRespon
     private final ReqT request;
     private final long requestId;
     private final UaServer server;
-    private final ServerSecureChannel secureChannel;
+    private final SecureChannel secureChannel;
 
     public ServiceRequest(ReqT request,
                           long requestId,
                           UaServer server,
-                          ServerSecureChannel secureChannel) {
+                          SecureChannel secureChannel) {
 
         this.request = request;
         this.requestId = requestId;
@@ -49,7 +50,7 @@ public class ServiceRequest<ReqT extends UaRequestMessage, ResT extends UaRespon
         return server;
     }
 
-    public ServerSecureChannel getSecureChannel() {
+    public SecureChannel getSecureChannel() {
         return secureChannel;
     }
 

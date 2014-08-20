@@ -1,12 +1,10 @@
-package com.digitalpetri.opcua.stack.server.services;
-
-import com.digitalpetri.opcua.stack.core.UaException;
-import com.digitalpetri.opcua.stack.server.ServiceRequest;
-import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
-import com.digitalpetri.opcua.stack.core.types.structured.CallRequest;
-import com.digitalpetri.opcua.stack.core.types.structured.CallResponse;
+package com.digitalpetri.opcua.stack.core.application.services;
 
 import static com.digitalpetri.opcua.stack.core.StatusCodes.Bad_ServiceUnsupported;
+
+import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.types.structured.CallRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.CallResponse;
 
 public interface MethodServiceSet {
 

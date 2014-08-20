@@ -1,4 +1,4 @@
-package com.digitalpetri.opcua.stack.server;
+package com.digitalpetri.opcua.stack.core.application;
 
 import java.security.KeyPair;
 import java.security.cert.Certificate;
@@ -7,6 +7,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
+import com.digitalpetri.opcua.stack.core.application.services.AttributeServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.DiscoveryServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.MethodServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.MonitoredItemServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.NodeManagementServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.QueryServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.ServiceRequestHandler;
+import com.digitalpetri.opcua.stack.core.application.services.SessionServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.SubscriptionServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.TestServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.ViewServiceSet;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
@@ -55,21 +66,10 @@ import com.digitalpetri.opcua.stack.core.types.structured.TranslateBrowsePathsTo
 import com.digitalpetri.opcua.stack.core.types.structured.UnregisterNodesRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.UserTokenPolicy;
 import com.digitalpetri.opcua.stack.core.types.structured.WriteRequest;
-import com.digitalpetri.opcua.stack.server.services.AttributeServiceSet;
-import com.digitalpetri.opcua.stack.server.services.DiscoveryServiceSet;
-import com.digitalpetri.opcua.stack.server.services.MethodServiceSet;
-import com.digitalpetri.opcua.stack.server.services.MonitoredItemServiceSet;
-import com.digitalpetri.opcua.stack.server.services.NodeManagementServiceSet;
-import com.digitalpetri.opcua.stack.server.services.QueryServiceSet;
-import com.digitalpetri.opcua.stack.server.services.ServiceRequestHandler;
-import com.digitalpetri.opcua.stack.server.services.SessionServiceSet;
-import com.digitalpetri.opcua.stack.server.services.SubscriptionServiceSet;
-import com.digitalpetri.opcua.stack.server.services.TestServiceSet;
-import com.digitalpetri.opcua.stack.server.services.ViewServiceSet;
 
 public interface UaServer {
 
-    void bind();
+    void startup();
 
     void shutdown();
 
@@ -93,6 +93,14 @@ public interface UaServer {
 
     void closeSecureChannel(ServerSecureChannel secureChannel);
 
+    UaServer addEndpoint(String endpointUri,
+                         String bindAddress,
+                         EnumSet<SecurityPolicy> securityPolicies,
+                         EnumSet<MessageSecurityMode> messageSecurityModes);
+
+    <T extends UaRequestMessage, U extends UaResponseMessage>
+    void addRequestHandler(Class<T> requestClass, ServiceRequestHandler<T, U> requestHandler);
+
     default UaServer addEndpoint(String endpointUri,
                                  SecurityPolicy securityPolicy,
                                  MessageSecurityMode messageSecurity) {
@@ -114,14 +122,6 @@ public interface UaServer {
 
         return addEndpoint(endpointUri, null, securityPolicies, messageSecurityModes);
     }
-
-    UaServer addEndpoint(String endpointUri,
-                         String bindAddress,
-                         EnumSet<SecurityPolicy> securityPolicies,
-                         EnumSet<MessageSecurityMode> messageSecurityModes);
-
-    <T extends UaRequestMessage, U extends UaResponseMessage>
-    void addRequestHandler(Class<T> requestClass, ServiceRequestHandler<T, U> requestHandler);
 
     default void addServiceSet(AttributeServiceSet serviceSet) {
         addRequestHandler(ReadRequest.class, serviceSet::onRead);

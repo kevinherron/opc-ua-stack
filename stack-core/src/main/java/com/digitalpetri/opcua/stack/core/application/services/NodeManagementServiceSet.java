@@ -1,11 +1,16 @@
-package com.digitalpetri.opcua.stack.server.services;
-
-import com.digitalpetri.opcua.stack.core.UaException;
-import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
-import com.digitalpetri.opcua.stack.core.types.structured.*;
-import com.digitalpetri.opcua.stack.server.ServiceRequest;
+package com.digitalpetri.opcua.stack.core.application.services;
 
 import static com.digitalpetri.opcua.stack.core.StatusCodes.Bad_ServiceUnsupported;
+
+import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.types.structured.AddNodesRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.AddNodesResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.AddReferencesRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.AddReferencesResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.DeleteNodesRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.DeleteNodesResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.DeleteReferencesRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.DeleteReferencesResponse;
 
 public interface NodeManagementServiceSet {
 

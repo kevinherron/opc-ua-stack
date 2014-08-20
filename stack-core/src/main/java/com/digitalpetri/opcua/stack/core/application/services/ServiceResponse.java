@@ -1,4 +1,4 @@
-package com.digitalpetri.opcua.stack.server;
+package com.digitalpetri.opcua.stack.core.application.services;
 
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.google.common.base.Objects;

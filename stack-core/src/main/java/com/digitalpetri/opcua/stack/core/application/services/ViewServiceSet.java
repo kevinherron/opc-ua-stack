@@ -1,11 +1,18 @@
-package com.digitalpetri.opcua.stack.server.services;
-
-import com.digitalpetri.opcua.stack.core.UaException;
-import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
-import com.digitalpetri.opcua.stack.core.types.structured.*;
-import com.digitalpetri.opcua.stack.server.ServiceRequest;
+package com.digitalpetri.opcua.stack.core.application.services;
 
 import static com.digitalpetri.opcua.stack.core.StatusCodes.Bad_ServiceUnsupported;
+
+import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.types.structured.BrowseNextRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.BrowseNextResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.BrowseRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.BrowseResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.RegisterNodesRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.RegisterNodesResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.TranslateBrowsePathsToNodeIdsRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.TranslateBrowsePathsToNodeIdsResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.UnregisterNodesRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.UnregisterNodesResponse;
 
 public interface ViewServiceSet {
 

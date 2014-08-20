@@ -3,8 +3,6 @@ package com.digitalpetri.opcua.stack.core.channel;
 import java.security.KeyPair;
 import java.security.cert.Certificate;
 
-import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
-import com.digitalpetri.opcua.stack.core.channel.SecureChannel;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;

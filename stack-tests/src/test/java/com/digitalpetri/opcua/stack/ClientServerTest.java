@@ -111,7 +111,7 @@ public class ClientServerTest extends SecurityFixture {
             service.setResponse(new TestStackResponse(header, request.getInput()));
         });
 
-        server.bind();
+        server.startup();
 
         endpoints = UaTcpClient.getEndpoints("opc.tcp://localhost:12685/test").get();
     }

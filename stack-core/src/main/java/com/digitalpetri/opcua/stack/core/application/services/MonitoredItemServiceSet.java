@@ -1,11 +1,18 @@
-package com.digitalpetri.opcua.stack.server.services;
-
-import com.digitalpetri.opcua.stack.core.UaException;
-import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
-import com.digitalpetri.opcua.stack.core.types.structured.*;
-import com.digitalpetri.opcua.stack.server.ServiceRequest;
+package com.digitalpetri.opcua.stack.core.application.services;
 
 import static com.digitalpetri.opcua.stack.core.StatusCodes.Bad_ServiceUnsupported;
+
+import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.types.structured.CreateMonitoredItemsRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.CreateMonitoredItemsResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.DeleteMonitoredItemsRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.DeleteMonitoredItemsResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.ModifyMonitoredItemsRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.ModifyMonitoredItemsResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.SetMonitoringModeRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.SetMonitoringModeResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.SetTriggeringRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.SetTriggeringResponse;
 
 public interface MonitoredItemServiceSet {
 

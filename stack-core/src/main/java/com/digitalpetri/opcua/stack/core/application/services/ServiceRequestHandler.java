@@ -1,7 +1,6 @@
-package com.digitalpetri.opcua.stack.server.services;
+package com.digitalpetri.opcua.stack.core.application.services;
 
 import com.digitalpetri.opcua.stack.core.UaException;
-import com.digitalpetri.opcua.stack.server.ServiceRequest;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 
