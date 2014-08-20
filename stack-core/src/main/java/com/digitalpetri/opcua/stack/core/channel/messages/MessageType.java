@@ -1,7 +1,7 @@
 package com.digitalpetri.opcua.stack.core.channel.messages;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
-import com.digitalpetri.opcua.stack.core.UaRuntimeException;
+import com.digitalpetri.opcua.stack.core.UaException;
 
 public enum MessageType {
 
@@ -19,7 +19,7 @@ public enum MessageType {
 	private static final int CLO = ('O' << 16) | ('L' << 8) | 'C';
 	private static final int MSG = ('G' << 16) | ('S' << 8) | 'M';
 
-	public static int toMediumInt(MessageType messageType) {
+	public static int toMediumInt(MessageType messageType) throws UaException {
 		switch (messageType) {
 			case Hello:
 				return HEL;
@@ -34,11 +34,11 @@ public enum MessageType {
 			case SecureMessage:
 				return MSG;
 			default:
-				throw new UaRuntimeException(StatusCodes.Bad_TcpMessageTypeInvalid, "unknown message type: " + messageType);
+				throw new UaException(StatusCodes.Bad_TcpMessageTypeInvalid, "unknown message type: " + messageType);
 		}
 	}
 
-	public static MessageType fromMediumInt(int messageType) {
+	public static MessageType fromMediumInt(int messageType) throws UaException {
 		switch (messageType) {
 			case HEL:
 				return Hello;
@@ -53,7 +53,7 @@ public enum MessageType {
 			case MSG:
 				return SecureMessage;
 			default:
-				throw new UaRuntimeException(StatusCodes.Bad_TcpMessageTypeInvalid, "unknown message type: " + messageType);
+				throw new UaException(StatusCodes.Bad_TcpMessageTypeInvalid, "unknown message type: " + messageType);
 		}
 	}
 

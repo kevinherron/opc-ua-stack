@@ -68,22 +68,27 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
         serializationQueue.encode((binaryEncoder, chunkEncoder) -> {
             ByteBuf messageBuffer = BufferUtil.buffer();
 
-            binaryEncoder.setBuffer(messageBuffer);
-            binaryEncoder.encodeMessage(null, message.getResponse());
+            try {
+                binaryEncoder.setBuffer(messageBuffer);
+                binaryEncoder.encodeMessage(null, message.getResponse());
 
-            final List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
-                    secureChannel,
-                    MessageType.SecureMessage,
-                    messageBuffer,
-                    message.getRequestId()
-            );
+                final List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
+                        secureChannel,
+                        MessageType.SecureMessage,
+                        messageBuffer,
+                        message.getRequestId()
+                );
 
-            ctx.executor().execute(() -> {
-                chunks.forEach(c -> ctx.write(c, ctx.voidPromise()));
-                ctx.flush();
-            });
-
-            messageBuffer.release();
+                ctx.executor().execute(() -> {
+                    chunks.forEach(c -> ctx.write(c, ctx.voidPromise()));
+                    ctx.flush();
+                });
+            } catch (UaException e) {
+                logger.error("Error encoding {}: {}", message.getResponse().getClass(), e.getMessage(), e);
+                ctx.close();
+            } finally {
+                messageBuffer.release();
+            }
         });
     }
 
@@ -153,26 +158,31 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
                 chunkBuffers = Lists.newArrayListWithCapacity(maxChunkCount);
 
                 serializationQueue.decode((binaryDecoder, chunkDecoder) -> {
-                    ByteBuf messageBuffer = chunkDecoder.decodeSymmetric(
-                            secureChannel,
-                            MessageType.SecureMessage,
-                            buffersToDecode
-                    );
+                    try {
+                        ByteBuf messageBuffer = chunkDecoder.decodeSymmetric(
+                                secureChannel,
+                                MessageType.SecureMessage,
+                                buffersToDecode
+                        );
 
-                    binaryDecoder.setBuffer(messageBuffer);
-                    UaRequestMessage request = binaryDecoder.decodeMessage(null);
+                        binaryDecoder.setBuffer(messageBuffer);
+                        UaRequestMessage request = binaryDecoder.decodeMessage(null);
 
-                    ServiceRequest<UaRequestMessage, UaResponseMessage> serviceRequest = new ServiceRequest<>(
-                            request,
-                            chunkDecoder.getRequestId(),
-                            server,
-                            secureChannel
-                    );
+                        ServiceRequest<UaRequestMessage, UaResponseMessage> serviceRequest = new ServiceRequest<>(
+                                request,
+                                chunkDecoder.getRequestId(),
+                                server,
+                                secureChannel
+                        );
 
-                    server.getExecutorService().execute(() -> server.receiveRequest(serviceRequest));
+                        server.getExecutorService().execute(() -> server.receiveRequest(serviceRequest));
 
-                    messageBuffer.release();
-                    buffersToDecode.clear();
+                        messageBuffer.release();
+                        buffersToDecode.clear();
+                    } catch (UaException e) {
+                        logger.error("Error decoding symmetric message: {}", e.getMessage(), e);
+                        ctx.close();
+                    }
                 });
             }
         }

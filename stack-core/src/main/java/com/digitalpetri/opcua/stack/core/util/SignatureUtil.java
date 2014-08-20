@@ -8,7 +8,7 @@ import java.security.PrivateKey;
 import java.security.Signature;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
-import com.digitalpetri.opcua.stack.core.UaRuntimeException;
+import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.security.SecurityAlgorithm;
 
 public class SignatureUtil {
@@ -21,11 +21,11 @@ public class SignatureUtil {
      * @param privateKey        the {@link PrivateKey} to sign with.
      * @param buffers           the data to sign.
      * @return the signature bytes.
-     * @throws UaRuntimeException
+     * @throws UaException
      */
     public static byte[] sign(SecurityAlgorithm securityAlgorithm,
                               PrivateKey privateKey,
-                              ByteBuffer... buffers) throws UaRuntimeException {
+                              ByteBuffer... buffers) throws UaException {
 
         String transformation = securityAlgorithm.getTransformation();
 
@@ -39,7 +39,7 @@ public class SignatureUtil {
 
             return signature.sign();
         } catch (GeneralSecurityException e) {
-            throw new UaRuntimeException(StatusCodes.Bad_InternalError, e);
+            throw new UaException(StatusCodes.Bad_InternalError, e);
         }
     }
 
@@ -51,11 +51,11 @@ public class SignatureUtil {
      * @param secretKey         the secret key.
      * @param buffers           the buffers to use.
      * @return the computed HMAC.
-     * @throws UaRuntimeException
+     * @throws UaException
      */
     public static byte[] hmac(SecurityAlgorithm securityAlgorithm,
                               byte[] secretKey,
-                              ByteBuffer... buffers) throws UaRuntimeException {
+                              ByteBuffer... buffers) throws UaException {
 
         String transformation = securityAlgorithm.getTransformation();
 
@@ -69,7 +69,7 @@ public class SignatureUtil {
 
             return mac.doFinal();
         } catch (GeneralSecurityException e) {
-            throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed, e);
+            throw new UaException(StatusCodes.Bad_SecurityChecksFailed, e);
         }
     }
 

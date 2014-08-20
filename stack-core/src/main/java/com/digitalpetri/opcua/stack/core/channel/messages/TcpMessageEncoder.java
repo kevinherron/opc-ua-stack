@@ -3,12 +3,13 @@ package com.digitalpetri.opcua.stack.core.channel.messages;
 import java.nio.ByteOrder;
 import java.util.function.Consumer;
 
+import com.digitalpetri.opcua.stack.core.UaException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 public class TcpMessageEncoder {
 
-    public static ByteBuf encode(HelloMessage helloMessage) {
+    public static ByteBuf encode(HelloMessage helloMessage) throws UaException {
         return encode(
                 MessageType.Hello,
                 (b) -> HelloMessage.encode(helloMessage, b),
@@ -16,7 +17,7 @@ public class TcpMessageEncoder {
         );
     }
 
-    public static ByteBuf encode(AcknowledgeMessage acknowledgeMessage) {
+    public static ByteBuf encode(AcknowledgeMessage acknowledgeMessage) throws UaException {
         return encode(
                 MessageType.Acknowledge,
                 b -> AcknowledgeMessage.encode(acknowledgeMessage, b),
@@ -24,7 +25,7 @@ public class TcpMessageEncoder {
         );
     }
 
-    public static ByteBuf encode(ErrorMessage errorMessage) {
+    public static ByteBuf encode(ErrorMessage errorMessage) throws UaException {
         return encode(
                 MessageType.Error,
                 (b) -> ErrorMessage.encode(errorMessage, b),
@@ -39,7 +40,7 @@ public class TcpMessageEncoder {
      * @param messageEncoder a function that encodes the message payload.
      * @param buffer         the {@link ByteBuf} to encode into.
      */
-    private static ByteBuf encode(MessageType messageType, Consumer<ByteBuf> messageEncoder, ByteBuf buffer) {
+    private static ByteBuf encode(MessageType messageType, Consumer<ByteBuf> messageEncoder, ByteBuf buffer) throws UaException {
         buffer.writeMedium(MessageType.toMediumInt(messageType));
         buffer.writeByte('F');
 

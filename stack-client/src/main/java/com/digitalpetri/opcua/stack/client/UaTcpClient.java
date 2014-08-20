@@ -77,7 +77,7 @@ public class UaTcpClient {
                        Certificate certificate,
                        long requestTimeout,
                        ChannelConfig channelConfig,
-                       ExecutorService executor) {
+                       ExecutorService executor) throws UaException {
 
         this.application = application;
         this.endpointUrl = endpoint.getEndpointUrl();

@@ -74,22 +74,27 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
         serializationQueue.encode((binaryEncoder, chunkEncoder) -> {
             ByteBuf messageBuffer = BufferUtil.buffer();
 
-            binaryEncoder.setBuffer(messageBuffer);
-            binaryEncoder.encodeMessage(null, message);
+            try {
+                binaryEncoder.setBuffer(messageBuffer);
+                binaryEncoder.encodeMessage(null, message);
 
-            List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
-                    secureChannel,
-                    MessageType.SecureMessage,
-                    messageBuffer,
-                    chunkEncoder.nextRequestId()
-            );
+                List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
+                        secureChannel,
+                        MessageType.SecureMessage,
+                        messageBuffer,
+                        chunkEncoder.nextRequestId()
+                );
 
-            ctx.executor().execute(() -> {
-                chunks.forEach(c -> ctx.write(c, ctx.voidPromise()));
-                ctx.flush();
-            });
-
-            messageBuffer.release();
+                ctx.executor().execute(() -> {
+                    chunks.forEach(c -> ctx.write(c, ctx.voidPromise()));
+                    ctx.flush();
+                });
+            } catch (UaException e) {
+                logger.error("Error encoding {}: {}", message.getClass(), e.getMessage(), e);
+                ctx.close();
+            } finally {
+                messageBuffer.release();
+            }
         });
     }
 
@@ -163,36 +168,45 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
                 chunkBuffers = Lists.newArrayListWithCapacity(maxChunkCount);
 
                 serializationQueue.decode((binaryDecoder, chunkDecoder) -> {
-                    ByteBuf messageBuffer = chunkDecoder.decodeSymmetric(
-                            secureChannel,
-                            MessageType.SecureMessage,
-                            buffersToDecode
-                    );
+                    try {
+                        ByteBuf messageBuffer = chunkDecoder.decodeSymmetric(
+                                secureChannel,
+                                MessageType.SecureMessage,
+                                buffersToDecode
+                        );
 
-                    binaryDecoder.setBuffer(messageBuffer);
-                    UaStructure response = binaryDecoder.decodeMessage(null);
+                        binaryDecoder.setBuffer(messageBuffer);
+                        UaStructure response = binaryDecoder.decodeMessage(null);
 
-                    if (response instanceof ServiceFault) {
-                        client.getExecutor().execute(() -> client.receiveServiceFault((ServiceFault) response));
-                    } else if (response instanceof UaResponseMessage) {
-                        client.getExecutor().execute(() -> client.receiveResponse((UaResponseMessage) response));
-                    } else {
-                        logger.error("Unexpected response: {}", response);
+                        if (response instanceof ServiceFault) {
+                            client.getExecutor().execute(() -> client.receiveServiceFault((ServiceFault) response));
+                        } else if (response instanceof UaResponseMessage) {
+                            client.getExecutor().execute(() -> client.receiveResponse((UaResponseMessage) response));
+                        } else {
+                            logger.error("Unexpected response: {}", response);
+                        }
+
+                        messageBuffer.release();
+                        buffersToDecode.clear();
+                    } catch (UaException e) {
+                        logger.error("Error decoding symmetric message: {}", e.getMessage(), e);
+                        ctx.close();
                     }
-
-                    messageBuffer.release();
-                    buffersToDecode.clear();
                 });
             }
         }
     }
 
     private void onError(ChannelHandlerContext ctx, ByteBuf buffer) {
-        ErrorMessage error = TcpMessageDecoder.decodeError(buffer);
+        try {
+            ErrorMessage error = TcpMessageDecoder.decodeError(buffer);
 
-        logger.error("Received error message: " + error);
-
-        ctx.close();
+            logger.error("Received error message: " + error);
+        } catch (UaException e) {
+            logger.error("An exception occurred while decoding an error message: {}", e.getMessage(), e);
+        } finally {
+            ctx.close();
+        }
     }
 
     @Override

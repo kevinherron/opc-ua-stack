@@ -1,10 +1,11 @@
 package com.digitalpetri.opcua.stack.core.channel.messages;
 
+import com.digitalpetri.opcua.stack.core.UaException;
 import io.netty.buffer.ByteBuf;
 
 public class TcpMessageDecoder {
 
-    public static HelloMessage decodeHello(ByteBuf buffer) {
+    public static HelloMessage decodeHello(ByteBuf buffer) throws UaException {
         MessageType messageType = MessageType.fromMediumInt(buffer.readMedium());
         char chunkType = (char) buffer.readByte();
         long length = buffer.readUnsignedInt();
@@ -14,7 +15,7 @@ public class TcpMessageDecoder {
         return HelloMessage.decode(buffer);
     }
 
-    public static AcknowledgeMessage decodeAcknowledge(ByteBuf buffer) {
+    public static AcknowledgeMessage decodeAcknowledge(ByteBuf buffer) throws UaException {
         MessageType messageType = MessageType.fromMediumInt(buffer.readMedium());
         char chunkType = (char) buffer.readByte();
         long length = buffer.readUnsignedInt();
@@ -24,7 +25,7 @@ public class TcpMessageDecoder {
         return AcknowledgeMessage.decode(buffer);
     }
 
-    public static ErrorMessage decodeError(ByteBuf buffer) {
+    public static ErrorMessage decodeError(ByteBuf buffer) throws UaException {
         MessageType messageType = MessageType.fromMediumInt(buffer.readMedium());
         char chunkType = (char) buffer.readByte();
         long length = buffer.readUnsignedInt();

@@ -4,6 +4,7 @@ import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.digitalpetri.opcua.stack.core.UaSerializationException;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
@@ -23,66 +24,66 @@ import com.digitalpetri.opcua.stack.core.util.annotations.UInt64;
 
 public interface UaDecoder {
 
-    Boolean decodeBoolean(String field);
+    Boolean decodeBoolean(String field) throws UaSerializationException;
 
-    Byte decodeSByte(String field);
+    Byte decodeSByte(String field) throws UaSerializationException;
 
-    Short decodeInt16(String field);
+    Short decodeInt16(String field) throws UaSerializationException;
 
-    Integer decodeInt32(String field);
+    Integer decodeInt32(String field) throws UaSerializationException;
 
-    Long decodeInt64(String field);
+    Long decodeInt64(String field) throws UaSerializationException;
 
     @UByte
-    Short decodeByte(String field);
+    Short decodeByte(String field) throws UaSerializationException;
 
     @UInt16
-    Integer decodeUInt16(String field);
+    Integer decodeUInt16(String field) throws UaSerializationException;
 
     @UInt32
-    Long decodeUInt32(String field);
+    Long decodeUInt32(String field) throws UaSerializationException;
 
     @UInt64
-    Long decodeUInt64(String field);
+    Long decodeUInt64(String field) throws UaSerializationException;
 
-    Float decodeFloat(String field);
+    Float decodeFloat(String field) throws UaSerializationException;
 
-    Double decodeDouble(String field);
+    Double decodeDouble(String field) throws UaSerializationException;
 
-    String decodeString(String field);
+    String decodeString(String field) throws UaSerializationException;
 
-    DateTime decodeDateTime(String field);
+    DateTime decodeDateTime(String field) throws UaSerializationException;
 
-    UUID decodeGuid(String field);
+    UUID decodeGuid(String field) throws UaSerializationException;
 
-    ByteString decodeByteString(String field);
+    ByteString decodeByteString(String field) throws UaSerializationException;
 
-    XmlElement decodeXmlElement(String field);
+    XmlElement decodeXmlElement(String field) throws UaSerializationException;
 
-    NodeId decodeNodeId(String field);
+    NodeId decodeNodeId(String field) throws UaSerializationException;
 
-    ExpandedNodeId decodeExpandedNodeId(String field);
+    ExpandedNodeId decodeExpandedNodeId(String field) throws UaSerializationException;
 
-    StatusCode decodeStatusCode(String field);
+    StatusCode decodeStatusCode(String field) throws UaSerializationException;
 
-    QualifiedName decodeQualifiedName(String field);
+    QualifiedName decodeQualifiedName(String field) throws UaSerializationException;
 
-    LocalizedText decodeLocalizedText(String field);
+    LocalizedText decodeLocalizedText(String field) throws UaSerializationException;
 
-    ExtensionObject decodeExtensionObject(String field);
+    ExtensionObject decodeExtensionObject(String field) throws UaSerializationException;
 
-    DataValue decodeDataValue(String field);
+    DataValue decodeDataValue(String field) throws UaSerializationException;
 
-    Variant decodeVariant(String field);
+    Variant decodeVariant(String field) throws UaSerializationException;
 
-    DiagnosticInfo decodeDiagnosticInfo(String field);
+    DiagnosticInfo decodeDiagnosticInfo(String field) throws UaSerializationException;
 
-    <T extends UaStructure> T decodeMessage(String field);
+    <T extends UaStructure> T decodeMessage(String field) throws UaSerializationException;
 
-    <T extends UaSerializable> T decodeSerializable(String field, Class<T> clazz);
+    <T extends UaSerializable> T decodeSerializable(String field, Class<T> clazz) throws UaSerializationException;
 
-    <T> T[] decodeArray(String field, Function<String, T> decoder, Class<T> clazz);
+    <T> T[] decodeArray(String field, Function<String, T> decoder, Class<T> clazz) throws UaSerializationException;
 
-    <T> T[] decodeArray(String field, BiFunction<String, Class<T>, T> decoder, Class<T> clazz);
+    <T> T[] decodeArray(String field, BiFunction<String, Class<T>, T> decoder, Class<T> clazz) throws UaSerializationException;
 
 }

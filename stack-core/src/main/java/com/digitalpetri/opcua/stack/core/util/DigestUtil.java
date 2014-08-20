@@ -16,7 +16,7 @@ public class DigestUtil {
      * @param input the input to compute the digest for.
      * @return the SHA1 digest of {@code input}.
      */
-    public static byte[] sha1(byte[] input) throws UaRuntimeException {
+    public static byte[] sha1(byte[] input) {
         MessageDigest messageDigest = sha1Digest.get();
 
         if (messageDigest == null) {

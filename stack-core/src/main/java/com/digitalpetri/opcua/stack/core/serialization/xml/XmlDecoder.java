@@ -14,7 +14,7 @@ import java.util.function.Function;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaSerializable;
-import com.digitalpetri.opcua.stack.core.serialization.UaSerializationException;
+import com.digitalpetri.opcua.stack.core.UaSerializationException;
 import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
@@ -51,67 +51,67 @@ public class XmlDecoder implements UaDecoder {
     }
 
     @Override
-    public Boolean decodeBoolean(String field) {
+    public Boolean decodeBoolean(String field) throws UaSerializationException {
         return parseElement(field, Boolean::valueOf);
     }
 
     @Override
-    public Byte decodeSByte(String field) {
+    public Byte decodeSByte(String field) throws UaSerializationException {
         return parseElement(field, Byte::parseByte);
     }
 
     @Override
-    public Short decodeInt16(String field) {
+    public Short decodeInt16(String field) throws UaSerializationException {
         return parseElement(field, Short::parseShort);
     }
 
     @Override
-    public Integer decodeInt32(String field) {
+    public Integer decodeInt32(String field) throws UaSerializationException {
         return parseElement(field, Integer::parseInt);
     }
 
     @Override
-    public Long decodeInt64(String field) {
+    public Long decodeInt64(String field) throws UaSerializationException {
         return parseElement(field, Long::parseLong);
     }
 
     @Override
-    public Short decodeByte(String field) {
+    public Short decodeByte(String field) throws UaSerializationException {
         return parseElement(field, Short::parseShort);
     }
 
     @Override
-    public Integer decodeUInt16(String field) {
+    public Integer decodeUInt16(String field) throws UaSerializationException {
         return parseElement(field, Integer::parseInt);
     }
 
     @Override
-    public Long decodeUInt32(String field) {
+    public Long decodeUInt32(String field) throws UaSerializationException {
         return parseElement(field, Long::parseLong);
     }
 
     @Override
-    public Long decodeUInt64(String field) {
+    public Long decodeUInt64(String field) throws UaSerializationException {
         return parseElement(field, Long::parseLong);
     }
 
     @Override
-    public Float decodeFloat(String field) {
+    public Float decodeFloat(String field) throws UaSerializationException {
         return parseElement(field, Float::parseFloat);
     }
 
     @Override
-    public Double decodeDouble(String field) {
+    public Double decodeDouble(String field) throws UaSerializationException {
         return parseElement(field, Double::parseDouble);
     }
 
     @Override
-    public String decodeString(String field) {
+    public String decodeString(String field) throws UaSerializationException {
         return parseElement(field, content -> content);
     }
 
     @Override
-    public DateTime decodeDateTime(String field) {
+    public DateTime decodeDateTime(String field) throws UaSerializationException {
         return parseElement(field, content -> {
             Calendar calendar = DatatypeConverter.parseDateTime(content);
 
@@ -120,7 +120,7 @@ public class XmlDecoder implements UaDecoder {
     }
 
     @Override
-    public UUID decodeGuid(String field) {
+    public UUID decodeGuid(String field) throws UaSerializationException {
         requireNextStartElement(field);
 
         UUID uuid;
@@ -145,7 +145,7 @@ public class XmlDecoder implements UaDecoder {
     }
 
     @Override
-    public ByteString decodeByteString(String field) {
+    public ByteString decodeByteString(String field) throws UaSerializationException {
         return parseNillableElement(field, content -> {
             if (content != null) {
                 byte[] bs = DatatypeConverter.parseBase64Binary(content);
@@ -163,7 +163,7 @@ public class XmlDecoder implements UaDecoder {
     }
 
     @Override
-    public NodeId decodeNodeId(String field) {
+    public NodeId decodeNodeId(String field) throws UaSerializationException {
         requireNextStartElement(field);
 
         NodeId nodeId;
@@ -246,7 +246,7 @@ public class XmlDecoder implements UaDecoder {
     }
 
 
-    private <T> T parseElement(String element, Function<String, T> parser) {
+    private <T> T parseElement(String element, Function<String, T> parser) throws UaSerializationException {
         requireNextStartElement(element);
 
         T parsed = parser.apply(readCharacterContent());
@@ -256,7 +256,7 @@ public class XmlDecoder implements UaDecoder {
         return parsed;
     }
 
-    private <T> T parseNillableElement(String element, Function<String, T> parser) {
+    private <T> T parseNillableElement(String element, Function<String, T> parser) throws UaSerializationException {
         requireNextStartElement(element);
 
         T parsed;
@@ -274,7 +274,7 @@ public class XmlDecoder implements UaDecoder {
         return parsed;
     }
 
-    private boolean nextStartElement(String element) {
+    private boolean nextStartElement(String element) throws UaSerializationException {
         try {
             streamReader.nextTag();
 
@@ -286,14 +286,14 @@ public class XmlDecoder implements UaDecoder {
         }
     }
 
-    private void requireNextStartElement(String element) {
+    private void requireNextStartElement(String element) throws UaSerializationException {
         if (!nextStartElement(element)) {
             throw new UaSerializationException(StatusCodes.Bad_DecodingError,
                     "start of element '" + element + "' not found");
         }
     }
 
-    private boolean nextEndElement(String element) {
+    private boolean nextEndElement(String element) throws UaSerializationException {
         try {
             streamReader.nextTag();
 
@@ -305,7 +305,7 @@ public class XmlDecoder implements UaDecoder {
         }
     }
 
-    private void requireNextEndElement(String element) {
+    private void requireNextEndElement(String element) throws UaSerializationException {
         if (!nextEndElement(element)) {
             throw new UaSerializationException(StatusCodes.Bad_DecodingError,
                     "end of element '" + element + "' not found");
@@ -316,14 +316,14 @@ public class XmlDecoder implements UaDecoder {
         return element.equals(streamReader.getLocalName());
     }
 
-    private void requireCurrentElement(String element) {
+    private void requireCurrentElement(String element) throws UaSerializationException {
         if (!currentElement(element)) {
             throw new UaSerializationException(StatusCodes.Bad_DecodingError,
                     "expected current element '" + element + "'");
         }
     }
 
-    private String readCharacterContent() {
+    private String readCharacterContent() throws UaSerializationException {
         try {
             while (streamReader.hasNext()) {
                 streamReader.next();

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
-import com.digitalpetri.opcua.stack.core.UaRuntimeException;
+import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.headers.AsymmetricSecurityHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.HeaderConstants;
 import com.digitalpetri.opcua.stack.core.channel.headers.SequenceHeader;
@@ -47,15 +47,15 @@ public class ChunkDecoder implements HeaderConstants {
         this.parameters = parameters;
     }
 
-    public ByteBuf decodeAsymmetric(SecureChannel channel, MessageType messageType, List<ByteBuf> chunkBuffers) {
+    public ByteBuf decodeAsymmetric(SecureChannel channel, MessageType messageType, List<ByteBuf> chunkBuffers) throws UaException {
         return decode(asymmetricDelegate, channel, messageType, chunkBuffers);
     }
 
-    public ByteBuf decodeSymmetric(SecureChannel channel, MessageType messageType, List<ByteBuf> chunkBuffers) {
+    public ByteBuf decodeSymmetric(SecureChannel channel, MessageType messageType, List<ByteBuf> chunkBuffers) throws UaException {
         return decode(symmetricDelegate, channel, messageType, chunkBuffers);
     }
 
-    private ByteBuf decode(Delegate delegate, SecureChannel channel, MessageType messageType, List<ByteBuf> chunkBuffers) {
+    private ByteBuf decode(Delegate delegate, SecureChannel channel, MessageType messageType, List<ByteBuf> chunkBuffers) throws UaException {
         CompositeByteBuf composite = BufferUtil.compositeBuffer();
 
         int signatureSize = delegate.getSignatureSize(channel);
@@ -99,7 +99,7 @@ public class ChunkDecoder implements HeaderConstants {
                     logger.error(message);
                     logger.error(ByteBufUtil.hexDump(chunkBuffer, 0, chunkBuffer.writerIndex()));
 
-                    throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed, message);
+                    throw new UaException(StatusCodes.Bad_SecurityChecksFailed, message);
                 }
 
                 previousSequenceNumber.set(sequenceNumber);
@@ -121,7 +121,7 @@ public class ChunkDecoder implements HeaderConstants {
         return requestId.get();
     }
 
-    private void decryptChunk(Delegate delegate, SecureChannel channel, ByteBuf chunkBuffer) {
+    private void decryptChunk(Delegate delegate, SecureChannel channel, ByteBuf chunkBuffer) throws UaException {
         int cipherTextBlockSize = delegate.getCipherTextBlockSize(channel);
         int blockCount = chunkBuffer.readableBytes() / cipherTextBlockSize;
 
@@ -150,7 +150,7 @@ public class ChunkDecoder implements HeaderConstants {
                 cipher.doFinal(chunkNioBuffer, plainTextNioBuffer);
             }
         } catch (GeneralSecurityException e) {
-            throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed, e);
+            throw new UaException(StatusCodes.Bad_SecurityChecksFailed, e);
         }
 
         /* Write plainTextBuffer back into the chunk buffer we decrypted from. */
@@ -171,15 +171,15 @@ public class ChunkDecoder implements HeaderConstants {
     }
 
     private static interface Delegate {
-        void readSecurityHeader(SecureChannel channel, ByteBuf chunkBuffer);
+        void readSecurityHeader(SecureChannel channel, ByteBuf chunkBuffer) throws UaException;
 
-        Cipher getCipher(SecureChannel channel);
+        Cipher getCipher(SecureChannel channel) throws UaException;
 
         int getCipherTextBlockSize(SecureChannel channel);
 
         int getSignatureSize(SecureChannel channel);
 
-        void verifyChunk(SecureChannel channel, ByteBuf chunkBuffer);
+        void verifyChunk(SecureChannel channel, ByteBuf chunkBuffer) throws UaException;
 
         boolean isEncryptionEnabled(SecureChannel channel);
 
@@ -195,14 +195,14 @@ public class ChunkDecoder implements HeaderConstants {
         }
 
         @Override
-        public Cipher getCipher(SecureChannel channel) {
+        public Cipher getCipher(SecureChannel channel) throws UaException {
             try {
                 String transformation = channel.getSecurityPolicy().getAsymmetricEncryptionAlgorithm().getTransformation();
                 Cipher cipher = Cipher.getInstance(transformation);
                 cipher.init(Cipher.DECRYPT_MODE, channel.getKeyPair().getPrivate());
                 return cipher;
             } catch (GeneralSecurityException e) {
-                throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed, e);
+                throw new UaException(StatusCodes.Bad_SecurityChecksFailed, e);
             }
         }
 
@@ -217,7 +217,7 @@ public class ChunkDecoder implements HeaderConstants {
         }
 
         @Override
-        public void verifyChunk(SecureChannel channel, ByteBuf chunkBuffer) {
+        public void verifyChunk(SecureChannel channel, ByteBuf chunkBuffer) throws UaException {
             String transformation = channel.getSecurityPolicy().getAsymmetricSignatureAlgorithm().getTransformation();
             int signatureSize = channel.getRemoteAsymmetricSignatureSize();
 
@@ -235,12 +235,12 @@ public class ChunkDecoder implements HeaderConstants {
                 chunkNioBuffer.get(signatureBytes);
 
                 if (!signature.verify(signatureBytes)) {
-                    throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed, "could not verify signature");
+                    throw new UaException(StatusCodes.Bad_SecurityChecksFailed, "could not verify signature");
                 }
             } catch (NoSuchAlgorithmException | SignatureException e) {
-                throw new UaRuntimeException(StatusCodes.Bad_InternalError, e);
+                throw new UaException(StatusCodes.Bad_InternalError, e);
             } catch (InvalidKeyException e) {
-                throw new UaRuntimeException(StatusCodes.Bad_CertificateInvalid, e);
+                throw new UaException(StatusCodes.Bad_CertificateInvalid, e);
             }
         }
 
@@ -261,14 +261,14 @@ public class ChunkDecoder implements HeaderConstants {
         private volatile ChannelSecurity.SecuritySecrets securitySecrets;
 
         @Override
-        public void readSecurityHeader(SecureChannel channel, ByteBuf chunkBuffer) {
+        public void readSecurityHeader(SecureChannel channel, ByteBuf chunkBuffer) throws UaException {
             long tokenId = SymmetricSecurityHeader.decode(chunkBuffer).getTokenId();
 
             ChannelSecurity channelSecurity = channel.getChannelSecurity();
 
             if (channelSecurity == null) {
                 if (tokenId != 0L) {
-                    throw new UaRuntimeException(StatusCodes.Bad_SecureChannelTokenUnknown,
+                    throw new UaException(StatusCodes.Bad_SecureChannelTokenUnknown,
                             "unknown secure channel token: " + tokenId);
                 }
             } else {
@@ -284,7 +284,7 @@ public class ChunkDecoder implements HeaderConstants {
                     if (tokenId == previousTokenId && channelSecurity.getPreviousKeys().isPresent()) {
                         securitySecrets = channelSecurity.getPreviousKeys().get();
                     } else {
-                        throw new UaRuntimeException(StatusCodes.Bad_SecureChannelTokenUnknown,
+                        throw new UaException(StatusCodes.Bad_SecureChannelTokenUnknown,
                                 "unknown secure channel token: " + tokenId);
                     }
                 }
@@ -292,7 +292,7 @@ public class ChunkDecoder implements HeaderConstants {
         }
 
         @Override
-        public Cipher getCipher(SecureChannel channel) {
+        public Cipher getCipher(SecureChannel channel) throws UaException {
             try {
                 String transformation = channel.getSecurityPolicy().getSymmetricEncryptionAlgorithm().getTransformation();
                 ChannelSecurity.SecretKeys decryptionKeys = channel.getDecryptionKeys(securitySecrets);
@@ -305,7 +305,7 @@ public class ChunkDecoder implements HeaderConstants {
 
                 return cipher;
             } catch (GeneralSecurityException e) {
-                throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed, e);
+                throw new UaException(StatusCodes.Bad_SecurityChecksFailed, e);
             }
         }
 
@@ -320,7 +320,7 @@ public class ChunkDecoder implements HeaderConstants {
         }
 
         @Override
-        public void verifyChunk(SecureChannel channel, ByteBuf chunkBuffer) {
+        public void verifyChunk(SecureChannel channel, ByteBuf chunkBuffer) throws UaException {
             SecurityAlgorithm securityAlgorithm = channel.getSecurityPolicy().getSymmetricSignatureAlgorithm();
             byte[] secretKey = channel.getDecryptionKeys(securitySecrets).getSignatureKey();
             int signatureSize = channel.getSymmetricSignatureSize();
@@ -335,7 +335,7 @@ public class ChunkDecoder implements HeaderConstants {
             chunkNioBuffer.get(signatureBytes);
 
             if (!Arrays.equals(signature, signatureBytes)) {
-                throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed, "could not verify signature");
+                throw new UaException(StatusCodes.Bad_SecurityChecksFailed, "could not verify signature");
             }
         }
 

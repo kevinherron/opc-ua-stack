@@ -93,7 +93,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 60 * 1000L
         );
 
-        sendSecureChannelRequest(ctx, request);
+        sendOpenSecureChannelRequest(ctx, request);
     }
 
     @Override
@@ -164,98 +164,106 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 chunkBuffers = Lists.newArrayListWithCapacity(maxChunkCount);
 
                 serializationQueue.decode((binaryDecoder, chunkDecoder) -> {
-                    ByteBuf messageBuffer = chunkDecoder.decodeAsymmetric(
-                            secureChannel,
-                            MessageType.OpenSecureChannel,
-                            buffersToDecode
-                    );
+                    ByteBuf messageBuffer = null;
 
-                    binaryDecoder.setBuffer(messageBuffer);
-                    OpenSecureChannelResponse response = binaryDecoder.decodeMessage(null);
-
-                    secureChannel.setChannelId(response.getSecurityToken().getChannelId());
-                    logger.debug("Received OpenSecureChannelResponse.");
-
-                    ChannelSecurityToken newToken = response.getSecurityToken();
-
-                    ChannelSecurity.SecuritySecrets newKeys = null;
-
-                    if (secureChannel.isSymmetricSigningEnabled()) {
-                        secureChannel.setRemoteNonce(response.getServerNonce());
-
-                        newKeys = ChannelSecurity.generateKeyPair(
+                    try {
+                        messageBuffer = chunkDecoder.decodeAsymmetric(
                                 secureChannel,
-                                secureChannel.getLocalNonce(),
-                                secureChannel.getRemoteNonce()
+                                MessageType.OpenSecureChannel,
+                                buffersToDecode
                         );
-                    }
 
-                    ChannelSecurity oldSecrets = secureChannel.getChannelSecurity();
-                    ChannelSecurity.SecuritySecrets oldKeys = oldSecrets != null ? oldSecrets.getCurrentKeys() : null;
-                    ChannelSecurityToken oldToken = oldSecrets != null ? oldSecrets.getCurrentToken() : null;
+                        OpenSecureChannelResponse response = binaryDecoder
+                                .setBuffer(messageBuffer)
+                                .decodeMessage(null);
 
-                    ChannelSecurity newSecrets = new ChannelSecurity(
-                            newKeys,
-                            newToken,
-                            oldKeys,
-                            oldToken
-                    );
+                        secureChannel.setChannelId(response.getSecurityToken().getChannelId());
+                        logger.debug("Received OpenSecureChannelResponse.");
 
-                    secureChannel.setChannelSecurity(newSecrets);
-
-                    if (response.getServerProtocolVersion() < PROTOCOL_VERSION) {
-                        throw new UaRuntimeException(StatusCodes.Bad_ProtocolVersionUnsupported,
-                                "server protocol version unsupported: " + response.getServerProtocolVersion());
-                    }
-
-                    DateTime createdAt = response.getSecurityToken().getCreatedAt();
-                    long revisedLifetime = response.getSecurityToken().getRevisedLifetime();
-                    long renewAt = (long) (revisedLifetime * 0.75);
-
-                    renewFuture = ctx.executor().schedule(() -> renewSecureChannel(ctx), renewAt, TimeUnit.MILLISECONDS);
-
-                    logger.debug("SecureChannel id={} createdAt={}", secureChannel.getChannelId(), createdAt);
-
-                    // messageBuffer is a composite; releasing it releases components as well.
-                    messageBuffer.release();
-                    buffersToDecode.clear();
-
-                    ctx.executor().execute(() -> {
-                        // SecureChannel is ready; remove the acknowledge handler and add the symmetric handler.
-                        if (ctx.pipeline().get(UaTcpClientAcknowledgeHandler.class) != null) {
-                            ctx.pipeline().remove(UaTcpClientAcknowledgeHandler.class);
+                        installSecurityToken(ctx, response);
+                    } catch (UaException e) {
+                        logger.error("Error decoding OpenSecureChannelResponse: {}", e.getMessage(), e);
+                        ctx.close();
+                    } finally {
+                        if (messageBuffer != null) {
+                            messageBuffer.release();
                         }
-
-                        ctx.pipeline().addFirst(new UaTcpClientSymmetricHandler(client, serializationQueue, handshakeFuture));
-                    });
+                        buffersToDecode.clear();
+                    }
                 });
             }
         }
     }
 
-    private void sendSecureChannelRequest(ChannelHandlerContext ctx, OpenSecureChannelRequest request) {
+    private void installSecurityToken(ChannelHandlerContext ctx, OpenSecureChannelResponse response) {ChannelSecurity.SecuritySecrets newKeys = null;
+        if (response.getServerProtocolVersion() < PROTOCOL_VERSION) {
+            throw new UaRuntimeException(StatusCodes.Bad_ProtocolVersionUnsupported,
+                                         "server protocol version unsupported: " + response.getServerProtocolVersion());
+        }
+
+        ChannelSecurityToken newToken = response.getSecurityToken();
+
+        if (secureChannel.isSymmetricSigningEnabled()) {
+            secureChannel.setRemoteNonce(response.getServerNonce());
+
+            newKeys = ChannelSecurity.generateKeyPair(
+                    secureChannel,
+                    secureChannel.getLocalNonce(),
+                    secureChannel.getRemoteNonce()
+            );
+        }
+
+        ChannelSecurity oldSecrets = secureChannel.getChannelSecurity();
+        ChannelSecurity.SecuritySecrets oldKeys = oldSecrets != null ? oldSecrets.getCurrentKeys() : null;
+        ChannelSecurityToken oldToken = oldSecrets != null ? oldSecrets.getCurrentToken() : null;
+
+        secureChannel.setChannelSecurity(new ChannelSecurity(newKeys, newToken, oldKeys, oldToken));
+
+        DateTime createdAt = response.getSecurityToken().getCreatedAt();
+        long revisedLifetime = response.getSecurityToken().getRevisedLifetime();
+        long renewAt = (long) (revisedLifetime * 0.75);
+
+        renewFuture = ctx.executor().schedule(() -> renewSecureChannel(ctx), renewAt, TimeUnit.MILLISECONDS);
+
+        ctx.executor().execute(() -> {
+            // SecureChannel is ready; remove the acknowledge handler and add the symmetric handler.
+            if (ctx.pipeline().get(UaTcpClientAcknowledgeHandler.class) != null) {
+                ctx.pipeline().remove(UaTcpClientAcknowledgeHandler.class);
+                ctx.pipeline().addFirst(new UaTcpClientSymmetricHandler(client, serializationQueue, handshakeFuture));
+            }
+        });
+
+        logger.debug("SecureChannel id={} createdAt={}", secureChannel.getChannelId(), createdAt);
+    }
+
+    private void sendOpenSecureChannelRequest(ChannelHandlerContext ctx, OpenSecureChannelRequest request) {
         serializationQueue.encode((binaryEncoder, chunkEncoder) -> {
             ByteBuf messageBuffer = BufferUtil.buffer();
 
-            binaryEncoder.setBuffer(messageBuffer);
-            binaryEncoder.encodeMessage(null, request);
+            try {
+                binaryEncoder.setBuffer(messageBuffer);
+                binaryEncoder.encodeMessage(null, request);
 
-            List<ByteBuf> chunks = chunkEncoder.encodeAsymmetric(
-                    secureChannel,
-                    MessageType.OpenSecureChannel,
-                    messageBuffer,
-                    chunkEncoder.nextRequestId()
-            );
+                List<ByteBuf> chunks = chunkEncoder.encodeAsymmetric(
+                        secureChannel,
+                        MessageType.OpenSecureChannel,
+                        messageBuffer,
+                        chunkEncoder.nextRequestId()
+                );
 
-            ctx.executor().execute(() -> {
-                chunks.forEach(c -> ctx.write(c, ctx.voidPromise()));
-                ctx.flush();
-            });
+                ctx.executor().execute(() -> {
+                    chunks.forEach(c -> ctx.write(c, ctx.voidPromise()));
+                    ctx.flush();
+                });
 
-            messageBuffer.release();
-
-            logger.debug("Sent OpenSecureChannelRequest ({}, id={}).",
-                    request.getRequestType(), secureChannel.getChannelId());
+                logger.debug("Sent OpenSecureChannelRequest ({}, id={}).",
+                             request.getRequestType(), secureChannel.getChannelId());
+            } catch (UaException e) {
+                logger.error("Error encoding OpenSecureChannelRequest: {}", e.getMessage(), e);
+                ctx.close();
+            } finally {
+                messageBuffer.release();
+            }
         });
     }
 
@@ -263,24 +271,29 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
         serializationQueue.encode((binaryEncoder, chunkEncoder) -> {
             ByteBuf messageBuffer = BufferUtil.buffer();
 
-            binaryEncoder.setBuffer(messageBuffer);
-            binaryEncoder.encodeMessage(null, request);
+            try {
+                binaryEncoder.setBuffer(messageBuffer);
+                binaryEncoder.encodeMessage(null, request);
 
-            List<ByteBuf> chunks = chunkEncoder.encodeAsymmetric(
-                    secureChannel,
-                    MessageType.CloseSecureChannel,
-                    messageBuffer,
-                    chunkEncoder.nextRequestId()
-            );
+                List<ByteBuf> chunks = chunkEncoder.encodeAsymmetric(
+                        secureChannel,
+                        MessageType.CloseSecureChannel,
+                        messageBuffer,
+                        chunkEncoder.nextRequestId()
+                );
 
-            ctx.executor().execute(() -> {
-                chunks.forEach(c -> ctx.write(c, ctx.voidPromise()));
-                ctx.flush();
-            });
+                ctx.executor().execute(() -> {
+                    chunks.forEach(c -> ctx.write(c, ctx.voidPromise()));
+                    ctx.flush();
+                });
 
-            messageBuffer.release();
-
-            logger.debug("Sent CloseSecureChannelRequest.");
+                logger.debug("Sent CloseSecureChannelRequest.");
+            } catch (UaException e) {
+                logger.error("Error Encoding CloseSecureChannelRequest: {}", e.getMessage(), e);
+                ctx.close();
+            } finally {
+                messageBuffer.release();
+            }
         });
     }
 
@@ -300,19 +313,23 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 60 * 1000L
         );
 
-        sendSecureChannelRequest(ctx, request);
+        sendOpenSecureChannelRequest(ctx, request);
     }
 
     private void onError(ChannelHandlerContext ctx, ByteBuf buffer) {
-        ErrorMessage error = TcpMessageDecoder.decodeError(buffer);
+        try {
+            ErrorMessage error = TcpMessageDecoder.decodeError(buffer);
 
-        if (error.getError() == StatusCodes.Bad_TcpSecureChannelUnknown) {
-            secureChannel.setChannelId(0);
+            if (error.getError() == StatusCodes.Bad_TcpSecureChannelUnknown) {
+                secureChannel.setChannelId(0);
+            }
+
+            logger.error("Received error message: " + error);
+        } catch (UaException e) {
+            logger.error("An exception occurred while decoding an error message: {}", e.getMessage(), e);
+        } finally {
+            ctx.close();
         }
-
-        logger.error("Received error message: " + error);
-
-        ctx.close();
     }
 
 }

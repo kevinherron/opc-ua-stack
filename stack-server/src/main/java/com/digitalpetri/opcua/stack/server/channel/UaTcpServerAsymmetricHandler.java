@@ -1,5 +1,8 @@
 package com.digitalpetri.opcua.stack.server.channel;
 
+import static com.digitalpetri.opcua.stack.core.util.NonceUtil.generateNonce;
+import static com.digitalpetri.opcua.stack.core.util.NonceUtil.getNonceLength;
+
 import java.nio.ByteOrder;
 import java.security.KeyPair;
 import java.security.cert.Certificate;
@@ -35,9 +38,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.digitalpetri.opcua.stack.core.util.NonceUtil.generateNonce;
-import static com.digitalpetri.opcua.stack.core.util.NonceUtil.getNonceLength;
 
 public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implements HeaderDecoder {
 
@@ -123,7 +123,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
 
             if (!headerRef.compareAndSet(null, securityHeader)) {
                 if (!securityHeader.equals(headerRef.get())) {
-                    throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed,
+                    throw new UaException(StatusCodes.Bad_SecurityChecksFailed,
                             "subsequent AsymmetricSecurityHeader did not match");
                 }
             }
@@ -164,29 +164,38 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                 headerRef.set(null);
 
                 serializationQueue.decode((binaryDecoder, chunkDecoder) -> {
-                    ByteBuf messageBuffer = chunkDecoder.decodeAsymmetric(
-                            secureChannel,
-                            MessageType.OpenSecureChannel,
-                            buffersToDecode
-                    );
+                    ByteBuf messageBuffer = null;
 
-                    binaryDecoder.setBuffer(messageBuffer);
-                    OpenSecureChannelRequest request = binaryDecoder.decodeMessage(null);
+                    try {
+                        messageBuffer = chunkDecoder.decodeAsymmetric(
+                                secureChannel,
+                                MessageType.OpenSecureChannel,
+                                buffersToDecode
+                        );
 
-                    logger.debug("Received OpenSecureChannelRequest ({}, id={}).",
-                            request.getRequestType(), secureChannelId);
+                        OpenSecureChannelRequest request = binaryDecoder
+                                .setBuffer(messageBuffer)
+                                .decodeMessage(null);
 
-                    long requestId = chunkDecoder.getRequestId();
+                        logger.debug("Received OpenSecureChannelRequest ({}, id={}).",
+                                     request.getRequestType(), secureChannelId);
 
-                    if (request.getRequestType() == SecurityTokenRequestType.Issue) {
-                        issueSecurityToken(ctx, request, requestId);
-                    } else {
-                        renewSecurityToken(ctx, request, requestId);
+                        long requestId = chunkDecoder.getRequestId();
+
+                        if (request.getRequestType() == SecurityTokenRequestType.Issue) {
+                            issueSecurityToken(ctx, request, requestId);
+                        } else {
+                            renewSecurityToken(ctx, request, requestId);
+                        }
+                    } catch (UaException e) {
+                        logger.error("Error decoding asymmetric message: {}", e.getMessage(), e);
+                        ctx.close();
+                    } finally {
+                        if (messageBuffer != null) {
+                            messageBuffer.release();
+                        }
+                        buffersToDecode.clear();
                     }
-
-                    // messageBuffer is a composite of chunkBuffers; releasing it releases them as well.
-                    messageBuffer.release();
-                    buffersToDecode.clear();
                 });
             }
         }
@@ -239,7 +248,10 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
 
     private void renewSecurityToken(ChannelHandlerContext ctx, OpenSecureChannelRequest request, long requestId) {
         if (secureChannel.getMessageSecurityMode() != request.getSecurityMode()) {
-            // TODO Throw an exception... can't change security modes.
+            logger.error("Secure channel renewal requested a different MessageSecurityMode; closing connection.");
+
+            throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed,
+                                         "secure channel renewal requested a different MessageSecurityMode.");
         }
 
         ChannelSecurityToken newToken = new ChannelSecurityToken(
@@ -299,30 +311,35 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
         serializationQueue.encode((binaryEncoder, chunkEncoder) -> {
             ByteBuf messageBuffer = BufferUtil.buffer();
 
-            binaryEncoder.setBuffer(messageBuffer);
-            binaryEncoder.encodeMessage(null, response);
+            try {
+                binaryEncoder.setBuffer(messageBuffer);
+                binaryEncoder.encodeMessage(null, response);
 
-            List<ByteBuf> chunks = chunkEncoder.encodeAsymmetric(
-                    secureChannel,
-                    MessageType.OpenSecureChannel,
-                    messageBuffer,
-                    requestId
-            );
+                List<ByteBuf> chunks = chunkEncoder.encodeAsymmetric(
+                        secureChannel,
+                        MessageType.OpenSecureChannel,
+                        messageBuffer,
+                        requestId
+                );
 
-            if (!symmetricHandlerAdded) {
-                ctx.pipeline().addFirst(new UaTcpServerSymmetricHandler(server, serializationQueue, secureChannel));
-                symmetricHandlerAdded = true;
+                if (!symmetricHandlerAdded) {
+                    ctx.pipeline().addFirst(new UaTcpServerSymmetricHandler(server, serializationQueue, secureChannel));
+                    symmetricHandlerAdded = true;
+                }
+
+                chunks.forEach(c -> ctx.write(c, ctx.voidPromise()));
+                ctx.flush();
+
+                long lifetime = response.getSecurityToken().getRevisedLifetime();
+                server.secureChannelIssuedOrRenewed(secureChannel, lifetime);
+
+                logger.debug("Sent OpenSecureChannelResponse.");
+            } catch (UaException e) {
+                logger.error("Error encoding OpenSecureChannelResponse: {}", e.getMessage(), e);
+                ctx.close();
+            } finally {
+                messageBuffer.release();
             }
-
-            chunks.forEach(c -> ctx.write(c, ctx.voidPromise()));
-            ctx.flush();
-
-            long lifetime = response.getSecurityToken().getRevisedLifetime();
-            server.secureChannelIssuedOrRenewed(secureChannel, lifetime);
-
-            messageBuffer.release();
-
-            logger.debug("Sent OpenSecureChannelResponse.");
         });
     }
 

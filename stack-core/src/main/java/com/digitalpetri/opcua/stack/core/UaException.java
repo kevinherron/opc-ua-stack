@@ -20,6 +20,12 @@ public class UaException extends Exception {
         this.statusCode = new StatusCode(StatusCodes.Bad_InternalError);
     }
 
+    public UaException(long statusCode, Throwable cause) {
+        super(cause);
+
+        this.statusCode = new StatusCode(statusCode);
+    }
+
     public UaException(long statusCode, String message) {
         super(message);
 

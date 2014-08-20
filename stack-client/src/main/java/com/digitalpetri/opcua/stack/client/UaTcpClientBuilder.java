@@ -5,6 +5,7 @@ import java.security.cert.Certificate;
 import java.util.concurrent.ExecutorService;
 
 import com.digitalpetri.opcua.stack.core.Stack;
+import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
 import com.digitalpetri.opcua.stack.core.types.enumerated.ApplicationType;
@@ -79,7 +80,7 @@ public class UaTcpClientBuilder {
         return new UaTcpClient(application, endpointUrl, requestTimeout, channelConfig, executor);
     }
 
-    public UaTcpClient build(EndpointDescription endpoint) {
+    public UaTcpClient build(EndpointDescription endpoint) throws UaException {
         ApplicationDescription application = new ApplicationDescription(
                 applicationUri,
                 productUri,

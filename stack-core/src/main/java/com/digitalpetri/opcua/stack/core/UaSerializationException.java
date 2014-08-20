@@ -1,4 +1,4 @@
-package com.digitalpetri.opcua.stack.core.serialization;
+package com.digitalpetri.opcua.stack.core;
 
 import com.digitalpetri.opcua.stack.core.UaRuntimeException;
 

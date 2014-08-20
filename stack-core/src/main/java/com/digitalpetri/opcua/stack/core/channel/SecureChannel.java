@@ -7,7 +7,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.interfaces.RSAPublicKey;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
-import com.digitalpetri.opcua.stack.core.UaRuntimeException;
+import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.security.SecurityAlgorithm;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
@@ -17,57 +17,65 @@ import com.digitalpetri.opcua.stack.core.util.DigestUtil;
 public interface SecureChannel {
 
     KeyPair getKeyPair();
+
     Certificate getLocalCertificate();
+
     Certificate getRemoteCertificate();
+
     SecurityPolicy getSecurityPolicy();
+
     MessageSecurityMode getMessageSecurityMode();
 
     long getChannelId();
+
     ChannelSecurity getChannelSecurity();
+
     ChannelSecurity.SecretKeys getEncryptionKeys(ChannelSecurity.SecuritySecrets secretKeys);
+
     ChannelSecurity.SecretKeys getDecryptionKeys(ChannelSecurity.SecuritySecrets secretKeys);
 
     ByteString getLocalNonce();
+
     ByteString getRemoteNonce();
 
-    default ByteString getLocalCertificateBytes() {
+    default ByteString getLocalCertificateBytes() throws UaException {
         try {
             return getLocalCertificate() != null ?
                     ByteString.of(getLocalCertificate().getEncoded()) :
                     ByteString.NullValue;
         } catch (CertificateEncodingException e) {
-            throw new UaRuntimeException(StatusCodes.Bad_CertificateInvalid, e);
+            throw new UaException(StatusCodes.Bad_CertificateInvalid, e);
         }
     }
 
-    default ByteString getLocalCertificateThumbprint() {
+    default ByteString getLocalCertificateThumbprint() throws UaException {
         try {
             return getLocalCertificate() != null ?
                     ByteString.of(DigestUtil.sha1(getLocalCertificate().getEncoded())) :
                     ByteString.NullValue;
         } catch (CertificateEncodingException e) {
-            throw new UaRuntimeException(StatusCodes.Bad_CertificateInvalid, e);
+            throw new UaException(StatusCodes.Bad_CertificateInvalid, e);
         }
     }
 
 
-    default ByteString getRemoteCertificateBytes() {
+    default ByteString getRemoteCertificateBytes() throws UaException {
         try {
             return getRemoteCertificate() != null ?
                     ByteString.of(getRemoteCertificate().getEncoded()) :
                     ByteString.NullValue;
         } catch (CertificateEncodingException e) {
-            throw new UaRuntimeException(StatusCodes.Bad_CertificateInvalid, e);
+            throw new UaException(StatusCodes.Bad_CertificateInvalid, e);
         }
     }
 
-    default ByteString getRemoteCertificateThumbprint() {
+    default ByteString getRemoteCertificateThumbprint() throws UaException {
         try {
             return getRemoteCertificate() != null ?
                     ByteString.of(DigestUtil.sha1(getRemoteCertificate().getEncoded())) :
                     ByteString.NullValue;
         } catch (CertificateEncodingException e) {
-            throw new UaRuntimeException(StatusCodes.Bad_CertificateInvalid, e);
+            throw new UaException(StatusCodes.Bad_CertificateInvalid, e);
         }
     }
 
@@ -75,7 +83,7 @@ public interface SecureChannel {
         if (isAsymmetricEncryptionEnabled()) {
             SecurityAlgorithm algorithm = getSecurityPolicy().getAsymmetricEncryptionAlgorithm();
 
-            switch (algorithm) {
+            switch(algorithm) {
                 case Rsa15:
                 case RsaOaep:
                     return (getAsymmetricKeyLength(getLocalCertificate()) + 1) / 8;
@@ -89,7 +97,7 @@ public interface SecureChannel {
         if (isAsymmetricEncryptionEnabled()) {
             SecurityAlgorithm algorithm = getSecurityPolicy().getAsymmetricEncryptionAlgorithm();
 
-            switch (algorithm) {
+            switch(algorithm) {
                 case Rsa15:
                 case RsaOaep:
                     return (getAsymmetricKeyLength(getRemoteCertificate()) + 1) / 8;
@@ -103,7 +111,7 @@ public interface SecureChannel {
         if (isAsymmetricEncryptionEnabled()) {
             SecurityAlgorithm algorithm = getSecurityPolicy().getAsymmetricEncryptionAlgorithm();
 
-            switch (algorithm) {
+            switch(algorithm) {
                 case Rsa15:
                     return (getAsymmetricKeyLength(getLocalCertificate()) + 1) / 8 - 11;
                 case RsaOaep:
@@ -118,7 +126,7 @@ public interface SecureChannel {
         if (isAsymmetricEncryptionEnabled()) {
             SecurityAlgorithm algorithm = getSecurityPolicy().getAsymmetricEncryptionAlgorithm();
 
-            switch (algorithm) {
+            switch(algorithm) {
                 case Rsa15:
                     return (getAsymmetricKeyLength(getRemoteCertificate()) + 1) / 8 - 11;
                 case RsaOaep:
@@ -132,7 +140,7 @@ public interface SecureChannel {
     default int getLocalAsymmetricSignatureSize() {
         SecurityAlgorithm algorithm = getSecurityPolicy().getAsymmetricSignatureAlgorithm();
 
-        switch (algorithm) {
+        switch(algorithm) {
             case RsaSha1:
             case RsaSha256:
                 return (getAsymmetricKeyLength(getLocalCertificate()) + 1) / 8;
@@ -144,7 +152,7 @@ public interface SecureChannel {
     default int getRemoteAsymmetricSignatureSize() {
         SecurityAlgorithm algorithm = getSecurityPolicy().getAsymmetricSignatureAlgorithm();
 
-        switch (algorithm) {
+        switch(algorithm) {
             case RsaSha1:
             case RsaSha256:
                 return (getAsymmetricKeyLength(getRemoteCertificate()) + 1) / 8;
@@ -168,7 +176,7 @@ public interface SecureChannel {
         if (isSymmetricEncryptionEnabled()) {
             SecurityAlgorithm algorithm = getSecurityPolicy().getSymmetricEncryptionAlgorithm();
 
-            switch (algorithm) {
+            switch(algorithm) {
                 case Aes128:
                 case Aes256:
                     return 16;
@@ -182,7 +190,7 @@ public interface SecureChannel {
         if (isSymmetricEncryptionEnabled()) {
             SecurityAlgorithm algorithm = getSecurityPolicy().getSymmetricEncryptionAlgorithm();
 
-            switch (algorithm) {
+            switch(algorithm) {
                 case Aes128:
                 case Aes256:
                     return 16;
@@ -195,7 +203,7 @@ public interface SecureChannel {
     default int getSymmetricSignatureSize() {
         SecurityAlgorithm algorithm = getSecurityPolicy().getSymmetricSignatureAlgorithm();
 
-        switch (algorithm) {
+        switch(algorithm) {
             case HmacSha1:
                 return 20;
             case HmacSha256:
@@ -206,7 +214,7 @@ public interface SecureChannel {
     }
 
     default int getSymmetricSignatureKeySize() {
-        switch (getSecurityPolicy()) {
+        switch(getSecurityPolicy()) {
             case None:
                 return 0;
             case Basic128Rsa15:
@@ -221,7 +229,7 @@ public interface SecureChannel {
     }
 
     default int getSymmetricEncryptionKeySize() {
-        switch (getSecurityPolicy()) {
+        switch(getSecurityPolicy()) {
             case None:
                 return 0;
             case Basic128Rsa15:

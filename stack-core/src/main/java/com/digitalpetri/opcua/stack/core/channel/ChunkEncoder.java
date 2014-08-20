@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
-import com.digitalpetri.opcua.stack.core.UaRuntimeException;
+import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.headers.AsymmetricSecurityHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.HeaderConstants;
 import com.digitalpetri.opcua.stack.core.channel.headers.SecureMessageHeader;
@@ -42,7 +42,7 @@ public class ChunkEncoder implements HeaderConstants {
     public List<ByteBuf> encodeAsymmetric(SecureChannel channel,
                                           MessageType messageType,
                                           ByteBuf messageBuffer,
-                                          long requestId) {
+                                          long requestId) throws UaException {
 
         return encode(asymmetricDelegate, channel, messageType, messageBuffer, requestId);
     }
@@ -50,7 +50,7 @@ public class ChunkEncoder implements HeaderConstants {
     public List<ByteBuf> encodeSymmetric(SecureChannel channel,
                                          MessageType messageType,
                                          ByteBuf messageBuffer,
-                                         long requestId) {
+                                         long requestId) throws UaException {
 
         return encode(symmetricDelegate, channel, messageType, messageBuffer, requestId);
     }
@@ -63,7 +63,7 @@ public class ChunkEncoder implements HeaderConstants {
                                  SecureChannel channel,
                                  MessageType messageType,
                                  ByteBuf messageBuffer,
-                                 long requestId) {
+                                 long requestId) throws UaException {
 
         List<ByteBuf> chunks = Lists.newArrayList();
 
@@ -164,7 +164,7 @@ public class ChunkEncoder implements HeaderConstants {
 
                     copyBuffer.release();
                 } catch (GeneralSecurityException e) {
-                    throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed, e);
+                    throw new UaException(StatusCodes.Bad_SecurityChecksFailed, e);
                 }
             }
 
@@ -196,13 +196,13 @@ public class ChunkEncoder implements HeaderConstants {
     }
 
     private static interface Delegate {
-        byte[] signChunk(SecureChannel channel, ByteBuffer chunkNioBuffer);
+        byte[] signChunk(SecureChannel channel, ByteBuffer chunkNioBuffer) throws UaException;
 
-        void encodeSecurityHeader(SecureChannel channel, ByteBuf buffer);
+        void encodeSecurityHeader(SecureChannel channel, ByteBuf buffer) throws UaException;
 
-        Cipher getAndInitializeCipher(SecureChannel channel);
+        Cipher getAndInitializeCipher(SecureChannel channel) throws UaException;
 
-        int getSecurityHeaderSize(SecureChannel channel);
+        int getSecurityHeaderSize(SecureChannel channel) throws UaException;
 
         int getCipherTextBlockSize(SecureChannel channel);
 
@@ -219,7 +219,7 @@ public class ChunkEncoder implements HeaderConstants {
     private class AsymmetricDelegate implements Delegate {
 
         @Override
-        public byte[] signChunk(SecureChannel channel, ByteBuffer chunkNioBuffer) {
+        public byte[] signChunk(SecureChannel channel, ByteBuffer chunkNioBuffer) throws UaException {
             return SignatureUtil.sign(
                     channel.getSecurityPolicy().getAsymmetricSignatureAlgorithm(),
                     channel.getKeyPair().getPrivate(),
@@ -228,7 +228,7 @@ public class ChunkEncoder implements HeaderConstants {
         }
 
         @Override
-        public Cipher getAndInitializeCipher(SecureChannel channel) {
+        public Cipher getAndInitializeCipher(SecureChannel channel) throws UaException {
             Certificate remoteCertificate = channel.getRemoteCertificate();
 
             assert (remoteCertificate != null);
@@ -239,12 +239,12 @@ public class ChunkEncoder implements HeaderConstants {
                 cipher.init(Cipher.ENCRYPT_MODE, remoteCertificate.getPublicKey());
                 return cipher;
             } catch (GeneralSecurityException e) {
-                throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed, e);
+                throw new UaException(StatusCodes.Bad_SecurityChecksFailed, e);
             }
         }
 
         @Override
-        public void encodeSecurityHeader(SecureChannel channel, ByteBuf buffer) {
+        public void encodeSecurityHeader(SecureChannel channel, ByteBuf buffer) throws UaException {
             AsymmetricSecurityHeader header = new AsymmetricSecurityHeader(
                     channel.getSecurityPolicy().getSecurityPolicyUri(),
                     channel.getLocalCertificateBytes(),
@@ -255,7 +255,7 @@ public class ChunkEncoder implements HeaderConstants {
         }
 
         @Override
-        public int getSecurityHeaderSize(SecureChannel channel) {
+        public int getSecurityHeaderSize(SecureChannel channel) throws UaException {
             String securityPolicyUri = channel.getSecurityPolicy().getSecurityPolicyUri();
             byte[] localCertificateBytes = channel.getLocalCertificateBytes().bytes();
             byte[] remoteCertificateThumbprint = channel.getRemoteCertificateThumbprint().bytes();
@@ -307,7 +307,7 @@ public class ChunkEncoder implements HeaderConstants {
         }
 
         @Override
-        public byte[] signChunk(SecureChannel channel, ByteBuffer chunkNioBuffer) {
+        public byte[] signChunk(SecureChannel channel, ByteBuffer chunkNioBuffer) throws UaException {
             SecurityAlgorithm signatureAlgorithm = channel.getSecurityPolicy().getSymmetricSignatureAlgorithm();
             byte[] signatureKey = channel.getEncryptionKeys(securitySecrets).getSignatureKey();
 
@@ -319,7 +319,7 @@ public class ChunkEncoder implements HeaderConstants {
         }
 
         @Override
-        public Cipher getAndInitializeCipher(SecureChannel channel) {
+        public Cipher getAndInitializeCipher(SecureChannel channel) throws UaException {
             try {
                 String transformation = channel.getSecurityPolicy().getSymmetricEncryptionAlgorithm().getTransformation();
                 ChannelSecurity.SecretKeys secretKeys = channel.getEncryptionKeys(securitySecrets);
@@ -334,7 +334,7 @@ public class ChunkEncoder implements HeaderConstants {
 
                 return cipher;
             } catch (GeneralSecurityException e) {
-                throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed, e);
+                throw new UaException(StatusCodes.Bad_SecurityChecksFailed, e);
             }
         }
 

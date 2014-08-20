@@ -3,13 +3,13 @@ package com.digitalpetri.opcua.stack.server;
 import java.util.concurrent.CompletableFuture;
 
 import com.digitalpetri.opcua.stack.core.UaException;
-import com.digitalpetri.opcua.stack.server.channel.ServerSecureChannel;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import com.digitalpetri.opcua.stack.core.types.structured.ResponseHeader;
 import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
+import com.digitalpetri.opcua.stack.server.channel.ServerSecureChannel;
 import com.google.common.base.Objects;
 import io.netty.util.DefaultAttributeMap;
 

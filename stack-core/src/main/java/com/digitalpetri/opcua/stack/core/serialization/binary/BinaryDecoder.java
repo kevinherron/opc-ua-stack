@@ -9,13 +9,12 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
-import com.digitalpetri.opcua.stack.core.UaRuntimeException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.serialization.DecoderDelegate;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaSerializable;
-import com.digitalpetri.opcua.stack.core.serialization.UaSerializationException;
+import com.digitalpetri.opcua.stack.core.UaSerializationException;
 import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
@@ -110,7 +109,7 @@ public class BinaryDecoder implements UaDecoder {
     }
 
     @Override
-    public String decodeString(String field) {
+    public String decodeString(String field) throws UaSerializationException {
         int length = decodeInt32(null);
 
         if (length == -1) {
@@ -158,7 +157,7 @@ public class BinaryDecoder implements UaDecoder {
     }
 
     @Override
-    public XmlElement decodeXmlElement(String field) {
+    public XmlElement decodeXmlElement(String field) throws UaSerializationException {
         ByteString byteString = decodeByteString(null);
         byte[] bs = byteString.bytes();
 
@@ -169,13 +168,13 @@ public class BinaryDecoder implements UaDecoder {
                 String fragment = new String(bs, "UTF-8");
                 return new XmlElement(fragment);
             } catch (UnsupportedEncodingException e) {
-                throw new UaRuntimeException(StatusCodes.Bad_DecodingError, e);
+                throw new UaSerializationException(StatusCodes.Bad_DecodingError, e);
             }
         }
     }
 
     @Override
-    public NodeId decodeNodeId(String field) {
+    public NodeId decodeNodeId(String field) throws UaSerializationException {
         int format = buffer.readByte() & 0x0F;
 
         if (format == 0x00) {
@@ -197,12 +196,12 @@ public class BinaryDecoder implements UaDecoder {
             /* Opaque format */
             return new NodeId(buffer.readUnsignedShort(), decodeByteString(null));
         } else {
-            throw new UaRuntimeException(StatusCodes.Bad_EncodingError, "invalid NodeId format: " + format);
+            throw new UaSerializationException(StatusCodes.Bad_EncodingError, "invalid NodeId format: " + format);
         }
     }
 
     @Override
-    public ExpandedNodeId decodeExpandedNodeId(String field) {
+    public ExpandedNodeId decodeExpandedNodeId(String field) throws UaSerializationException {
         int flags = buffer.getByte(buffer.readerIndex());
 
         NodeId nodeId = decodeNodeId(null);
@@ -227,7 +226,7 @@ public class BinaryDecoder implements UaDecoder {
     }
 
     @Override
-    public QualifiedName decodeQualifiedName(String field) {
+    public QualifiedName decodeQualifiedName(String field) throws UaSerializationException {
         int namespaceIndex = decodeUInt16(null);
         String name = decodeString(null);
 
@@ -235,7 +234,7 @@ public class BinaryDecoder implements UaDecoder {
     }
 
     @Override
-    public LocalizedText decodeLocalizedText(String field) {
+    public LocalizedText decodeLocalizedText(String field) throws UaSerializationException {
         int mask = buffer.readByte();
 
         String locale = null;
@@ -253,7 +252,7 @@ public class BinaryDecoder implements UaDecoder {
     }
 
     @Override
-    public ExtensionObject decodeExtensionObject(String field) {
+    public ExtensionObject decodeExtensionObject(String field) throws UaSerializationException {
         NodeId dataTypeEncodingId = decodeNodeId(null);
         int encoding = buffer.readByte();
 
@@ -278,12 +277,12 @@ public class BinaryDecoder implements UaDecoder {
 
             return new ExtensionObject(xmlElement, dataTypeEncodingId);
         } else {
-            throw new UaRuntimeException(StatusCodes.Bad_DecodingError, "unknown ExtensionObject encoding: " + encoding);
+            throw new UaSerializationException(StatusCodes.Bad_DecodingError, "unknown ExtensionObject encoding: " + encoding);
         }
     }
 
     @Override
-    public DataValue decodeDataValue(String field) {
+    public DataValue decodeDataValue(String field) throws UaSerializationException {
         int mask = buffer.readByte() & 0x0F;
 
         Variant value = ((mask & 0x01) == 0x01) ? decodeVariant(null) : null;
@@ -295,7 +294,7 @@ public class BinaryDecoder implements UaDecoder {
     }
 
     @Override
-    public Variant decodeVariant(String field) {
+    public Variant decodeVariant(String field) throws UaSerializationException {
         int encodingMask = buffer.readByte();
 
         if (encodingMask == 0) {
@@ -336,7 +335,7 @@ public class BinaryDecoder implements UaDecoder {
     }
 
     @Override
-    public DiagnosticInfo decodeDiagnosticInfo(String field) {
+    public DiagnosticInfo decodeDiagnosticInfo(String field) throws UaSerializationException {
         int mask = buffer.readByte();
 
         if (mask == 0) {
@@ -356,7 +355,7 @@ public class BinaryDecoder implements UaDecoder {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends UaStructure> T decodeMessage(String field) {
+    public <T extends UaStructure> T decodeMessage(String field) throws UaSerializationException {
         NodeId encodingId = decodeNodeId(null);
 
         DecoderDelegate<?> delegate = DelegateRegistry.getDecoder(encodingId);
@@ -365,7 +364,7 @@ public class BinaryDecoder implements UaDecoder {
     }
 
     @Override
-    public <T extends UaSerializable> T decodeSerializable(String field, Class<T> clazz) {
+    public <T extends UaSerializable> T decodeSerializable(String field, Class<T> clazz) throws UaSerializationException {
         DecoderDelegate<T> delegate = DelegateRegistry.getDecoder(clazz);
 
         return delegate.decode(this);
@@ -373,7 +372,7 @@ public class BinaryDecoder implements UaDecoder {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T[] decodeArray(String field, Function<String, T> decoder, Class<T> clazz) {
+    public <T> T[] decodeArray(String field, Function<String, T> decoder, Class<T> clazz) throws UaSerializationException {
         int length = decodeInt32(null);
 
         if (length == -1) {
@@ -396,7 +395,7 @@ public class BinaryDecoder implements UaDecoder {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> T[] decodeArray(String field, BiFunction<String, Class<T>, T> decoder, Class<T> clazz) {
+    public <T> T[] decodeArray(String field, BiFunction<String, Class<T>, T> decoder, Class<T> clazz) throws UaSerializationException {
         int length = decodeInt32(null);
 
         if (length == -1) {
@@ -429,7 +428,7 @@ public class BinaryDecoder implements UaDecoder {
         }
     }
 
-    private Object decodeBuiltinType(int typeId) {
+    private Object decodeBuiltinType(int typeId) throws UaSerializationException {
 		switch (typeId) {
 			case 1: return decodeBoolean(null);
 			case 2: return decodeSByte(null);
@@ -456,7 +455,7 @@ public class BinaryDecoder implements UaDecoder {
 			case 23: return decodeDataValue(null);
 			case 24: return decodeVariant(null);
 			case 25: return decodeDiagnosticInfo(null);
-			default: throw new UaRuntimeException(StatusCodes.Bad_DecodingError, "unknown builtin type: " + typeId);
+			default: throw new UaSerializationException(StatusCodes.Bad_DecodingError, "unknown builtin type: " + typeId);
 		}
     }
 

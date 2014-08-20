@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
+import com.digitalpetri.opcua.stack.core.UaSerializationException;
 import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -45,7 +46,7 @@ public class DelegateRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends UaSerializable> EncoderDelegate<T> getEncoder(T t) {
+    public static <T extends UaSerializable> EncoderDelegate<T> getEncoder(T t) throws UaSerializationException {
         EncoderDelegate<T> encoder = (EncoderDelegate<T>) encodersByClass.get(t.getClass());
 
         if (encoder == null) {
@@ -56,7 +57,7 @@ public class DelegateRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends UaSerializable> EncoderDelegate<T> getEncoder(Class<T> clazz) {
+    public static <T extends UaSerializable> EncoderDelegate<T> getEncoder(Class<T> clazz) throws UaSerializationException {
         EncoderDelegate<T> encoder = (EncoderDelegate<T>) encodersByClass.get(clazz);
 
         if (encoder == null) {
@@ -73,7 +74,7 @@ public class DelegateRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends UaSerializable> DecoderDelegate<T> getDecoder(T t) {
+    public static <T extends UaSerializable> DecoderDelegate<T> getDecoder(T t) throws UaSerializationException {
         DecoderDelegate<T> decoder = (DecoderDelegate<T>) decodersByClass.get(t.getClass());
 
         if (decoder == null) {
@@ -84,7 +85,7 @@ public class DelegateRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends UaSerializable> DecoderDelegate<T> getDecoder(Class<T> clazz) {
+    public static <T extends UaSerializable> DecoderDelegate<T> getDecoder(Class<T> clazz) throws UaSerializationException {
         DecoderDelegate<T> decoder = (DecoderDelegate<T>) decodersByClass.get(clazz);
 
         if (decoder == null) {

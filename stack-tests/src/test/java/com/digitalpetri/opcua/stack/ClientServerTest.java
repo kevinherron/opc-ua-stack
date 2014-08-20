@@ -8,6 +8,7 @@ import com.beust.jcommander.internal.Lists;
 import com.digitalpetri.opcua.stack.client.UaTcpClient;
 import com.digitalpetri.opcua.stack.client.UaTcpClientBuilder;
 import com.digitalpetri.opcua.stack.core.Stack;
+import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
@@ -206,7 +207,7 @@ public class ClientServerTest extends SecurityFixture {
         connectAndTest(input, client);
     }
 
-    private UaTcpClient createClient(EndpointDescription endpoint) {
+    private UaTcpClient createClient(EndpointDescription endpoint) throws UaException {
         return new UaTcpClientBuilder()
                 .setKeyPair(clientKeyPair)
                 .setCertificate(clientCertificate)

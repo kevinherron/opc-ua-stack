@@ -9,13 +9,12 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
-import com.digitalpetri.opcua.stack.core.UaRuntimeException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.EncoderDelegate;
 import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaSerializable;
-import com.digitalpetri.opcua.stack.core.serialization.UaSerializationException;
+import com.digitalpetri.opcua.stack.core.UaSerializationException;
 import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
@@ -120,7 +119,7 @@ public class BinaryEncoder implements UaEncoder {
     }
 
     @Override
-    public void encodeString(String field, String value) {
+    public void encodeString(String field, String value) throws UaSerializationException {
         if (value == null) {
             buffer.writeInt(-1);
         } else {
@@ -147,7 +146,7 @@ public class BinaryEncoder implements UaEncoder {
                 // Return to where we were after writing the string.
                 buffer.writerIndex(indexAfter);
             } catch (UnsupportedEncodingException e) {
-                throw new UaRuntimeException(e);
+                throw new UaSerializationException(StatusCodes.Bad_EncodingError, e);
             }
         }
     }
@@ -192,20 +191,20 @@ public class BinaryEncoder implements UaEncoder {
     }
 
     @Override
-    public void encodeXmlElement(String field, XmlElement value) {
+    public void encodeXmlElement(String field, XmlElement value) throws UaSerializationException {
         if (value.getFragment() == null) {
             buffer.writeInt(-1);
         } else {
             try {
                 encodeByteString(null, new ByteString(value.getFragment().getBytes("UTF-8")));
             } catch (UnsupportedEncodingException e) {
-                throw new UaRuntimeException(StatusCodes.Bad_DecodingError, e);
+                throw new UaSerializationException(StatusCodes.Bad_DecodingError, e);
             }
         }
     }
 
     @Override
-    public void encodeNodeId(String field, NodeId value) {
+    public void encodeNodeId(String field, NodeId value) throws UaSerializationException {
 		if (value == null) value = NodeId.NullValue;
 
         int namespaceIndex = value.getNamespaceIndex();
@@ -247,12 +246,12 @@ public class BinaryEncoder implements UaEncoder {
             buffer.writeShort(namespaceIndex);
             encodeByteString(null, identifier);
         } else {
-            throw new UaRuntimeException(StatusCodes.Bad_EncodingError, "invalid identifier: " + value.getIdentifier());
+            throw new UaSerializationException(StatusCodes.Bad_EncodingError, "invalid identifier: " + value.getIdentifier());
         }
     }
 
     @Override
-    public void encodeExpandedNodeId(String field, ExpandedNodeId value) {
+    public void encodeExpandedNodeId(String field, ExpandedNodeId value) throws UaSerializationException {
         if (value == null) value = ExpandedNodeId.NullValue;
 
         int flags = 0;
@@ -306,7 +305,7 @@ public class BinaryEncoder implements UaEncoder {
             buffer.writeShort(namespaceIndex);
             encodeByteString(null, identifier);
         } else {
-            throw new UaRuntimeException(StatusCodes.Bad_EncodingError, "invalid identifier: " + value.getIdentifier());
+            throw new UaSerializationException(StatusCodes.Bad_EncodingError, "invalid identifier: " + value.getIdentifier());
         }
 
         if (namespaceUri != null && namespaceUri.length() > 0) {
@@ -324,13 +323,13 @@ public class BinaryEncoder implements UaEncoder {
     }
 
     @Override
-    public void encodeQualifiedName(String field, QualifiedName value) {
+    public void encodeQualifiedName(String field, QualifiedName value) throws UaSerializationException {
         encodeUInt16(null, value.getNamespaceIndex());
         encodeString(null, value.getName());
     }
 
     @Override
-    public void encodeLocalizedText(String field, LocalizedText value) {
+    public void encodeLocalizedText(String field, LocalizedText value) throws UaSerializationException {
         String locale = value.getLocale();
         String text = value.getText();
 
@@ -353,7 +352,7 @@ public class BinaryEncoder implements UaEncoder {
     }
 
     @Override
-    public void encodeExtensionObject(String field, ExtensionObject value) {
+    public void encodeExtensionObject(String field, ExtensionObject value) throws UaSerializationException {
         if (value == null || value.getObject() == null) {
             encodeNodeId(null, NodeId.NullValue);
             buffer.writeByte(0); // No body is encoded
@@ -397,13 +396,13 @@ public class BinaryEncoder implements UaEncoder {
 
                 encodeXmlElement(null, xmlElement);
             } else {
-                throw new UaRuntimeException(StatusCodes.Bad_EncodingError, "unexpected object in ExtensionObject: " + object);
+                throw new UaSerializationException(StatusCodes.Bad_EncodingError, "unexpected object in ExtensionObject: " + object);
             }
         }
     }
 
     @Override
-    public void encodeDataValue(String field, DataValue value) {
+    public void encodeDataValue(String field, DataValue value) throws UaSerializationException {
         if (value == null) {
             buffer.writeByte(0);
             return;
@@ -425,7 +424,7 @@ public class BinaryEncoder implements UaEncoder {
     }
 
     @Override
-    public void encodeVariant(String field, Variant variant) {
+    public void encodeVariant(String field, Variant variant) throws UaSerializationException {
         Object value = variant.getValue();
 
         if (value == null) {
@@ -484,7 +483,7 @@ public class BinaryEncoder implements UaEncoder {
 
 
     @Override
-    public void encodeDiagnosticInfo(String field, DiagnosticInfo value) {
+    public void encodeDiagnosticInfo(String field, DiagnosticInfo value) throws UaSerializationException {
         if (value == null) {
             buffer.writeByte(0);
         } else {
@@ -511,7 +510,7 @@ public class BinaryEncoder implements UaEncoder {
     }
 
     @Override
-    public <T extends UaStructure> void encodeMessage(String field, T message) {
+    public <T extends UaStructure> void encodeMessage(String field, T message) throws UaSerializationException {
         EncoderDelegate<T> delegate = DelegateRegistry.getEncoder(message.getBinaryEncodingId());
 
         encodeNodeId(null, message.getBinaryEncodingId());
@@ -520,14 +519,14 @@ public class BinaryEncoder implements UaEncoder {
     }
 
     @Override
-    public <T extends UaSerializable> void encodeSerializable(String field, T value) {
+    public <T extends UaSerializable> void encodeSerializable(String field, T value) throws UaSerializationException {
         EncoderDelegate<T> delegate = DelegateRegistry.getEncoder(value);
 
         delegate.encode(value, this);
     }
 
     @Override
-    public <T> void encodeArray(String field, T[] values, BiConsumer<String, T> consumer) {
+    public <T> void encodeArray(String field, T[] values, BiConsumer<String, T> consumer) throws UaSerializationException {
         if (values == null) {
             buffer.writeInt(-1);
         } else {
@@ -543,7 +542,7 @@ public class BinaryEncoder implements UaEncoder {
         }
     }
 
-    private void encodeBuiltinType(int typeId, Object value) {
+    private void encodeBuiltinType(int typeId, Object value) throws UaSerializationException {
         switch (typeId) {
             case 1: encodeBoolean(null, (Boolean) value); break;
             case 2: encodeSByte(null, (Byte) value); break;
@@ -570,7 +569,7 @@ public class BinaryEncoder implements UaEncoder {
             case 23: encodeDataValue(null, (DataValue) value); break;
             case 24: encodeVariant(null, (Variant) value); break;
             case 25: encodeDiagnosticInfo(null, (DiagnosticInfo) value); break;
-            default: throw new UaRuntimeException(StatusCodes.Bad_DecodingError, "unknown builtin type: " + typeId);
+            default: throw new UaSerializationException(StatusCodes.Bad_DecodingError, "unknown builtin type: " + typeId);
         }
     }
 

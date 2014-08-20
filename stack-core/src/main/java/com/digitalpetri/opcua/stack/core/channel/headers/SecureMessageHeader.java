@@ -1,5 +1,6 @@
 package com.digitalpetri.opcua.stack.core.channel.headers;
 
+import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import io.netty.buffer.ByteBuf;
 
@@ -42,14 +43,14 @@ public final class SecureMessageHeader {
         return secureChannelId;
     }
 
-    public static void encode(SecureMessageHeader header, ByteBuf buffer) {
+    public static void encode(SecureMessageHeader header, ByteBuf buffer) throws UaException {
         buffer.writeMedium(MessageType.toMediumInt(header.getMessageType()));
         buffer.writeByte(header.getChunkType());
         buffer.writeInt((int) header.getMessageSize());
         buffer.writeInt((int) header.getSecureChannelId());
     }
 
-    public static SecureMessageHeader decode(ByteBuf buffer) {
+    public static SecureMessageHeader decode(ByteBuf buffer) throws UaException {
         return new SecureMessageHeader(
                 MessageType.fromMediumInt(buffer.readMedium()),
                 (char) buffer.readByte(),

@@ -154,12 +154,17 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
     }
 
     private void onError(ChannelHandlerContext ctx, ByteBuf buffer) {
-        ErrorMessage error = TcpMessageDecoder.decodeError(buffer);
+        try {
+            ErrorMessage error = TcpMessageDecoder.decodeError(buffer);
 
-        logger.error("Received error message: " + error);
-        handshakeFuture.completeExceptionally(new UaException(error.getError(), error.getReason()));
-
-        ctx.close();
+            logger.error("Received error message: " + error);
+            handshakeFuture.completeExceptionally(new UaException(error.getError(), error.getReason()));
+        } catch (UaException e) {
+            logger.error("An exception occurred while decoding an error message: {}", e.getMessage(), e);
+            handshakeFuture.completeExceptionally(e);
+        } finally {
+            ctx.close();
+        }
     }
 
 }
