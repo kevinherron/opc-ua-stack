@@ -18,7 +18,6 @@ import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
-import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
 import com.digitalpetri.opcua.stack.core.types.structured.ChannelSecurityToken;
 import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
@@ -177,14 +176,12 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
                         );
 
                         binaryDecoder.setBuffer(messageBuffer);
-                        UaStructure response = binaryDecoder.decodeMessage(null);
+                        UaResponseMessage response = binaryDecoder.decodeMessage(null);
 
                         if (response instanceof ServiceFault) {
                             client.getExecutor().execute(() -> client.receiveServiceFault((ServiceFault) response));
-                        } else if (response instanceof UaResponseMessage) {
-                            client.getExecutor().execute(() -> client.receiveResponse((UaResponseMessage) response));
                         } else {
-                            logger.error("Unexpected response: {}", response);
+                            client.getExecutor().execute(() -> client.receiveResponse(response));
                         }
 
                         messageBuffer.release();
