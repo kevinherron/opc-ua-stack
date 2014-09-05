@@ -125,7 +125,7 @@ public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements Hea
 
         ByteBuf messageBuffer = TcpMessageEncoder.encode(acknowledge);
 
-        ctx.writeAndFlush(messageBuffer);
+        ctx.executor().execute(() -> ctx.writeAndFlush(messageBuffer));
 
         logger.debug("Sent Acknowledge message.");
     }
