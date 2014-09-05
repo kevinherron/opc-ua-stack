@@ -32,7 +32,6 @@ import com.digitalpetri.opcua.stack.core.application.services.SubscriptionServic
 import com.digitalpetri.opcua.stack.core.application.services.TestServiceSet;
 import com.digitalpetri.opcua.stack.core.application.services.ViewServiceSet;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
-import com.digitalpetri.opcua.stack.core.channel.SecureChannel;
 import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
@@ -148,7 +147,7 @@ public class UaTcpServer implements UaServer {
                 SocketServer socketServer = SocketServer.boundTo(address, endpointUri.getPort());
                 socketServer.addServer(this);
 
-                logger.info("{} {}/{} bound to {}.",
+                logger.info("{} [{}/{}] bound to {}.",
                         endpoint.getEndpointUri(), endpoint.getSecurityPolicy(),
                         endpoint.getMessageSecurity(), socketServer.getLocalAddress());
 
