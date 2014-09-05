@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
-import com.digitalpetri.opcua.stack.core.UaRuntimeException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
 import com.digitalpetri.opcua.stack.core.channel.ExceptionHandler;
 import com.digitalpetri.opcua.stack.core.channel.SerializationQueue;
@@ -193,12 +192,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                                      request.getRequestType(), secureChannelId);
 
                         long requestId = chunkDecoder.getRequestId();
-
-                        if (request.getRequestType() == SecurityTokenRequestType.Issue) {
-                            issueSecurityToken(ctx, request, requestId);
-                        } else {
-                            renewSecurityToken(ctx, request, requestId);
-                        }
+                        installSecurityToken(ctx, request, requestId);
                     } catch (UaException e) {
                         logger.error("Error decoding asymmetric message: {}", e.getMessage(), e);
                         ctx.close();
@@ -213,57 +207,19 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
         }
     }
 
-    private void issueSecurityToken(ChannelHandlerContext ctx, OpenSecureChannelRequest request, long requestId) {
-        secureChannel.setMessageSecurityMode(request.getSecurityMode());
+    private void installSecurityToken(ChannelHandlerContext ctx,
+                                      OpenSecureChannelRequest request,
+                                      long requestId) throws UaException {
 
-        ChannelSecurityToken currentToken = new ChannelSecurityToken(
-                secureChannel.getChannelId(),
-                server.nextTokenId(),
-                DateTime.now(),
-                SecureChannelLifetimeMillis
-        );
+        SecurityTokenRequestType requestType = request.getRequestType();
 
-        ChannelSecurity.SecuritySecrets currentKeys = null;
+        if (requestType == SecurityTokenRequestType.Issue) {
+            secureChannel.setMessageSecurityMode(request.getSecurityMode());
+        } else if (requestType == SecurityTokenRequestType.Renew &&
+                secureChannel.getMessageSecurityMode() != request.getSecurityMode()) {
 
-        if (secureChannel.isSymmetricSigningEnabled()) {
-            SecurityAlgorithm algorithm = secureChannel.getSecurityPolicy().getSymmetricEncryptionAlgorithm();
-            ByteString localNonce = generateNonce(getNonceLength(algorithm));
-
-            secureChannel.setLocalNonce(localNonce);
-            secureChannel.setRemoteNonce(request.getClientNonce());
-
-            currentKeys = ChannelSecurity.generateKeyPair(
-                    secureChannel,
-                    secureChannel.getRemoteNonce(),
-                    secureChannel.getLocalNonce()
-            );
-        }
-
-        secureChannel.setChannelSecurity(new ChannelSecurity(currentKeys, currentToken));
-
-        ResponseHeader responseHeader = new ResponseHeader(
-                DateTime.now(),
-                request.getRequestHeader().getRequestHandle(),
-                StatusCode.Good,
-                null, null, null
-        );
-
-        OpenSecureChannelResponse response = new OpenSecureChannelResponse(
-                responseHeader,
-                PROTOCOL_VERSION,
-                currentToken,
-                secureChannel.getLocalNonce()
-        );
-
-        sendOpenSecureChannelResponse(ctx, requestId, response);
-    }
-
-    private void renewSecurityToken(ChannelHandlerContext ctx, OpenSecureChannelRequest request, long requestId) {
-        if (secureChannel.getMessageSecurityMode() != request.getSecurityMode()) {
-            logger.error("Secure channel renewal requested a different MessageSecurityMode; closing connection.");
-
-            throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed,
-                                         "secure channel renewal requested a different MessageSecurityMode.");
+            throw new UaException(StatusCodes.Bad_SecurityChecksFailed,
+                    "secure channel renewal requested a different MessageSecurityMode.");
         }
 
         ChannelSecurityToken newToken = new ChannelSecurityToken(
@@ -279,19 +235,25 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
             SecurityAlgorithm algorithm = secureChannel.getSecurityPolicy().getSymmetricEncryptionAlgorithm();
             ByteString localNonce = generateNonce(getNonceLength(algorithm));
 
-            secureChannel.setRemoteNonce(request.getClientNonce());
             secureChannel.setLocalNonce(localNonce);
+            secureChannel.setRemoteNonce(request.getClientNonce());
 
             newKeys = ChannelSecurity.generateKeyPair(
                     secureChannel,
-                    secureChannel.getLocalNonce(),
-                    secureChannel.getRemoteNonce()
+                    secureChannel.getRemoteNonce(),
+                    secureChannel.getLocalNonce()
             );
         }
 
-        ChannelSecurity oldSecrets = secureChannel.getChannelSecurity();
-        ChannelSecurity.SecuritySecrets oldKeys = oldSecrets.getCurrentKeys();
-        ChannelSecurityToken oldToken = oldSecrets.getCurrentToken();
+        ChannelSecurity.SecuritySecrets oldKeys = null;
+        ChannelSecurityToken oldToken = null;
+
+        if (requestType == SecurityTokenRequestType.Renew) {
+            ChannelSecurity oldSecrets = secureChannel.getChannelSecurity();
+
+            oldKeys = oldSecrets.getCurrentKeys();
+            oldToken = oldSecrets.getCurrentToken();
+        }
 
         ChannelSecurity newSecrets = new ChannelSecurity(
                 newKeys,
