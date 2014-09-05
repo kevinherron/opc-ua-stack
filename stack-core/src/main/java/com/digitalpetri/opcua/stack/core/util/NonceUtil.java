@@ -49,6 +49,15 @@ public class NonceUtil {
     }
 
     /**
+     * Generate a nonce for the given {@link SecurityAlgorithm}. The length is determined by the algorithm.
+     * @param algorithm the algorithm to use when determined the nonce length.
+     * @return a nonce of the appropriate length for the given algorithm.
+     */
+    public static ByteString generateNonce(SecurityAlgorithm algorithm) {
+        return generateNonce(getNonceLength(algorithm));
+    }
+
+    /**
      * Get the nonce length for use with {@code algorithm}.
      *
      * @param algorithm a symmetric encryption algorithm.

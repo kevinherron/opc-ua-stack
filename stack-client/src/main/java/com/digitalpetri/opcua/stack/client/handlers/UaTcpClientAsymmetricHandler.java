@@ -80,7 +80,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 SecurityTokenRequestType.Issue : SecurityTokenRequestType.Renew;
 
         ByteString clientNonce = secureChannel.isSymmetricSigningEnabled() ?
-                NonceUtil.generateNonce(NonceUtil.getNonceLength(secureChannel.getSecurityPolicy().getSymmetricEncryptionAlgorithm())) :
+                NonceUtil.generateNonce(secureChannel.getSecurityPolicy().getSymmetricEncryptionAlgorithm()) :
                 ByteString.NullValue;
 
         secureChannel.setLocalNonce(clientNonce);
