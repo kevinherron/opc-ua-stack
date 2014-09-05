@@ -1,8 +1,5 @@
 package com.digitalpetri.opcua.stack.server.handlers;
 
-import static com.digitalpetri.opcua.stack.core.util.NonceUtil.generateNonce;
-import static com.digitalpetri.opcua.stack.core.util.NonceUtil.getNonceLength;
-
 import java.nio.ByteOrder;
 import java.security.KeyPair;
 import java.security.cert.Certificate;
@@ -35,10 +32,14 @@ import com.digitalpetri.opcua.stack.core.util.CertificateUtil;
 import com.digitalpetri.opcua.stack.server.tcp.UaTcpServer;
 import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.digitalpetri.opcua.stack.core.util.NonceUtil.generateNonce;
+import static com.digitalpetri.opcua.stack.core.util.NonceUtil.getNonceLength;
 
 public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implements HeaderDecoder {
 
@@ -107,6 +108,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
             buffer.skipBytes(4); // Skip messageSize
 
             long secureChannelId = buffer.readUnsignedInt();
+            AsymmetricSecurityHeader securityHeader = AsymmetricSecurityHeader.decode(buffer);
 
             if (secureChannelId == 0) {
                 // Okay, this is the first OpenSecureChannelRequest... carry on.
@@ -118,9 +120,18 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                     throw new UaException(StatusCodes.Bad_TcpSecureChannelUnknown,
                             "unknown secure channel id: " + secureChannelId);
                 }
-            }
 
-            AsymmetricSecurityHeader securityHeader = AsymmetricSecurityHeader.decode(buffer);
+                if (!secureChannel.getRemoteCertificateBytes().equals(securityHeader.getSenderCertificate())) {
+                    throw new UaException(StatusCodes.Bad_SecurityChecksFailed,
+                            "certificate requesting renewal did not match existing certificate.");
+                }
+
+                Channel boundChannel = secureChannel.attr(UaTcpServer.BoundChannelKey).get();
+                if (boundChannel != null && boundChannel != ctx.channel()) {
+                    throw new UaException(StatusCodes.Bad_SecurityChecksFailed,
+                            "received a renewal request from channel other than the bound channel.");
+                }
+            }
 
             if (!headerRef.compareAndSet(null, securityHeader)) {
                 if (!securityHeader.equals(headerRef.get())) {
