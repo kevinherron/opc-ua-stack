@@ -1,5 +1,8 @@
 package com.digitalpetri.opcua.stack.server.handlers;
 
+import static com.digitalpetri.opcua.stack.core.util.NonceUtil.generateNonce;
+import static com.digitalpetri.opcua.stack.core.util.NonceUtil.getNonceLength;
+
 import java.nio.ByteOrder;
 import java.security.KeyPair;
 import java.security.cert.Certificate;
@@ -36,9 +39,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.digitalpetri.opcua.stack.core.util.NonceUtil.generateNonce;
-import static com.digitalpetri.opcua.stack.core.util.NonceUtil.getNonceLength;
 
 public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implements HeaderDecoder {
 
@@ -245,15 +245,9 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
             );
         }
 
-        ChannelSecurity.SecuritySecrets oldKeys = null;
-        ChannelSecurityToken oldToken = null;
-
-        if (requestType == SecurityTokenRequestType.Renew) {
-            ChannelSecurity oldSecrets = secureChannel.getChannelSecurity();
-
-            oldKeys = oldSecrets.getCurrentKeys();
-            oldToken = oldSecrets.getCurrentToken();
-        }
+        ChannelSecurity oldSecrets = secureChannel.getChannelSecurity();
+        ChannelSecurity.SecuritySecrets oldKeys = oldSecrets != null ? oldSecrets.getCurrentKeys() : null;
+        ChannelSecurityToken oldToken = oldSecrets != null ? oldSecrets.getCurrentToken() : null;
 
         ChannelSecurity newSecrets = new ChannelSecurity(
                 newKeys,
