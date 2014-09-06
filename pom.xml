@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.digitalpetri.opcua</groupId>
-    <artifactId>stack-parent</artifactId>
+    <artifactId>opc-ua-stack</artifactId>
     <packaging>pom</packaging>
     <version>0.2.0-SNAPSHOT</version>
 
