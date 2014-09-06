@@ -1,5 +1,6 @@
 package com.digitalpetri.opcua.stack.client;
 
+import java.net.URI;
 import java.security.KeyPair;
 import java.security.cert.Certificate;
 import java.util.Iterator;
@@ -9,11 +10,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
+import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateContext;
+import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateEvent;
+import com.digitalpetri.opcua.stack.client.fsm.states.ConnectionState;
+import com.digitalpetri.opcua.stack.client.handlers.UaTcpClientAcknowledgeHandler;
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.application.UaClient;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
+import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
@@ -30,15 +36,19 @@ import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
 import com.digitalpetri.opcua.stack.core.util.CertificateUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class UaTcpClient {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+public class UaTcpClient extends SimpleChannelInboundHandler<UaResponseMessage> implements UaClient {
 
     private final ClientSecureChannel secureChannel;
     private final HashedWheelTimer wheelTimer = Stack.WHEEL_TIMER;
@@ -46,7 +56,7 @@ public class UaTcpClient {
     private final Map<Long, CompletableFuture<UaResponseMessage>> pending = Maps.newConcurrentMap();
     private final Map<Long, Timeout> timeouts = Maps.newConcurrentMap();
 
-    private final ClientChannelManager channelManager;
+    private final ConnectionStateContext stateContext = new ConnectionStateContext(this);
 
     private final ApplicationDescription application;
     private final String endpointUrl;
@@ -65,8 +75,6 @@ public class UaTcpClient {
         this.requestTimeout = requestTimeout;
         this.channelConfig = channelConfig;
         this.executor = executor;
-
-        channelManager = new ClientChannelManager(this);
 
         secureChannel = new ClientSecureChannel(SecurityPolicy.None, MessageSecurityMode.None);
     }
@@ -98,23 +106,37 @@ public class UaTcpClient {
                 SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()),
                 endpoint.getSecurityMode()
         );
-
-        channelManager = new ClientChannelManager(this);
     }
 
-    public CompletableFuture<Channel> connect() {
-        return channelManager.getChannel();
+    @Override
+    public CompletableFuture<UaClient> connect() {
+        CompletableFuture<UaClient> future = new CompletableFuture<>();
+
+        ConnectionState state = stateContext.handleEvent(ConnectionStateEvent.ConnectRequested);
+
+        state.getChannelFuture().whenComplete((ch, ex) -> {
+            if (ch != null) future.complete(this);
+            else future.completeExceptionally(ex);
+        });
+
+        return future;
     }
 
-    public CompletableFuture<Void> disconnect() {
-        return channelManager.disconnect();
+    @Override
+    public CompletableFuture<UaClient> disconnect() {
+        stateContext.handleEvent(ConnectionStateEvent.DisconnectRequested);
+
+        return CompletableFuture.completedFuture(this);
     }
 
     @SuppressWarnings("unchecked")
     public <T extends UaResponseMessage> CompletableFuture<T> sendRequest(UaRequestMessage request) {
         CompletableFuture<T> future = new CompletableFuture<>();
 
-        channelManager.getChannel().whenComplete((ch, ex) -> {
+        CompletableFuture<Channel> channelFuture =
+                stateContext.handleEvent(ConnectionStateEvent.ConnectRequested).getChannelFuture();
+
+        channelFuture.whenComplete((ch, ex) -> {
             if (ch != null) {
                 Long requestHandle = request.getRequestHeader().getRequestHandle();
 
@@ -143,7 +165,11 @@ public class UaTcpClient {
 
         Preconditions.checkArgument(requests.size() == futures.size(), "requests and futures parameters must be same size");
 
-        channelManager.getChannel().whenComplete((ch, ex) -> {
+
+        CompletableFuture<Channel> channelFuture =
+                stateContext.handleEvent(ConnectionStateEvent.ConnectRequested).getChannelFuture();
+
+        channelFuture.whenComplete((ch, ex) -> {
             if (ch != null) {
                 Iterator<? extends UaRequestMessage> requestIterator = requests.iterator();
                 Iterator<CompletableFuture<? extends UaResponseMessage>> futureIterator = futures.iterator();
@@ -174,6 +200,15 @@ public class UaTcpClient {
                 futures.forEach(f -> f.completeExceptionally(ex));
             }
         });
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, UaResponseMessage msg) throws Exception {
+        if (msg instanceof ServiceFault) {
+            receiveServiceFault((ServiceFault) msg);
+        } else {
+            receiveResponse(msg);
+        }
     }
 
     public void receiveResponse(UaResponseMessage response) {
@@ -228,6 +263,34 @@ public class UaTcpClient {
 
     public ExecutorService getExecutor() {
         return executor;
+    }
+
+    public static CompletableFuture<Channel> bootstrap(UaTcpClient client) {
+        CompletableFuture<Channel> handshake = new CompletableFuture<>();
+
+        Bootstrap bootstrap = new Bootstrap();
+
+        bootstrap.group(Stack.EVENT_LOOP)
+                .channel(NioSocketChannel.class)
+                .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
+                .option(ChannelOption.TCP_NODELAY, true)
+                .handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    protected void initChannel(SocketChannel channel) throws Exception {
+                        channel.pipeline().addLast(new UaTcpClientAcknowledgeHandler(client, handshake));
+                        channel.pipeline().addLast(client);
+                    }
+                });
+
+        URI uri = URI.create(client.getEndpointUrl());
+
+        bootstrap.connect(uri.getHost(), uri.getPort()).addListener(f -> {
+            if (!f.isSuccess()) {
+                handshake.completeExceptionally(f.cause());
+            }
+        });
+
+        return handshake;
     }
 
     /**

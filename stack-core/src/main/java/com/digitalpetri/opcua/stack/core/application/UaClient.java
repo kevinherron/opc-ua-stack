@@ -8,9 +8,9 @@ import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 
 public interface UaClient {
 
-    CompletableFuture<Void> connect();
+    CompletableFuture<UaClient> connect();
 
-    CompletableFuture<Void> disconnected();
+    CompletableFuture<UaClient> disconnect();
 
     <T extends UaResponseMessage> CompletableFuture<T> sendRequest(UaRequestMessage request);
 
