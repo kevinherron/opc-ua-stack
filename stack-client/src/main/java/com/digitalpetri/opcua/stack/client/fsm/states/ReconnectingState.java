@@ -24,13 +24,13 @@ public class ReconnectingState implements ConnectionState {
             case ConnectFailure:
                 CompletableFuture<Channel> reconnectFuture = UaTcpClient.bootstrap(context.getClient());
 
-                reconnectFuture.whenComplete((ch, ex) -> {
+                reconnectFuture.whenCompleteAsync((ch, ex) -> {
                     if (ch != null) {
                         context.handleEvent(ConnectionStateEvent.ConnectSuccess);
                     } else {
                         context.handleEvent(ConnectionStateEvent.ConnectFailure);
                     }
-                });
+                }, context.getClient().getExecutor());
 
                 return new ReconnectingState(reconnectFuture);
 

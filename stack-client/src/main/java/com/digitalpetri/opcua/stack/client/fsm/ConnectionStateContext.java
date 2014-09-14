@@ -5,8 +5,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import com.digitalpetri.opcua.stack.client.UaTcpClient;
 import com.digitalpetri.opcua.stack.client.fsm.states.ConnectionState;
 import com.digitalpetri.opcua.stack.client.fsm.states.DisconnectedState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConnectionStateContext {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final AtomicReference<ConnectionState> state = new AtomicReference<>(new DisconnectedState());
 
@@ -21,6 +25,8 @@ public class ConnectionStateContext {
         ConnectionState nextState = currState.transition(event, this);
 
         state.set(nextState);
+
+        logger.debug("S({}) x E({}) = S'({})", currState, event, nextState);
 
         return nextState;
     }

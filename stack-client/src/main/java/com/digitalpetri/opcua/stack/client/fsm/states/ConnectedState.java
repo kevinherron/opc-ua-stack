@@ -26,13 +26,13 @@ public class ConnectedState implements ConnectionState {
             case ConnectionLost:
                 CompletableFuture<Channel> channelFuture = UaTcpClient.bootstrap(context.getClient());
 
-                channelFuture.whenComplete((ch, ex) -> {
+                channelFuture.whenCompleteAsync((ch, ex) -> {
                     if (ch != null) {
                         context.handleEvent(ConnectionStateEvent.ConnectSuccess);
                     } else {
                         context.handleEvent(ConnectionStateEvent.ConnectFailure);
                     }
-                });
+                }, context.getClient().getExecutor());
 
                 return new ReconnectingState(channelFuture);
 

@@ -47,8 +47,12 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class UaTcpClient extends SimpleChannelInboundHandler<UaResponseMessage> implements UaClient {
+public class UaTcpClient implements UaClient {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final ClientSecureChannel secureChannel;
     private final HashedWheelTimer wheelTimer = Stack.WHEEL_TIMER;
@@ -165,7 +169,6 @@ public class UaTcpClient extends SimpleChannelInboundHandler<UaResponseMessage> 
 
         Preconditions.checkArgument(requests.size() == futures.size(), "requests and futures parameters must be same size");
 
-
         CompletableFuture<Channel> channelFuture =
                 stateContext.handleEvent(ConnectionStateEvent.ConnectRequested).getChannelFuture();
 
@@ -202,13 +205,23 @@ public class UaTcpClient extends SimpleChannelInboundHandler<UaResponseMessage> 
         });
     }
 
-    @Override
-    protected void channelRead0(ChannelHandlerContext ctx, UaResponseMessage msg) throws Exception {
+    private void onChannelRead(ChannelHandlerContext ctx, UaResponseMessage msg) throws Exception {
         if (msg instanceof ServiceFault) {
             receiveServiceFault((ServiceFault) msg);
         } else {
             receiveResponse(msg);
         }
+    }
+
+    private void onChannelInactive(ChannelHandlerContext ctx) {
+        logger.debug("Channel inactive: {}", ctx.channel());
+        stateContext.handleEvent(ConnectionStateEvent.ConnectionLost);
+    }
+
+    private void onExceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        logger.error("Exception caught: {}", cause.getMessage(), cause);
+        stateContext.handleEvent(ConnectionStateEvent.ConnectionLost);
+        ctx.close();
     }
 
     public void receiveResponse(UaResponseMessage response) {
@@ -278,7 +291,7 @@ public class UaTcpClient extends SimpleChannelInboundHandler<UaResponseMessage> 
                     @Override
                     protected void initChannel(SocketChannel channel) throws Exception {
                         channel.pipeline().addLast(new UaTcpClientAcknowledgeHandler(client, handshake));
-                        channel.pipeline().addLast(client);
+                        channel.pipeline().addLast(new UaTcpClientHandler(client));
                     }
                 });
 
@@ -291,6 +304,30 @@ public class UaTcpClient extends SimpleChannelInboundHandler<UaResponseMessage> 
         });
 
         return handshake;
+    }
+
+    private static class UaTcpClientHandler extends SimpleChannelInboundHandler<UaResponseMessage> {
+
+        private final UaTcpClient client;
+
+        private UaTcpClientHandler(UaTcpClient client) {
+            this.client = client;
+        }
+
+        @Override
+        protected void channelRead0(ChannelHandlerContext ctx, UaResponseMessage msg) throws Exception {
+            client.onChannelRead(ctx, msg);
+        }
+
+        @Override
+        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+            client.onChannelInactive(ctx);
+        }
+
+        @Override
+        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+            client.onExceptionCaught(ctx, cause);
+        }
     }
 
     /**

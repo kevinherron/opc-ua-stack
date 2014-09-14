@@ -17,13 +17,13 @@ public class DisconnectedState implements ConnectionState {
             case ConnectRequested:
                 CompletableFuture<Channel> channelFuture = UaTcpClient.bootstrap(context.getClient());
 
-                channelFuture.whenComplete((ch, ex) -> {
+                channelFuture.whenCompleteAsync((ch, ex) -> {
                     if (ch != null) {
                         context.handleEvent(ConnectionStateEvent.ConnectSuccess);
                     } else {
                         context.handleEvent(ConnectionStateEvent.ConnectFailure);
                     }
-                });
+                }, context.getClient().getExecutor());
 
                 return new ConnectingState(channelFuture);
 
