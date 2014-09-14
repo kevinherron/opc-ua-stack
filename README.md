@@ -27,20 +27,24 @@ Supported Features
 --------
 
 #### Transport Protocols
-OPC-UA TCP
+
+* OPC-UA TCP
 
 #### Data Encoding
-OPC-UA Binary
+
+* OPC-UA Binary
  
 #### Security Profiles
-None
-Basic128Rsa15
-Basic256
-Basic256Sha256
+
+* None
+* Basic128Rsa15
+* Basic256
+* Basic256Sha256
 
 ##### Not Supported
-SOAP/HTTP/HTTPS Transport
-XML Data Encoding
+
+* SOAP/HTTP/HTTPS Transport
+* XML Data Encoding
 
 
 Get Help
