@@ -1,8 +1,5 @@
 package com.digitalpetri.opcua.stack.server.handlers;
 
-import static com.digitalpetri.opcua.stack.core.util.NonceUtil.generateNonce;
-import static com.digitalpetri.opcua.stack.core.util.NonceUtil.getNonceLength;
-
 import java.nio.ByteOrder;
 import java.security.KeyPair;
 import java.security.cert.Certificate;
@@ -40,9 +37,13 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.digitalpetri.opcua.stack.core.util.NonceUtil.generateNonce;
+import static com.digitalpetri.opcua.stack.core.util.NonceUtil.getNonceLength;
+
 public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implements HeaderDecoder {
 
-    private static final long SecureChannelLifetimeMillis = 60000L * 5L;
+    private static final long SecureChannelLifetimeMin = 15000L;
+    private static final long SecureChannelLifetimeMax = 60000L * 5L;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -222,11 +223,15 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                     "secure channel renewal requested a different MessageSecurityMode.");
         }
 
+        long channelLifetime = request.getRequestedLifetime();
+        channelLifetime = Math.min(SecureChannelLifetimeMax, channelLifetime);
+        channelLifetime = Math.max(SecureChannelLifetimeMin, channelLifetime);
+
         ChannelSecurityToken newToken = new ChannelSecurityToken(
                 secureChannel.getChannelId(),
                 server.nextTokenId(),
                 DateTime.now(),
-                SecureChannelLifetimeMillis
+                channelLifetime
         );
 
         ChannelSecurity.SecuritySecrets newKeys = null;
