@@ -1,6 +1,7 @@
 package com.digitalpetri.opcua.stack.core.channel.headers;
 
 import javax.annotation.Nonnull;
+import java.nio.charset.Charset;
 
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.google.common.base.Objects;
@@ -27,7 +28,7 @@ public class AsymmetricSecurityHeader {
                                     @Nonnull ByteString receiverThumbprint) {
 
         Preconditions.checkNotNull(securityPolicyUri);
-        Preconditions.checkArgument(securityPolicyUri.getBytes().length <= 255,
+        Preconditions.checkArgument(securityPolicyUri.getBytes(Charset.forName("UTF-8")).length <= 255,
                 "securityPolicyUri length cannot be greater than 255 bytes");
 
         Preconditions.checkArgument(receiverThumbprint.bytes() == null || receiverThumbprint.length() == 20,
@@ -85,7 +86,7 @@ public class AsymmetricSecurityHeader {
     public static void encode(AsymmetricSecurityHeader header, ByteBuf buffer) {
         String securityPolicy = header.getSecurityPolicyUri();
         buffer.writeInt(securityPolicy.length());
-        buffer.writeBytes(securityPolicy.getBytes());
+        buffer.writeBytes(securityPolicy.getBytes(Charset.forName("UTF-8")));
 
         ByteString senderCertificate = header.getSenderCertificate();
         if (senderCertificate.isNull()) {
@@ -107,7 +108,10 @@ public class AsymmetricSecurityHeader {
     public static AsymmetricSecurityHeader decode(ByteBuf buffer) {
         /* SecurityPolicyUri */
         int securityPolicyUriLength = buffer.readInt();
-        String securityPolicyUri = new String(buffer.readBytes(securityPolicyUriLength).array());
+        String securityPolicyUri = new String(
+                buffer.readBytes(securityPolicyUriLength).array(),
+                Charset.forName("UTF-8")
+        );
 
         /* SenderCertificate */
         int senderCertificateLength = buffer.readInt();

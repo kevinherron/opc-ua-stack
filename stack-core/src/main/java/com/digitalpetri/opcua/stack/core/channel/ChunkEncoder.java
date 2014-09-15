@@ -216,7 +216,7 @@ public class ChunkEncoder implements HeaderConstants {
 
     }
 
-    private class AsymmetricDelegate implements Delegate {
+    private static class AsymmetricDelegate implements Delegate {
 
         @Override
         public byte[] signChunk(SecureChannel channel, ByteBuffer chunkNioBuffer) throws UaException {
@@ -292,7 +292,7 @@ public class ChunkEncoder implements HeaderConstants {
 
     }
 
-    private class SymmetricDelegate implements Delegate {
+    private static class SymmetricDelegate implements Delegate {
 
         private volatile ChannelSecurity.SecuritySecrets securitySecrets;
 

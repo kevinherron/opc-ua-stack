@@ -8,7 +8,7 @@ public class TcpMessageDecoder {
     public static HelloMessage decodeHello(ByteBuf buffer) throws UaException {
         MessageType messageType = MessageType.fromMediumInt(buffer.readMedium());
         char chunkType = (char) buffer.readByte();
-        long length = buffer.readUnsignedInt();
+        buffer.skipBytes(4); // length
 
         assert (messageType == MessageType.Hello && chunkType == 'F');
 
@@ -18,7 +18,7 @@ public class TcpMessageDecoder {
     public static AcknowledgeMessage decodeAcknowledge(ByteBuf buffer) throws UaException {
         MessageType messageType = MessageType.fromMediumInt(buffer.readMedium());
         char chunkType = (char) buffer.readByte();
-        long length = buffer.readUnsignedInt();
+        buffer.skipBytes(4); // length
 
         assert (messageType == MessageType.Acknowledge && chunkType == 'F');
 
@@ -28,7 +28,7 @@ public class TcpMessageDecoder {
     public static ErrorMessage decodeError(ByteBuf buffer) throws UaException {
         MessageType messageType = MessageType.fromMediumInt(buffer.readMedium());
         char chunkType = (char) buffer.readByte();
-        long length = buffer.readUnsignedInt();
+        buffer.skipBytes(4); // length
 
         assert (messageType == MessageType.Error && chunkType == 'F');
 

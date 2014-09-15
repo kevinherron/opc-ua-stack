@@ -17,12 +17,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class NodeId {
 
-    public static NodeId NullNumeric = new NodeId(0, 0);
-    public static NodeId NullString = new NodeId(0, "");
-    public static NodeId NullGuid = new NodeId(0, new UUID(0, 0));
-    public static NodeId NullOpaque = new NodeId(0, ByteString.NullValue);
+    public static final NodeId NullNumeric = new NodeId(0, 0);
+    public static final NodeId NullString = new NodeId(0, "");
+    public static final NodeId NullGuid = new NodeId(0, new UUID(0, 0));
+    public static final NodeId NullOpaque = new NodeId(0, ByteString.NullValue);
 
-    public static NodeId NullValue = NullNumeric;
+    public static final NodeId NullValue = NullNumeric;
 
     @UInt16
     private final int namespaceIndex;

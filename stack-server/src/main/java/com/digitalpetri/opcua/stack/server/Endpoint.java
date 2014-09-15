@@ -59,6 +59,8 @@ public class Endpoint {
             case Sign:
                 securityLevel |= 0x40;
                 break;
+            default:
+                securityLevel |= 0x20;
         }
 
         switch(securityPolicy) {

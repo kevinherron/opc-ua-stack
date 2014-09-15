@@ -69,7 +69,7 @@ public class UaTcpServer implements UaServer {
     /**
      * The {@link AttributeKey} that maps to the {@link Channel} bound to a {@link ServerSecureChannel}.
      */
-    public static AttributeKey<Channel> BoundChannelKey = AttributeKey.valueOf("bound-channel");
+    public static final AttributeKey<Channel> BoundChannelKey = AttributeKey.valueOf("bound-channel");
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 

@@ -187,7 +187,7 @@ public class ChunkDecoder implements HeaderConstants {
 
     }
 
-    private class AsymmetricDelegate implements Delegate {
+    private static class AsymmetricDelegate implements Delegate {
 
         @Override
         public void readSecurityHeader(SecureChannel channel, ByteBuf chunkBuffer) {
@@ -256,7 +256,7 @@ public class ChunkDecoder implements HeaderConstants {
 
     }
 
-    private class SymmetricDelegate implements Delegate {
+    private static class SymmetricDelegate implements Delegate {
 
         private volatile ChannelSecurity.SecuritySecrets securitySecrets;
 

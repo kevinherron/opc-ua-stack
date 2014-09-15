@@ -6,7 +6,7 @@ import com.google.common.base.Objects;
 
 public class DateTime {
 
-    public static DateTime MinValue = new DateTime(0L);
+    public static final DateTime MinValue = new DateTime(0L);
 
 	/** The delta in 100 nanosecond intervals between Java epoch (January 1, 1970) and UTC epoch (Jan 1, 1601). */
 	private static final long EpochDelta = 116444736000000000L;
