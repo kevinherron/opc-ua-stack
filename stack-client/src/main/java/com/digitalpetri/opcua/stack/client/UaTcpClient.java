@@ -6,6 +6,7 @@ import java.security.cert.Certificate;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -62,6 +63,9 @@ public class UaTcpClient implements UaClient {
 
     private final ConnectionStateContext stateContext = new ConnectionStateContext(this);
 
+    private final Optional<Certificate> certificate;
+    private final Optional<KeyPair> keyPair;
+
     private final ApplicationDescription application;
     private final String endpointUrl;
     private final long requestTimeout;
@@ -80,6 +84,9 @@ public class UaTcpClient implements UaClient {
         this.channelConfig = channelConfig;
         this.executor = executor;
 
+        certificate = Optional.empty();
+        keyPair = Optional.empty();
+
         secureChannel = new ClientSecureChannel(SecurityPolicy.None, MessageSecurityMode.None);
     }
 
@@ -96,6 +103,9 @@ public class UaTcpClient implements UaClient {
         this.requestTimeout = requestTimeout;
         this.channelConfig = channelConfig;
         this.executor = executor;
+
+        this.certificate = Optional.ofNullable(certificate);
+        this.keyPair = Optional.ofNullable(keyPair);
 
         Certificate remoteCertificate = null;
         if (!endpoint.getServerCertificate().isNull()) {
@@ -209,7 +219,7 @@ public class UaTcpClient implements UaClient {
         if (msg instanceof ServiceFault) {
             receiveServiceFault((ServiceFault) msg);
         } else {
-            receiveResponse(msg);
+            receiveServiceResponse(msg);
         }
     }
 
@@ -224,7 +234,7 @@ public class UaTcpClient implements UaClient {
         ctx.close();
     }
 
-    public void receiveResponse(UaResponseMessage response) {
+    private void receiveServiceResponse(UaResponseMessage response) {
         ResponseHeader header = response.getResponseHeader();
         Long requestHandle = header.getRequestHandle();
 
@@ -238,7 +248,7 @@ public class UaTcpClient implements UaClient {
         if (timeout != null) timeout.cancel();
     }
 
-    public void receiveServiceFault(ServiceFault serviceFault) {
+    private void receiveServiceFault(ServiceFault serviceFault) {
         ResponseHeader header = serviceFault.getResponseHeader();
         Long requestHandle = header.getRequestHandle();
 
@@ -254,27 +264,43 @@ public class UaTcpClient implements UaClient {
         if (timeout != null) timeout.cancel();
     }
 
+    @Override
+    public Optional<Certificate> getCertificate() {
+        return certificate;
+    }
+
+    @Override
+    public Optional<KeyPair> getKeyPair() {
+        return keyPair;
+    }
+
+    @Override
     public ChannelConfig getChannelConfig() {
         return channelConfig;
     }
 
+    @Override
     public ClientSecureChannel getSecureChannel() {
         return secureChannel;
     }
 
+    @Override
     public ApplicationDescription getApplication() {
         return application;
     }
 
+    @Override
     public String getEndpointUrl() {
         return endpointUrl;
     }
 
+    @Override
     public long getRequestTimeout() {
         return requestTimeout;
     }
 
-    public ExecutorService getExecutor() {
+    @Override
+    public ExecutorService getExecutorService() {
         return executor;
     }
 

@@ -32,7 +32,7 @@ public class ConnectedState implements ConnectionState {
                     } else {
                         context.handleEvent(ConnectionStateEvent.ConnectFailure);
                     }
-                }, context.getClient().getExecutor());
+                }, context.getClient().getExecutorService());
 
                 return new ReconnectingState(channelFuture);
 

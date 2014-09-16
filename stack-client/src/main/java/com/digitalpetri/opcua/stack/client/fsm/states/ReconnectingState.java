@@ -30,7 +30,7 @@ public class ReconnectingState implements ConnectionState {
                     } else {
                         context.handleEvent(ConnectionStateEvent.ConnectFailure);
                     }
-                }, context.getClient().getExecutor());
+                }, context.getClient().getExecutorService());
 
                 return new ReconnectingState(reconnectFuture);
 

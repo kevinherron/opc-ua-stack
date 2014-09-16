@@ -66,7 +66,7 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
             ctx.channel().attr(UaTcpClientAcknowledgeHandler.AWAITING_HANDSHAKE_KEY).set(null);
         }
 
-        client.getExecutor().execute(() -> handshakeFuture.complete(ctx.channel()));
+        client.getExecutorService().execute(() -> handshakeFuture.complete(ctx.channel()));
     }
 
     @Override
@@ -179,9 +179,9 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
                         UaResponseMessage response = binaryDecoder.decodeMessage(null);
 
                         if (response instanceof ServiceFault) {
-                            client.getExecutor().execute(() -> client.receiveServiceFault((ServiceFault) response));
+                            client.getExecutorService().execute(() -> client.receiveServiceFault((ServiceFault) response));
                         } else {
-                            client.getExecutor().execute(() -> client.receiveResponse(response));
+                            client.getExecutorService().execute(() -> client.receiveResponse(response));
                         }
 
                         messageBuffer.release();

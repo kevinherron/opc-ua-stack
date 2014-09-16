@@ -23,7 +23,7 @@ public class DisconnectedState implements ConnectionState {
                     } else {
                         context.handleEvent(ConnectionStateEvent.ConnectFailure);
                     }
-                }, context.getClient().getExecutor());
+                }, context.getClient().getExecutorService());
 
                 return new ConnectingState(channelFuture);
 

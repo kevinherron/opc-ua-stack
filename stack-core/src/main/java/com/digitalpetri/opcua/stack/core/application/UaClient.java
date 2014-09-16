@@ -1,10 +1,18 @@
 package com.digitalpetri.opcua.stack.core.application;
 
+import java.security.KeyPair;
+import java.security.cert.Certificate;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 
+import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
+import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
+import com.digitalpetri.opcua.stack.core.types.structured.ApplicationDescription;
+import com.sun.javaws.jnl.ApplicationDesc;
 
 public interface UaClient {
 
@@ -16,5 +24,21 @@ public interface UaClient {
 
     void sendRequests(List<? extends UaRequestMessage> requests,
                       List<CompletableFuture<? extends UaResponseMessage>> futures);
+
+    ApplicationDescription getApplication();
+
+    Optional<KeyPair> getKeyPair();
+
+    Optional<Certificate> getCertificate();
+
+    ClientSecureChannel getSecureChannel();
+
+    String getEndpointUrl();
+
+    long getRequestTimeout();
+
+    ChannelConfig getChannelConfig();
+
+    ExecutorService getExecutorService();
 
 }
