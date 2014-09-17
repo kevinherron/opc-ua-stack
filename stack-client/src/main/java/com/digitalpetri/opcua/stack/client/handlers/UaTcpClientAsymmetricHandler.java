@@ -286,6 +286,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 ctx.executor().execute(() -> {
                     chunks.forEach(c -> ctx.write(c, ctx.voidPromise()));
                     ctx.flush();
+                    ctx.close();
                 });
 
                 logger.debug("Sent CloseSecureChannelRequest.");

@@ -4,6 +4,10 @@ import java.util.concurrent.CompletableFuture;
 
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateContext;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateEvent;
+import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
+import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
+import com.digitalpetri.opcua.stack.core.types.structured.CloseSecureChannelRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.RequestHeader;
 import io.netty.channel.Channel;
 
 public class ConnectingState implements ConnectionState {
@@ -24,7 +28,14 @@ public class ConnectingState implements ConnectionState {
                 return new DisconnectedState();
 
             case DisconnectRequested:
-                channelFuture.thenAccept(ch -> ch.close());
+                channelFuture.thenAccept(ch -> {
+                    RequestHeader requestHeader = new RequestHeader(
+                            NodeId.NullValue, DateTime.now(), 0L, 0L, null, 0L, null);
+
+                    CloseSecureChannelRequest request = new CloseSecureChannelRequest(requestHeader);
+
+                    ch.pipeline().fireUserEventTriggered(request);
+                });
 
                 return new DisconnectedState();
 
