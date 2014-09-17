@@ -37,7 +37,7 @@ public class SocketServer {
     private SocketServer(InetSocketAddress address) {
         this.address = address;
 
-        bootstrap.group(Stack.EVENT_LOOP)
+        bootstrap.group(Stack.sharedEventLoop())
                 .handler(new LoggingHandler(SocketServer.class))
                 .channel(NioServerSocketChannel.class)
                 .childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)

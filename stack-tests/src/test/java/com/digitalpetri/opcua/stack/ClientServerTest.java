@@ -1,5 +1,7 @@
 package com.digitalpetri.opcua.stack;
 
+import static org.testng.Assert.assertEquals;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -39,8 +41,6 @@ import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertEquals;
 
 public class ClientServerTest extends SecurityFixture {
 
@@ -119,7 +119,7 @@ public class ClientServerTest extends SecurityFixture {
     @AfterTest
     public void tearDownClientServer() throws Exception {
         SocketServer.shutdownAll();
-        Stack.EVENT_LOOP.shutdownGracefully();
+        Stack.sharedEventLoop().shutdownGracefully();
     }
 
     @Test(dataProvider = "getVariants")

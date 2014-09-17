@@ -22,7 +22,7 @@ public class UaTcpServerBuilder {
 
     private KeyPair keyPair;
     private Certificate certificate;
-    private ExecutorService executor = Stack.EXECUTOR_SERVICE;
+    private ExecutorService executor = Stack.sharedExecutor();
     private List<UserTokenPolicy> userTokenPolicies = Lists.newArrayList();
     private List<SignedSoftwareCertificate> softwareCertificates = Lists.newArrayList();
 

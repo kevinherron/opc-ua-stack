@@ -23,7 +23,7 @@ public class UaTcpClientBuilder {
     private ChannelConfig channelConfig = ChannelConfig.DEFAULT;
 
     private long requestTimeout = DEFAULT_REQUEST_TIMEOUT;
-    private ExecutorService executor = Stack.EXECUTOR_SERVICE;
+    private ExecutorService executor = Stack.sharedExecutor();
 
     private KeyPair keyPair;
     private Certificate certificate;

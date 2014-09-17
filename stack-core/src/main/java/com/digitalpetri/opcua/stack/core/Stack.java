@@ -2,7 +2,6 @@ package com.digitalpetri.opcua.stack.core;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
@@ -14,13 +13,43 @@ public final class Stack {
 
     public static final int DEFAULT_PORT = 12685;
 
-    public static final NioEventLoopGroup EVENT_LOOP = new NioEventLoopGroup();
+    /**
+     * @return a shared {@link NioEventLoopGroup}.
+     */
+    public static NioEventLoopGroup sharedEventLoop() {
+        return EventLoopHolder.EVENT_LOOP;
+    }
 
-    public static final ExecutorService EXECUTOR_SERVICE = Executors.newWorkStealingPool();
+    /**
+     * @return a shared {@link ExecutorService}.
+     */
+    public static ExecutorService sharedExecutor() {
+        return ExecutorHolder.EXECUTOR_SERVICE;
+    }
 
-    public static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE =
-            Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() * 2);
+    /**
+     * @return a shared {@link HashedWheelTimer}.
+     */
+    public static HashedWheelTimer sharedWheelTimer() {
+        return WheelTimerHolder.WHEEL_TIMER;
+    }
 
-    public static final HashedWheelTimer WHEEL_TIMER = new HashedWheelTimer();
+    public static void releaseSharedResources() {
+        sharedEventLoop().shutdownGracefully();
+        sharedExecutor().shutdown();
+        sharedWheelTimer().stop();
+    }
+
+    private static class EventLoopHolder {
+        private static final NioEventLoopGroup EVENT_LOOP = new NioEventLoopGroup();
+    }
+
+    private static class ExecutorHolder {
+        private static final ExecutorService EXECUTOR_SERVICE = Executors.newWorkStealingPool();
+    }
+
+    private static class WheelTimerHolder {
+        private static final HashedWheelTimer WHEEL_TIMER = new HashedWheelTimer();
+    }
 
 }

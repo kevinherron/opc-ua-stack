@@ -87,7 +87,7 @@ public class UaTcpServer implements UaServer {
     private final List<Endpoint> endpoints = Lists.newCopyOnWriteArrayList();
     private final Set<String> discoveryUrls = Sets.newConcurrentHashSet();
 
-    private final HashedWheelTimer wheelTimer = Stack.WHEEL_TIMER;
+    private final HashedWheelTimer wheelTimer = Stack.sharedWheelTimer();
     private final Map<Long, Timeout> timeouts = Maps.newConcurrentMap();
 
     private final LocalizedText applicationName;

@@ -56,7 +56,7 @@ public class UaTcpClient implements UaClient {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final ClientSecureChannel secureChannel;
-    private final HashedWheelTimer wheelTimer = Stack.WHEEL_TIMER;
+    private final HashedWheelTimer wheelTimer = Stack.sharedWheelTimer();
 
     private final Map<Long, CompletableFuture<UaResponseMessage>> pending = Maps.newConcurrentMap();
     private final Map<Long, Timeout> timeouts = Maps.newConcurrentMap();
@@ -309,7 +309,7 @@ public class UaTcpClient implements UaClient {
 
         Bootstrap bootstrap = new Bootstrap();
 
-        bootstrap.group(Stack.EVENT_LOOP)
+        bootstrap.group(Stack.sharedEventLoop())
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .option(ChannelOption.TCP_NODELAY, true)
