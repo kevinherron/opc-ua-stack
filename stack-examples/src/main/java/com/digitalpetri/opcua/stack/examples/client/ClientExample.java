@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.digitalpetri.opcua.stack.client.UaTcpClient;
 import com.digitalpetri.opcua.stack.client.UaTcpClientBuilder;
+import com.digitalpetri.opcua.stack.core.application.UaClient;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
 import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
@@ -52,6 +53,10 @@ public class ClientExample {
         TestStackRequest request = new TestStackRequest(header, 0L, 1, new Variant(input));
 
         return client.sendRequest(request);
+    }
+
+    public CompletableFuture<UaClient> disconnect() {
+        return client.disconnect();
     }
 
 }

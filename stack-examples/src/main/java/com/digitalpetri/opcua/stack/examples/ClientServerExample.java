@@ -6,7 +6,11 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.Certificate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
+import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.types.structured.TestStackResponse;
 import com.digitalpetri.opcua.stack.examples.client.ClientExample;
 import com.digitalpetri.opcua.stack.examples.server.ServerExample;
@@ -39,17 +43,32 @@ public class ClientServerExample {
             logger.info("Received TestStackResponse output={}", response.getOutput());
         }
 
+        List<CompletableFuture<?>> futures = new ArrayList<>();
+
         for (int i = 0; i < 5; i++) {
             logger.info("Sending asynchronous TestStackRequest input={}", i);
 
-            client.testStack(i).whenComplete((response, ex) -> {
+            CompletableFuture<TestStackResponse> future = client.testStack(i);
+
+            future.whenComplete((response, ex) -> {
                 if (response != null) {
                     logger.info("Received TestStackResponse output={}", response.getOutput());
                 } else {
                     logger.error("Error: {}", ex.getMessage(), ex);
                 }
             });
+
+            futures.add(future);
         }
+
+        CompletableFuture<?> all = CompletableFuture.allOf(futures.toArray(new CompletableFuture<?>[futures.size()]));
+
+        all.whenComplete((r, ex) -> {
+            client.disconnect();
+            server.shutdown();
+
+            Stack.releaseSharedResources();
+        });
     }
 
     private class KeyStoreLoader {
