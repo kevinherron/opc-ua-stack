@@ -234,7 +234,7 @@ public class UaTcpClient implements UaClient {
         ctx.close();
     }
 
-    private void receiveServiceResponse(UaResponseMessage response) {
+    public void receiveServiceResponse(UaResponseMessage response) {
         ResponseHeader header = response.getResponseHeader();
         Long requestHandle = header.getRequestHandle();
 
@@ -248,7 +248,7 @@ public class UaTcpClient implements UaClient {
         if (timeout != null) timeout.cancel();
     }
 
-    private void receiveServiceFault(ServiceFault serviceFault) {
+    public void receiveServiceFault(ServiceFault serviceFault) {
         ResponseHeader header = serviceFault.getResponseHeader();
         Long requestHandle = header.getRequestHandle();
 

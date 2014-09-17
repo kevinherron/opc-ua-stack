@@ -181,7 +181,7 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
                         if (response instanceof ServiceFault) {
                             client.getExecutorService().execute(() -> client.receiveServiceFault((ServiceFault) response));
                         } else {
-                            client.getExecutorService().execute(() -> client.receiveResponse(response));
+                            client.getExecutorService().execute(() -> client.receiveServiceResponse(response));
                         }
 
                         messageBuffer.release();

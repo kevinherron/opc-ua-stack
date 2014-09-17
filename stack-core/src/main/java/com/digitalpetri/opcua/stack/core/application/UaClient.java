@@ -12,7 +12,6 @@ import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.types.structured.ApplicationDescription;
-import com.sun.javaws.jnl.ApplicationDesc;
 
 public interface UaClient {
 
