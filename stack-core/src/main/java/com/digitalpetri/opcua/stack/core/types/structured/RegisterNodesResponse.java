@@ -1,4 +1,3 @@
-
 package com.digitalpetri.opcua.stack.core.types.structured;
 
 import com.digitalpetri.opcua.stack.core.Identifiers;
@@ -10,47 +9,47 @@ import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 
 public class RegisterNodesResponse implements UaResponseMessage {
 
-	public static final NodeId TypeId = Identifiers.RegisterNodesResponse;
-	public static final NodeId BinaryEncodingId = Identifiers.RegisterNodesResponse_Encoding_DefaultBinary;
-	public static final NodeId XmlEncodingId = Identifiers.RegisterNodesResponse_Encoding_DefaultXml;
+    public static final NodeId TypeId = Identifiers.RegisterNodesResponse;
+    public static final NodeId BinaryEncodingId = Identifiers.RegisterNodesResponse_Encoding_DefaultBinary;
+    public static final NodeId XmlEncodingId = Identifiers.RegisterNodesResponse_Encoding_DefaultXml;
 
-	protected final ResponseHeader _responseHeader;
-	protected final NodeId[] _registeredNodeIds;
+    protected final ResponseHeader _responseHeader;
+    protected final NodeId[] _registeredNodeIds;
 
-	public RegisterNodesResponse(ResponseHeader _responseHeader, NodeId[] _registeredNodeIds) {
+    public RegisterNodesResponse(ResponseHeader _responseHeader, NodeId[] _registeredNodeIds) {
+        this._responseHeader = _responseHeader;
+        this._registeredNodeIds = _registeredNodeIds;
+    }
 
-		this._responseHeader = _responseHeader;
-		this._registeredNodeIds = _registeredNodeIds;
-	}
+    public ResponseHeader getResponseHeader() { return _responseHeader; }
 
-	public ResponseHeader getResponseHeader() { return _responseHeader; }
-	public NodeId[] getRegisteredNodeIds() { return _registeredNodeIds; }
+    public NodeId[] getRegisteredNodeIds() { return _registeredNodeIds; }
 
-	@Override
-	public NodeId getTypeId() { return TypeId; }
+    @Override
+    public NodeId getTypeId() { return TypeId; }
 
-	@Override
-	public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    @Override
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
-	@Override
-	public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    @Override
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
-	public static void encode(RegisterNodesResponse registerNodesResponse, UaEncoder encoder) {
+    public static void encode(RegisterNodesResponse registerNodesResponse, UaEncoder encoder) {
         encoder.encodeSerializable("ResponseHeader", registerNodesResponse._responseHeader);
         encoder.encodeArray("RegisteredNodeIds", registerNodesResponse._registeredNodeIds, encoder::encodeNodeId);
-	}
+    }
 
-	public static RegisterNodesResponse decode(UaDecoder decoder) {
+    public static RegisterNodesResponse decode(UaDecoder decoder) {
         ResponseHeader _responseHeader = decoder.decodeSerializable("ResponseHeader", ResponseHeader.class);
         NodeId[] _registeredNodeIds = decoder.decodeArray("RegisteredNodeIds", decoder::decodeNodeId, NodeId.class);
 
-		return new RegisterNodesResponse(_responseHeader, _registeredNodeIds);
-	}
+        return new RegisterNodesResponse(_responseHeader, _registeredNodeIds);
+    }
 
-	static {
-		DelegateRegistry.registerEncoder(RegisterNodesResponse::encode, RegisterNodesResponse.class, BinaryEncodingId, XmlEncodingId);
-		DelegateRegistry.registerDecoder(RegisterNodesResponse::decode, RegisterNodesResponse.class, BinaryEncodingId, XmlEncodingId);
-	}
+    static {
+        DelegateRegistry.registerEncoder(RegisterNodesResponse::encode, RegisterNodesResponse.class, BinaryEncodingId, XmlEncodingId);
+        DelegateRegistry.registerDecoder(RegisterNodesResponse::decode, RegisterNodesResponse.class, BinaryEncodingId, XmlEncodingId);
+    }
 
 }

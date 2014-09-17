@@ -1,13 +1,9 @@
-
-
 package com.digitalpetri.opcua.stack.core.types.enumerated;
 
-import com.digitalpetri.opcua.stack.core.Identifiers;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEnumeration;
-import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 
 public enum AttributeWriteMask implements UaEnumeration {
 
@@ -33,9 +29,7 @@ public enum AttributeWriteMask implements UaEnumeration {
     UserWriteMask(262144),
     ValueRank(524288),
     WriteMask(1048576),
-    ValueForVariableType(2097152); 
-
-	public static final NodeId TypeId = Identifiers.AttributeWriteMask;
+    ValueForVariableType(2097152);
 
     private final int value;
 
@@ -48,18 +42,18 @@ public enum AttributeWriteMask implements UaEnumeration {
         return value;
     }
 
-	public static void encode(AttributeWriteMask attributeWriteMask, UaEncoder encoder) {
-		encoder.encodeInt32(null, attributeWriteMask.ordinal());
-	}
+    public static void encode(AttributeWriteMask attributeWriteMask, UaEncoder encoder) {
+        encoder.encodeInt32(null, attributeWriteMask.ordinal());
+    }
 
-	public static AttributeWriteMask decode(UaDecoder decoder) {
-		int value = decoder.decodeInt32(null);
-		return AttributeWriteMask.values()[value];
-	}
+    public static AttributeWriteMask decode(UaDecoder decoder) {
+        int value = decoder.decodeInt32(null);
+        return AttributeWriteMask.values()[value];
+    }
 
-	static {
-		DelegateRegistry.registerEncoder(AttributeWriteMask::encode, AttributeWriteMask.class);
-		DelegateRegistry.registerDecoder(AttributeWriteMask::decode, AttributeWriteMask.class);
-	}
+    static {
+        DelegateRegistry.registerEncoder(AttributeWriteMask::encode, AttributeWriteMask.class);
+        DelegateRegistry.registerDecoder(AttributeWriteMask::decode, AttributeWriteMask.class);
+    }
 
 }

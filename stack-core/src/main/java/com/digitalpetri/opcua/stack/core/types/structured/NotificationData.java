@@ -1,4 +1,3 @@
-
 package com.digitalpetri.opcua.stack.core.types.structured;
 
 import com.digitalpetri.opcua.stack.core.Identifiers;
@@ -10,37 +9,36 @@ import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 
 public class NotificationData implements UaStructure {
 
-	public static final NodeId TypeId = Identifiers.NotificationData;
-	public static final NodeId BinaryEncodingId = Identifiers.NotificationData_Encoding_DefaultBinary;
-	public static final NodeId XmlEncodingId = Identifiers.NotificationData_Encoding_DefaultXml;
+    public static final NodeId TypeId = Identifiers.NotificationData;
+    public static final NodeId BinaryEncodingId = Identifiers.NotificationData_Encoding_DefaultBinary;
+    public static final NodeId XmlEncodingId = Identifiers.NotificationData_Encoding_DefaultXml;
 
 
-	public NotificationData() {
-
-	}
-
-
-	@Override
-	public NodeId getTypeId() { return TypeId; }
-
-	@Override
-	public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
-
-	@Override
-	public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NotificationData() {
+    }
 
 
-	public static void encode(NotificationData notificationData, UaEncoder encoder) {
-	}
+    @Override
+    public NodeId getTypeId() { return TypeId; }
 
-	public static NotificationData decode(UaDecoder decoder) {
+    @Override
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
-		return new NotificationData();
-	}
+    @Override
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
-	static {
-		DelegateRegistry.registerEncoder(NotificationData::encode, NotificationData.class, BinaryEncodingId, XmlEncodingId);
-		DelegateRegistry.registerDecoder(NotificationData::decode, NotificationData.class, BinaryEncodingId, XmlEncodingId);
-	}
+
+    public static void encode(NotificationData notificationData, UaEncoder encoder) {
+    }
+
+    public static NotificationData decode(UaDecoder decoder) {
+
+        return new NotificationData();
+    }
+
+    static {
+        DelegateRegistry.registerEncoder(NotificationData::encode, NotificationData.class, BinaryEncodingId, XmlEncodingId);
+        DelegateRegistry.registerDecoder(NotificationData::decode, NotificationData.class, BinaryEncodingId, XmlEncodingId);
+    }
 
 }

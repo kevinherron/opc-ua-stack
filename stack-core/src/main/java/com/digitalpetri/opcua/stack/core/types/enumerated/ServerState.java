@@ -1,13 +1,9 @@
-
-
 package com.digitalpetri.opcua.stack.core.types.enumerated;
 
-import com.digitalpetri.opcua.stack.core.Identifiers;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEnumeration;
-import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 
 public enum ServerState implements UaEnumeration {
 
@@ -18,9 +14,7 @@ public enum ServerState implements UaEnumeration {
     Shutdown(4),
     Test(5),
     CommunicationFault(6),
-    Unknown(7); 
-
-	public static final NodeId TypeId = Identifiers.ServerState;
+    Unknown(7);
 
     private final int value;
 
@@ -33,18 +27,18 @@ public enum ServerState implements UaEnumeration {
         return value;
     }
 
-	public static void encode(ServerState serverState, UaEncoder encoder) {
-		encoder.encodeInt32(null, serverState.ordinal());
-	}
+    public static void encode(ServerState serverState, UaEncoder encoder) {
+        encoder.encodeInt32(null, serverState.ordinal());
+    }
 
-	public static ServerState decode(UaDecoder decoder) {
-		int value = decoder.decodeInt32(null);
-		return ServerState.values()[value];
-	}
+    public static ServerState decode(UaDecoder decoder) {
+        int value = decoder.decodeInt32(null);
+        return ServerState.values()[value];
+    }
 
-	static {
-		DelegateRegistry.registerEncoder(ServerState::encode, ServerState.class);
-		DelegateRegistry.registerDecoder(ServerState::decode, ServerState.class);
-	}
+    static {
+        DelegateRegistry.registerEncoder(ServerState::encode, ServerState.class);
+        DelegateRegistry.registerDecoder(ServerState::decode, ServerState.class);
+    }
 
 }

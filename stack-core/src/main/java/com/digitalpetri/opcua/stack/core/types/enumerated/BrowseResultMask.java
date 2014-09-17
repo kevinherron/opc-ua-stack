@@ -1,13 +1,9 @@
-
-
 package com.digitalpetri.opcua.stack.core.types.enumerated;
 
-import com.digitalpetri.opcua.stack.core.Identifiers;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEnumeration;
-import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 
 public enum BrowseResultMask implements UaEnumeration {
 
@@ -20,9 +16,7 @@ public enum BrowseResultMask implements UaEnumeration {
     TypeDefinition(32),
     All(63),
     ReferenceTypeInfo(3),
-    TargetInfo(60); 
-
-	public static final NodeId TypeId = Identifiers.BrowseResultMask;
+    TargetInfo(60);
 
     private final int value;
 
@@ -35,18 +29,18 @@ public enum BrowseResultMask implements UaEnumeration {
         return value;
     }
 
-	public static void encode(BrowseResultMask browseResultMask, UaEncoder encoder) {
-		encoder.encodeInt32(null, browseResultMask.ordinal());
-	}
+    public static void encode(BrowseResultMask browseResultMask, UaEncoder encoder) {
+        encoder.encodeInt32(null, browseResultMask.ordinal());
+    }
 
-	public static BrowseResultMask decode(UaDecoder decoder) {
-		int value = decoder.decodeInt32(null);
-		return BrowseResultMask.values()[value];
-	}
+    public static BrowseResultMask decode(UaDecoder decoder) {
+        int value = decoder.decodeInt32(null);
+        return BrowseResultMask.values()[value];
+    }
 
-	static {
-		DelegateRegistry.registerEncoder(BrowseResultMask::encode, BrowseResultMask.class);
-		DelegateRegistry.registerDecoder(BrowseResultMask::decode, BrowseResultMask.class);
-	}
+    static {
+        DelegateRegistry.registerEncoder(BrowseResultMask::encode, BrowseResultMask.class);
+        DelegateRegistry.registerDecoder(BrowseResultMask::decode, BrowseResultMask.class);
+    }
 
 }

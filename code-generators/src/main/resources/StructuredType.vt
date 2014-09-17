@@ -23,7 +23,6 @@ public class ${structuredType.name} ${structuredType.inheritanceBlurb} {
 #if(${structuredType.isSubType()})
         super(#foreach($field in ${structuredType.inheritedFields})${field.javaName}#if( $foreach.hasNext ), #end#end);
 #end
-
 #foreach($field in ${structuredType.instanceFields})
 		this.${field.javaName} = ${field.javaName};
 #end

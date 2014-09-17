@@ -1,4 +1,3 @@
-
 package com.digitalpetri.opcua.stack.core.types.structured;
 
 import com.digitalpetri.opcua.stack.core.Identifiers;
@@ -10,37 +9,36 @@ import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 
 public class HistoryReadDetails implements UaStructure {
 
-	public static final NodeId TypeId = Identifiers.HistoryReadDetails;
-	public static final NodeId BinaryEncodingId = Identifiers.HistoryReadDetails_Encoding_DefaultBinary;
-	public static final NodeId XmlEncodingId = Identifiers.HistoryReadDetails_Encoding_DefaultXml;
+    public static final NodeId TypeId = Identifiers.HistoryReadDetails;
+    public static final NodeId BinaryEncodingId = Identifiers.HistoryReadDetails_Encoding_DefaultBinary;
+    public static final NodeId XmlEncodingId = Identifiers.HistoryReadDetails_Encoding_DefaultXml;
 
 
-	public HistoryReadDetails() {
-
-	}
-
-
-	@Override
-	public NodeId getTypeId() { return TypeId; }
-
-	@Override
-	public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
-
-	@Override
-	public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public HistoryReadDetails() {
+    }
 
 
-	public static void encode(HistoryReadDetails historyReadDetails, UaEncoder encoder) {
-	}
+    @Override
+    public NodeId getTypeId() { return TypeId; }
 
-	public static HistoryReadDetails decode(UaDecoder decoder) {
+    @Override
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
-		return new HistoryReadDetails();
-	}
+    @Override
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
-	static {
-		DelegateRegistry.registerEncoder(HistoryReadDetails::encode, HistoryReadDetails.class, BinaryEncodingId, XmlEncodingId);
-		DelegateRegistry.registerDecoder(HistoryReadDetails::decode, HistoryReadDetails.class, BinaryEncodingId, XmlEncodingId);
-	}
+
+    public static void encode(HistoryReadDetails historyReadDetails, UaEncoder encoder) {
+    }
+
+    public static HistoryReadDetails decode(UaDecoder decoder) {
+
+        return new HistoryReadDetails();
+    }
+
+    static {
+        DelegateRegistry.registerEncoder(HistoryReadDetails::encode, HistoryReadDetails.class, BinaryEncodingId, XmlEncodingId);
+        DelegateRegistry.registerDecoder(HistoryReadDetails::decode, HistoryReadDetails.class, BinaryEncodingId, XmlEncodingId);
+    }
 
 }

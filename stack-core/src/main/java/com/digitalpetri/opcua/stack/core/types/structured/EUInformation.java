@@ -1,4 +1,3 @@
-
 package com.digitalpetri.opcua.stack.core.types.structured;
 
 import com.digitalpetri.opcua.stack.core.Identifiers;
@@ -11,57 +10,59 @@ import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 
 public class EUInformation implements UaStructure {
 
-	public static final NodeId TypeId = Identifiers.EUInformation;
-	public static final NodeId BinaryEncodingId = Identifiers.EUInformation_Encoding_DefaultBinary;
-	public static final NodeId XmlEncodingId = Identifiers.EUInformation_Encoding_DefaultXml;
+    public static final NodeId TypeId = Identifiers.EUInformation;
+    public static final NodeId BinaryEncodingId = Identifiers.EUInformation_Encoding_DefaultBinary;
+    public static final NodeId XmlEncodingId = Identifiers.EUInformation_Encoding_DefaultXml;
 
-	protected final String _namespaceUri;
-	protected final Integer _unitId;
-	protected final LocalizedText _displayName;
-	protected final LocalizedText _description;
+    protected final String _namespaceUri;
+    protected final Integer _unitId;
+    protected final LocalizedText _displayName;
+    protected final LocalizedText _description;
 
-	public EUInformation(String _namespaceUri, Integer _unitId, LocalizedText _displayName, LocalizedText _description) {
+    public EUInformation(String _namespaceUri, Integer _unitId, LocalizedText _displayName, LocalizedText _description) {
+        this._namespaceUri = _namespaceUri;
+        this._unitId = _unitId;
+        this._displayName = _displayName;
+        this._description = _description;
+    }
 
-		this._namespaceUri = _namespaceUri;
-		this._unitId = _unitId;
-		this._displayName = _displayName;
-		this._description = _description;
-	}
+    public String getNamespaceUri() { return _namespaceUri; }
 
-	public String getNamespaceUri() { return _namespaceUri; }
-	public Integer getUnitId() { return _unitId; }
-	public LocalizedText getDisplayName() { return _displayName; }
-	public LocalizedText getDescription() { return _description; }
+    public Integer getUnitId() { return _unitId; }
 
-	@Override
-	public NodeId getTypeId() { return TypeId; }
+    public LocalizedText getDisplayName() { return _displayName; }
 
-	@Override
-	public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public LocalizedText getDescription() { return _description; }
 
-	@Override
-	public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    @Override
+    public NodeId getTypeId() { return TypeId; }
+
+    @Override
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+
+    @Override
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
-	public static void encode(EUInformation eUInformation, UaEncoder encoder) {
-		encoder.encodeString("NamespaceUri", eUInformation._namespaceUri);
-		encoder.encodeInt32("UnitId", eUInformation._unitId);
-		encoder.encodeLocalizedText("DisplayName", eUInformation._displayName);
-		encoder.encodeLocalizedText("Description", eUInformation._description);
-	}
+    public static void encode(EUInformation eUInformation, UaEncoder encoder) {
+        encoder.encodeString("NamespaceUri", eUInformation._namespaceUri);
+        encoder.encodeInt32("UnitId", eUInformation._unitId);
+        encoder.encodeLocalizedText("DisplayName", eUInformation._displayName);
+        encoder.encodeLocalizedText("Description", eUInformation._description);
+    }
 
-	public static EUInformation decode(UaDecoder decoder) {
+    public static EUInformation decode(UaDecoder decoder) {
         String _namespaceUri = decoder.decodeString("NamespaceUri");
         Integer _unitId = decoder.decodeInt32("UnitId");
         LocalizedText _displayName = decoder.decodeLocalizedText("DisplayName");
         LocalizedText _description = decoder.decodeLocalizedText("Description");
 
-		return new EUInformation(_namespaceUri, _unitId, _displayName, _description);
-	}
+        return new EUInformation(_namespaceUri, _unitId, _displayName, _description);
+    }
 
-	static {
-		DelegateRegistry.registerEncoder(EUInformation::encode, EUInformation.class, BinaryEncodingId, XmlEncodingId);
-		DelegateRegistry.registerDecoder(EUInformation::decode, EUInformation.class, BinaryEncodingId, XmlEncodingId);
-	}
+    static {
+        DelegateRegistry.registerEncoder(EUInformation::encode, EUInformation.class, BinaryEncodingId, XmlEncodingId);
+        DelegateRegistry.registerDecoder(EUInformation::decode, EUInformation.class, BinaryEncodingId, XmlEncodingId);
+    }
 
 }

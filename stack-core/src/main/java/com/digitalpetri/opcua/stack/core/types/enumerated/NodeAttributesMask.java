@@ -1,13 +1,9 @@
-
-
 package com.digitalpetri.opcua.stack.core.types.enumerated;
 
-import com.digitalpetri.opcua.stack.core.Identifiers;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEnumeration;
-import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 
 public enum NodeAttributesMask implements UaEnumeration {
 
@@ -42,9 +38,7 @@ public enum NodeAttributesMask implements UaEnumeration {
     VariableType(3958902),
     Method(1466724),
     ReferenceType(1371236),
-    View(1335532); 
-
-	public static final NodeId TypeId = Identifiers.NodeAttributesMask;
+    View(1335532);
 
     private final int value;
 
@@ -57,18 +51,18 @@ public enum NodeAttributesMask implements UaEnumeration {
         return value;
     }
 
-	public static void encode(NodeAttributesMask nodeAttributesMask, UaEncoder encoder) {
-		encoder.encodeInt32(null, nodeAttributesMask.ordinal());
-	}
+    public static void encode(NodeAttributesMask nodeAttributesMask, UaEncoder encoder) {
+        encoder.encodeInt32(null, nodeAttributesMask.ordinal());
+    }
 
-	public static NodeAttributesMask decode(UaDecoder decoder) {
-		int value = decoder.decodeInt32(null);
-		return NodeAttributesMask.values()[value];
-	}
+    public static NodeAttributesMask decode(UaDecoder decoder) {
+        int value = decoder.decodeInt32(null);
+        return NodeAttributesMask.values()[value];
+    }
 
-	static {
-		DelegateRegistry.registerEncoder(NodeAttributesMask::encode, NodeAttributesMask.class);
-		DelegateRegistry.registerDecoder(NodeAttributesMask::decode, NodeAttributesMask.class);
-	}
+    static {
+        DelegateRegistry.registerEncoder(NodeAttributesMask::encode, NodeAttributesMask.class);
+        DelegateRegistry.registerDecoder(NodeAttributesMask::decode, NodeAttributesMask.class);
+    }
 
 }

@@ -1,13 +1,9 @@
-
-
 package com.digitalpetri.opcua.stack.core.types.enumerated;
 
-import com.digitalpetri.opcua.stack.core.Identifiers;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEnumeration;
-import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 
 public enum FilterOperator implements UaEnumeration {
 
@@ -28,9 +24,7 @@ public enum FilterOperator implements UaEnumeration {
     OfType(14),
     RelatedTo(15),
     BitwiseAnd(16),
-    BitwiseOr(17); 
-
-	public static final NodeId TypeId = Identifiers.FilterOperator;
+    BitwiseOr(17);
 
     private final int value;
 
@@ -43,18 +37,18 @@ public enum FilterOperator implements UaEnumeration {
         return value;
     }
 
-	public static void encode(FilterOperator filterOperator, UaEncoder encoder) {
-		encoder.encodeInt32(null, filterOperator.ordinal());
-	}
+    public static void encode(FilterOperator filterOperator, UaEncoder encoder) {
+        encoder.encodeInt32(null, filterOperator.ordinal());
+    }
 
-	public static FilterOperator decode(UaDecoder decoder) {
-		int value = decoder.decodeInt32(null);
-		return FilterOperator.values()[value];
-	}
+    public static FilterOperator decode(UaDecoder decoder) {
+        int value = decoder.decodeInt32(null);
+        return FilterOperator.values()[value];
+    }
 
-	static {
-		DelegateRegistry.registerEncoder(FilterOperator::encode, FilterOperator.class);
-		DelegateRegistry.registerDecoder(FilterOperator::decode, FilterOperator.class);
-	}
+    static {
+        DelegateRegistry.registerEncoder(FilterOperator::encode, FilterOperator.class);
+        DelegateRegistry.registerDecoder(FilterOperator::decode, FilterOperator.class);
+    }
 
 }

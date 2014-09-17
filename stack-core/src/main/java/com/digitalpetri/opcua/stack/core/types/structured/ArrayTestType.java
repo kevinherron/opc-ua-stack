@@ -1,4 +1,3 @@
-
 package com.digitalpetri.opcua.stack.core.types.structured;
 
 import java.util.UUID;
@@ -8,107 +7,141 @@ import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
-import com.digitalpetri.opcua.stack.core.types.builtin.*;
+import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
+import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
+import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
+import com.digitalpetri.opcua.stack.core.types.builtin.DiagnosticInfo;
+import com.digitalpetri.opcua.stack.core.types.builtin.ExpandedNodeId;
+import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
+import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
+import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
+import com.digitalpetri.opcua.stack.core.types.builtin.QualifiedName;
+import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
+import com.digitalpetri.opcua.stack.core.types.builtin.Variant;
+import com.digitalpetri.opcua.stack.core.types.builtin.XmlElement;
 import com.digitalpetri.opcua.stack.core.types.enumerated.EnumeratedTestType;
 
 public class ArrayTestType implements UaStructure {
 
-	public static final NodeId TypeId = Identifiers.ArrayTestType;
-	public static final NodeId BinaryEncodingId = Identifiers.ArrayTestType_Encoding_DefaultBinary;
-	public static final NodeId XmlEncodingId = Identifiers.ArrayTestType_Encoding_DefaultXml;
+    public static final NodeId TypeId = Identifiers.ArrayTestType;
+    public static final NodeId BinaryEncodingId = Identifiers.ArrayTestType_Encoding_DefaultBinary;
+    public static final NodeId XmlEncodingId = Identifiers.ArrayTestType_Encoding_DefaultXml;
 
-	protected final Boolean[] _booleans;
-	protected final Byte[] _sBytes;
-	protected final Short[] _int16s;
-	protected final Integer[] _uInt16s;
-	protected final Integer[] _int32s;
-	protected final Long[] _uInt32s;
-	protected final Long[] _int64s;
-	protected final Long[] _uInt64s;
-	protected final Float[] _floats;
-	protected final Double[] _doubles;
-	protected final String[] _strings;
-	protected final DateTime[] _dateTimes;
-	protected final UUID[] _guids;
-	protected final ByteString[] _byteStrings;
-	protected final XmlElement[] _xmlElements;
-	protected final NodeId[] _nodeIds;
-	protected final ExpandedNodeId[] _expandedNodeIds;
-	protected final StatusCode[] _statusCodes;
-	protected final DiagnosticInfo[] _diagnosticInfos;
-	protected final QualifiedName[] _qualifiedNames;
-	protected final LocalizedText[] _localizedTexts;
-	protected final ExtensionObject[] _extensionObjects;
-	protected final DataValue[] _dataValues;
-	protected final Variant[] _variants;
-	protected final EnumeratedTestType[] _enumeratedValues;
+    protected final Boolean[] _booleans;
+    protected final Byte[] _sBytes;
+    protected final Short[] _int16s;
+    protected final Integer[] _uInt16s;
+    protected final Integer[] _int32s;
+    protected final Long[] _uInt32s;
+    protected final Long[] _int64s;
+    protected final Long[] _uInt64s;
+    protected final Float[] _floats;
+    protected final Double[] _doubles;
+    protected final String[] _strings;
+    protected final DateTime[] _dateTimes;
+    protected final UUID[] _guids;
+    protected final ByteString[] _byteStrings;
+    protected final XmlElement[] _xmlElements;
+    protected final NodeId[] _nodeIds;
+    protected final ExpandedNodeId[] _expandedNodeIds;
+    protected final StatusCode[] _statusCodes;
+    protected final DiagnosticInfo[] _diagnosticInfos;
+    protected final QualifiedName[] _qualifiedNames;
+    protected final LocalizedText[] _localizedTexts;
+    protected final ExtensionObject[] _extensionObjects;
+    protected final DataValue[] _dataValues;
+    protected final Variant[] _variants;
+    protected final EnumeratedTestType[] _enumeratedValues;
 
-	public ArrayTestType(Boolean[] _booleans, Byte[] _sBytes, Short[] _int16s, Integer[] _uInt16s, Integer[] _int32s, Long[] _uInt32s, Long[] _int64s, Long[] _uInt64s, Float[] _floats, Double[] _doubles, String[] _strings, DateTime[] _dateTimes, UUID[] _guids, ByteString[] _byteStrings, XmlElement[] _xmlElements, NodeId[] _nodeIds, ExpandedNodeId[] _expandedNodeIds, StatusCode[] _statusCodes, DiagnosticInfo[] _diagnosticInfos, QualifiedName[] _qualifiedNames, LocalizedText[] _localizedTexts, ExtensionObject[] _extensionObjects, DataValue[] _dataValues, Variant[] _variants, EnumeratedTestType[] _enumeratedValues) {
+    public ArrayTestType(Boolean[] _booleans, Byte[] _sBytes, Short[] _int16s, Integer[] _uInt16s, Integer[] _int32s, Long[] _uInt32s, Long[] _int64s, Long[] _uInt64s, Float[] _floats, Double[] _doubles, String[] _strings, DateTime[] _dateTimes, UUID[] _guids, ByteString[] _byteStrings, XmlElement[] _xmlElements, NodeId[] _nodeIds, ExpandedNodeId[] _expandedNodeIds, StatusCode[] _statusCodes, DiagnosticInfo[] _diagnosticInfos, QualifiedName[] _qualifiedNames, LocalizedText[] _localizedTexts, ExtensionObject[] _extensionObjects, DataValue[] _dataValues, Variant[] _variants, EnumeratedTestType[] _enumeratedValues) {
+        this._booleans = _booleans;
+        this._sBytes = _sBytes;
+        this._int16s = _int16s;
+        this._uInt16s = _uInt16s;
+        this._int32s = _int32s;
+        this._uInt32s = _uInt32s;
+        this._int64s = _int64s;
+        this._uInt64s = _uInt64s;
+        this._floats = _floats;
+        this._doubles = _doubles;
+        this._strings = _strings;
+        this._dateTimes = _dateTimes;
+        this._guids = _guids;
+        this._byteStrings = _byteStrings;
+        this._xmlElements = _xmlElements;
+        this._nodeIds = _nodeIds;
+        this._expandedNodeIds = _expandedNodeIds;
+        this._statusCodes = _statusCodes;
+        this._diagnosticInfos = _diagnosticInfos;
+        this._qualifiedNames = _qualifiedNames;
+        this._localizedTexts = _localizedTexts;
+        this._extensionObjects = _extensionObjects;
+        this._dataValues = _dataValues;
+        this._variants = _variants;
+        this._enumeratedValues = _enumeratedValues;
+    }
 
-		this._booleans = _booleans;
-		this._sBytes = _sBytes;
-		this._int16s = _int16s;
-		this._uInt16s = _uInt16s;
-		this._int32s = _int32s;
-		this._uInt32s = _uInt32s;
-		this._int64s = _int64s;
-		this._uInt64s = _uInt64s;
-		this._floats = _floats;
-		this._doubles = _doubles;
-		this._strings = _strings;
-		this._dateTimes = _dateTimes;
-		this._guids = _guids;
-		this._byteStrings = _byteStrings;
-		this._xmlElements = _xmlElements;
-		this._nodeIds = _nodeIds;
-		this._expandedNodeIds = _expandedNodeIds;
-		this._statusCodes = _statusCodes;
-		this._diagnosticInfos = _diagnosticInfos;
-		this._qualifiedNames = _qualifiedNames;
-		this._localizedTexts = _localizedTexts;
-		this._extensionObjects = _extensionObjects;
-		this._dataValues = _dataValues;
-		this._variants = _variants;
-		this._enumeratedValues = _enumeratedValues;
-	}
+    public Boolean[] getBooleans() { return _booleans; }
 
-	public Boolean[] getBooleans() { return _booleans; }
-	public Byte[] getSBytes() { return _sBytes; }
-	public Short[] getInt16s() { return _int16s; }
-	public Integer[] getUInt16s() { return _uInt16s; }
-	public Integer[] getInt32s() { return _int32s; }
-	public Long[] getUInt32s() { return _uInt32s; }
-	public Long[] getInt64s() { return _int64s; }
-	public Long[] getUInt64s() { return _uInt64s; }
-	public Float[] getFloats() { return _floats; }
-	public Double[] getDoubles() { return _doubles; }
-	public String[] getStrings() { return _strings; }
-	public DateTime[] getDateTimes() { return _dateTimes; }
-	public UUID[] getGuids() { return _guids; }
-	public ByteString[] getByteStrings() { return _byteStrings; }
-	public XmlElement[] getXmlElements() { return _xmlElements; }
-	public NodeId[] getNodeIds() { return _nodeIds; }
-	public ExpandedNodeId[] getExpandedNodeIds() { return _expandedNodeIds; }
-	public StatusCode[] getStatusCodes() { return _statusCodes; }
-	public DiagnosticInfo[] getDiagnosticInfos() { return _diagnosticInfos; }
-	public QualifiedName[] getQualifiedNames() { return _qualifiedNames; }
-	public LocalizedText[] getLocalizedTexts() { return _localizedTexts; }
-	public ExtensionObject[] getExtensionObjects() { return _extensionObjects; }
-	public DataValue[] getDataValues() { return _dataValues; }
-	public Variant[] getVariants() { return _variants; }
-	public EnumeratedTestType[] getEnumeratedValues() { return _enumeratedValues; }
+    public Byte[] getSBytes() { return _sBytes; }
 
-	@Override
-	public NodeId getTypeId() { return TypeId; }
+    public Short[] getInt16s() { return _int16s; }
 
-	@Override
-	public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public Integer[] getUInt16s() { return _uInt16s; }
 
-	@Override
-	public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public Integer[] getInt32s() { return _int32s; }
+
+    public Long[] getUInt32s() { return _uInt32s; }
+
+    public Long[] getInt64s() { return _int64s; }
+
+    public Long[] getUInt64s() { return _uInt64s; }
+
+    public Float[] getFloats() { return _floats; }
+
+    public Double[] getDoubles() { return _doubles; }
+
+    public String[] getStrings() { return _strings; }
+
+    public DateTime[] getDateTimes() { return _dateTimes; }
+
+    public UUID[] getGuids() { return _guids; }
+
+    public ByteString[] getByteStrings() { return _byteStrings; }
+
+    public XmlElement[] getXmlElements() { return _xmlElements; }
+
+    public NodeId[] getNodeIds() { return _nodeIds; }
+
+    public ExpandedNodeId[] getExpandedNodeIds() { return _expandedNodeIds; }
+
+    public StatusCode[] getStatusCodes() { return _statusCodes; }
+
+    public DiagnosticInfo[] getDiagnosticInfos() { return _diagnosticInfos; }
+
+    public QualifiedName[] getQualifiedNames() { return _qualifiedNames; }
+
+    public LocalizedText[] getLocalizedTexts() { return _localizedTexts; }
+
+    public ExtensionObject[] getExtensionObjects() { return _extensionObjects; }
+
+    public DataValue[] getDataValues() { return _dataValues; }
+
+    public Variant[] getVariants() { return _variants; }
+
+    public EnumeratedTestType[] getEnumeratedValues() { return _enumeratedValues; }
+
+    @Override
+    public NodeId getTypeId() { return TypeId; }
+
+    @Override
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+
+    @Override
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
-	public static void encode(ArrayTestType arrayTestType, UaEncoder encoder) {
+    public static void encode(ArrayTestType arrayTestType, UaEncoder encoder) {
         encoder.encodeArray("Booleans", arrayTestType._booleans, encoder::encodeBoolean);
         encoder.encodeArray("SBytes", arrayTestType._sBytes, encoder::encodeSByte);
         encoder.encodeArray("Int16s", arrayTestType._int16s, encoder::encodeInt16);
@@ -134,9 +167,9 @@ public class ArrayTestType implements UaStructure {
         encoder.encodeArray("DataValues", arrayTestType._dataValues, encoder::encodeDataValue);
         encoder.encodeArray("Variants", arrayTestType._variants, encoder::encodeVariant);
         encoder.encodeArray("EnumeratedValues", arrayTestType._enumeratedValues, encoder::encodeSerializable);
-	}
+    }
 
-	public static ArrayTestType decode(UaDecoder decoder) {
+    public static ArrayTestType decode(UaDecoder decoder) {
         Boolean[] _booleans = decoder.decodeArray("Booleans", decoder::decodeBoolean, Boolean.class);
         Byte[] _sBytes = decoder.decodeArray("SBytes", decoder::decodeSByte, Byte.class);
         Short[] _int16s = decoder.decodeArray("Int16s", decoder::decodeInt16, Short.class);
@@ -163,12 +196,12 @@ public class ArrayTestType implements UaStructure {
         Variant[] _variants = decoder.decodeArray("Variants", decoder::decodeVariant, Variant.class);
         EnumeratedTestType[] _enumeratedValues = decoder.decodeArray("EnumeratedValues", decoder::decodeSerializable, EnumeratedTestType.class);
 
-		return new ArrayTestType(_booleans, _sBytes, _int16s, _uInt16s, _int32s, _uInt32s, _int64s, _uInt64s, _floats, _doubles, _strings, _dateTimes, _guids, _byteStrings, _xmlElements, _nodeIds, _expandedNodeIds, _statusCodes, _diagnosticInfos, _qualifiedNames, _localizedTexts, _extensionObjects, _dataValues, _variants, _enumeratedValues);
-	}
+        return new ArrayTestType(_booleans, _sBytes, _int16s, _uInt16s, _int32s, _uInt32s, _int64s, _uInt64s, _floats, _doubles, _strings, _dateTimes, _guids, _byteStrings, _xmlElements, _nodeIds, _expandedNodeIds, _statusCodes, _diagnosticInfos, _qualifiedNames, _localizedTexts, _extensionObjects, _dataValues, _variants, _enumeratedValues);
+    }
 
-	static {
-		DelegateRegistry.registerEncoder(ArrayTestType::encode, ArrayTestType.class, BinaryEncodingId, XmlEncodingId);
-		DelegateRegistry.registerDecoder(ArrayTestType::decode, ArrayTestType.class, BinaryEncodingId, XmlEncodingId);
-	}
+    static {
+        DelegateRegistry.registerEncoder(ArrayTestType::encode, ArrayTestType.class, BinaryEncodingId, XmlEncodingId);
+        DelegateRegistry.registerDecoder(ArrayTestType::decode, ArrayTestType.class, BinaryEncodingId, XmlEncodingId);
+    }
 
 }

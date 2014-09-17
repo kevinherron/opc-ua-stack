@@ -14,8 +14,6 @@ public enum ${enumeratedType.name} implements UaEnumeration {
 #end
 
 
-	public static final NodeId TypeId = Identifiers.${enumeratedType.name};
-
     private final int value;
 
     private ${enumeratedType.name}(int value) {

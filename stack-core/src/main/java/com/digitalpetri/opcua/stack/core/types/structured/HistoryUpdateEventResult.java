@@ -1,4 +1,3 @@
-
 package com.digitalpetri.opcua.stack.core.types.structured;
 
 import com.digitalpetri.opcua.stack.core.Identifiers;
@@ -11,47 +10,47 @@ import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 
 public class HistoryUpdateEventResult implements UaStructure {
 
-	public static final NodeId TypeId = Identifiers.HistoryUpdateEventResult;
-	public static final NodeId BinaryEncodingId = Identifiers.HistoryUpdateEventResult_Encoding_DefaultBinary;
-	public static final NodeId XmlEncodingId = Identifiers.HistoryUpdateEventResult_Encoding_DefaultXml;
+    public static final NodeId TypeId = Identifiers.HistoryUpdateEventResult;
+    public static final NodeId BinaryEncodingId = Identifiers.HistoryUpdateEventResult_Encoding_DefaultBinary;
+    public static final NodeId XmlEncodingId = Identifiers.HistoryUpdateEventResult_Encoding_DefaultXml;
 
-	protected final StatusCode _statusCode;
-	protected final EventFilterResult _eventFilterResult;
+    protected final StatusCode _statusCode;
+    protected final EventFilterResult _eventFilterResult;
 
-	public HistoryUpdateEventResult(StatusCode _statusCode, EventFilterResult _eventFilterResult) {
+    public HistoryUpdateEventResult(StatusCode _statusCode, EventFilterResult _eventFilterResult) {
+        this._statusCode = _statusCode;
+        this._eventFilterResult = _eventFilterResult;
+    }
 
-		this._statusCode = _statusCode;
-		this._eventFilterResult = _eventFilterResult;
-	}
+    public StatusCode getStatusCode() { return _statusCode; }
 
-	public StatusCode getStatusCode() { return _statusCode; }
-	public EventFilterResult getEventFilterResult() { return _eventFilterResult; }
+    public EventFilterResult getEventFilterResult() { return _eventFilterResult; }
 
-	@Override
-	public NodeId getTypeId() { return TypeId; }
+    @Override
+    public NodeId getTypeId() { return TypeId; }
 
-	@Override
-	public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    @Override
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
-	@Override
-	public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    @Override
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
-	public static void encode(HistoryUpdateEventResult historyUpdateEventResult, UaEncoder encoder) {
-		encoder.encodeStatusCode("StatusCode", historyUpdateEventResult._statusCode);
+    public static void encode(HistoryUpdateEventResult historyUpdateEventResult, UaEncoder encoder) {
+        encoder.encodeStatusCode("StatusCode", historyUpdateEventResult._statusCode);
         encoder.encodeSerializable("EventFilterResult", historyUpdateEventResult._eventFilterResult);
-	}
+    }
 
-	public static HistoryUpdateEventResult decode(UaDecoder decoder) {
+    public static HistoryUpdateEventResult decode(UaDecoder decoder) {
         StatusCode _statusCode = decoder.decodeStatusCode("StatusCode");
         EventFilterResult _eventFilterResult = decoder.decodeSerializable("EventFilterResult", EventFilterResult.class);
 
-		return new HistoryUpdateEventResult(_statusCode, _eventFilterResult);
-	}
+        return new HistoryUpdateEventResult(_statusCode, _eventFilterResult);
+    }
 
-	static {
-		DelegateRegistry.registerEncoder(HistoryUpdateEventResult::encode, HistoryUpdateEventResult.class, BinaryEncodingId, XmlEncodingId);
-		DelegateRegistry.registerDecoder(HistoryUpdateEventResult::decode, HistoryUpdateEventResult.class, BinaryEncodingId, XmlEncodingId);
-	}
+    static {
+        DelegateRegistry.registerEncoder(HistoryUpdateEventResult::encode, HistoryUpdateEventResult.class, BinaryEncodingId, XmlEncodingId);
+        DelegateRegistry.registerDecoder(HistoryUpdateEventResult::decode, HistoryUpdateEventResult.class, BinaryEncodingId, XmlEncodingId);
+    }
 
 }

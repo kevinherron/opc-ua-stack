@@ -1,4 +1,3 @@
-
 package com.digitalpetri.opcua.stack.core.types.structured;
 
 import com.digitalpetri.opcua.stack.core.Identifiers;
@@ -12,47 +11,47 @@ import com.digitalpetri.opcua.stack.core.types.enumerated.FilterOperator;
 
 public class ContentFilterElement implements UaStructure {
 
-	public static final NodeId TypeId = Identifiers.ContentFilterElement;
-	public static final NodeId BinaryEncodingId = Identifiers.ContentFilterElement_Encoding_DefaultBinary;
-	public static final NodeId XmlEncodingId = Identifiers.ContentFilterElement_Encoding_DefaultXml;
+    public static final NodeId TypeId = Identifiers.ContentFilterElement;
+    public static final NodeId BinaryEncodingId = Identifiers.ContentFilterElement_Encoding_DefaultBinary;
+    public static final NodeId XmlEncodingId = Identifiers.ContentFilterElement_Encoding_DefaultXml;
 
-	protected final FilterOperator _filterOperator;
-	protected final ExtensionObject[] _filterOperands;
+    protected final FilterOperator _filterOperator;
+    protected final ExtensionObject[] _filterOperands;
 
-	public ContentFilterElement(FilterOperator _filterOperator, ExtensionObject[] _filterOperands) {
+    public ContentFilterElement(FilterOperator _filterOperator, ExtensionObject[] _filterOperands) {
+        this._filterOperator = _filterOperator;
+        this._filterOperands = _filterOperands;
+    }
 
-		this._filterOperator = _filterOperator;
-		this._filterOperands = _filterOperands;
-	}
+    public FilterOperator getFilterOperator() { return _filterOperator; }
 
-	public FilterOperator getFilterOperator() { return _filterOperator; }
-	public ExtensionObject[] getFilterOperands() { return _filterOperands; }
+    public ExtensionObject[] getFilterOperands() { return _filterOperands; }
 
-	@Override
-	public NodeId getTypeId() { return TypeId; }
+    @Override
+    public NodeId getTypeId() { return TypeId; }
 
-	@Override
-	public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    @Override
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
-	@Override
-	public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    @Override
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
-	public static void encode(ContentFilterElement contentFilterElement, UaEncoder encoder) {
+    public static void encode(ContentFilterElement contentFilterElement, UaEncoder encoder) {
         encoder.encodeSerializable("FilterOperator", contentFilterElement._filterOperator);
         encoder.encodeArray("FilterOperands", contentFilterElement._filterOperands, encoder::encodeExtensionObject);
-	}
+    }
 
-	public static ContentFilterElement decode(UaDecoder decoder) {
+    public static ContentFilterElement decode(UaDecoder decoder) {
         FilterOperator _filterOperator = decoder.decodeSerializable("FilterOperator", FilterOperator.class);
         ExtensionObject[] _filterOperands = decoder.decodeArray("FilterOperands", decoder::decodeExtensionObject, ExtensionObject.class);
 
-		return new ContentFilterElement(_filterOperator, _filterOperands);
-	}
+        return new ContentFilterElement(_filterOperator, _filterOperands);
+    }
 
-	static {
-		DelegateRegistry.registerEncoder(ContentFilterElement::encode, ContentFilterElement.class, BinaryEncodingId, XmlEncodingId);
-		DelegateRegistry.registerDecoder(ContentFilterElement::decode, ContentFilterElement.class, BinaryEncodingId, XmlEncodingId);
-	}
+    static {
+        DelegateRegistry.registerEncoder(ContentFilterElement::encode, ContentFilterElement.class, BinaryEncodingId, XmlEncodingId);
+        DelegateRegistry.registerDecoder(ContentFilterElement::decode, ContentFilterElement.class, BinaryEncodingId, XmlEncodingId);
+    }
 
 }

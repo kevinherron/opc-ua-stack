@@ -1,4 +1,3 @@
-
 package com.digitalpetri.opcua.stack.core.types.structured;
 
 import com.digitalpetri.opcua.stack.core.Identifiers;
@@ -12,47 +11,47 @@ import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 
 public class StatusResult implements UaStructure {
 
-	public static final NodeId TypeId = Identifiers.StatusResult;
-	public static final NodeId BinaryEncodingId = Identifiers.StatusResult_Encoding_DefaultBinary;
-	public static final NodeId XmlEncodingId = Identifiers.StatusResult_Encoding_DefaultXml;
+    public static final NodeId TypeId = Identifiers.StatusResult;
+    public static final NodeId BinaryEncodingId = Identifiers.StatusResult_Encoding_DefaultBinary;
+    public static final NodeId XmlEncodingId = Identifiers.StatusResult_Encoding_DefaultXml;
 
-	protected final StatusCode _statusCode;
-	protected final DiagnosticInfo _diagnosticInfo;
+    protected final StatusCode _statusCode;
+    protected final DiagnosticInfo _diagnosticInfo;
 
-	public StatusResult(StatusCode _statusCode, DiagnosticInfo _diagnosticInfo) {
+    public StatusResult(StatusCode _statusCode, DiagnosticInfo _diagnosticInfo) {
+        this._statusCode = _statusCode;
+        this._diagnosticInfo = _diagnosticInfo;
+    }
 
-		this._statusCode = _statusCode;
-		this._diagnosticInfo = _diagnosticInfo;
-	}
+    public StatusCode getStatusCode() { return _statusCode; }
 
-	public StatusCode getStatusCode() { return _statusCode; }
-	public DiagnosticInfo getDiagnosticInfo() { return _diagnosticInfo; }
+    public DiagnosticInfo getDiagnosticInfo() { return _diagnosticInfo; }
 
-	@Override
-	public NodeId getTypeId() { return TypeId; }
+    @Override
+    public NodeId getTypeId() { return TypeId; }
 
-	@Override
-	public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    @Override
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
-	@Override
-	public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    @Override
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
-	public static void encode(StatusResult statusResult, UaEncoder encoder) {
-		encoder.encodeStatusCode("StatusCode", statusResult._statusCode);
-		encoder.encodeDiagnosticInfo("DiagnosticInfo", statusResult._diagnosticInfo);
-	}
+    public static void encode(StatusResult statusResult, UaEncoder encoder) {
+        encoder.encodeStatusCode("StatusCode", statusResult._statusCode);
+        encoder.encodeDiagnosticInfo("DiagnosticInfo", statusResult._diagnosticInfo);
+    }
 
-	public static StatusResult decode(UaDecoder decoder) {
+    public static StatusResult decode(UaDecoder decoder) {
         StatusCode _statusCode = decoder.decodeStatusCode("StatusCode");
         DiagnosticInfo _diagnosticInfo = decoder.decodeDiagnosticInfo("DiagnosticInfo");
 
-		return new StatusResult(_statusCode, _diagnosticInfo);
-	}
+        return new StatusResult(_statusCode, _diagnosticInfo);
+    }
 
-	static {
-		DelegateRegistry.registerEncoder(StatusResult::encode, StatusResult.class, BinaryEncodingId, XmlEncodingId);
-		DelegateRegistry.registerDecoder(StatusResult::decode, StatusResult.class, BinaryEncodingId, XmlEncodingId);
-	}
+    static {
+        DelegateRegistry.registerEncoder(StatusResult::encode, StatusResult.class, BinaryEncodingId, XmlEncodingId);
+        DelegateRegistry.registerDecoder(StatusResult::decode, StatusResult.class, BinaryEncodingId, XmlEncodingId);
+    }
 
 }
