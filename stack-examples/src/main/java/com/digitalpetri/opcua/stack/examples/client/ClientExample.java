@@ -1,14 +1,8 @@
 package com.digitalpetri.opcua.stack.examples.client;
 
-import java.net.InetAddress;
-import java.security.Key;
 import java.security.KeyPair;
-import java.security.KeyStore;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.cert.Certificate;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicLong;
@@ -26,27 +20,11 @@ import com.digitalpetri.opcua.stack.core.types.structured.TestStackResponse;
 
 public class ClientExample {
 
-    private static final String CLIENT_ALIAS = "client-test-certificate";
-    private static final char[] PASSWORD = "test".toCharArray();
-
     private final AtomicLong requestHandle = new AtomicLong(1L);
 
     private final UaTcpClient client;
 
-    public ClientExample() throws Exception {
-        KeyStore keyStore = KeyStore.getInstance("PKCS12");
-        keyStore.load(getClass().getClassLoader().getResourceAsStream("example-keystore.pfx"), PASSWORD);
-
-        Certificate certificate = null;
-        KeyPair keyPair = null;
-
-        Key clientPrivateKey = keyStore.getKey(CLIENT_ALIAS, PASSWORD);
-        if (clientPrivateKey instanceof PrivateKey) {
-            certificate = keyStore.getCertificate(CLIENT_ALIAS);
-            PublicKey clientPublicKey = certificate.getPublicKey();
-            keyPair = new KeyPair(clientPublicKey, (PrivateKey) clientPrivateKey);
-        }
-
+    public ClientExample(Certificate certificate, KeyPair keyPair) throws Exception {
         // Query endpoints and select highest security level.
         EndpointDescription[] endpoints = UaTcpClient.getEndpoints("opc.tcp://localhost:12685/example").get();
 
@@ -57,7 +35,7 @@ public class ClientExample {
 
         client = new UaTcpClientBuilder()
                 .setApplicationName(LocalizedText.english("Stack Example Client"))
-                .setApplicationUri(String.format("urn:%s:example-client:%s", getHostname(), UUID.randomUUID()))
+                .setApplicationUri(String.format("urn:example-client:%s", UUID.randomUUID()))
                 .setCertificate(certificate)
                 .setKeyPair(keyPair)
                 .build(endpoint);
@@ -74,16 +52,6 @@ public class ClientExample {
         TestStackRequest request = new TestStackRequest(header, 0L, 1, new Variant(input));
 
         return client.sendRequest(request);
-    }
-
-    private static String getHostname() {
-        return Optional.ofNullable(System.getProperty("hostname")).orElseGet(() -> {
-            try {
-                return InetAddress.getLocalHost().getCanonicalHostName();
-            } catch (Throwable ignored) {
-                return "localhost";
-            }
-        });
     }
 
 }
