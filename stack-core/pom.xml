@@ -6,7 +6,7 @@
 
     <parent>
         <artifactId>opc-ua-stack</artifactId>
-        <groupId>com.digitalpetri.opcua</groupId>
+        <groupId>com.inductiveautomation.opcua</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 

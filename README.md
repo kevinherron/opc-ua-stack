@@ -1,6 +1,6 @@
 # OPC-UA Stack
 
-An open-source OPC-UA stack implementation, free to OPC foundation members and non-members alike.
+A high-performance and open-source OPC-UA stack implementation.
 
 Maven
 --------
@@ -8,7 +8,7 @@ Maven
 #### Stack Server
 ```xml
 <dependency>
-    <groupId>com.digitalpetri.opcua</groupId>
+    <groupId>com.inductiveautomation.opcua</groupId>
     <artifactId>stack-server</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 </dependency>
@@ -17,7 +17,7 @@ Maven
 #### Stack Client
 ```xml
 <dependency>
-    <groupId>com.digitalpetri.opcua</groupId>
+    <groupId>com.inductiveautomation.opcua</groupId>
     <artifactId>stack-client</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 </dependency>
@@ -46,7 +46,7 @@ Supported Features
 Get Help
 --------
 
-Contact kevinherron@gmail.com for more information.
+Contact kevin@inductiveautomation.com for more information.
 
 
 License
