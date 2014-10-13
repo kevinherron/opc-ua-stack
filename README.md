@@ -2,6 +2,8 @@
 
 A high-performance and open-source OPC-UA stack implementation.
 
+Note: this is just a *stack* implementation (channels, serialization, structures, security). If you're looking to build a client or server, try the [OPC-UA SDK](https://github.com/inductiveautomation/opc-ua-sdk).
+
 Maven
 --------
 
