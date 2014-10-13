@@ -71,7 +71,7 @@ public class ClientServerExample {
         });
     }
 
-    private class KeyStoreLoader {
+    private static class KeyStoreLoader {
 
         private Certificate serverCertificate;
         private KeyPair serverKeyPair;

@@ -1,5 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.types.builtin;
 
+import com.inductiveautomation.opcua.stack.core.types.enumerated.TimestampsToReturn;
+
 import javax.annotation.Nullable;
 
 public class DataValue {
@@ -29,7 +31,7 @@ public class DataValue {
         this(value, status, time, time);
     }
 
-    public DataValue(Variant value, StatusCode status, @Nullable DateTime sourceTime, @Nullable DateTime serverTime) {
+    public DataValue(Variant value, StatusCode status, @Nullable DateTime serverTime, @Nullable DateTime sourceTime) {
         this.value = value;
         this.status = status;
         this.sourceTime = sourceTime;
@@ -52,6 +54,25 @@ public class DataValue {
     @Nullable
     public DateTime getServerTime() {
         return serverTime;
+    }
+
+    /**
+     * Derive a new {@link DataValue} from a given {@link DataValue}.
+     *
+     * @param from       the {@link DataValue} to derive from.
+     * @param timestamps the timestamps to return in the derived value.
+     * @return a derived {@link DataValue}.
+     */
+    public static DataValue derived(DataValue from, TimestampsToReturn timestamps) {
+        boolean includeServer = timestamps == TimestampsToReturn.Server || timestamps == TimestampsToReturn.Both;
+        boolean includeSource = timestamps == TimestampsToReturn.Source || timestamps == TimestampsToReturn.Both;
+
+        return new DataValue(
+                from.value,
+                from.status,
+                includeServer ? from.serverTime : null,
+                includeSource ? from.sourceTime : null
+        );
     }
 
 }
