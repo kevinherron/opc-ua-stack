@@ -290,7 +290,7 @@ public class BinaryDecoder implements UaDecoder {
         DateTime sourceTime = ((mask & 0x04) == 0x04) ? decodeDateTime(null) : DateTime.MinValue;
         DateTime serverTime = ((mask & 0x08) == 0x08) ? decodeDateTime(null) : DateTime.MinValue;
 
-        return new DataValue(value, status, sourceTime, serverTime);
+        return new DataValue(value, status, serverTime, sourceTime);
     }
 
     @Override
@@ -376,7 +376,7 @@ public class BinaryDecoder implements UaDecoder {
         int length = decodeInt32(null);
 
         if (length == -1) {
-            return null;
+            return (T[]) Array.newInstance(clazz, 0);
         } else {
             if (length > maxArrayLength) {
                 throw new UaSerializationException(StatusCodes.Bad_EncodingLimitsExceeded,
@@ -399,7 +399,7 @@ public class BinaryDecoder implements UaDecoder {
         int length = decodeInt32(null);
 
         if (length == -1) {
-            return null;
+            return (T[]) Array.newInstance(clazz, 0);
         } else {
             if (length > maxArrayLength) {
                 throw new UaSerializationException(StatusCodes.Bad_EncodingLimitsExceeded,
