@@ -1,8 +1,8 @@
 package com.inductiveautomation.opcua.stack.core.types.builtin;
 
-import com.inductiveautomation.opcua.stack.core.types.enumerated.TimestampsToReturn;
-
 import javax.annotation.Nullable;
+
+import com.inductiveautomation.opcua.stack.core.types.enumerated.TimestampsToReturn;
 
 public class DataValue {
 
@@ -63,7 +63,7 @@ public class DataValue {
      * @param timestamps the timestamps to return in the derived value.
      * @return a derived {@link DataValue}.
      */
-    public static DataValue derived(DataValue from, TimestampsToReturn timestamps) {
+    public static DataValue derivedValue(DataValue from, TimestampsToReturn timestamps) {
         boolean includeServer = timestamps == TimestampsToReturn.Server || timestamps == TimestampsToReturn.Both;
         boolean includeSource = timestamps == TimestampsToReturn.Source || timestamps == TimestampsToReturn.Both;
 
@@ -72,6 +72,26 @@ public class DataValue {
                 from.status,
                 includeServer ? from.serverTime : null,
                 includeSource ? from.sourceTime : null
+        );
+    }
+
+    /**
+     * Derive a new {@link DataValue} from a given {@link DataValue}.
+     * <p>
+     * The value is assumed to be for a non-value Node attribute, and therefore the source timestamp is not returned.
+     *
+     * @param from       the {@link DataValue} to derive from.
+     * @param timestamps the timestamps to return in the derived value.
+     * @return a derived {@link DataValue}.
+     */
+    public static DataValue derivedNonValue(DataValue from, TimestampsToReturn timestamps) {
+        boolean includeServer = timestamps == TimestampsToReturn.Server || timestamps == TimestampsToReturn.Both;
+
+        return new DataValue(
+                from.value,
+                from.status,
+                includeServer ? from.serverTime : null,
+                null
         );
     }
 
