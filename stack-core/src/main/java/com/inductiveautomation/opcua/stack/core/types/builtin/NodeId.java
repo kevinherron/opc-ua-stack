@@ -6,34 +6,66 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.inductiveautomation.opcua.stack.core.types.enumerated.IdType;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16Primitive;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
 import com.google.common.base.Objects;
-import com.google.common.primitives.UnsignedInteger;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
+import com.inductiveautomation.opcua.stack.core.types.enumerated.IdType;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
 
 public class NodeId {
 
-    public static final NodeId NullNumeric = new NodeId(0, 0);
-    public static final NodeId NullString = new NodeId(0, "");
-    public static final NodeId NullGuid = new NodeId(0, new UUID(0, 0));
-    public static final NodeId NullOpaque = new NodeId(0, ByteString.NullValue);
+    public static final NodeId NullNumeric = new NodeId(ushort(0), uint(0));
+    public static final NodeId NullString = new NodeId(ushort(0), "");
+    public static final NodeId NullGuid = new NodeId(ushort(0), new UUID(0, 0));
+    public static final NodeId NullOpaque = new NodeId(ushort(0), ByteString.NullValue);
 
     public static final NodeId NullValue = NullNumeric;
 
-    @UInt16Primitive
-    private final int namespaceIndex;
+    private final UShort namespaceIndex;
     private final Object identifier;
 
     /**
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public NodeId(@UInt16Primitive int namespaceIndex, @UInt32Primitive Number identifier) {
-        checkArgument(identifier.longValue() >= 0 && identifier.longValue() <= UnsignedInteger.MAX_VALUE.longValue());
+    public NodeId(int namespaceIndex, int identifier) {
+        this(ushort(namespaceIndex), uint(identifier));
+    }
+
+    /**
+     * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
+     * @param identifier     the identifier for a node in the address space of an OPC UA Server.
+     */
+    public NodeId(int namespaceIndex, String identifier) {
+        this(ushort(namespaceIndex), identifier);
+    }
+
+    /**
+     * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
+     * @param identifier     the identifier for a node in the address space of an OPC UA Server.
+     */
+    public NodeId(int namespaceIndex, UUID identifier) {
+        this(ushort(namespaceIndex), identifier);
+    }
+
+    /**
+     * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
+     * @param identifier     the identifier for a node in the address space of an OPC UA Server.
+     */
+    public NodeId(int namespaceIndex, ByteString identifier) {
+        this(ushort(namespaceIndex), identifier);
+    }
+
+    /**
+     * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
+     * @param identifier     the identifier for a node in the address space of an OPC UA Server.
+     */
+    public NodeId(UShort namespaceIndex, UInteger identifier) {
+        checkNotNull(namespaceIndex);
+        checkNotNull(identifier);
 
         this.namespaceIndex = namespaceIndex;
         this.identifier = identifier.longValue();
@@ -43,7 +75,8 @@ public class NodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public NodeId(@UInt16Primitive int namespaceIndex, String identifier) {
+    public NodeId(UShort namespaceIndex, String identifier) {
+        checkNotNull(namespaceIndex);
         checkNotNull(identifier);
 
         this.namespaceIndex = namespaceIndex;
@@ -54,7 +87,8 @@ public class NodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public NodeId(@UInt16Primitive int namespaceIndex, UUID identifier) {
+    public NodeId(UShort namespaceIndex, UUID identifier) {
+        checkNotNull(namespaceIndex);
         checkNotNull(identifier);
 
         this.namespaceIndex = namespaceIndex;
@@ -65,14 +99,15 @@ public class NodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public NodeId(@UInt16Primitive int namespaceIndex, ByteString identifier) {
+    public NodeId(UShort namespaceIndex, ByteString identifier) {
+        checkNotNull(namespaceIndex);
         checkNotNull(identifier);
 
         this.namespaceIndex = namespaceIndex;
         this.identifier = identifier;
     }
 
-    public int getNamespaceIndex() {
+    public UShort getNamespaceIndex() {
         return namespaceIndex;
     }
 
@@ -97,7 +132,7 @@ public class NodeId {
     }
 
     public boolean isNull() {
-        return namespaceIndex == 0 &&
+        return namespaceIndex.intValue() == 0 &&
                 (NullNumeric.equals(this) || NullString.equals(this) || NullGuid.equals(this) || NullOpaque.equals(this));
     }
 
@@ -108,12 +143,13 @@ public class NodeId {
 
         NodeId nodeId = (NodeId) o;
 
-        return namespaceIndex == nodeId.namespaceIndex && identifier.equals(nodeId.identifier);
+        return identifier.equals(nodeId.identifier) &&
+                namespaceIndex.equals(nodeId.namespaceIndex);
     }
 
     @Override
     public int hashCode() {
-        int result = namespaceIndex;
+        int result = namespaceIndex.hashCode();
         result = 31 * result + identifier.hashCode();
         return result;
     }
@@ -146,53 +182,53 @@ public class NodeId {
         m = NONE_STRING.matcher(s);
         if (m.matches()) {
             String obj = m.group(1);
-            return new NodeId(0, obj);
+            return new NodeId(ushort(0), obj);
         }
 
         m = NONE_INT.matcher(s);
         if (m.matches()) {
             Integer obj = Integer.valueOf(m.group(1));
-            return new NodeId(0, obj);
+            return new NodeId(ushort(0), uint(obj));
         }
 
         m = NONE_GUID.matcher(s);
         if (m.matches()) {
             UUID obj = UUID.fromString(m.group(1));
-            return new NodeId(0, obj);
+            return new NodeId(ushort(0), obj);
         }
 
         m = NONE_OPAQUE.matcher(s);
         if (m.matches()) {
             byte[] obj = DatatypeConverter.parseBase64Binary(m.group(1));
-            return new NodeId(0, ByteString.of(obj));
+            return new NodeId(ushort(0), ByteString.of(obj));
         }
 
         m = INT_INT.matcher(s);
         if (m.matches()) {
             Integer nsi = Integer.valueOf(m.group(1));
             Integer obj = Integer.valueOf(m.group(2));
-            return new NodeId(nsi, obj);
+            return new NodeId(ushort(nsi), uint(obj));
         }
 
         m = INT_STRING.matcher(s);
         if (m.matches()) {
             Integer nsi = Integer.valueOf(m.group(1));
             String obj = m.group(2);
-            return new NodeId(nsi, obj);
+            return new NodeId(ushort(nsi), obj);
         }
 
         m = INT_GUID.matcher(s);
         if (m.matches()) {
             Integer nsi = Integer.valueOf(m.group(1));
             UUID obj = UUID.fromString(m.group(2));
-            return new NodeId(nsi, obj);
+            return new NodeId(ushort(nsi), obj);
         }
 
         m = INT_OPAQUE.matcher(s);
         if (m.matches()) {
             Integer nsi = Integer.valueOf(m.group(1));
             byte[] obj = DatatypeConverter.parseBase64Binary(m.group(2));
-            return new NodeId(nsi, ByteString.of(obj));
+            return new NodeId(ushort(nsi), ByteString.of(obj));
         }
 
         throw new IllegalArgumentException("invalid string representation of a nodeId: " + s);

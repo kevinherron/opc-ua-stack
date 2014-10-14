@@ -3,6 +3,9 @@ package com.inductiveautomation.opcua.stack.core;
 
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
+
 public class Identifiers {
 
     public static final NodeId ActivateSessionRequest = init(465);
@@ -4898,7 +4901,7 @@ public class Identifiers {
     public static final NodeId YArrayItemType = init(12029);
 
     static NodeId init(int value) {
-        return new NodeId(0, value);
+        return new NodeId(ushort(0), uint(value));
     }
 
 }

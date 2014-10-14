@@ -1,20 +1,22 @@
 package com.inductiveautomation.opcua.stack.core.types.builtin;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16Primitive;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
+
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
 
 /**
  * This Built-in DataType contains a qualified name. It is, for example, used as BrowseName.
  */
 public class QualifiedName {
 
-    public static final QualifiedName NullValue = new QualifiedName(0, null);
+    public static final QualifiedName NullValue = new QualifiedName(ushort(0), null);
 
-    @UInt16Primitive
-    private final int namespaceIndex;
+    private final UShort namespaceIndex;
     private final String name;
 
     /**
@@ -24,16 +26,26 @@ public class QualifiedName {
      *                       namespace in the local Server’s NamespaceArray.
      * @param name           the text portion of the QualifiedName.
      */
-    public QualifiedName(@UInt16Primitive int namespaceIndex, @Nullable String name) {
-        Preconditions.checkArgument(namespaceIndex >= 0 && namespaceIndex <= 0xFFFF, "namespaceIndex");
+    public QualifiedName(int namespaceIndex, @Nullable String name) {
+        this(ushort(namespaceIndex), name);
+    }
+
+    /**
+     * The name part of the QualifiedName is restricted to 512 characters.
+     *
+     * @param namespaceIndex index that identifies the namespace that defines the name. This index is the index of that
+     *                       namespace in the local Server’s NamespaceArray.
+     * @param name           the text portion of the QualifiedName.
+     */
+    public QualifiedName(@Nonnull UShort namespaceIndex, @Nullable String name) {
+        Preconditions.checkNotNull(namespaceIndex);
         Preconditions.checkArgument(name == null || name.length() <= 512, "name");
 
         this.namespaceIndex = namespaceIndex;
         this.name = name;
     }
 
-    @UInt16Primitive
-    public int getNamespaceIndex() {
+    public UShort getNamespaceIndex() {
         return namespaceIndex;
     }
 
@@ -49,13 +61,13 @@ public class QualifiedName {
 
         QualifiedName that = (QualifiedName) o;
 
-        return namespaceIndex == that.namespaceIndex &&
-                !(name != null ? !name.equals(that.name) : that.name != null);
+        return !(name != null ? !name.equals(that.name) : that.name != null) &&
+                namespaceIndex.equals(that.namespaceIndex);
     }
 
     @Override
     public int hashCode() {
-        int result = namespaceIndex;
+        int result = namespaceIndex.hashCode();
         result = 31 * result + (name != null ? name.hashCode() : 0);
         return result;
     }
@@ -83,7 +95,7 @@ public class QualifiedName {
             name = ss[1];
         }
 
-        return new QualifiedName(namespaceIndex, name);
+        return new QualifiedName(ushort(namespaceIndex), name);
     }
 
 }

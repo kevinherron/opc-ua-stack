@@ -2,14 +2,16 @@ package com.inductiveautomation.opcua.stack.core.types.builtin;
 
 import java.util.UUID;
 
-import com.inductiveautomation.opcua.stack.core.types.enumerated.IdType;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16Primitive;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
 import com.google.common.base.Objects;
 import com.google.common.primitives.UnsignedInteger;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
+import com.inductiveautomation.opcua.stack.core.types.enumerated.IdType;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
 
 public class ExpandedNodeId {
 
@@ -33,7 +35,7 @@ public class ExpandedNodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public ExpandedNodeId(@UInt16Primitive int namespaceIndex, @UInt32Primitive Number identifier, String namespaceUri, long serverIndex) {
+    public ExpandedNodeId(UShort namespaceIndex, UInteger identifier, String namespaceUri, long serverIndex) {
         checkArgument(identifier.longValue() >= 0 && identifier.longValue() <= UnsignedInteger.MAX_VALUE.longValue());
 
         this.nodeId = new NodeId(namespaceIndex, identifier);
@@ -45,7 +47,15 @@ public class ExpandedNodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public ExpandedNodeId(@UInt16Primitive int namespaceIndex, String identifier, String namespaceUri, long serverIndex) {
+    public ExpandedNodeId(int namespaceIndex, int identifier, String namespaceUri, long serverIndex) {
+        this(ushort(namespaceIndex), uint(identifier), namespaceUri, serverIndex);
+    }
+
+    /**
+     * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
+     * @param identifier     the identifier for a node in the address space of an OPC UA Server.
+     */
+    public ExpandedNodeId(UShort namespaceIndex, String identifier, String namespaceUri, long serverIndex) {
         checkNotNull(identifier);
 
         this.nodeId = new NodeId(namespaceIndex, identifier);
@@ -57,7 +67,15 @@ public class ExpandedNodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public ExpandedNodeId(@UInt16Primitive int namespaceIndex, UUID identifier, String namespaceUri, long serverIndex) {
+    public ExpandedNodeId(int namespaceIndex, String identifier, String namespaceUri, long serverIndex) {
+        this(ushort(namespaceIndex), identifier, namespaceUri, serverIndex);
+    }
+
+    /**
+     * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
+     * @param identifier     the identifier for a node in the address space of an OPC UA Server.
+     */
+    public ExpandedNodeId(UShort namespaceIndex, UUID identifier, String namespaceUri, long serverIndex) {
         checkNotNull(identifier);
 
         this.nodeId = new NodeId(namespaceIndex, identifier);
@@ -69,7 +87,15 @@ public class ExpandedNodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public ExpandedNodeId(@UInt16Primitive int namespaceIndex, ByteString identifier, String namespaceUri, long serverIndex) {
+    public ExpandedNodeId(int namespaceIndex, UUID identifier, String namespaceUri, long serverIndex) {
+        this(ushort(namespaceIndex), identifier, namespaceUri, serverIndex);
+    }
+
+    /**
+     * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
+     * @param identifier     the identifier for a node in the address space of an OPC UA Server.
+     */
+    public ExpandedNodeId(UShort namespaceIndex, ByteString identifier, String namespaceUri, long serverIndex) {
         checkNotNull(identifier);
 
         this.nodeId = new NodeId(namespaceIndex, identifier);
@@ -77,7 +103,15 @@ public class ExpandedNodeId {
         this.serverIndex = serverIndex;
     }
 
-    public int getNamespaceIndex() {
+    /**
+     * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
+     * @param identifier     the identifier for a node in the address space of an OPC UA Server.
+     */
+    public ExpandedNodeId(int namespaceIndex, ByteString identifier, String namespaceUri, long serverIndex) {
+        this(ushort(namespaceIndex), identifier, namespaceUri, serverIndex);
+    }
+
+    public UShort getNamespaceIndex() {
         return nodeId.getNamespaceIndex();
     }
 

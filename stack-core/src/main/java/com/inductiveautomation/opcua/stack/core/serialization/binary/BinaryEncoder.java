@@ -229,7 +229,7 @@ public class BinaryEncoder implements UaEncoder {
     public void encodeNodeId(String field, NodeId value) throws UaSerializationException {
 		if (value == null) value = NodeId.NullValue;
 
-        int namespaceIndex = value.getNamespaceIndex();
+        int namespaceIndex = value.getNamespaceIndex().intValue();
 
         if (value.getType() == IdType.Numeric) {
             long identifier = ((Number) value.getIdentifier()).longValue();
@@ -288,7 +288,7 @@ public class BinaryEncoder implements UaEncoder {
             flags |= 0x40;
         }
 
-        int namespaceIndex = value.getNamespaceIndex();
+        int namespaceIndex = value.getNamespaceIndex().intValue();
 
         if (value.getType() == IdType.Numeric) {
             long identifier = (Long) value.getIdentifier();

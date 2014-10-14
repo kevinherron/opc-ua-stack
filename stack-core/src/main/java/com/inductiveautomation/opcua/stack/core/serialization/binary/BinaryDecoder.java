@@ -188,22 +188,22 @@ public class BinaryDecoder implements UaDecoder {
 
         if (format == 0x00) {
             /* Two-byte format */
-            return new NodeId(0, buffer.readUnsignedByte());
+            return new NodeId(ushort(0), uint(buffer.readUnsignedByte()));
         } else if (format == 0x01) {
             /* Four-byte format */
-            return new NodeId(buffer.readUnsignedByte(), buffer.readUnsignedShort());
+            return new NodeId(ushort(buffer.readUnsignedByte()), uint(buffer.readUnsignedShort()));
         } else if (format == 0x02) {
             /* Numeric format */
-            return new NodeId(buffer.readUnsignedShort(), buffer.readUnsignedInt());
+            return new NodeId(ushort(buffer.readUnsignedShort()), uint(buffer.readUnsignedInt()));
         } else if (format == 0x03) {
             /* String format */
-            return new NodeId(buffer.readUnsignedShort(), decodeString(null));
+            return new NodeId(ushort(buffer.readUnsignedShort()), decodeString(null));
         } else if (format == 0x04) {
             /* Guid format */
-            return new NodeId(buffer.readUnsignedShort(), decodeGuid(null));
+            return new NodeId(ushort(buffer.readUnsignedShort()), decodeGuid(null));
         } else if (format == 0x05) {
             /* Opaque format */
-            return new NodeId(buffer.readUnsignedShort(), decodeByteString(null));
+            return new NodeId(ushort(buffer.readUnsignedShort()), decodeByteString(null));
         } else {
             throw new UaSerializationException(StatusCodes.Bad_EncodingError, "invalid NodeId format: " + format);
         }
@@ -239,7 +239,7 @@ public class BinaryDecoder implements UaDecoder {
         int namespaceIndex = decodeUInt16(null).intValue();
         String name = decodeString(null);
 
-        return new QualifiedName(namespaceIndex, name);
+        return new QualifiedName(ushort(namespaceIndex), name);
     }
 
     @Override
