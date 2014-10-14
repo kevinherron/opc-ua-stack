@@ -232,22 +232,23 @@ public class BinaryEncoder implements UaEncoder {
         int namespaceIndex = value.getNamespaceIndex().intValue();
 
         if (value.getType() == IdType.Numeric) {
-            long identifier = ((Number) value.getIdentifier()).longValue();
+            UInteger identifier = (UInteger) value.getIdentifier();
+            long idv = identifier.longValue();
 
-            if (namespaceIndex == 0 && identifier >= 0 && identifier <= 255) {
+            if (namespaceIndex == 0 && idv >= 0 && idv <= 255) {
                 /* Two-byte format */
                 buffer.writeByte(0x00);
-                buffer.writeByte((int) identifier);
-            } else if (namespaceIndex >= 0 && namespaceIndex <= 255 && identifier <= 65535) {
+                buffer.writeByte((int) idv);
+            } else if (namespaceIndex >= 0 && namespaceIndex <= 255 && idv <= 65535) {
                 /* Four-byte format */
                 buffer.writeByte(0x01);
                 buffer.writeByte(namespaceIndex);
-                buffer.writeShort((int) identifier);
+                buffer.writeShort((int) idv);
             } else {
                 /* Numeric format */
                 buffer.writeByte(0x02);
                 buffer.writeShort(namespaceIndex);
-                buffer.writeInt((int) identifier);
+                buffer.writeInt((int) idv);
             }
         } else if (value.getType() == IdType.String) {
             String identifier = (String) value.getIdentifier();
@@ -291,22 +292,23 @@ public class BinaryEncoder implements UaEncoder {
         int namespaceIndex = value.getNamespaceIndex().intValue();
 
         if (value.getType() == IdType.Numeric) {
-            long identifier = (Long) value.getIdentifier();
+            UInteger identifier = (UInteger) value.getIdentifier();
+            long idv = identifier.longValue();
 
-            if (namespaceIndex == 0 && identifier >= 0 && identifier <= 255) {
+            if (namespaceIndex == 0 && idv >= 0 && idv <= 255) {
                 /* Two-byte format */
                 buffer.writeByte(flags);
-                buffer.writeByte((int) identifier);
-            } else if (namespaceIndex >= 0 && namespaceIndex <= 255 && identifier <= 65535) {
+                buffer.writeByte((int) idv);
+            } else if (namespaceIndex >= 0 && namespaceIndex <= 255 && idv <= 65535) {
                 /* Four-byte format */
                 buffer.writeByte(0x01 | flags);
                 buffer.writeByte(namespaceIndex);
-                buffer.writeShort((int) identifier);
+                buffer.writeShort((int) idv);
             } else {
                 /* Numeric format */
                 buffer.writeByte(0x02 | flags);
                 buffer.writeShort(namespaceIndex);
-                buffer.writeInt((int) identifier);
+                buffer.writeInt((int) idv);
             }
         } else if (value.getType() == IdType.String) {
             String identifier = (String) value.getIdentifier();

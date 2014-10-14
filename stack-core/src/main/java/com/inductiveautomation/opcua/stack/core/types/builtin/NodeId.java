@@ -68,7 +68,7 @@ public class NodeId {
         checkNotNull(identifier);
 
         this.namespaceIndex = namespaceIndex;
-        this.identifier = identifier.longValue();
+        this.identifier = identifier;
     }
 
     /**
@@ -116,7 +116,7 @@ public class NodeId {
     }
 
     public IdType getType() {
-        if (identifier instanceof Long) {
+        if (identifier instanceof UInteger) {
             return IdType.Numeric;
         } else if (identifier instanceof String) {
             return IdType.String;
