@@ -256,6 +256,11 @@ public class UaTcpServer implements UaServer {
     }
 
     @Override
+    public Certificate getCertificate() {
+        return certificate;
+    }
+
+    @Override
     public Optional<Certificate> getCertificate(ByteString thumbprint) {
         try {
             ByteString actualThumbprint = certificate != null ?

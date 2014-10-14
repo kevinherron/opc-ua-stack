@@ -1,5 +1,6 @@
 package com.inductiveautomation.opcua.stack.core.application;
 
+import javax.annotation.Nullable;
 import java.security.KeyPair;
 import java.security.cert.Certificate;
 import java.util.EnumSet;
@@ -74,6 +75,9 @@ public interface UaServer {
     void shutdown();
 
     Optional<KeyPair> getKeyPair(ByteString thumbprint);
+
+    @Nullable
+    Certificate getCertificate();
 
     Optional<Certificate> getCertificate(ByteString thumbprint);
 
