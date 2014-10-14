@@ -29,7 +29,8 @@ public enum PerformUpdateType implements UaEnumeration {
 
     public static PerformUpdateType decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return PerformUpdateType.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

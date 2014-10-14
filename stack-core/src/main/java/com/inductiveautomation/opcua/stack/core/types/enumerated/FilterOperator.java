@@ -43,7 +43,8 @@ public enum FilterOperator implements UaEnumeration {
 
     public static FilterOperator decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return FilterOperator.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

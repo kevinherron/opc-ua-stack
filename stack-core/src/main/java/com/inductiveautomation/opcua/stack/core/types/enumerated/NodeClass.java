@@ -34,7 +34,8 @@ public enum NodeClass implements UaEnumeration {
 
     public static NodeClass decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return NodeClass.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

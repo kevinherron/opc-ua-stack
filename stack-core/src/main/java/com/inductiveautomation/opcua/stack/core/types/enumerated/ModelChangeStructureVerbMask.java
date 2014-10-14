@@ -30,7 +30,8 @@ public enum ModelChangeStructureVerbMask implements UaEnumeration {
 
     public static ModelChangeStructureVerbMask decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return ModelChangeStructureVerbMask.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

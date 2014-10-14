@@ -29,7 +29,8 @@ public enum MessageSecurityMode implements UaEnumeration {
 
     public static MessageSecurityMode decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return MessageSecurityMode.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

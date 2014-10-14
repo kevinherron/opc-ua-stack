@@ -28,7 +28,8 @@ public enum EnumeratedTestType implements UaEnumeration {
 
     public static EnumeratedTestType decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return EnumeratedTestType.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

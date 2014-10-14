@@ -48,7 +48,8 @@ public enum AttributeWriteMask implements UaEnumeration {
 
     public static AttributeWriteMask decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return AttributeWriteMask.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

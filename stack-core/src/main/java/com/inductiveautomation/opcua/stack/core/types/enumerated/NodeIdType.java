@@ -31,7 +31,8 @@ public enum NodeIdType implements UaEnumeration {
 
     public static NodeIdType decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return NodeIdType.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

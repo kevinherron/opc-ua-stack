@@ -28,7 +28,8 @@ public enum DeadbandType implements UaEnumeration {
 
     public static DeadbandType decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return DeadbandType.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

@@ -33,7 +33,8 @@ public enum ServerState implements UaEnumeration {
 
     public static ServerState decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return ServerState.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

@@ -35,7 +35,8 @@ public enum BrowseResultMask implements UaEnumeration {
 
     public static BrowseResultMask decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return BrowseResultMask.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

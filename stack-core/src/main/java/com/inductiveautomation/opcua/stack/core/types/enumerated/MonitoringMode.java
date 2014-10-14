@@ -28,7 +28,8 @@ public enum MonitoringMode implements UaEnumeration {
 
     public static MonitoringMode decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return MonitoringMode.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

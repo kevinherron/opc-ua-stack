@@ -29,7 +29,8 @@ public enum HistoryUpdateType implements UaEnumeration {
 
     public static HistoryUpdateType decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return HistoryUpdateType.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

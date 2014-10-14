@@ -57,7 +57,8 @@ public enum NodeAttributesMask implements UaEnumeration {
 
     public static NodeAttributesMask decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return NodeAttributesMask.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

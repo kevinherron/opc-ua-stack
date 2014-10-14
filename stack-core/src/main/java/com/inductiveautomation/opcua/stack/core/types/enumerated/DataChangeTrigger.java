@@ -28,7 +28,8 @@ public enum DataChangeTrigger implements UaEnumeration {
 
     public static DataChangeTrigger decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return DataChangeTrigger.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

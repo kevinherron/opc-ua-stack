@@ -29,7 +29,8 @@ public enum TimestampsToReturn implements UaEnumeration {
 
     public static TimestampsToReturn decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return TimestampsToReturn.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

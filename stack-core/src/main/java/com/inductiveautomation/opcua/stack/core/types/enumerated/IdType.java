@@ -29,7 +29,8 @@ public enum IdType implements UaEnumeration {
 
     public static IdType decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return IdType.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {

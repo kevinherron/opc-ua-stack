@@ -27,7 +27,8 @@ public enum SecurityTokenRequestType implements UaEnumeration {
 
     public static SecurityTokenRequestType decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
-        return SecurityTokenRequestType.values()[value];
+
+        return value < values().length ? values()[value] : null;
     }
 
     static {
