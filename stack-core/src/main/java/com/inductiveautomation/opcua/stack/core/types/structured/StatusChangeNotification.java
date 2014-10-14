@@ -23,18 +23,28 @@ public class StatusChangeNotification extends NotificationData {
         this._diagnosticInfo = _diagnosticInfo;
     }
 
-    public StatusCode getStatus() { return _status; }
+    public StatusCode getStatus() {
+        return _status;
+    }
 
-    public DiagnosticInfo getDiagnosticInfo() { return _diagnosticInfo; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public DiagnosticInfo getDiagnosticInfo() {
+        return _diagnosticInfo;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(StatusChangeNotification statusChangeNotification, UaEncoder encoder) {

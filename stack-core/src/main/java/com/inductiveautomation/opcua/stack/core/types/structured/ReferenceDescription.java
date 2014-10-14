@@ -35,28 +35,48 @@ public class ReferenceDescription implements UaStructure {
         this._typeDefinition = _typeDefinition;
     }
 
-    public NodeId getReferenceTypeId() { return _referenceTypeId; }
+    public NodeId getReferenceTypeId() {
+        return _referenceTypeId;
+    }
 
-    public Boolean getIsForward() { return _isForward; }
+    public Boolean getIsForward() {
+        return _isForward;
+    }
 
-    public ExpandedNodeId getNodeId() { return _nodeId; }
+    public ExpandedNodeId getNodeId() {
+        return _nodeId;
+    }
 
-    public QualifiedName getBrowseName() { return _browseName; }
+    public QualifiedName getBrowseName() {
+        return _browseName;
+    }
 
-    public LocalizedText getDisplayName() { return _displayName; }
+    public LocalizedText getDisplayName() {
+        return _displayName;
+    }
 
-    public NodeClass getNodeClass() { return _nodeClass; }
+    public NodeClass getNodeClass() {
+        return _nodeClass;
+    }
 
-    public ExpandedNodeId getTypeDefinition() { return _typeDefinition; }
+    public ExpandedNodeId getTypeDefinition() {
+        return _typeDefinition;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ReferenceDescription referenceDescription, UaEncoder encoder) {

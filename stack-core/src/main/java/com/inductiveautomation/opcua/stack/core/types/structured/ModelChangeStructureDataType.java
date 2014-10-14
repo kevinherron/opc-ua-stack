@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 
 public class ModelChangeStructureDataType implements UaStructure {
 
@@ -15,28 +16,40 @@ public class ModelChangeStructureDataType implements UaStructure {
 
     protected final NodeId _affected;
     protected final NodeId _affectedType;
-    protected final Short _verb;
+    protected final UByte _verb;
 
-    public ModelChangeStructureDataType(NodeId _affected, NodeId _affectedType, Short _verb) {
+    public ModelChangeStructureDataType(NodeId _affected, NodeId _affectedType, UByte _verb) {
         this._affected = _affected;
         this._affectedType = _affectedType;
         this._verb = _verb;
     }
 
-    public NodeId getAffected() { return _affected; }
+    public NodeId getAffected() {
+        return _affected;
+    }
 
-    public NodeId getAffectedType() { return _affectedType; }
+    public NodeId getAffectedType() {
+        return _affectedType;
+    }
 
-    public Short getVerb() { return _verb; }
+    public UByte getVerb() {
+        return _verb;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ModelChangeStructureDataType modelChangeStructureDataType, UaEncoder encoder) {
@@ -48,7 +61,7 @@ public class ModelChangeStructureDataType implements UaStructure {
     public static ModelChangeStructureDataType decode(UaDecoder decoder) {
         NodeId _affected = decoder.decodeNodeId("Affected");
         NodeId _affectedType = decoder.decodeNodeId("AffectedType");
-        Short _verb = decoder.decodeByte("Verb");
+        UByte _verb = decoder.decodeByte("Verb");
 
         return new ModelChangeStructureDataType(_affected, _affectedType, _verb);
     }

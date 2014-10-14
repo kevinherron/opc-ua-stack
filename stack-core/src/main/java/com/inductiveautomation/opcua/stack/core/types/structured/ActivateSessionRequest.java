@@ -30,26 +30,44 @@ public class ActivateSessionRequest implements UaRequestMessage {
         this._userTokenSignature = _userTokenSignature;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public SignatureData getClientSignature() { return _clientSignature; }
+    public SignatureData getClientSignature() {
+        return _clientSignature;
+    }
 
-    public SignedSoftwareCertificate[] getClientSoftwareCertificates() { return _clientSoftwareCertificates; }
+    public SignedSoftwareCertificate[] getClientSoftwareCertificates() {
+        return _clientSoftwareCertificates;
+    }
 
-    public String[] getLocaleIds() { return _localeIds; }
+    public String[] getLocaleIds() {
+        return _localeIds;
+    }
 
-    public ExtensionObject getUserIdentityToken() { return _userIdentityToken; }
+    public ExtensionObject getUserIdentityToken() {
+        return _userIdentityToken;
+    }
 
-    public SignatureData getUserTokenSignature() { return _userTokenSignature; }
+    public SignatureData getUserTokenSignature() {
+        return _userTokenSignature;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ActivateSessionRequest activateSessionRequest, UaEncoder encoder) {

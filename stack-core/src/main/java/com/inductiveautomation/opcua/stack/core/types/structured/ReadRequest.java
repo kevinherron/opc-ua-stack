@@ -26,22 +26,36 @@ public class ReadRequest implements UaRequestMessage {
         this._nodesToRead = _nodesToRead;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public Double getMaxAge() { return _maxAge; }
+    public Double getMaxAge() {
+        return _maxAge;
+    }
 
-    public TimestampsToReturn getTimestampsToReturn() { return _timestampsToReturn; }
+    public TimestampsToReturn getTimestampsToReturn() {
+        return _timestampsToReturn;
+    }
 
-    public ReadValueId[] getNodesToRead() { return _nodesToRead; }
+    public ReadValueId[] getNodesToRead() {
+        return _nodesToRead;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ReadRequest readRequest, UaEncoder encoder) {

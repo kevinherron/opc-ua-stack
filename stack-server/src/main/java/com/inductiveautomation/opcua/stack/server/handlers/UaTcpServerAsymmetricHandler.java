@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.google.common.collect.Lists;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelSecurity;
@@ -29,7 +30,6 @@ import com.inductiveautomation.opcua.stack.core.types.structured.ResponseHeader;
 import com.inductiveautomation.opcua.stack.core.util.BufferUtil;
 import com.inductiveautomation.opcua.stack.core.util.CertificateUtil;
 import com.inductiveautomation.opcua.stack.server.tcp.UaTcpServer;
-import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -37,6 +37,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 import static com.inductiveautomation.opcua.stack.core.util.NonceUtil.generateNonce;
 import static com.inductiveautomation.opcua.stack.core.util.NonceUtil.getNonceLength;
 
@@ -223,15 +224,15 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                     "secure channel renewal requested a different MessageSecurityMode.");
         }
 
-        long channelLifetime = request.getRequestedLifetime();
+        long channelLifetime = request.getRequestedLifetime().longValue();
         channelLifetime = Math.min(SecureChannelLifetimeMax, channelLifetime);
         channelLifetime = Math.max(SecureChannelLifetimeMin, channelLifetime);
 
         ChannelSecurityToken newToken = new ChannelSecurityToken(
-                secureChannel.getChannelId(),
-                server.nextTokenId(),
+                uint(secureChannel.getChannelId()),
+                uint(server.nextTokenId()),
                 DateTime.now(),
-                channelLifetime
+                uint(channelLifetime)
         );
 
         ChannelSecurity.SecuritySecrets newKeys = null;
@@ -272,7 +273,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
 
         OpenSecureChannelResponse response = new OpenSecureChannelResponse(
                 responseHeader,
-                PROTOCOL_VERSION,
+                uint(PROTOCOL_VERSION),
                 newToken,
                 secureChannel.getLocalNonce()
         );
@@ -303,7 +304,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                 chunks.forEach(c -> ctx.write(c, ctx.voidPromise()));
                 ctx.flush();
 
-                long lifetime = response.getSecurityToken().getRevisedLifetime();
+                long lifetime = response.getSecurityToken().getRevisedLifetime().longValue();
                 server.secureChannelIssuedOrRenewed(secureChannel, lifetime);
 
                 logger.debug("Sent OpenSecureChannelResponse.");

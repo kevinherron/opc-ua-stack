@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class SimpleAttributeOperand extends FilterOperand {
 
@@ -15,10 +16,10 @@ public class SimpleAttributeOperand extends FilterOperand {
 
     protected final NodeId _typeDefinitionId;
     protected final QualifiedName[] _browsePath;
-    protected final Long _attributeId;
+    protected final UInteger _attributeId;
     protected final String _indexRange;
 
-    public SimpleAttributeOperand(NodeId _typeDefinitionId, QualifiedName[] _browsePath, Long _attributeId, String _indexRange) {
+    public SimpleAttributeOperand(NodeId _typeDefinitionId, QualifiedName[] _browsePath, UInteger _attributeId, String _indexRange) {
         super();
         this._typeDefinitionId = _typeDefinitionId;
         this._browsePath = _browsePath;
@@ -26,22 +27,36 @@ public class SimpleAttributeOperand extends FilterOperand {
         this._indexRange = _indexRange;
     }
 
-    public NodeId getTypeDefinitionId() { return _typeDefinitionId; }
+    public NodeId getTypeDefinitionId() {
+        return _typeDefinitionId;
+    }
 
-    public QualifiedName[] getBrowsePath() { return _browsePath; }
+    public QualifiedName[] getBrowsePath() {
+        return _browsePath;
+    }
 
-    public Long getAttributeId() { return _attributeId; }
+    public UInteger getAttributeId() {
+        return _attributeId;
+    }
 
-    public String getIndexRange() { return _indexRange; }
+    public String getIndexRange() {
+        return _indexRange;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(SimpleAttributeOperand simpleAttributeOperand, UaEncoder encoder) {
@@ -54,7 +69,7 @@ public class SimpleAttributeOperand extends FilterOperand {
     public static SimpleAttributeOperand decode(UaDecoder decoder) {
         NodeId _typeDefinitionId = decoder.decodeNodeId("TypeDefinitionId");
         QualifiedName[] _browsePath = decoder.decodeArray("BrowsePath", decoder::decodeQualifiedName, QualifiedName.class);
-        Long _attributeId = decoder.decodeUInt32("AttributeId");
+        UInteger _attributeId = decoder.decodeUInt32("AttributeId");
         String _indexRange = decoder.decodeString("IndexRange");
 
         return new SimpleAttributeOperand(_typeDefinitionId, _browsePath, _attributeId, _indexRange);

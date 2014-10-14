@@ -7,6 +7,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class TransferResult implements UaStructure {
 
@@ -15,25 +16,35 @@ public class TransferResult implements UaStructure {
     public static final NodeId XmlEncodingId = Identifiers.TransferResult_Encoding_DefaultXml;
 
     protected final StatusCode _statusCode;
-    protected final Long[] _availableSequenceNumbers;
+    protected final UInteger[] _availableSequenceNumbers;
 
-    public TransferResult(StatusCode _statusCode, Long[] _availableSequenceNumbers) {
+    public TransferResult(StatusCode _statusCode, UInteger[] _availableSequenceNumbers) {
         this._statusCode = _statusCode;
         this._availableSequenceNumbers = _availableSequenceNumbers;
     }
 
-    public StatusCode getStatusCode() { return _statusCode; }
+    public StatusCode getStatusCode() {
+        return _statusCode;
+    }
 
-    public Long[] getAvailableSequenceNumbers() { return _availableSequenceNumbers; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public UInteger[] getAvailableSequenceNumbers() {
+        return _availableSequenceNumbers;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(TransferResult transferResult, UaEncoder encoder) {
@@ -43,7 +54,7 @@ public class TransferResult implements UaStructure {
 
     public static TransferResult decode(UaDecoder decoder) {
         StatusCode _statusCode = decoder.decodeStatusCode("StatusCode");
-        Long[] _availableSequenceNumbers = decoder.decodeArray("AvailableSequenceNumbers", decoder::decodeUInt32, Long.class);
+        UInteger[] _availableSequenceNumbers = decoder.decodeArray("AvailableSequenceNumbers", decoder::decodeUInt32, UInteger.class);
 
         return new TransferResult(_statusCode, _availableSequenceNumbers);
     }

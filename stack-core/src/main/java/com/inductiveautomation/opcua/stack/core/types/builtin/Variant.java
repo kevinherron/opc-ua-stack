@@ -3,12 +3,11 @@ package com.inductiveautomation.opcua.stack.core.types.builtin;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Optional;
 
+import com.google.common.base.Objects.ToStringHelper;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEnumeration;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.util.ArrayUtil;
-import com.google.common.base.Objects.ToStringHelper;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -17,34 +16,13 @@ public class Variant {
     public static final Variant NullValue = new Variant(null);
 
     private final Object value;
-    private final Optional<OverloadedType> type;
 
     /**
-     * Create a new Variant with the given value. Use {@link #Variant(Object, OverloadedType)} for creating values
-     * of a {@link OverloadedType} (UByte, UInt16, UInt32, UInt64).
+     * Create a new Variant with a given value.
      *
      * @param value the value this Variant holds.
      */
     public Variant(@Nullable Object value) {
-        this(value, null);
-    }
-
-    /**
-     * Create a new Variant with a given value and {@link OverloadedType}.
-     * <p>
-     * If a {@link OverloadedType} is specified you must ensure the value is coercible to the correct type for the
-     * {@link OverloadedType} specified:
-     * <pre>
-     *     UByte    Short.class
-     *     UInt16   Integer.class
-     *     UInt32   Long.class
-     *     UInt64   Long.class
-     * </pre>
-     *
-     * @param value the value this Variant holds.
-     * @param type  the {@link OverloadedType} type of {@code value}.
-     */
-    public Variant(@Nullable Object value, @Nullable OverloadedType type) {
         if (value != null) {
             Class<?> clazz = value.getClass().isArray() ? ArrayUtil.getType(value) : value.getClass();
 
@@ -62,22 +40,10 @@ public class Variant {
         }
 
         this.value = value;
-        this.type = Optional.ofNullable(type);
     }
 
     public Object getValue() {
         return value;
-    }
-
-    public Optional<OverloadedType> getOverloadedType() {
-        return type;
-    }
-
-    /**
-     * @return {@code true} if this value is a {@link OverloadedType}.
-     */
-    public boolean isOverloadedType() {
-        return type.isPresent();
     }
 
     @Override
@@ -87,12 +53,12 @@ public class Variant {
 
         Variant variant = (Variant) o;
 
-        return Objects.equals(type, variant.type) && Objects.deepEquals(value, variant.value);
+        return Objects.deepEquals(value, variant.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(valueHash(), type);
+        return Objects.hash(valueHash());
     }
 
     private int valueHash() {
@@ -122,7 +88,6 @@ public class Variant {
         ToStringHelper helper = com.google.common.base.Objects.toStringHelper(this);
 
         helper.add("value", value);
-        type.ifPresent(t -> helper.add("type", t));
 
         return helper.toString();
     }

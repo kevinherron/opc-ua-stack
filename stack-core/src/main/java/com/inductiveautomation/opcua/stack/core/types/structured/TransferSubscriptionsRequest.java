@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class TransferSubscriptionsRequest implements UaRequestMessage {
 
@@ -14,29 +15,41 @@ public class TransferSubscriptionsRequest implements UaRequestMessage {
     public static final NodeId XmlEncodingId = Identifiers.TransferSubscriptionsRequest_Encoding_DefaultXml;
 
     protected final RequestHeader _requestHeader;
-    protected final Long[] _subscriptionIds;
+    protected final UInteger[] _subscriptionIds;
     protected final Boolean _sendInitialValues;
 
-    public TransferSubscriptionsRequest(RequestHeader _requestHeader, Long[] _subscriptionIds, Boolean _sendInitialValues) {
+    public TransferSubscriptionsRequest(RequestHeader _requestHeader, UInteger[] _subscriptionIds, Boolean _sendInitialValues) {
         this._requestHeader = _requestHeader;
         this._subscriptionIds = _subscriptionIds;
         this._sendInitialValues = _sendInitialValues;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public Long[] getSubscriptionIds() { return _subscriptionIds; }
+    public UInteger[] getSubscriptionIds() {
+        return _subscriptionIds;
+    }
 
-    public Boolean getSendInitialValues() { return _sendInitialValues; }
+    public Boolean getSendInitialValues() {
+        return _sendInitialValues;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(TransferSubscriptionsRequest transferSubscriptionsRequest, UaEncoder encoder) {
@@ -47,7 +60,7 @@ public class TransferSubscriptionsRequest implements UaRequestMessage {
 
     public static TransferSubscriptionsRequest decode(UaDecoder decoder) {
         RequestHeader _requestHeader = decoder.decodeSerializable("RequestHeader", RequestHeader.class);
-        Long[] _subscriptionIds = decoder.decodeArray("SubscriptionIds", decoder::decodeUInt32, Long.class);
+        UInteger[] _subscriptionIds = decoder.decodeArray("SubscriptionIds", decoder::decodeUInt32, UInteger.class);
         Boolean _sendInitialValues = decoder.decodeBoolean("SendInitialValues");
 
         return new TransferSubscriptionsRequest(_requestHeader, _subscriptionIds, _sendInitialValues);

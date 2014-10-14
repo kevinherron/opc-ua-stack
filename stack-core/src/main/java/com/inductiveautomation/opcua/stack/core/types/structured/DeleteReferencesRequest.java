@@ -21,18 +21,28 @@ public class DeleteReferencesRequest implements UaRequestMessage {
         this._referencesToDelete = _referencesToDelete;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public DeleteReferencesItem[] getReferencesToDelete() { return _referencesToDelete; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public DeleteReferencesItem[] getReferencesToDelete() {
+        return _referencesToDelete;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(DeleteReferencesRequest deleteReferencesRequest, UaEncoder encoder) {

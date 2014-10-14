@@ -7,6 +7,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class OpenSecureChannelResponse implements UaResponseMessage {
 
@@ -15,33 +16,47 @@ public class OpenSecureChannelResponse implements UaResponseMessage {
     public static final NodeId XmlEncodingId = Identifiers.OpenSecureChannelResponse_Encoding_DefaultXml;
 
     protected final ResponseHeader _responseHeader;
-    protected final Long _serverProtocolVersion;
+    protected final UInteger _serverProtocolVersion;
     protected final ChannelSecurityToken _securityToken;
     protected final ByteString _serverNonce;
 
-    public OpenSecureChannelResponse(ResponseHeader _responseHeader, Long _serverProtocolVersion, ChannelSecurityToken _securityToken, ByteString _serverNonce) {
+    public OpenSecureChannelResponse(ResponseHeader _responseHeader, UInteger _serverProtocolVersion, ChannelSecurityToken _securityToken, ByteString _serverNonce) {
         this._responseHeader = _responseHeader;
         this._serverProtocolVersion = _serverProtocolVersion;
         this._securityToken = _securityToken;
         this._serverNonce = _serverNonce;
     }
 
-    public ResponseHeader getResponseHeader() { return _responseHeader; }
+    public ResponseHeader getResponseHeader() {
+        return _responseHeader;
+    }
 
-    public Long getServerProtocolVersion() { return _serverProtocolVersion; }
+    public UInteger getServerProtocolVersion() {
+        return _serverProtocolVersion;
+    }
 
-    public ChannelSecurityToken getSecurityToken() { return _securityToken; }
+    public ChannelSecurityToken getSecurityToken() {
+        return _securityToken;
+    }
 
-    public ByteString getServerNonce() { return _serverNonce; }
+    public ByteString getServerNonce() {
+        return _serverNonce;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(OpenSecureChannelResponse openSecureChannelResponse, UaEncoder encoder) {
@@ -53,7 +68,7 @@ public class OpenSecureChannelResponse implements UaResponseMessage {
 
     public static OpenSecureChannelResponse decode(UaDecoder decoder) {
         ResponseHeader _responseHeader = decoder.decodeSerializable("ResponseHeader", ResponseHeader.class);
-        Long _serverProtocolVersion = decoder.decodeUInt32("ServerProtocolVersion");
+        UInteger _serverProtocolVersion = decoder.decodeUInt32("ServerProtocolVersion");
         ChannelSecurityToken _securityToken = decoder.decodeSerializable("SecurityToken", ChannelSecurityToken.class);
         ByteString _serverNonce = decoder.decodeByteString("ServerNonce");
 

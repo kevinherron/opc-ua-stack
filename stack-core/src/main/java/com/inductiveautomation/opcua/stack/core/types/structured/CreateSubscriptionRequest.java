@@ -6,6 +6,8 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class CreateSubscriptionRequest implements UaRequestMessage {
 
@@ -15,13 +17,13 @@ public class CreateSubscriptionRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final Double _requestedPublishingInterval;
-    protected final Long _requestedLifetimeCount;
-    protected final Long _requestedMaxKeepAliveCount;
-    protected final Long _maxNotificationsPerPublish;
+    protected final UInteger _requestedLifetimeCount;
+    protected final UInteger _requestedMaxKeepAliveCount;
+    protected final UInteger _maxNotificationsPerPublish;
     protected final Boolean _publishingEnabled;
-    protected final Short _priority;
+    protected final UByte _priority;
 
-    public CreateSubscriptionRequest(RequestHeader _requestHeader, Double _requestedPublishingInterval, Long _requestedLifetimeCount, Long _requestedMaxKeepAliveCount, Long _maxNotificationsPerPublish, Boolean _publishingEnabled, Short _priority) {
+    public CreateSubscriptionRequest(RequestHeader _requestHeader, Double _requestedPublishingInterval, UInteger _requestedLifetimeCount, UInteger _requestedMaxKeepAliveCount, UInteger _maxNotificationsPerPublish, Boolean _publishingEnabled, UByte _priority) {
         this._requestHeader = _requestHeader;
         this._requestedPublishingInterval = _requestedPublishingInterval;
         this._requestedLifetimeCount = _requestedLifetimeCount;
@@ -31,28 +33,48 @@ public class CreateSubscriptionRequest implements UaRequestMessage {
         this._priority = _priority;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public Double getRequestedPublishingInterval() { return _requestedPublishingInterval; }
+    public Double getRequestedPublishingInterval() {
+        return _requestedPublishingInterval;
+    }
 
-    public Long getRequestedLifetimeCount() { return _requestedLifetimeCount; }
+    public UInteger getRequestedLifetimeCount() {
+        return _requestedLifetimeCount;
+    }
 
-    public Long getRequestedMaxKeepAliveCount() { return _requestedMaxKeepAliveCount; }
+    public UInteger getRequestedMaxKeepAliveCount() {
+        return _requestedMaxKeepAliveCount;
+    }
 
-    public Long getMaxNotificationsPerPublish() { return _maxNotificationsPerPublish; }
+    public UInteger getMaxNotificationsPerPublish() {
+        return _maxNotificationsPerPublish;
+    }
 
-    public Boolean getPublishingEnabled() { return _publishingEnabled; }
+    public Boolean getPublishingEnabled() {
+        return _publishingEnabled;
+    }
 
-    public Short getPriority() { return _priority; }
+    public UByte getPriority() {
+        return _priority;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(CreateSubscriptionRequest createSubscriptionRequest, UaEncoder encoder) {
@@ -68,11 +90,11 @@ public class CreateSubscriptionRequest implements UaRequestMessage {
     public static CreateSubscriptionRequest decode(UaDecoder decoder) {
         RequestHeader _requestHeader = decoder.decodeSerializable("RequestHeader", RequestHeader.class);
         Double _requestedPublishingInterval = decoder.decodeDouble("RequestedPublishingInterval");
-        Long _requestedLifetimeCount = decoder.decodeUInt32("RequestedLifetimeCount");
-        Long _requestedMaxKeepAliveCount = decoder.decodeUInt32("RequestedMaxKeepAliveCount");
-        Long _maxNotificationsPerPublish = decoder.decodeUInt32("MaxNotificationsPerPublish");
+        UInteger _requestedLifetimeCount = decoder.decodeUInt32("RequestedLifetimeCount");
+        UInteger _requestedMaxKeepAliveCount = decoder.decodeUInt32("RequestedMaxKeepAliveCount");
+        UInteger _maxNotificationsPerPublish = decoder.decodeUInt32("MaxNotificationsPerPublish");
         Boolean _publishingEnabled = decoder.decodeBoolean("PublishingEnabled");
-        Short _priority = decoder.decodeByte("Priority");
+        UByte _priority = decoder.decodeByte("Priority");
 
         return new CreateSubscriptionRequest(_requestHeader, _requestedPublishingInterval, _requestedLifetimeCount, _requestedMaxKeepAliveCount, _maxNotificationsPerPublish, _publishingEnabled, _priority);
     }

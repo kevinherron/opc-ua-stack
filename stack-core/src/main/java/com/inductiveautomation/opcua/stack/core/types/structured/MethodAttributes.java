@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class MethodAttributes extends NodeAttributes {
 
@@ -16,24 +17,34 @@ public class MethodAttributes extends NodeAttributes {
     protected final Boolean _executable;
     protected final Boolean _userExecutable;
 
-    public MethodAttributes(Long _specifiedAttributes, LocalizedText _displayName, LocalizedText _description, Long _writeMask, Long _userWriteMask, Boolean _executable, Boolean _userExecutable) {
+    public MethodAttributes(UInteger _specifiedAttributes, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, Boolean _executable, Boolean _userExecutable) {
         super(_specifiedAttributes, _displayName, _description, _writeMask, _userWriteMask);
         this._executable = _executable;
         this._userExecutable = _userExecutable;
     }
 
-    public Boolean getExecutable() { return _executable; }
+    public Boolean getExecutable() {
+        return _executable;
+    }
 
-    public Boolean getUserExecutable() { return _userExecutable; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public Boolean getUserExecutable() {
+        return _userExecutable;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(MethodAttributes methodAttributes, UaEncoder encoder) {
@@ -47,11 +58,11 @@ public class MethodAttributes extends NodeAttributes {
     }
 
     public static MethodAttributes decode(UaDecoder decoder) {
-        Long _specifiedAttributes = decoder.decodeUInt32("SpecifiedAttributes");
+        UInteger _specifiedAttributes = decoder.decodeUInt32("SpecifiedAttributes");
         LocalizedText _displayName = decoder.decodeLocalizedText("DisplayName");
         LocalizedText _description = decoder.decodeLocalizedText("Description");
-        Long _writeMask = decoder.decodeUInt32("WriteMask");
-        Long _userWriteMask = decoder.decodeUInt32("UserWriteMask");
+        UInteger _writeMask = decoder.decodeUInt32("WriteMask");
+        UInteger _userWriteMask = decoder.decodeUInt32("UserWriteMask");
         Boolean _executable = decoder.decodeBoolean("Executable");
         Boolean _userExecutable = decoder.decodeBoolean("UserExecutable");
 

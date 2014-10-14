@@ -29,24 +29,40 @@ public class AxisInformation implements UaStructure {
         this._axisSteps = _axisSteps;
     }
 
-    public EUInformation getEngineeringUnits() { return _engineeringUnits; }
+    public EUInformation getEngineeringUnits() {
+        return _engineeringUnits;
+    }
 
-    public Range getEURange() { return _eURange; }
+    public Range getEURange() {
+        return _eURange;
+    }
 
-    public LocalizedText getTitle() { return _title; }
+    public LocalizedText getTitle() {
+        return _title;
+    }
 
-    public AxisScaleEnumeration getAxisScaleType() { return _axisScaleType; }
+    public AxisScaleEnumeration getAxisScaleType() {
+        return _axisScaleType;
+    }
 
-    public Double[] getAxisSteps() { return _axisSteps; }
+    public Double[] getAxisSteps() {
+        return _axisSteps;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(AxisInformation axisInformation, UaEncoder encoder) {

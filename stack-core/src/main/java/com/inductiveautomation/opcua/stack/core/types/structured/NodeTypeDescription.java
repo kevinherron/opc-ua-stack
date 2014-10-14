@@ -24,20 +24,32 @@ public class NodeTypeDescription implements UaStructure {
         this._dataToReturn = _dataToReturn;
     }
 
-    public ExpandedNodeId getTypeDefinitionNode() { return _typeDefinitionNode; }
+    public ExpandedNodeId getTypeDefinitionNode() {
+        return _typeDefinitionNode;
+    }
 
-    public Boolean getIncludeSubTypes() { return _includeSubTypes; }
+    public Boolean getIncludeSubTypes() {
+        return _includeSubTypes;
+    }
 
-    public QueryDataDescription[] getDataToReturn() { return _dataToReturn; }
+    public QueryDataDescription[] getDataToReturn() {
+        return _dataToReturn;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(NodeTypeDescription nodeTypeDescription, UaEncoder encoder) {

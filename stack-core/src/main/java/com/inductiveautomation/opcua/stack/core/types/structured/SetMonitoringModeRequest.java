@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MonitoringMode;
 
 public class SetMonitoringModeRequest implements UaRequestMessage {
@@ -15,33 +16,47 @@ public class SetMonitoringModeRequest implements UaRequestMessage {
     public static final NodeId XmlEncodingId = Identifiers.SetMonitoringModeRequest_Encoding_DefaultXml;
 
     protected final RequestHeader _requestHeader;
-    protected final Long _subscriptionId;
+    protected final UInteger _subscriptionId;
     protected final MonitoringMode _monitoringMode;
-    protected final Long[] _monitoredItemIds;
+    protected final UInteger[] _monitoredItemIds;
 
-    public SetMonitoringModeRequest(RequestHeader _requestHeader, Long _subscriptionId, MonitoringMode _monitoringMode, Long[] _monitoredItemIds) {
+    public SetMonitoringModeRequest(RequestHeader _requestHeader, UInteger _subscriptionId, MonitoringMode _monitoringMode, UInteger[] _monitoredItemIds) {
         this._requestHeader = _requestHeader;
         this._subscriptionId = _subscriptionId;
         this._monitoringMode = _monitoringMode;
         this._monitoredItemIds = _monitoredItemIds;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public Long getSubscriptionId() { return _subscriptionId; }
+    public UInteger getSubscriptionId() {
+        return _subscriptionId;
+    }
 
-    public MonitoringMode getMonitoringMode() { return _monitoringMode; }
+    public MonitoringMode getMonitoringMode() {
+        return _monitoringMode;
+    }
 
-    public Long[] getMonitoredItemIds() { return _monitoredItemIds; }
+    public UInteger[] getMonitoredItemIds() {
+        return _monitoredItemIds;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(SetMonitoringModeRequest setMonitoringModeRequest, UaEncoder encoder) {
@@ -53,9 +68,9 @@ public class SetMonitoringModeRequest implements UaRequestMessage {
 
     public static SetMonitoringModeRequest decode(UaDecoder decoder) {
         RequestHeader _requestHeader = decoder.decodeSerializable("RequestHeader", RequestHeader.class);
-        Long _subscriptionId = decoder.decodeUInt32("SubscriptionId");
+        UInteger _subscriptionId = decoder.decodeUInt32("SubscriptionId");
         MonitoringMode _monitoringMode = decoder.decodeSerializable("MonitoringMode", MonitoringMode.class);
-        Long[] _monitoredItemIds = decoder.decodeArray("MonitoredItemIds", decoder::decodeUInt32, Long.class);
+        UInteger[] _monitoredItemIds = decoder.decodeArray("MonitoredItemIds", decoder::decodeUInt32, UInteger.class);
 
         return new SetMonitoringModeRequest(_requestHeader, _subscriptionId, _monitoringMode, _monitoredItemIds);
     }

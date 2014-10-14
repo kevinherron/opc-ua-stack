@@ -64,6 +64,8 @@ import io.netty.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
+
 public class UaTcpServer implements UaServer {
 
     /**
@@ -393,7 +395,7 @@ public class UaTcpServer implements UaServer {
                 endpoint.getSecurityPolicy().getSecurityPolicyUri(),
                 userTokenPolicies.toArray(new UserTokenPolicy[userTokenPolicies.size()]),
                 Stack.UA_TCP_BINARY_TRANSPORT_URI,
-                endpoint.getSecurityLevel()
+                ubyte(endpoint.getSecurityLevel())
         );
     }
 

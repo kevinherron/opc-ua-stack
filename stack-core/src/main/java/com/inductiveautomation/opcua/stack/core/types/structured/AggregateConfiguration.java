@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 
 public class AggregateConfiguration implements UaStructure {
 
@@ -15,11 +16,11 @@ public class AggregateConfiguration implements UaStructure {
 
     protected final Boolean _useServerCapabilitiesDefaults;
     protected final Boolean _treatUncertainAsBad;
-    protected final Short _percentDataBad;
-    protected final Short _percentDataGood;
+    protected final UByte _percentDataBad;
+    protected final UByte _percentDataGood;
     protected final Boolean _useSlopedExtrapolation;
 
-    public AggregateConfiguration(Boolean _useServerCapabilitiesDefaults, Boolean _treatUncertainAsBad, Short _percentDataBad, Short _percentDataGood, Boolean _useSlopedExtrapolation) {
+    public AggregateConfiguration(Boolean _useServerCapabilitiesDefaults, Boolean _treatUncertainAsBad, UByte _percentDataBad, UByte _percentDataGood, Boolean _useSlopedExtrapolation) {
         this._useServerCapabilitiesDefaults = _useServerCapabilitiesDefaults;
         this._treatUncertainAsBad = _treatUncertainAsBad;
         this._percentDataBad = _percentDataBad;
@@ -27,24 +28,40 @@ public class AggregateConfiguration implements UaStructure {
         this._useSlopedExtrapolation = _useSlopedExtrapolation;
     }
 
-    public Boolean getUseServerCapabilitiesDefaults() { return _useServerCapabilitiesDefaults; }
+    public Boolean getUseServerCapabilitiesDefaults() {
+        return _useServerCapabilitiesDefaults;
+    }
 
-    public Boolean getTreatUncertainAsBad() { return _treatUncertainAsBad; }
+    public Boolean getTreatUncertainAsBad() {
+        return _treatUncertainAsBad;
+    }
 
-    public Short getPercentDataBad() { return _percentDataBad; }
+    public UByte getPercentDataBad() {
+        return _percentDataBad;
+    }
 
-    public Short getPercentDataGood() { return _percentDataGood; }
+    public UByte getPercentDataGood() {
+        return _percentDataGood;
+    }
 
-    public Boolean getUseSlopedExtrapolation() { return _useSlopedExtrapolation; }
+    public Boolean getUseSlopedExtrapolation() {
+        return _useSlopedExtrapolation;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(AggregateConfiguration aggregateConfiguration, UaEncoder encoder) {
@@ -58,8 +75,8 @@ public class AggregateConfiguration implements UaStructure {
     public static AggregateConfiguration decode(UaDecoder decoder) {
         Boolean _useServerCapabilitiesDefaults = decoder.decodeBoolean("UseServerCapabilitiesDefaults");
         Boolean _treatUncertainAsBad = decoder.decodeBoolean("TreatUncertainAsBad");
-        Short _percentDataBad = decoder.decodeByte("PercentDataBad");
-        Short _percentDataGood = decoder.decodeByte("PercentDataGood");
+        UByte _percentDataBad = decoder.decodeByte("PercentDataBad");
+        UByte _percentDataGood = decoder.decodeByte("PercentDataGood");
         Boolean _useSlopedExtrapolation = decoder.decodeBoolean("UseSlopedExtrapolation");
 
         return new AggregateConfiguration(_useServerCapabilitiesDefaults, _treatUncertainAsBad, _percentDataBad, _percentDataGood, _useSlopedExtrapolation);

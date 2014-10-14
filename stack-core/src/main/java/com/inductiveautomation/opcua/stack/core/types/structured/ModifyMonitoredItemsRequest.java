@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.TimestampsToReturn;
 
 public class ModifyMonitoredItemsRequest implements UaRequestMessage {
@@ -15,33 +16,47 @@ public class ModifyMonitoredItemsRequest implements UaRequestMessage {
     public static final NodeId XmlEncodingId = Identifiers.ModifyMonitoredItemsRequest_Encoding_DefaultXml;
 
     protected final RequestHeader _requestHeader;
-    protected final Long _subscriptionId;
+    protected final UInteger _subscriptionId;
     protected final TimestampsToReturn _timestampsToReturn;
     protected final MonitoredItemModifyRequest[] _itemsToModify;
 
-    public ModifyMonitoredItemsRequest(RequestHeader _requestHeader, Long _subscriptionId, TimestampsToReturn _timestampsToReturn, MonitoredItemModifyRequest[] _itemsToModify) {
+    public ModifyMonitoredItemsRequest(RequestHeader _requestHeader, UInteger _subscriptionId, TimestampsToReturn _timestampsToReturn, MonitoredItemModifyRequest[] _itemsToModify) {
         this._requestHeader = _requestHeader;
         this._subscriptionId = _subscriptionId;
         this._timestampsToReturn = _timestampsToReturn;
         this._itemsToModify = _itemsToModify;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public Long getSubscriptionId() { return _subscriptionId; }
+    public UInteger getSubscriptionId() {
+        return _subscriptionId;
+    }
 
-    public TimestampsToReturn getTimestampsToReturn() { return _timestampsToReturn; }
+    public TimestampsToReturn getTimestampsToReturn() {
+        return _timestampsToReturn;
+    }
 
-    public MonitoredItemModifyRequest[] getItemsToModify() { return _itemsToModify; }
+    public MonitoredItemModifyRequest[] getItemsToModify() {
+        return _itemsToModify;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ModifyMonitoredItemsRequest modifyMonitoredItemsRequest, UaEncoder encoder) {
@@ -53,7 +68,7 @@ public class ModifyMonitoredItemsRequest implements UaRequestMessage {
 
     public static ModifyMonitoredItemsRequest decode(UaDecoder decoder) {
         RequestHeader _requestHeader = decoder.decodeSerializable("RequestHeader", RequestHeader.class);
-        Long _subscriptionId = decoder.decodeUInt32("SubscriptionId");
+        UInteger _subscriptionId = decoder.decodeUInt32("SubscriptionId");
         TimestampsToReturn _timestampsToReturn = decoder.decodeSerializable("TimestampsToReturn", TimestampsToReturn.class);
         MonitoredItemModifyRequest[] _itemsToModify = decoder.decodeArray("ItemsToModify", decoder::decodeSerializable, MonitoredItemModifyRequest.class);
 

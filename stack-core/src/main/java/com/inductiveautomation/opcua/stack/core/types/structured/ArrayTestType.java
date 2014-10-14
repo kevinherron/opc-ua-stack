@@ -19,6 +19,9 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 import com.inductiveautomation.opcua.stack.core.types.builtin.XmlElement;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.ULong;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.EnumeratedTestType;
 
 public class ArrayTestType implements UaStructure {
@@ -30,11 +33,11 @@ public class ArrayTestType implements UaStructure {
     protected final Boolean[] _booleans;
     protected final Byte[] _sBytes;
     protected final Short[] _int16s;
-    protected final Integer[] _uInt16s;
+    protected final UShort[] _uInt16s;
     protected final Integer[] _int32s;
-    protected final Long[] _uInt32s;
+    protected final UInteger[] _uInt32s;
     protected final Long[] _int64s;
-    protected final Long[] _uInt64s;
+    protected final ULong[] _uInt64s;
     protected final Float[] _floats;
     protected final Double[] _doubles;
     protected final String[] _strings;
@@ -53,7 +56,7 @@ public class ArrayTestType implements UaStructure {
     protected final Variant[] _variants;
     protected final EnumeratedTestType[] _enumeratedValues;
 
-    public ArrayTestType(Boolean[] _booleans, Byte[] _sBytes, Short[] _int16s, Integer[] _uInt16s, Integer[] _int32s, Long[] _uInt32s, Long[] _int64s, Long[] _uInt64s, Float[] _floats, Double[] _doubles, String[] _strings, DateTime[] _dateTimes, UUID[] _guids, ByteString[] _byteStrings, XmlElement[] _xmlElements, NodeId[] _nodeIds, ExpandedNodeId[] _expandedNodeIds, StatusCode[] _statusCodes, DiagnosticInfo[] _diagnosticInfos, QualifiedName[] _qualifiedNames, LocalizedText[] _localizedTexts, ExtensionObject[] _extensionObjects, DataValue[] _dataValues, Variant[] _variants, EnumeratedTestType[] _enumeratedValues) {
+    public ArrayTestType(Boolean[] _booleans, Byte[] _sBytes, Short[] _int16s, UShort[] _uInt16s, Integer[] _int32s, UInteger[] _uInt32s, Long[] _int64s, ULong[] _uInt64s, Float[] _floats, Double[] _doubles, String[] _strings, DateTime[] _dateTimes, UUID[] _guids, ByteString[] _byteStrings, XmlElement[] _xmlElements, NodeId[] _nodeIds, ExpandedNodeId[] _expandedNodeIds, StatusCode[] _statusCodes, DiagnosticInfo[] _diagnosticInfos, QualifiedName[] _qualifiedNames, LocalizedText[] _localizedTexts, ExtensionObject[] _extensionObjects, DataValue[] _dataValues, Variant[] _variants, EnumeratedTestType[] _enumeratedValues) {
         this._booleans = _booleans;
         this._sBytes = _sBytes;
         this._int16s = _int16s;
@@ -81,64 +84,120 @@ public class ArrayTestType implements UaStructure {
         this._enumeratedValues = _enumeratedValues;
     }
 
-    public Boolean[] getBooleans() { return _booleans; }
+    public Boolean[] getBooleans() {
+        return _booleans;
+    }
 
-    public Byte[] getSBytes() { return _sBytes; }
+    public Byte[] getSBytes() {
+        return _sBytes;
+    }
 
-    public Short[] getInt16s() { return _int16s; }
+    public Short[] getInt16s() {
+        return _int16s;
+    }
 
-    public Integer[] getUInt16s() { return _uInt16s; }
+    public UShort[] getUInt16s() {
+        return _uInt16s;
+    }
 
-    public Integer[] getInt32s() { return _int32s; }
+    public Integer[] getInt32s() {
+        return _int32s;
+    }
 
-    public Long[] getUInt32s() { return _uInt32s; }
+    public UInteger[] getUInt32s() {
+        return _uInt32s;
+    }
 
-    public Long[] getInt64s() { return _int64s; }
+    public Long[] getInt64s() {
+        return _int64s;
+    }
 
-    public Long[] getUInt64s() { return _uInt64s; }
+    public ULong[] getUInt64s() {
+        return _uInt64s;
+    }
 
-    public Float[] getFloats() { return _floats; }
+    public Float[] getFloats() {
+        return _floats;
+    }
 
-    public Double[] getDoubles() { return _doubles; }
+    public Double[] getDoubles() {
+        return _doubles;
+    }
 
-    public String[] getStrings() { return _strings; }
+    public String[] getStrings() {
+        return _strings;
+    }
 
-    public DateTime[] getDateTimes() { return _dateTimes; }
+    public DateTime[] getDateTimes() {
+        return _dateTimes;
+    }
 
-    public UUID[] getGuids() { return _guids; }
+    public UUID[] getGuids() {
+        return _guids;
+    }
 
-    public ByteString[] getByteStrings() { return _byteStrings; }
+    public ByteString[] getByteStrings() {
+        return _byteStrings;
+    }
 
-    public XmlElement[] getXmlElements() { return _xmlElements; }
+    public XmlElement[] getXmlElements() {
+        return _xmlElements;
+    }
 
-    public NodeId[] getNodeIds() { return _nodeIds; }
+    public NodeId[] getNodeIds() {
+        return _nodeIds;
+    }
 
-    public ExpandedNodeId[] getExpandedNodeIds() { return _expandedNodeIds; }
+    public ExpandedNodeId[] getExpandedNodeIds() {
+        return _expandedNodeIds;
+    }
 
-    public StatusCode[] getStatusCodes() { return _statusCodes; }
+    public StatusCode[] getStatusCodes() {
+        return _statusCodes;
+    }
 
-    public DiagnosticInfo[] getDiagnosticInfos() { return _diagnosticInfos; }
+    public DiagnosticInfo[] getDiagnosticInfos() {
+        return _diagnosticInfos;
+    }
 
-    public QualifiedName[] getQualifiedNames() { return _qualifiedNames; }
+    public QualifiedName[] getQualifiedNames() {
+        return _qualifiedNames;
+    }
 
-    public LocalizedText[] getLocalizedTexts() { return _localizedTexts; }
+    public LocalizedText[] getLocalizedTexts() {
+        return _localizedTexts;
+    }
 
-    public ExtensionObject[] getExtensionObjects() { return _extensionObjects; }
+    public ExtensionObject[] getExtensionObjects() {
+        return _extensionObjects;
+    }
 
-    public DataValue[] getDataValues() { return _dataValues; }
+    public DataValue[] getDataValues() {
+        return _dataValues;
+    }
 
-    public Variant[] getVariants() { return _variants; }
+    public Variant[] getVariants() {
+        return _variants;
+    }
 
-    public EnumeratedTestType[] getEnumeratedValues() { return _enumeratedValues; }
+    public EnumeratedTestType[] getEnumeratedValues() {
+        return _enumeratedValues;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ArrayTestType arrayTestType, UaEncoder encoder) {
@@ -173,11 +232,11 @@ public class ArrayTestType implements UaStructure {
         Boolean[] _booleans = decoder.decodeArray("Booleans", decoder::decodeBoolean, Boolean.class);
         Byte[] _sBytes = decoder.decodeArray("SBytes", decoder::decodeSByte, Byte.class);
         Short[] _int16s = decoder.decodeArray("Int16s", decoder::decodeInt16, Short.class);
-        Integer[] _uInt16s = decoder.decodeArray("UInt16s", decoder::decodeUInt16, Integer.class);
+        UShort[] _uInt16s = decoder.decodeArray("UInt16s", decoder::decodeUInt16, UShort.class);
         Integer[] _int32s = decoder.decodeArray("Int32s", decoder::decodeInt32, Integer.class);
-        Long[] _uInt32s = decoder.decodeArray("UInt32s", decoder::decodeUInt32, Long.class);
+        UInteger[] _uInt32s = decoder.decodeArray("UInt32s", decoder::decodeUInt32, UInteger.class);
         Long[] _int64s = decoder.decodeArray("Int64s", decoder::decodeInt64, Long.class);
-        Long[] _uInt64s = decoder.decodeArray("UInt64s", decoder::decodeUInt64, Long.class);
+        ULong[] _uInt64s = decoder.decodeArray("UInt64s", decoder::decodeUInt64, ULong.class);
         Float[] _floats = decoder.decodeArray("Floats", decoder::decodeFloat, Float.class);
         Double[] _doubles = decoder.decodeArray("Doubles", decoder::decodeDouble, Double.class);
         String[] _strings = decoder.decodeArray("Strings", decoder::decodeString, String.class);

@@ -22,18 +22,28 @@ public class HistoryUpdateEventResult implements UaStructure {
         this._eventFilterResult = _eventFilterResult;
     }
 
-    public StatusCode getStatusCode() { return _statusCode; }
+    public StatusCode getStatusCode() {
+        return _statusCode;
+    }
 
-    public EventFilterResult getEventFilterResult() { return _eventFilterResult; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public EventFilterResult getEventFilterResult() {
+        return _eventFilterResult;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(HistoryUpdateEventResult historyUpdateEventResult, UaEncoder encoder) {

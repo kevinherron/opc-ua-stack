@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class SamplingIntervalDiagnosticsDataType implements UaStructure {
 
@@ -14,33 +15,47 @@ public class SamplingIntervalDiagnosticsDataType implements UaStructure {
     public static final NodeId XmlEncodingId = Identifiers.SamplingIntervalDiagnosticsDataType_Encoding_DefaultXml;
 
     protected final Double _samplingInterval;
-    protected final Long _monitoredItemCount;
-    protected final Long _maxMonitoredItemCount;
-    protected final Long _disabledMonitoredItemCount;
+    protected final UInteger _monitoredItemCount;
+    protected final UInteger _maxMonitoredItemCount;
+    protected final UInteger _disabledMonitoredItemCount;
 
-    public SamplingIntervalDiagnosticsDataType(Double _samplingInterval, Long _monitoredItemCount, Long _maxMonitoredItemCount, Long _disabledMonitoredItemCount) {
+    public SamplingIntervalDiagnosticsDataType(Double _samplingInterval, UInteger _monitoredItemCount, UInteger _maxMonitoredItemCount, UInteger _disabledMonitoredItemCount) {
         this._samplingInterval = _samplingInterval;
         this._monitoredItemCount = _monitoredItemCount;
         this._maxMonitoredItemCount = _maxMonitoredItemCount;
         this._disabledMonitoredItemCount = _disabledMonitoredItemCount;
     }
 
-    public Double getSamplingInterval() { return _samplingInterval; }
+    public Double getSamplingInterval() {
+        return _samplingInterval;
+    }
 
-    public Long getMonitoredItemCount() { return _monitoredItemCount; }
+    public UInteger getMonitoredItemCount() {
+        return _monitoredItemCount;
+    }
 
-    public Long getMaxMonitoredItemCount() { return _maxMonitoredItemCount; }
+    public UInteger getMaxMonitoredItemCount() {
+        return _maxMonitoredItemCount;
+    }
 
-    public Long getDisabledMonitoredItemCount() { return _disabledMonitoredItemCount; }
+    public UInteger getDisabledMonitoredItemCount() {
+        return _disabledMonitoredItemCount;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(SamplingIntervalDiagnosticsDataType samplingIntervalDiagnosticsDataType, UaEncoder encoder) {
@@ -52,9 +67,9 @@ public class SamplingIntervalDiagnosticsDataType implements UaStructure {
 
     public static SamplingIntervalDiagnosticsDataType decode(UaDecoder decoder) {
         Double _samplingInterval = decoder.decodeDouble("SamplingInterval");
-        Long _monitoredItemCount = decoder.decodeUInt32("MonitoredItemCount");
-        Long _maxMonitoredItemCount = decoder.decodeUInt32("MaxMonitoredItemCount");
-        Long _disabledMonitoredItemCount = decoder.decodeUInt32("DisabledMonitoredItemCount");
+        UInteger _monitoredItemCount = decoder.decodeUInt32("MonitoredItemCount");
+        UInteger _maxMonitoredItemCount = decoder.decodeUInt32("MaxMonitoredItemCount");
+        UInteger _disabledMonitoredItemCount = decoder.decodeUInt32("DisabledMonitoredItemCount");
 
         return new SamplingIntervalDiagnosticsDataType(_samplingInterval, _monitoredItemCount, _maxMonitoredItemCount, _disabledMonitoredItemCount);
     }

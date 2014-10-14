@@ -7,6 +7,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class CreateSessionRequest implements UaRequestMessage {
 
@@ -22,9 +23,9 @@ public class CreateSessionRequest implements UaRequestMessage {
     protected final ByteString _clientNonce;
     protected final ByteString _clientCertificate;
     protected final Double _requestedSessionTimeout;
-    protected final Long _maxResponseMessageSize;
+    protected final UInteger _maxResponseMessageSize;
 
-    public CreateSessionRequest(RequestHeader _requestHeader, ApplicationDescription _clientDescription, String _serverUri, String _endpointUrl, String _sessionName, ByteString _clientNonce, ByteString _clientCertificate, Double _requestedSessionTimeout, Long _maxResponseMessageSize) {
+    public CreateSessionRequest(RequestHeader _requestHeader, ApplicationDescription _clientDescription, String _serverUri, String _endpointUrl, String _sessionName, ByteString _clientNonce, ByteString _clientCertificate, Double _requestedSessionTimeout, UInteger _maxResponseMessageSize) {
         this._requestHeader = _requestHeader;
         this._clientDescription = _clientDescription;
         this._serverUri = _serverUri;
@@ -36,32 +37,56 @@ public class CreateSessionRequest implements UaRequestMessage {
         this._maxResponseMessageSize = _maxResponseMessageSize;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public ApplicationDescription getClientDescription() { return _clientDescription; }
+    public ApplicationDescription getClientDescription() {
+        return _clientDescription;
+    }
 
-    public String getServerUri() { return _serverUri; }
+    public String getServerUri() {
+        return _serverUri;
+    }
 
-    public String getEndpointUrl() { return _endpointUrl; }
+    public String getEndpointUrl() {
+        return _endpointUrl;
+    }
 
-    public String getSessionName() { return _sessionName; }
+    public String getSessionName() {
+        return _sessionName;
+    }
 
-    public ByteString getClientNonce() { return _clientNonce; }
+    public ByteString getClientNonce() {
+        return _clientNonce;
+    }
 
-    public ByteString getClientCertificate() { return _clientCertificate; }
+    public ByteString getClientCertificate() {
+        return _clientCertificate;
+    }
 
-    public Double getRequestedSessionTimeout() { return _requestedSessionTimeout; }
+    public Double getRequestedSessionTimeout() {
+        return _requestedSessionTimeout;
+    }
 
-    public Long getMaxResponseMessageSize() { return _maxResponseMessageSize; }
+    public UInteger getMaxResponseMessageSize() {
+        return _maxResponseMessageSize;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(CreateSessionRequest createSessionRequest, UaEncoder encoder) {
@@ -85,7 +110,7 @@ public class CreateSessionRequest implements UaRequestMessage {
         ByteString _clientNonce = decoder.decodeByteString("ClientNonce");
         ByteString _clientCertificate = decoder.decodeByteString("ClientCertificate");
         Double _requestedSessionTimeout = decoder.decodeDouble("RequestedSessionTimeout");
-        Long _maxResponseMessageSize = decoder.decodeUInt32("MaxResponseMessageSize");
+        UInteger _maxResponseMessageSize = decoder.decodeUInt32("MaxResponseMessageSize");
 
         return new CreateSessionRequest(_requestHeader, _clientDescription, _serverUri, _endpointUrl, _sessionName, _clientNonce, _clientCertificate, _requestedSessionTimeout, _maxResponseMessageSize);
     }

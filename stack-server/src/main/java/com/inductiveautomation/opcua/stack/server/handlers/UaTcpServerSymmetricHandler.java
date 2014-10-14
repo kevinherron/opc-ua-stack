@@ -3,8 +3,11 @@ package com.inductiveautomation.opcua.stack.server.handlers;
 import java.nio.ByteOrder;
 import java.util.List;
 
+import com.google.common.collect.Lists;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
+import com.inductiveautomation.opcua.stack.core.application.services.ServiceRequest;
+import com.inductiveautomation.opcua.stack.core.application.services.ServiceResponse;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelSecurity;
 import com.inductiveautomation.opcua.stack.core.channel.ExceptionHandler;
 import com.inductiveautomation.opcua.stack.core.channel.SerializationQueue;
@@ -14,12 +17,8 @@ import com.inductiveautomation.opcua.stack.core.channel.headers.SymmetricSecurit
 import com.inductiveautomation.opcua.stack.core.channel.messages.MessageType;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
-import com.inductiveautomation.opcua.stack.core.types.structured.ChannelSecurityToken;
 import com.inductiveautomation.opcua.stack.core.util.BufferUtil;
-import com.inductiveautomation.opcua.stack.core.application.services.ServiceRequest;
-import com.inductiveautomation.opcua.stack.core.application.services.ServiceResponse;
 import com.inductiveautomation.opcua.stack.server.tcp.UaTcpServer;
-import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
@@ -138,11 +137,11 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
             SymmetricSecurityHeader securityHeader = SymmetricSecurityHeader.decode(buffer);
 
             ChannelSecurity channelSecurity = secureChannel.getChannelSecurity();
-            long currentTokenId = channelSecurity.getCurrentToken().getTokenId();
+            long currentTokenId = channelSecurity.getCurrentToken().getTokenId().longValue();
 
             if (securityHeader.getTokenId() != currentTokenId) {
                 long previousTokenId = channelSecurity.getPreviousToken()
-                        .map(ChannelSecurityToken::getTokenId)
+                        .map(t -> t.getTokenId().longValue())
                         .orElse(-1L);
 
                 if (securityHeader.getTokenId() != previousTokenId) {

@@ -30,26 +30,44 @@ public class BuildInfo implements UaStructure {
         this._buildDate = _buildDate;
     }
 
-    public String getProductUri() { return _productUri; }
+    public String getProductUri() {
+        return _productUri;
+    }
 
-    public String getManufacturerName() { return _manufacturerName; }
+    public String getManufacturerName() {
+        return _manufacturerName;
+    }
 
-    public String getProductName() { return _productName; }
+    public String getProductName() {
+        return _productName;
+    }
 
-    public String getSoftwareVersion() { return _softwareVersion; }
+    public String getSoftwareVersion() {
+        return _softwareVersion;
+    }
 
-    public String getBuildNumber() { return _buildNumber; }
+    public String getBuildNumber() {
+        return _buildNumber;
+    }
 
-    public DateTime getBuildDate() { return _buildDate; }
+    public DateTime getBuildDate() {
+        return _buildDate;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(BuildInfo buildInfo, UaEncoder encoder) {

@@ -1,25 +1,25 @@
 package com.inductiveautomation.opcua.stack.core.channel.messages;
 
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import io.netty.buffer.ByteBuf;
 
 public class AcknowledgeMessage {
 
-    @UInt32
+    @UInt32Primitive
     private final long protocolVersion;
 
-    @UInt32
+    @UInt32Primitive
     private final long receiveBufferSize;
 
-    @UInt32
+    @UInt32Primitive
     private final long sendBufferSize;
 
-    @UInt32
+    @UInt32Primitive
     private final long maxMessageSize;
 
-    @UInt32
+    @UInt32Primitive
     private final long maxChunkCount;
 
     /**
@@ -37,11 +37,11 @@ public class AcknowledgeMessage {
      * @param maxChunkCount     The maximum number of chunks in any request Message. A value of zero indicates that the
      *                          Server has no limit.
      */
-    public AcknowledgeMessage(@UInt32 long protocolVersion,
-                              @UInt32 long receiveBufferSize,
-                              @UInt32 long sendBufferSize,
-                              @UInt32 long maxMessageSize,
-                              @UInt32 long maxChunkCount) {
+    public AcknowledgeMessage(@UInt32Primitive long protocolVersion,
+                              @UInt32Primitive long receiveBufferSize,
+                              @UInt32Primitive long sendBufferSize,
+                              @UInt32Primitive long maxMessageSize,
+                              @UInt32Primitive long maxChunkCount) {
 
         Preconditions.checkArgument(receiveBufferSize > 8192,
                 "receiverBufferSize must be greater than 8192");
@@ -56,27 +56,27 @@ public class AcknowledgeMessage {
         this.maxChunkCount = maxChunkCount;
     }
 
-    @UInt32
+    @UInt32Primitive
     public long getProtocolVersion() {
         return protocolVersion;
     }
 
-    @UInt32
+    @UInt32Primitive
     public long getReceiveBufferSize() {
         return receiveBufferSize;
     }
 
-    @UInt32
+    @UInt32Primitive
     public long getSendBufferSize() {
         return sendBufferSize;
     }
 
-    @UInt32
+    @UInt32Primitive
     public long getMaxMessageSize() {
         return maxMessageSize;
     }
 
-    @UInt32
+    @UInt32Primitive
     public long getMaxChunkCount() {
         return maxChunkCount;
     }

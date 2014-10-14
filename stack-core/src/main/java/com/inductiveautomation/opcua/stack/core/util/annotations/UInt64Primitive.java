@@ -1,4 +1,4 @@
 package com.inductiveautomation.opcua.stack.core.util.annotations;
 
-public @interface UByte {
+public @interface UInt64Primitive {
 }

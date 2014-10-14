@@ -25,20 +25,32 @@ public class EventFilterResult extends MonitoringFilterResult {
         this._whereClauseResult = _whereClauseResult;
     }
 
-    public StatusCode[] getSelectClauseResults() { return _selectClauseResults; }
+    public StatusCode[] getSelectClauseResults() {
+        return _selectClauseResults;
+    }
 
-    public DiagnosticInfo[] getSelectClauseDiagnosticInfos() { return _selectClauseDiagnosticInfos; }
+    public DiagnosticInfo[] getSelectClauseDiagnosticInfos() {
+        return _selectClauseDiagnosticInfos;
+    }
 
-    public ContentFilterResult getWhereClauseResult() { return _whereClauseResult; }
+    public ContentFilterResult getWhereClauseResult() {
+        return _whereClauseResult;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(EventFilterResult eventFilterResult, UaEncoder encoder) {

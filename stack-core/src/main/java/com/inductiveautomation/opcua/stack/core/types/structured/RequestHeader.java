@@ -8,6 +8,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class RequestHeader implements UaStructure {
 
@@ -17,13 +18,13 @@ public class RequestHeader implements UaStructure {
 
     protected final NodeId _authenticationToken;
     protected final DateTime _timestamp;
-    protected final Long _requestHandle;
-    protected final Long _returnDiagnostics;
+    protected final UInteger _requestHandle;
+    protected final UInteger _returnDiagnostics;
     protected final String _auditEntryId;
-    protected final Long _timeoutHint;
+    protected final UInteger _timeoutHint;
     protected final ExtensionObject _additionalHeader;
 
-    public RequestHeader(NodeId _authenticationToken, DateTime _timestamp, Long _requestHandle, Long _returnDiagnostics, String _auditEntryId, Long _timeoutHint, ExtensionObject _additionalHeader) {
+    public RequestHeader(NodeId _authenticationToken, DateTime _timestamp, UInteger _requestHandle, UInteger _returnDiagnostics, String _auditEntryId, UInteger _timeoutHint, ExtensionObject _additionalHeader) {
         this._authenticationToken = _authenticationToken;
         this._timestamp = _timestamp;
         this._requestHandle = _requestHandle;
@@ -33,28 +34,48 @@ public class RequestHeader implements UaStructure {
         this._additionalHeader = _additionalHeader;
     }
 
-    public NodeId getAuthenticationToken() { return _authenticationToken; }
+    public NodeId getAuthenticationToken() {
+        return _authenticationToken;
+    }
 
-    public DateTime getTimestamp() { return _timestamp; }
+    public DateTime getTimestamp() {
+        return _timestamp;
+    }
 
-    public Long getRequestHandle() { return _requestHandle; }
+    public UInteger getRequestHandle() {
+        return _requestHandle;
+    }
 
-    public Long getReturnDiagnostics() { return _returnDiagnostics; }
+    public UInteger getReturnDiagnostics() {
+        return _returnDiagnostics;
+    }
 
-    public String getAuditEntryId() { return _auditEntryId; }
+    public String getAuditEntryId() {
+        return _auditEntryId;
+    }
 
-    public Long getTimeoutHint() { return _timeoutHint; }
+    public UInteger getTimeoutHint() {
+        return _timeoutHint;
+    }
 
-    public ExtensionObject getAdditionalHeader() { return _additionalHeader; }
+    public ExtensionObject getAdditionalHeader() {
+        return _additionalHeader;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(RequestHeader requestHeader, UaEncoder encoder) {
@@ -70,10 +91,10 @@ public class RequestHeader implements UaStructure {
     public static RequestHeader decode(UaDecoder decoder) {
         NodeId _authenticationToken = decoder.decodeNodeId("AuthenticationToken");
         DateTime _timestamp = decoder.decodeDateTime("Timestamp");
-        Long _requestHandle = decoder.decodeUInt32("RequestHandle");
-        Long _returnDiagnostics = decoder.decodeUInt32("ReturnDiagnostics");
+        UInteger _requestHandle = decoder.decodeUInt32("RequestHandle");
+        UInteger _returnDiagnostics = decoder.decodeUInt32("ReturnDiagnostics");
         String _auditEntryId = decoder.decodeString("AuditEntryId");
-        Long _timeoutHint = decoder.decodeUInt32("TimeoutHint");
+        UInteger _timeoutHint = decoder.decodeUInt32("TimeoutHint");
         ExtensionObject _additionalHeader = decoder.decodeExtensionObject("AdditionalHeader");
 
         return new RequestHeader(_authenticationToken, _timestamp, _requestHandle, _returnDiagnostics, _auditEntryId, _timeoutHint, _additionalHeader);

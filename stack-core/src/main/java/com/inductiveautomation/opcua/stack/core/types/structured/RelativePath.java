@@ -19,16 +19,24 @@ public class RelativePath implements UaStructure {
         this._elements = _elements;
     }
 
-    public RelativePathElement[] getElements() { return _elements; }
+    public RelativePathElement[] getElements() {
+        return _elements;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(RelativePath relativePath, UaEncoder encoder) {

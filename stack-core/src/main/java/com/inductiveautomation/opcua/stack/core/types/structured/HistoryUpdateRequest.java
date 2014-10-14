@@ -22,18 +22,28 @@ public class HistoryUpdateRequest implements UaRequestMessage {
         this._historyUpdateDetails = _historyUpdateDetails;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public ExtensionObject[] getHistoryUpdateDetails() { return _historyUpdateDetails; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public ExtensionObject[] getHistoryUpdateDetails() {
+        return _historyUpdateDetails;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(HistoryUpdateRequest historyUpdateRequest, UaEncoder encoder) {

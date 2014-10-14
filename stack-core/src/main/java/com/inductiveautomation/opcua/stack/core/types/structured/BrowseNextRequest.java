@@ -24,20 +24,32 @@ public class BrowseNextRequest implements UaRequestMessage {
         this._continuationPoints = _continuationPoints;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public Boolean getReleaseContinuationPoints() { return _releaseContinuationPoints; }
+    public Boolean getReleaseContinuationPoints() {
+        return _releaseContinuationPoints;
+    }
 
-    public ByteString[] getContinuationPoints() { return _continuationPoints; }
+    public ByteString[] getContinuationPoints() {
+        return _continuationPoints;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(BrowseNextRequest browseNextRequest, UaEncoder encoder) {

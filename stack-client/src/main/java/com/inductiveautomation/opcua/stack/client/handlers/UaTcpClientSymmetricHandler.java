@@ -4,6 +4,7 @@ import java.nio.ByteOrder;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import com.google.common.collect.Lists;
 import com.inductiveautomation.opcua.stack.client.UaTcpClient;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
@@ -18,10 +19,8 @@ import com.inductiveautomation.opcua.stack.core.channel.messages.TcpMessageDecod
 import com.inductiveautomation.opcua.stack.core.serialization.UaMessage;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
-import com.inductiveautomation.opcua.stack.core.types.structured.ChannelSecurityToken;
 import com.inductiveautomation.opcua.stack.core.types.structured.ServiceFault;
 import com.inductiveautomation.opcua.stack.core.util.BufferUtil;
-import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -143,11 +142,11 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
             SymmetricSecurityHeader securityHeader = SymmetricSecurityHeader.decode(buffer);
 
             ChannelSecurity channelSecurity = secureChannel.getChannelSecurity();
-            long currentTokenId = channelSecurity.getCurrentToken().getTokenId();
+            long currentTokenId = channelSecurity.getCurrentToken().getTokenId().longValue();
 
             if (securityHeader.getTokenId() != currentTokenId) {
                 long previousTokenId = channelSecurity.getPreviousToken()
-                        .map(ChannelSecurityToken::getTokenId)
+                        .map(t -> t.getTokenId().longValue())
                         .orElse(-1L);
 
                 if (securityHeader.getTokenId() != previousTokenId) {

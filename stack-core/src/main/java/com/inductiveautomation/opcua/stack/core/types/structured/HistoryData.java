@@ -20,16 +20,24 @@ public class HistoryData implements UaStructure {
         this._dataValues = _dataValues;
     }
 
-    public DataValue[] getDataValues() { return _dataValues; }
+    public DataValue[] getDataValues() {
+        return _dataValues;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(HistoryData historyData, UaEncoder encoder) {

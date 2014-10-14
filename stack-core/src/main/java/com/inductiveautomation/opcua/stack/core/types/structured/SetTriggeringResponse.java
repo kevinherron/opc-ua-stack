@@ -29,24 +29,40 @@ public class SetTriggeringResponse implements UaResponseMessage {
         this._removeDiagnosticInfos = _removeDiagnosticInfos;
     }
 
-    public ResponseHeader getResponseHeader() { return _responseHeader; }
+    public ResponseHeader getResponseHeader() {
+        return _responseHeader;
+    }
 
-    public StatusCode[] getAddResults() { return _addResults; }
+    public StatusCode[] getAddResults() {
+        return _addResults;
+    }
 
-    public DiagnosticInfo[] getAddDiagnosticInfos() { return _addDiagnosticInfos; }
+    public DiagnosticInfo[] getAddDiagnosticInfos() {
+        return _addDiagnosticInfos;
+    }
 
-    public StatusCode[] getRemoveResults() { return _removeResults; }
+    public StatusCode[] getRemoveResults() {
+        return _removeResults;
+    }
 
-    public DiagnosticInfo[] getRemoveDiagnosticInfos() { return _removeDiagnosticInfos; }
+    public DiagnosticInfo[] getRemoveDiagnosticInfos() {
+        return _removeDiagnosticInfos;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(SetTriggeringResponse setTriggeringResponse, UaEncoder encoder) {

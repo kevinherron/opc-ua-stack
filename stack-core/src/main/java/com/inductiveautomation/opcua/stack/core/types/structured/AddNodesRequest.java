@@ -21,18 +21,28 @@ public class AddNodesRequest implements UaRequestMessage {
         this._nodesToAdd = _nodesToAdd;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public AddNodesItem[] getNodesToAdd() { return _nodesToAdd; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public AddNodesItem[] getNodesToAdd() {
+        return _nodesToAdd;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(AddNodesRequest addNodesRequest, UaEncoder encoder) {

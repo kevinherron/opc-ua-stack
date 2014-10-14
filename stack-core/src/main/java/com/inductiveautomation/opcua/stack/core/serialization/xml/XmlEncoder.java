@@ -3,6 +3,7 @@ package com.inductiveautomation.opcua.stack.core.serialization.xml;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
+import com.inductiveautomation.opcua.stack.core.UaSerializationException;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaSerializable;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
@@ -18,10 +19,14 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 import com.inductiveautomation.opcua.stack.core.types.builtin.XmlElement;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UByte;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt64;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.ULong;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UBytePrimitive;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16Primitive;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt64Primitive;
 
 public class XmlEncoder implements UaEncoder {
 
@@ -51,22 +56,42 @@ public class XmlEncoder implements UaEncoder {
     }
 
     @Override
-    public void encodeByte(String field, @UByte Short value) {
+    public void encodeByte(String field, @UBytePrimitive Short value) {
 
     }
 
     @Override
-    public void encodeUInt16(String field, @UInt16 Integer value) {
+    public void encodeUInt16(String field, @UInt16Primitive Integer value) {
 
     }
 
     @Override
-    public void encodeUInt32(String field, @UInt32 Long value) {
+    public void encodeUInt32(String field, @UInt32Primitive Long value) {
 
     }
 
     @Override
-    public void encodeUInt64(String field, @UInt64 Long value) {
+    public void encodeUInt64(String field, @UInt64Primitive Long value) {
+
+    }
+
+    @Override
+    public void encodeByte(String field, UByte value) throws UaSerializationException {
+
+    }
+
+    @Override
+    public void encodeUInt16(String field, UShort value) throws UaSerializationException {
+
+    }
+
+    @Override
+    public void encodeUInt32(String field, UInteger value) throws UaSerializationException {
+
+    }
+
+    @Override
+    public void encodeUInt64(String field, ULong value) throws UaSerializationException {
 
     }
 

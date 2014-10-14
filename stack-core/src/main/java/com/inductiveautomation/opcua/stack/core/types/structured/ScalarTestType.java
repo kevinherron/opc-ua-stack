@@ -18,6 +18,10 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.XmlElement;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.ULong;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.EnumeratedTestType;
 
 public class ScalarTestType implements UaStructure {
@@ -28,13 +32,13 @@ public class ScalarTestType implements UaStructure {
 
     protected final Boolean _boolean;
     protected final Byte _sByte;
-    protected final Short _byte;
+    protected final UByte _byte;
     protected final Short _int16;
-    protected final Integer _uInt16;
+    protected final UShort _uInt16;
     protected final Integer _int32;
-    protected final Long _uInt32;
+    protected final UInteger _uInt32;
     protected final Long _int64;
-    protected final Long _uInt64;
+    protected final ULong _uInt64;
     protected final Float _float;
     protected final Double _double;
     protected final String _string;
@@ -52,7 +56,7 @@ public class ScalarTestType implements UaStructure {
     protected final DataValue _dataValue;
     protected final EnumeratedTestType _enumeratedValue;
 
-    public ScalarTestType(Boolean _boolean, Byte _sByte, Short _byte, Short _int16, Integer _uInt16, Integer _int32, Long _uInt32, Long _int64, Long _uInt64, Float _float, Double _double, String _string, DateTime _dateTime, UUID _guid, ByteString _byteString, XmlElement _xmlElement, NodeId _nodeId, ExpandedNodeId _expandedNodeId, StatusCode _statusCode, DiagnosticInfo _diagnosticInfo, QualifiedName _qualifiedName, LocalizedText _localizedText, ExtensionObject _extensionObject, DataValue _dataValue, EnumeratedTestType _enumeratedValue) {
+    public ScalarTestType(Boolean _boolean, Byte _sByte, UByte _byte, Short _int16, UShort _uInt16, Integer _int32, UInteger _uInt32, Long _int64, ULong _uInt64, Float _float, Double _double, String _string, DateTime _dateTime, UUID _guid, ByteString _byteString, XmlElement _xmlElement, NodeId _nodeId, ExpandedNodeId _expandedNodeId, StatusCode _statusCode, DiagnosticInfo _diagnosticInfo, QualifiedName _qualifiedName, LocalizedText _localizedText, ExtensionObject _extensionObject, DataValue _dataValue, EnumeratedTestType _enumeratedValue) {
         this._boolean = _boolean;
         this._sByte = _sByte;
         this._byte = _byte;
@@ -80,64 +84,120 @@ public class ScalarTestType implements UaStructure {
         this._enumeratedValue = _enumeratedValue;
     }
 
-    public Boolean getBoolean() { return _boolean; }
+    public Boolean getBoolean() {
+        return _boolean;
+    }
 
-    public Byte getSByte() { return _sByte; }
+    public Byte getSByte() {
+        return _sByte;
+    }
 
-    public Short getByte() { return _byte; }
+    public UByte getByte() {
+        return _byte;
+    }
 
-    public Short getInt16() { return _int16; }
+    public Short getInt16() {
+        return _int16;
+    }
 
-    public Integer getUInt16() { return _uInt16; }
+    public UShort getUInt16() {
+        return _uInt16;
+    }
 
-    public Integer getInt32() { return _int32; }
+    public Integer getInt32() {
+        return _int32;
+    }
 
-    public Long getUInt32() { return _uInt32; }
+    public UInteger getUInt32() {
+        return _uInt32;
+    }
 
-    public Long getInt64() { return _int64; }
+    public Long getInt64() {
+        return _int64;
+    }
 
-    public Long getUInt64() { return _uInt64; }
+    public ULong getUInt64() {
+        return _uInt64;
+    }
 
-    public Float getFloat() { return _float; }
+    public Float getFloat() {
+        return _float;
+    }
 
-    public Double getDouble() { return _double; }
+    public Double getDouble() {
+        return _double;
+    }
 
-    public String getString() { return _string; }
+    public String getString() {
+        return _string;
+    }
 
-    public DateTime getDateTime() { return _dateTime; }
+    public DateTime getDateTime() {
+        return _dateTime;
+    }
 
-    public UUID getGuid() { return _guid; }
+    public UUID getGuid() {
+        return _guid;
+    }
 
-    public ByteString getByteString() { return _byteString; }
+    public ByteString getByteString() {
+        return _byteString;
+    }
 
-    public XmlElement getXmlElement() { return _xmlElement; }
+    public XmlElement getXmlElement() {
+        return _xmlElement;
+    }
 
-    public NodeId getNodeId() { return _nodeId; }
+    public NodeId getNodeId() {
+        return _nodeId;
+    }
 
-    public ExpandedNodeId getExpandedNodeId() { return _expandedNodeId; }
+    public ExpandedNodeId getExpandedNodeId() {
+        return _expandedNodeId;
+    }
 
-    public StatusCode getStatusCode() { return _statusCode; }
+    public StatusCode getStatusCode() {
+        return _statusCode;
+    }
 
-    public DiagnosticInfo getDiagnosticInfo() { return _diagnosticInfo; }
+    public DiagnosticInfo getDiagnosticInfo() {
+        return _diagnosticInfo;
+    }
 
-    public QualifiedName getQualifiedName() { return _qualifiedName; }
+    public QualifiedName getQualifiedName() {
+        return _qualifiedName;
+    }
 
-    public LocalizedText getLocalizedText() { return _localizedText; }
+    public LocalizedText getLocalizedText() {
+        return _localizedText;
+    }
 
-    public ExtensionObject getExtensionObject() { return _extensionObject; }
+    public ExtensionObject getExtensionObject() {
+        return _extensionObject;
+    }
 
-    public DataValue getDataValue() { return _dataValue; }
+    public DataValue getDataValue() {
+        return _dataValue;
+    }
 
-    public EnumeratedTestType getEnumeratedValue() { return _enumeratedValue; }
+    public EnumeratedTestType getEnumeratedValue() {
+        return _enumeratedValue;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ScalarTestType scalarTestType, UaEncoder encoder) {
@@ -171,13 +231,13 @@ public class ScalarTestType implements UaStructure {
     public static ScalarTestType decode(UaDecoder decoder) {
         Boolean _boolean = decoder.decodeBoolean("Boolean");
         Byte _sByte = decoder.decodeSByte("SByte");
-        Short _byte = decoder.decodeByte("Byte");
+        UByte _byte = decoder.decodeByte("Byte");
         Short _int16 = decoder.decodeInt16("Int16");
-        Integer _uInt16 = decoder.decodeUInt16("UInt16");
+        UShort _uInt16 = decoder.decodeUInt16("UInt16");
         Integer _int32 = decoder.decodeInt32("Int32");
-        Long _uInt32 = decoder.decodeUInt32("UInt32");
+        UInteger _uInt32 = decoder.decodeUInt32("UInt32");
         Long _int64 = decoder.decodeInt64("Int64");
-        Long _uInt64 = decoder.decodeUInt64("UInt64");
+        ULong _uInt64 = decoder.decodeUInt64("UInt64");
         Float _float = decoder.decodeFloat("Float");
         Double _double = decoder.decodeDouble("Double");
         String _string = decoder.decodeString("String");

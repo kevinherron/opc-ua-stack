@@ -26,22 +26,36 @@ public class AggregateFilter extends MonitoringFilter {
         this._aggregateConfiguration = _aggregateConfiguration;
     }
 
-    public DateTime getStartTime() { return _startTime; }
+    public DateTime getStartTime() {
+        return _startTime;
+    }
 
-    public NodeId getAggregateType() { return _aggregateType; }
+    public NodeId getAggregateType() {
+        return _aggregateType;
+    }
 
-    public Double getProcessingInterval() { return _processingInterval; }
+    public Double getProcessingInterval() {
+        return _processingInterval;
+    }
 
-    public AggregateConfiguration getAggregateConfiguration() { return _aggregateConfiguration; }
+    public AggregateConfiguration getAggregateConfiguration() {
+        return _aggregateConfiguration;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(AggregateFilter aggregateFilter, UaEncoder encoder) {

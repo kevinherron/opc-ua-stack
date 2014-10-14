@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.BrowseDirection;
 
 public class BrowseDescription implements UaStructure {
@@ -18,10 +19,10 @@ public class BrowseDescription implements UaStructure {
     protected final BrowseDirection _browseDirection;
     protected final NodeId _referenceTypeId;
     protected final Boolean _includeSubtypes;
-    protected final Long _nodeClassMask;
-    protected final Long _resultMask;
+    protected final UInteger _nodeClassMask;
+    protected final UInteger _resultMask;
 
-    public BrowseDescription(NodeId _nodeId, BrowseDirection _browseDirection, NodeId _referenceTypeId, Boolean _includeSubtypes, Long _nodeClassMask, Long _resultMask) {
+    public BrowseDescription(NodeId _nodeId, BrowseDirection _browseDirection, NodeId _referenceTypeId, Boolean _includeSubtypes, UInteger _nodeClassMask, UInteger _resultMask) {
         this._nodeId = _nodeId;
         this._browseDirection = _browseDirection;
         this._referenceTypeId = _referenceTypeId;
@@ -30,26 +31,44 @@ public class BrowseDescription implements UaStructure {
         this._resultMask = _resultMask;
     }
 
-    public NodeId getNodeId() { return _nodeId; }
+    public NodeId getNodeId() {
+        return _nodeId;
+    }
 
-    public BrowseDirection getBrowseDirection() { return _browseDirection; }
+    public BrowseDirection getBrowseDirection() {
+        return _browseDirection;
+    }
 
-    public NodeId getReferenceTypeId() { return _referenceTypeId; }
+    public NodeId getReferenceTypeId() {
+        return _referenceTypeId;
+    }
 
-    public Boolean getIncludeSubtypes() { return _includeSubtypes; }
+    public Boolean getIncludeSubtypes() {
+        return _includeSubtypes;
+    }
 
-    public Long getNodeClassMask() { return _nodeClassMask; }
+    public UInteger getNodeClassMask() {
+        return _nodeClassMask;
+    }
 
-    public Long getResultMask() { return _resultMask; }
+    public UInteger getResultMask() {
+        return _resultMask;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(BrowseDescription browseDescription, UaEncoder encoder) {
@@ -66,8 +85,8 @@ public class BrowseDescription implements UaStructure {
         BrowseDirection _browseDirection = decoder.decodeSerializable("BrowseDirection", BrowseDirection.class);
         NodeId _referenceTypeId = decoder.decodeNodeId("ReferenceTypeId");
         Boolean _includeSubtypes = decoder.decodeBoolean("IncludeSubtypes");
-        Long _nodeClassMask = decoder.decodeUInt32("NodeClassMask");
-        Long _resultMask = decoder.decodeUInt32("ResultMask");
+        UInteger _nodeClassMask = decoder.decodeUInt32("NodeClassMask");
+        UInteger _resultMask = decoder.decodeUInt32("ResultMask");
 
         return new BrowseDescription(_nodeId, _browseDirection, _referenceTypeId, _includeSubtypes, _nodeClassMask, _resultMask);
     }

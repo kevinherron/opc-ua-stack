@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class ServerDiagnosticsSummaryDataType implements UaStructure {
 
@@ -13,20 +14,20 @@ public class ServerDiagnosticsSummaryDataType implements UaStructure {
     public static final NodeId BinaryEncodingId = Identifiers.ServerDiagnosticsSummaryDataType_Encoding_DefaultBinary;
     public static final NodeId XmlEncodingId = Identifiers.ServerDiagnosticsSummaryDataType_Encoding_DefaultXml;
 
-    protected final Long _serverViewCount;
-    protected final Long _currentSessionCount;
-    protected final Long _cumulatedSessionCount;
-    protected final Long _securityRejectedSessionCount;
-    protected final Long _rejectedSessionCount;
-    protected final Long _sessionTimeoutCount;
-    protected final Long _sessionAbortCount;
-    protected final Long _currentSubscriptionCount;
-    protected final Long _cumulatedSubscriptionCount;
-    protected final Long _publishingIntervalCount;
-    protected final Long _securityRejectedRequestsCount;
-    protected final Long _rejectedRequestsCount;
+    protected final UInteger _serverViewCount;
+    protected final UInteger _currentSessionCount;
+    protected final UInteger _cumulatedSessionCount;
+    protected final UInteger _securityRejectedSessionCount;
+    protected final UInteger _rejectedSessionCount;
+    protected final UInteger _sessionTimeoutCount;
+    protected final UInteger _sessionAbortCount;
+    protected final UInteger _currentSubscriptionCount;
+    protected final UInteger _cumulatedSubscriptionCount;
+    protected final UInteger _publishingIntervalCount;
+    protected final UInteger _securityRejectedRequestsCount;
+    protected final UInteger _rejectedRequestsCount;
 
-    public ServerDiagnosticsSummaryDataType(Long _serverViewCount, Long _currentSessionCount, Long _cumulatedSessionCount, Long _securityRejectedSessionCount, Long _rejectedSessionCount, Long _sessionTimeoutCount, Long _sessionAbortCount, Long _currentSubscriptionCount, Long _cumulatedSubscriptionCount, Long _publishingIntervalCount, Long _securityRejectedRequestsCount, Long _rejectedRequestsCount) {
+    public ServerDiagnosticsSummaryDataType(UInteger _serverViewCount, UInteger _currentSessionCount, UInteger _cumulatedSessionCount, UInteger _securityRejectedSessionCount, UInteger _rejectedSessionCount, UInteger _sessionTimeoutCount, UInteger _sessionAbortCount, UInteger _currentSubscriptionCount, UInteger _cumulatedSubscriptionCount, UInteger _publishingIntervalCount, UInteger _securityRejectedRequestsCount, UInteger _rejectedRequestsCount) {
         this._serverViewCount = _serverViewCount;
         this._currentSessionCount = _currentSessionCount;
         this._cumulatedSessionCount = _cumulatedSessionCount;
@@ -41,38 +42,68 @@ public class ServerDiagnosticsSummaryDataType implements UaStructure {
         this._rejectedRequestsCount = _rejectedRequestsCount;
     }
 
-    public Long getServerViewCount() { return _serverViewCount; }
+    public UInteger getServerViewCount() {
+        return _serverViewCount;
+    }
 
-    public Long getCurrentSessionCount() { return _currentSessionCount; }
+    public UInteger getCurrentSessionCount() {
+        return _currentSessionCount;
+    }
 
-    public Long getCumulatedSessionCount() { return _cumulatedSessionCount; }
+    public UInteger getCumulatedSessionCount() {
+        return _cumulatedSessionCount;
+    }
 
-    public Long getSecurityRejectedSessionCount() { return _securityRejectedSessionCount; }
+    public UInteger getSecurityRejectedSessionCount() {
+        return _securityRejectedSessionCount;
+    }
 
-    public Long getRejectedSessionCount() { return _rejectedSessionCount; }
+    public UInteger getRejectedSessionCount() {
+        return _rejectedSessionCount;
+    }
 
-    public Long getSessionTimeoutCount() { return _sessionTimeoutCount; }
+    public UInteger getSessionTimeoutCount() {
+        return _sessionTimeoutCount;
+    }
 
-    public Long getSessionAbortCount() { return _sessionAbortCount; }
+    public UInteger getSessionAbortCount() {
+        return _sessionAbortCount;
+    }
 
-    public Long getCurrentSubscriptionCount() { return _currentSubscriptionCount; }
+    public UInteger getCurrentSubscriptionCount() {
+        return _currentSubscriptionCount;
+    }
 
-    public Long getCumulatedSubscriptionCount() { return _cumulatedSubscriptionCount; }
+    public UInteger getCumulatedSubscriptionCount() {
+        return _cumulatedSubscriptionCount;
+    }
 
-    public Long getPublishingIntervalCount() { return _publishingIntervalCount; }
+    public UInteger getPublishingIntervalCount() {
+        return _publishingIntervalCount;
+    }
 
-    public Long getSecurityRejectedRequestsCount() { return _securityRejectedRequestsCount; }
+    public UInteger getSecurityRejectedRequestsCount() {
+        return _securityRejectedRequestsCount;
+    }
 
-    public Long getRejectedRequestsCount() { return _rejectedRequestsCount; }
+    public UInteger getRejectedRequestsCount() {
+        return _rejectedRequestsCount;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ServerDiagnosticsSummaryDataType serverDiagnosticsSummaryDataType, UaEncoder encoder) {
@@ -91,18 +122,18 @@ public class ServerDiagnosticsSummaryDataType implements UaStructure {
     }
 
     public static ServerDiagnosticsSummaryDataType decode(UaDecoder decoder) {
-        Long _serverViewCount = decoder.decodeUInt32("ServerViewCount");
-        Long _currentSessionCount = decoder.decodeUInt32("CurrentSessionCount");
-        Long _cumulatedSessionCount = decoder.decodeUInt32("CumulatedSessionCount");
-        Long _securityRejectedSessionCount = decoder.decodeUInt32("SecurityRejectedSessionCount");
-        Long _rejectedSessionCount = decoder.decodeUInt32("RejectedSessionCount");
-        Long _sessionTimeoutCount = decoder.decodeUInt32("SessionTimeoutCount");
-        Long _sessionAbortCount = decoder.decodeUInt32("SessionAbortCount");
-        Long _currentSubscriptionCount = decoder.decodeUInt32("CurrentSubscriptionCount");
-        Long _cumulatedSubscriptionCount = decoder.decodeUInt32("CumulatedSubscriptionCount");
-        Long _publishingIntervalCount = decoder.decodeUInt32("PublishingIntervalCount");
-        Long _securityRejectedRequestsCount = decoder.decodeUInt32("SecurityRejectedRequestsCount");
-        Long _rejectedRequestsCount = decoder.decodeUInt32("RejectedRequestsCount");
+        UInteger _serverViewCount = decoder.decodeUInt32("ServerViewCount");
+        UInteger _currentSessionCount = decoder.decodeUInt32("CurrentSessionCount");
+        UInteger _cumulatedSessionCount = decoder.decodeUInt32("CumulatedSessionCount");
+        UInteger _securityRejectedSessionCount = decoder.decodeUInt32("SecurityRejectedSessionCount");
+        UInteger _rejectedSessionCount = decoder.decodeUInt32("RejectedSessionCount");
+        UInteger _sessionTimeoutCount = decoder.decodeUInt32("SessionTimeoutCount");
+        UInteger _sessionAbortCount = decoder.decodeUInt32("SessionAbortCount");
+        UInteger _currentSubscriptionCount = decoder.decodeUInt32("CurrentSubscriptionCount");
+        UInteger _cumulatedSubscriptionCount = decoder.decodeUInt32("CumulatedSubscriptionCount");
+        UInteger _publishingIntervalCount = decoder.decodeUInt32("PublishingIntervalCount");
+        UInteger _securityRejectedRequestsCount = decoder.decodeUInt32("SecurityRejectedRequestsCount");
+        UInteger _rejectedRequestsCount = decoder.decodeUInt32("RejectedRequestsCount");
 
         return new ServerDiagnosticsSummaryDataType(_serverViewCount, _currentSessionCount, _cumulatedSessionCount, _securityRejectedSessionCount, _rejectedSessionCount, _sessionTimeoutCount, _sessionAbortCount, _currentSubscriptionCount, _cumulatedSubscriptionCount, _publishingIntervalCount, _securityRejectedRequestsCount, _rejectedRequestsCount);
     }

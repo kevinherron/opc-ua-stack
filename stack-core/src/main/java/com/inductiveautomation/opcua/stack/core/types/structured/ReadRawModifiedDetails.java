@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class ReadRawModifiedDetails extends HistoryReadDetails {
 
@@ -16,10 +17,10 @@ public class ReadRawModifiedDetails extends HistoryReadDetails {
     protected final Boolean _isReadModified;
     protected final DateTime _startTime;
     protected final DateTime _endTime;
-    protected final Long _numValuesPerNode;
+    protected final UInteger _numValuesPerNode;
     protected final Boolean _returnBounds;
 
-    public ReadRawModifiedDetails(Boolean _isReadModified, DateTime _startTime, DateTime _endTime, Long _numValuesPerNode, Boolean _returnBounds) {
+    public ReadRawModifiedDetails(Boolean _isReadModified, DateTime _startTime, DateTime _endTime, UInteger _numValuesPerNode, Boolean _returnBounds) {
         super();
         this._isReadModified = _isReadModified;
         this._startTime = _startTime;
@@ -28,24 +29,40 @@ public class ReadRawModifiedDetails extends HistoryReadDetails {
         this._returnBounds = _returnBounds;
     }
 
-    public Boolean getIsReadModified() { return _isReadModified; }
+    public Boolean getIsReadModified() {
+        return _isReadModified;
+    }
 
-    public DateTime getStartTime() { return _startTime; }
+    public DateTime getStartTime() {
+        return _startTime;
+    }
 
-    public DateTime getEndTime() { return _endTime; }
+    public DateTime getEndTime() {
+        return _endTime;
+    }
 
-    public Long getNumValuesPerNode() { return _numValuesPerNode; }
+    public UInteger getNumValuesPerNode() {
+        return _numValuesPerNode;
+    }
 
-    public Boolean getReturnBounds() { return _returnBounds; }
+    public Boolean getReturnBounds() {
+        return _returnBounds;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ReadRawModifiedDetails readRawModifiedDetails, UaEncoder encoder) {
@@ -60,7 +77,7 @@ public class ReadRawModifiedDetails extends HistoryReadDetails {
         Boolean _isReadModified = decoder.decodeBoolean("IsReadModified");
         DateTime _startTime = decoder.decodeDateTime("StartTime");
         DateTime _endTime = decoder.decodeDateTime("EndTime");
-        Long _numValuesPerNode = decoder.decodeUInt32("NumValuesPerNode");
+        UInteger _numValuesPerNode = decoder.decodeUInt32("NumValuesPerNode");
         Boolean _returnBounds = decoder.decodeBoolean("ReturnBounds");
 
         return new ReadRawModifiedDetails(_isReadModified, _startTime, _endTime, _numValuesPerNode, _returnBounds);

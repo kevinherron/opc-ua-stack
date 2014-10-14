@@ -37,32 +37,56 @@ public class SessionSecurityDiagnosticsDataType implements UaStructure {
         this._clientCertificate = _clientCertificate;
     }
 
-    public NodeId getSessionId() { return _sessionId; }
+    public NodeId getSessionId() {
+        return _sessionId;
+    }
 
-    public String getClientUserIdOfSession() { return _clientUserIdOfSession; }
+    public String getClientUserIdOfSession() {
+        return _clientUserIdOfSession;
+    }
 
-    public String[] getClientUserIdHistory() { return _clientUserIdHistory; }
+    public String[] getClientUserIdHistory() {
+        return _clientUserIdHistory;
+    }
 
-    public String getAuthenticationMechanism() { return _authenticationMechanism; }
+    public String getAuthenticationMechanism() {
+        return _authenticationMechanism;
+    }
 
-    public String getEncoding() { return _encoding; }
+    public String getEncoding() {
+        return _encoding;
+    }
 
-    public String getTransportProtocol() { return _transportProtocol; }
+    public String getTransportProtocol() {
+        return _transportProtocol;
+    }
 
-    public MessageSecurityMode getSecurityMode() { return _securityMode; }
+    public MessageSecurityMode getSecurityMode() {
+        return _securityMode;
+    }
 
-    public String getSecurityPolicyUri() { return _securityPolicyUri; }
+    public String getSecurityPolicyUri() {
+        return _securityPolicyUri;
+    }
 
-    public ByteString getClientCertificate() { return _clientCertificate; }
+    public ByteString getClientCertificate() {
+        return _clientCertificate;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(SessionSecurityDiagnosticsDataType sessionSecurityDiagnosticsDataType, UaEncoder encoder) {

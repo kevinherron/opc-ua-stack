@@ -167,14 +167,14 @@ public class StructuredType {
 
         private static ImmutableMap<String, String> JavaTypes =
                 ImmutableMap.<String, String>builder()
-                        .put("Byte", "Short")
+                        .put("Byte", "UByte")
                         .put("SByte", "Byte")
                         .put("Int16", "Short")
-                        .put("UInt16", "Integer")
+                        .put("UInt16", "UShort")
                         .put("Int32", "Integer")
-                        .put("UInt32", "Long")
+                        .put("UInt32", "UInteger")
                         .put("Int64", "Long")
-                        .put("UInt64", "Long")
+                        .put("UInt64", "ULong")
                         .put("Guid", "UUID")
                         .build();
 

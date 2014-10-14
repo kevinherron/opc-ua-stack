@@ -1,10 +1,11 @@
 package com.inductiveautomation.opcua.stack.core.serialization.binary;
 
-import com.inductiveautomation.opcua.stack.core.types.builtin.OverloadedType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 import static org.testng.Assert.assertEquals;
 
 public class VariantSerializationTest extends BinarySerializationFixture {
@@ -19,8 +20,8 @@ public class VariantSerializationTest extends BinarySerializationFixture {
                 {new Variant(new Integer[][]{{0, 1}, {2, 3}})},
                 {new Variant(new Long[]{0L, 1L, 2L, 3L})},
                 {new Variant(new Long[][]{{0L, 1L}, {2L, 3L}})},
-                {new Variant(new Long[]{0L, 1L, 2L, 3L}, OverloadedType.UInt32)},
-                {new Variant(new Long[][]{{0L, 1L}, {2L, 3L}}, OverloadedType.UInt32)}
+                {new Variant(new UInteger[]{uint(0), uint(1), uint(2), uint(3)})},
+                {new Variant(new UInteger[][]{{uint(0), uint(1)}, {uint(2), uint(3)}})}
         };
     }
 
@@ -45,13 +46,7 @@ public class VariantSerializationTest extends BinarySerializationFixture {
                         new Variant(new Long[]{0L, 1L, 2L, 3L})},
 
                 {new Variant(new long[][]{{0L, 1L}, {2L, 3L}}),
-                        new Variant(new Long[][]{{0L, 1L}, {2L, 3L}})},
-
-                {new Variant(new long[]{0L, 1L, 2L, 3L}, OverloadedType.UInt32),
-                        new Variant(new Long[]{0L, 1L, 2L, 3L}, OverloadedType.UInt32)},
-
-                {new Variant(new long[][]{{0L, 1L}, {2L, 3L}}, OverloadedType.UInt32),
-                        new Variant(new Long[][]{{0L, 1L}, {2L, 3L}}, OverloadedType.UInt32)}
+                        new Variant(new Long[][]{{0L, 1L}, {2L, 3L}})}
         };
     }
 
@@ -62,35 +57,6 @@ public class VariantSerializationTest extends BinarySerializationFixture {
         Variant decoded = decoder.decodeVariant(null);
 
         assertEquals(decoded, expected);
-    }
-
-    @DataProvider(name = "MismatchedTypeProvider")
-    public Object[][] getMismatchedTypes() {
-        return new Object[][]{
-                {new Variant((byte) 42, OverloadedType.UByte)},
-                {new Variant((byte) 42, OverloadedType.UInt16)},
-                {new Variant((byte) 42, OverloadedType.UInt32)},
-                {new Variant((byte) 42, OverloadedType.UInt64)},
-
-                {new Variant((short) 42, OverloadedType.UInt16)},
-                {new Variant((short) 42, OverloadedType.UInt32)},
-                {new Variant((short) 42, OverloadedType.UInt64)},
-
-                {new Variant(42, OverloadedType.UByte)},
-                {new Variant(42, OverloadedType.UInt32)},
-                {new Variant(42, OverloadedType.UInt64)},
-
-                {new Variant(42L, OverloadedType.UByte)},
-                {new Variant(42L, OverloadedType.UInt16)},
-        };
-    }
-
-    @Test(dataProvider = "MismatchedTypeProvider", expectedExceptions = ClassCastException.class)
-    public void variantWithMismatchedOverloadedType(Variant variant) {
-        encoder.encodeVariant(null, variant);
-        Variant decoded = decoder.decodeVariant(null);
-
-        assertEquals(variant, decoded);
     }
 
 }

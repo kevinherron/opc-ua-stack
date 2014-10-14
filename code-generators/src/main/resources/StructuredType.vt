@@ -6,6 +6,7 @@ import java.util.UUID;
 import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.*;
 import com.inductiveautomation.opcua.stack.core.types.builtin.*;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.*;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.*;
 import com.google.common.base.Objects;
 

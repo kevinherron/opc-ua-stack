@@ -1,7 +1,5 @@
 package com.inductiveautomation.opcua.stack;
 
-import static org.testng.Assert.assertEquals;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -19,7 +17,6 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.ExpandedNodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
-import com.inductiveautomation.opcua.stack.core.types.builtin.OverloadedType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
@@ -42,6 +39,12 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
+import static org.testng.Assert.assertEquals;
+
 public class ClientServerTest extends SecurityFixture {
 
     @DataProvider
@@ -49,13 +52,13 @@ public class ClientServerTest extends SecurityFixture {
         return new Object[][]{
                 {new Variant(true)},
                 {new Variant((byte) 1)},
-                {new Variant((short) 1, OverloadedType.UByte)},
+                {new Variant(ubyte(1))},
                 {new Variant((short) 1)},
-                {new Variant(1, OverloadedType.UInt16)},
+                {new Variant(ushort(1))},
                 {new Variant(1)},
-                {new Variant(1L, OverloadedType.UInt32)},
+                {new Variant(uint(1))},
                 {new Variant(1L)},
-                {new Variant(1L, OverloadedType.UInt64)},
+                {new Variant(ulong(1L))},
                 {new Variant(3.14f)},
                 {new Variant(6.12d)},
                 {new Variant("hello, world")},
@@ -68,7 +71,7 @@ public class ClientServerTest extends SecurityFixture {
                 {new Variant(StatusCode.Good)},
                 {new Variant(new QualifiedName(0, "QualifiedName"))},
                 {new Variant(LocalizedText.english("LocalizedText"))},
-                {new Variant(new ExtensionObject(new ReadValueId(NodeId.NullValue, 1L, null, new QualifiedName(0, "DataEncoding"))))},
+                {new Variant(new ExtensionObject(new ReadValueId(NodeId.NullValue, uint(1), null, new QualifiedName(0, "DataEncoding"))))},
         };
     }
 
@@ -224,10 +227,10 @@ public class ClientServerTest extends SecurityFixture {
             RequestHeader header = new RequestHeader(
                     NodeId.NullValue,
                     DateTime.now(),
-                    (long) i, 0L, null, 60L, null
+                    uint(i), uint(0), null, uint(60), null
             );
 
-            requests.add(new TestStackRequest(header, (long) i, i, input));
+            requests.add(new TestStackRequest(header, uint(i), i, input));
 
             CompletableFuture<TestStackResponse> future = new CompletableFuture<>();
 

@@ -20,16 +20,24 @@ public class HistoryModifiedData extends HistoryData {
         this._modificationInfos = _modificationInfos;
     }
 
-    public ModificationInfo[] getModificationInfos() { return _modificationInfos; }
+    public ModificationInfo[] getModificationInfos() {
+        return _modificationInfos;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(HistoryModifiedData historyModifiedData, UaEncoder encoder) {

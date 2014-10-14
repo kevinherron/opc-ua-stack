@@ -24,20 +24,32 @@ public class DeleteRawModifiedDetails extends HistoryUpdateDetails {
         this._endTime = _endTime;
     }
 
-    public Boolean getIsDeleteModified() { return _isDeleteModified; }
+    public Boolean getIsDeleteModified() {
+        return _isDeleteModified;
+    }
 
-    public DateTime getStartTime() { return _startTime; }
+    public DateTime getStartTime() {
+        return _startTime;
+    }
 
-    public DateTime getEndTime() { return _endTime; }
+    public DateTime getEndTime() {
+        return _endTime;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(DeleteRawModifiedDetails deleteRawModifiedDetails, UaEncoder encoder) {

@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class SubscriptionAcknowledgement implements UaStructure {
 
@@ -13,26 +14,36 @@ public class SubscriptionAcknowledgement implements UaStructure {
     public static final NodeId BinaryEncodingId = Identifiers.SubscriptionAcknowledgement_Encoding_DefaultBinary;
     public static final NodeId XmlEncodingId = Identifiers.SubscriptionAcknowledgement_Encoding_DefaultXml;
 
-    protected final Long _subscriptionId;
-    protected final Long _sequenceNumber;
+    protected final UInteger _subscriptionId;
+    protected final UInteger _sequenceNumber;
 
-    public SubscriptionAcknowledgement(Long _subscriptionId, Long _sequenceNumber) {
+    public SubscriptionAcknowledgement(UInteger _subscriptionId, UInteger _sequenceNumber) {
         this._subscriptionId = _subscriptionId;
         this._sequenceNumber = _sequenceNumber;
     }
 
-    public Long getSubscriptionId() { return _subscriptionId; }
+    public UInteger getSubscriptionId() {
+        return _subscriptionId;
+    }
 
-    public Long getSequenceNumber() { return _sequenceNumber; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public UInteger getSequenceNumber() {
+        return _sequenceNumber;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(SubscriptionAcknowledgement subscriptionAcknowledgement, UaEncoder encoder) {
@@ -41,8 +52,8 @@ public class SubscriptionAcknowledgement implements UaStructure {
     }
 
     public static SubscriptionAcknowledgement decode(UaDecoder decoder) {
-        Long _subscriptionId = decoder.decodeUInt32("SubscriptionId");
-        Long _sequenceNumber = decoder.decodeUInt32("SequenceNumber");
+        UInteger _subscriptionId = decoder.decodeUInt32("SubscriptionId");
+        UInteger _sequenceNumber = decoder.decodeUInt32("SequenceNumber");
 
         return new SubscriptionAcknowledgement(_subscriptionId, _sequenceNumber);
     }

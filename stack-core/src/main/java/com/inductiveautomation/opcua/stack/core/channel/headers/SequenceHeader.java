@@ -1,6 +1,6 @@
 package com.inductiveautomation.opcua.stack.core.channel.headers;
 
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
 
@@ -13,10 +13,10 @@ import io.netty.buffer.ByteBuf;
  */
 public class SequenceHeader {
 
-    @UInt32
+    @UInt32Primitive
     private final long sequenceNumber;
 
-    @UInt32
+    @UInt32Primitive
     private final long requestId;
 
     /**

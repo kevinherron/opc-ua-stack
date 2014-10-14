@@ -7,6 +7,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class ReadValueId implements UaStructure {
 
@@ -15,33 +16,47 @@ public class ReadValueId implements UaStructure {
     public static final NodeId XmlEncodingId = Identifiers.ReadValueId_Encoding_DefaultXml;
 
     protected final NodeId _nodeId;
-    protected final Long _attributeId;
+    protected final UInteger _attributeId;
     protected final String _indexRange;
     protected final QualifiedName _dataEncoding;
 
-    public ReadValueId(NodeId _nodeId, Long _attributeId, String _indexRange, QualifiedName _dataEncoding) {
+    public ReadValueId(NodeId _nodeId, UInteger _attributeId, String _indexRange, QualifiedName _dataEncoding) {
         this._nodeId = _nodeId;
         this._attributeId = _attributeId;
         this._indexRange = _indexRange;
         this._dataEncoding = _dataEncoding;
     }
 
-    public NodeId getNodeId() { return _nodeId; }
+    public NodeId getNodeId() {
+        return _nodeId;
+    }
 
-    public Long getAttributeId() { return _attributeId; }
+    public UInteger getAttributeId() {
+        return _attributeId;
+    }
 
-    public String getIndexRange() { return _indexRange; }
+    public String getIndexRange() {
+        return _indexRange;
+    }
 
-    public QualifiedName getDataEncoding() { return _dataEncoding; }
+    public QualifiedName getDataEncoding() {
+        return _dataEncoding;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ReadValueId readValueId, UaEncoder encoder) {
@@ -53,7 +68,7 @@ public class ReadValueId implements UaStructure {
 
     public static ReadValueId decode(UaDecoder decoder) {
         NodeId _nodeId = decoder.decodeNodeId("NodeId");
-        Long _attributeId = decoder.decodeUInt32("AttributeId");
+        UInteger _attributeId = decoder.decodeUInt32("AttributeId");
         String _indexRange = decoder.decodeString("IndexRange");
         QualifiedName _dataEncoding = decoder.decodeQualifiedName("DataEncoding");
 

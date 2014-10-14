@@ -17,10 +17,10 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 import com.inductiveautomation.opcua.stack.core.types.builtin.XmlElement;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UByte;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt64;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.ULong;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
 
 public interface UaDecoder {
 
@@ -34,17 +34,13 @@ public interface UaDecoder {
 
     Long decodeInt64(String field) throws UaSerializationException;
 
-    @UByte
-    Short decodeByte(String field) throws UaSerializationException;
+    UByte decodeByte(String field) throws UaSerializationException;
 
-    @UInt16
-    Integer decodeUInt16(String field) throws UaSerializationException;
+    UShort decodeUInt16(String field) throws UaSerializationException;
 
-    @UInt32
-    Long decodeUInt32(String field) throws UaSerializationException;
+    UInteger decodeUInt32(String field) throws UaSerializationException;
 
-    @UInt64
-    Long decodeUInt64(String field) throws UaSerializationException;
+    ULong decodeUInt64(String field) throws UaSerializationException;
 
     Float decodeFloat(String field) throws UaSerializationException;
 

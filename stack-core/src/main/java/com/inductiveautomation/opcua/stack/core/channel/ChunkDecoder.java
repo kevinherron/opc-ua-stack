@@ -22,7 +22,6 @@ import com.inductiveautomation.opcua.stack.core.channel.headers.SequenceHeader;
 import com.inductiveautomation.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
 import com.inductiveautomation.opcua.stack.core.channel.messages.MessageType;
 import com.inductiveautomation.opcua.stack.core.security.SecurityAlgorithm;
-import com.inductiveautomation.opcua.stack.core.types.structured.ChannelSecurityToken;
 import com.inductiveautomation.opcua.stack.core.util.BufferUtil;
 import com.inductiveautomation.opcua.stack.core.util.SignatureUtil;
 import io.netty.buffer.ByteBuf;
@@ -272,13 +271,13 @@ public class ChunkDecoder implements HeaderConstants {
                             "unknown secure channel token: " + tokenId);
                 }
             } else {
-                long currentTokenId = channelSecurity.getCurrentToken().getTokenId();
+                long currentTokenId = channelSecurity.getCurrentToken().getTokenId().longValue();
 
                 if (tokenId == currentTokenId) {
                     securitySecrets = channelSecurity.getCurrentKeys();
                 } else {
                     long previousTokenId = channelSecurity.getPreviousToken()
-                            .map(ChannelSecurityToken::getTokenId)
+                            .map(t -> t.getTokenId().longValue())
                             .orElse(-1L);
 
                     if (tokenId == previousTokenId && channelSecurity.getPreviousKeys().isPresent()) {

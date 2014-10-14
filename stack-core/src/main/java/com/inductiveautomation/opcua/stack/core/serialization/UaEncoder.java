@@ -16,10 +16,14 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 import com.inductiveautomation.opcua.stack.core.types.builtin.XmlElement;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UByte;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt64;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.ULong;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UBytePrimitive;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16Primitive;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt64Primitive;
 
 public interface UaEncoder {
 
@@ -33,13 +37,17 @@ public interface UaEncoder {
 
     void encodeInt64(String field, Long value) throws UaSerializationException;
 
-    void encodeByte(String field, @UByte Short value) throws UaSerializationException;
+    void encodeByte(String field, @UBytePrimitive Short value) throws UaSerializationException;
+    void encodeByte(String field, UByte value) throws UaSerializationException;
 
-    void encodeUInt16(String field, @UInt16 Integer value) throws UaSerializationException;
+    void encodeUInt16(String field, @UInt16Primitive Integer value) throws UaSerializationException;
+    void encodeUInt16(String field, UShort value) throws UaSerializationException;
 
-    void encodeUInt32(String field, @UInt32 Long value) throws UaSerializationException;
+    void encodeUInt32(String field, @UInt32Primitive Long value) throws UaSerializationException;
+    void encodeUInt32(String field, UInteger value) throws UaSerializationException;
 
-    void encodeUInt64(String field, @UInt64 Long value) throws UaSerializationException;
+    void encodeUInt64(String field, @UInt64Primitive Long value) throws UaSerializationException;
+    void encodeUInt64(String field, ULong value) throws UaSerializationException;
 
     void encodeFloat(String field, Float value) throws UaSerializationException;
 

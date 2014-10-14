@@ -26,22 +26,36 @@ public class EUInformation implements UaStructure {
         this._description = _description;
     }
 
-    public String getNamespaceUri() { return _namespaceUri; }
+    public String getNamespaceUri() {
+        return _namespaceUri;
+    }
 
-    public Integer getUnitId() { return _unitId; }
+    public Integer getUnitId() {
+        return _unitId;
+    }
 
-    public LocalizedText getDisplayName() { return _displayName; }
+    public LocalizedText getDisplayName() {
+        return _displayName;
+    }
 
-    public LocalizedText getDescription() { return _description; }
+    public LocalizedText getDescription() {
+        return _description;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(EUInformation eUInformation, UaEncoder encoder) {

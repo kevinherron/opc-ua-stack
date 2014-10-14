@@ -12,9 +12,9 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
+import com.inductiveautomation.opcua.stack.core.UaSerializationException;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaSerializable;
-import com.inductiveautomation.opcua.stack.core.UaSerializationException;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DataValue;
@@ -28,6 +28,15 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 import com.inductiveautomation.opcua.stack.core.types.builtin.XmlElement;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.ULong;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
+
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
 
 public class XmlDecoder implements UaDecoder {
 
@@ -76,23 +85,23 @@ public class XmlDecoder implements UaDecoder {
     }
 
     @Override
-    public Short decodeByte(String field) throws UaSerializationException {
-        return parseElement(field, Short::parseShort);
+    public UByte decodeByte(String field) throws UaSerializationException {
+        return parseElement(field, s -> ubyte(Short.parseShort(s)));
     }
 
     @Override
-    public Integer decodeUInt16(String field) throws UaSerializationException {
-        return parseElement(field, Integer::parseInt);
+    public UShort decodeUInt16(String field) throws UaSerializationException {
+        return parseElement(field, s -> ushort(Integer.parseInt(s)));
     }
 
     @Override
-    public Long decodeUInt32(String field) throws UaSerializationException {
-        return parseElement(field, Long::parseLong);
+    public UInteger decodeUInt32(String field) throws UaSerializationException {
+        return parseElement(field, s -> uint(Long.parseLong(s)));
     }
 
     @Override
-    public Long decodeUInt64(String field) throws UaSerializationException {
-        return parseElement(field, Long::parseLong);
+    public ULong decodeUInt64(String field) throws UaSerializationException {
+        return parseElement(field, s -> ulong(Long.parseUnsignedLong(s)));
     }
 
     @Override

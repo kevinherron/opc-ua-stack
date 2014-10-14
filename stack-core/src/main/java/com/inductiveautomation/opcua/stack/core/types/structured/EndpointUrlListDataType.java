@@ -19,16 +19,24 @@ public class EndpointUrlListDataType implements UaStructure {
         this._endpointUrlList = _endpointUrlList;
     }
 
-    public String[] getEndpointUrlList() { return _endpointUrlList; }
+    public String[] getEndpointUrlList() {
+        return _endpointUrlList;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(EndpointUrlListDataType endpointUrlListDataType, UaEncoder encoder) {

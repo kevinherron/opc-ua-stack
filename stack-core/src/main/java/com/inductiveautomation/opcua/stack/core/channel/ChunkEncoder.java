@@ -9,6 +9,7 @@ import java.security.cert.Certificate;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.google.common.collect.Lists;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.channel.headers.AsymmetricSecurityHeader;
@@ -21,7 +22,6 @@ import com.inductiveautomation.opcua.stack.core.security.SecurityAlgorithm;
 import com.inductiveautomation.opcua.stack.core.util.BufferUtil;
 import com.inductiveautomation.opcua.stack.core.util.LongSequence;
 import com.inductiveautomation.opcua.stack.core.util.SignatureUtil;
-import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 
 public class ChunkEncoder implements HeaderConstants {
@@ -299,7 +299,7 @@ public class ChunkEncoder implements HeaderConstants {
         @Override
         public void encodeSecurityHeader(SecureChannel channel, ByteBuf buffer) {
             ChannelSecurity channelSecurity = channel.getChannelSecurity();
-            long tokenId = channelSecurity != null ? channelSecurity.getCurrentToken().getTokenId() : 0L;
+            long tokenId = channelSecurity != null ? channelSecurity.getCurrentToken().getTokenId().longValue() : 0L;
 
             SymmetricSecurityHeader.encode(new SymmetricSecurityHeader(tokenId), buffer);
 

@@ -28,9 +28,18 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 import com.inductiveautomation.opcua.stack.core.types.builtin.XmlElement;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.ULong;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.inductiveautomation.opcua.stack.core.util.ArrayUtil;
 import com.inductiveautomation.opcua.stack.core.util.TypeUtil;
 import io.netty.buffer.ByteBuf;
+
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
 
 public class BinaryDecoder implements UaDecoder {
 
@@ -79,23 +88,23 @@ public class BinaryDecoder implements UaDecoder {
     }
 
     @Override
-    public Short decodeByte(String field) {
-        return buffer.readUnsignedByte();
+    public UByte decodeByte(String field) {
+        return ubyte(buffer.readUnsignedByte());
     }
 
     @Override
-    public Integer decodeUInt16(String field) {
-        return buffer.readUnsignedShort();
+    public UShort decodeUInt16(String field) {
+        return ushort(buffer.readUnsignedShort());
     }
 
     @Override
-    public Long decodeUInt32(String field) {
-        return buffer.readUnsignedInt();
+    public UInteger decodeUInt32(String field) {
+        return uint(buffer.readUnsignedInt());
     }
 
     @Override
-    public Long decodeUInt64(String field) {
-        return buffer.readLong();
+    public ULong decodeUInt64(String field) {
+        return ulong(buffer.readLong());
     }
 
     @Override
@@ -214,7 +223,7 @@ public class BinaryDecoder implements UaDecoder {
         }
 
         if ((flags & 0x40) == 0x40) {
-            serverIndex = decodeUInt32(null);
+            serverIndex = decodeUInt32(null).longValue();
         }
 
         return new ExpandedNodeId(nodeId, namespaceUri, serverIndex);
@@ -222,12 +231,12 @@ public class BinaryDecoder implements UaDecoder {
 
     @Override
     public StatusCode decodeStatusCode(String field) {
-        return new StatusCode(decodeUInt32(null));
+        return new StatusCode(decodeUInt32(null).longValue());
     }
 
     @Override
     public QualifiedName decodeQualifiedName(String field) throws UaSerializationException {
-        int namespaceIndex = decodeUInt16(null);
+        int namespaceIndex = decodeUInt16(null).intValue();
         String name = decodeString(null);
 
         return new QualifiedName(namespaceIndex, name);
@@ -317,19 +326,11 @@ public class BinaryDecoder implements UaDecoder {
                 int[] dimensions = dimensionsEncoded ? decodeDimensions() : new int[]{length};
                 Object array = dimensions.length > 1 ? ArrayUtil.unflatten(flatArray, dimensions) : flatArray;
 
-                if (TypeUtil.isOverloadedType(typeId)) {
-                    return new Variant(array, TypeUtil.getOverloadedType(typeId));
-                } else {
-                    return new Variant(array);
-                }
+                return new Variant(array);
             } else {
                 Object value = decodeBuiltinType(typeId);
 
-                if (TypeUtil.isOverloadedType(typeId)) {
-                    return new Variant(value, TypeUtil.getOverloadedType(typeId));
-                } else {
-                    return new Variant(value);
-                }
+                return new Variant(value);
             }
         }
     }

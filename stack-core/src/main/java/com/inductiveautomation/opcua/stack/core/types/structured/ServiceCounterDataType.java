@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class ServiceCounterDataType implements UaStructure {
 
@@ -13,26 +14,36 @@ public class ServiceCounterDataType implements UaStructure {
     public static final NodeId BinaryEncodingId = Identifiers.ServiceCounterDataType_Encoding_DefaultBinary;
     public static final NodeId XmlEncodingId = Identifiers.ServiceCounterDataType_Encoding_DefaultXml;
 
-    protected final Long _totalCount;
-    protected final Long _errorCount;
+    protected final UInteger _totalCount;
+    protected final UInteger _errorCount;
 
-    public ServiceCounterDataType(Long _totalCount, Long _errorCount) {
+    public ServiceCounterDataType(UInteger _totalCount, UInteger _errorCount) {
         this._totalCount = _totalCount;
         this._errorCount = _errorCount;
     }
 
-    public Long getTotalCount() { return _totalCount; }
+    public UInteger getTotalCount() {
+        return _totalCount;
+    }
 
-    public Long getErrorCount() { return _errorCount; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public UInteger getErrorCount() {
+        return _errorCount;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ServiceCounterDataType serviceCounterDataType, UaEncoder encoder) {
@@ -41,8 +52,8 @@ public class ServiceCounterDataType implements UaStructure {
     }
 
     public static ServiceCounterDataType decode(UaDecoder decoder) {
-        Long _totalCount = decoder.decodeUInt32("TotalCount");
-        Long _errorCount = decoder.decodeUInt32("ErrorCount");
+        UInteger _totalCount = decoder.decodeUInt32("TotalCount");
+        UInteger _errorCount = decoder.decodeUInt32("ErrorCount");
 
         return new ServiceCounterDataType(_totalCount, _errorCount);
     }

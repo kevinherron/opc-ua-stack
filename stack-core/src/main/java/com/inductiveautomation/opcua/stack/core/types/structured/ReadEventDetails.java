@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class ReadEventDetails extends HistoryReadDetails {
 
@@ -13,12 +14,12 @@ public class ReadEventDetails extends HistoryReadDetails {
     public static final NodeId BinaryEncodingId = Identifiers.ReadEventDetails_Encoding_DefaultBinary;
     public static final NodeId XmlEncodingId = Identifiers.ReadEventDetails_Encoding_DefaultXml;
 
-    protected final Long _numValuesPerNode;
+    protected final UInteger _numValuesPerNode;
     protected final DateTime _startTime;
     protected final DateTime _endTime;
     protected final EventFilter _filter;
 
-    public ReadEventDetails(Long _numValuesPerNode, DateTime _startTime, DateTime _endTime, EventFilter _filter) {
+    public ReadEventDetails(UInteger _numValuesPerNode, DateTime _startTime, DateTime _endTime, EventFilter _filter) {
         super();
         this._numValuesPerNode = _numValuesPerNode;
         this._startTime = _startTime;
@@ -26,22 +27,36 @@ public class ReadEventDetails extends HistoryReadDetails {
         this._filter = _filter;
     }
 
-    public Long getNumValuesPerNode() { return _numValuesPerNode; }
+    public UInteger getNumValuesPerNode() {
+        return _numValuesPerNode;
+    }
 
-    public DateTime getStartTime() { return _startTime; }
+    public DateTime getStartTime() {
+        return _startTime;
+    }
 
-    public DateTime getEndTime() { return _endTime; }
+    public DateTime getEndTime() {
+        return _endTime;
+    }
 
-    public EventFilter getFilter() { return _filter; }
+    public EventFilter getFilter() {
+        return _filter;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ReadEventDetails readEventDetails, UaEncoder encoder) {
@@ -52,7 +67,7 @@ public class ReadEventDetails extends HistoryReadDetails {
     }
 
     public static ReadEventDetails decode(UaDecoder decoder) {
-        Long _numValuesPerNode = decoder.decodeUInt32("NumValuesPerNode");
+        UInteger _numValuesPerNode = decoder.decodeUInt32("NumValuesPerNode");
         DateTime _startTime = decoder.decodeDateTime("StartTime");
         DateTime _endTime = decoder.decodeDateTime("EndTime");
         EventFilter _filter = decoder.decodeSerializable("Filter", EventFilter.class);

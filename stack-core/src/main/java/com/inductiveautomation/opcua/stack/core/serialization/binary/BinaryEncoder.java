@@ -4,17 +4,16 @@ import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.nio.ByteOrder;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
+import com.inductiveautomation.opcua.stack.core.UaSerializationException;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelConfig;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.EncoderDelegate;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaSerializable;
-import com.inductiveautomation.opcua.stack.core.UaSerializationException;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DataValue;
@@ -24,18 +23,21 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.ExpandedNodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
-import com.inductiveautomation.opcua.stack.core.types.builtin.OverloadedType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 import com.inductiveautomation.opcua.stack.core.types.builtin.XmlElement;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.ULong;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.IdType;
 import com.inductiveautomation.opcua.stack.core.util.ArrayUtil;
 import com.inductiveautomation.opcua.stack.core.util.TypeUtil;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UByte;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt64;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UBytePrimitive;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16Primitive;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt64Primitive;
 import io.netty.buffer.ByteBuf;
 
 public class BinaryEncoder implements UaEncoder {
@@ -89,23 +91,43 @@ public class BinaryEncoder implements UaEncoder {
     }
 
     @Override
-    public void encodeByte(String field, @UByte Short value) {
+    public void encodeByte(String field, @UBytePrimitive Short value) {
         buffer.writeByte(value);
     }
 
     @Override
-    public void encodeUInt16(String field, @UInt16 Integer value) {
+    public void encodeByte(String field, UByte value) throws UaSerializationException {
+        encodeByte(field, value.shortValue());
+    }
+
+    @Override
+    public void encodeUInt16(String field, @UInt16Primitive Integer value) {
         buffer.writeShort(value);
     }
 
     @Override
-    public void encodeUInt32(String field, @UInt32 Long value) {
+    public void encodeUInt16(String field, UShort value) throws UaSerializationException {
+        encodeUInt16(field, value.intValue());
+    }
+
+    @Override
+    public void encodeUInt32(String field, @UInt32Primitive Long value) {
         buffer.writeInt(value.intValue());
     }
 
     @Override
-    public void encodeUInt64(String field, @UInt64 Long value) {
+    public void encodeUInt32(String field, UInteger value) throws UaSerializationException {
+        encodeUInt32(field, value.longValue());
+    }
+
+    @Override
+    public void encodeUInt64(String field, @UInt64Primitive Long value) {
         buffer.writeLong(value);
+    }
+
+    @Override
+    public void encodeUInt64(String field, ULong value) throws UaSerializationException {
+        encodeUInt64(field, value.longValue());
     }
 
     @Override
@@ -430,11 +452,7 @@ public class BinaryEncoder implements UaEncoder {
         if (value == null) {
             buffer.writeByte(0);
         } else {
-            Optional<OverloadedType> overloadedType = variant.getOverloadedType();
-
-            int typeId = overloadedType
-                    .map(TypeUtil::getBuiltinTypeId)
-                    .orElse(TypeUtil.getBuiltinTypeId(getType(value)));
+            int typeId = TypeUtil.getBuiltinTypeId(getType(value));
 
             if (value.getClass().isArray()) {
                 int[] dimensions = ArrayUtil.getDimensions(value);
@@ -546,13 +564,13 @@ public class BinaryEncoder implements UaEncoder {
         switch (typeId) {
             case 1: encodeBoolean(null, (Boolean) value); break;
             case 2: encodeSByte(null, (Byte) value); break;
-            case 3: encodeByte(null, (Short) value); break;
+            case 3: encodeByte(null, (UByte) value); break;
             case 4: encodeInt16(null, (Short) value); break;
-            case 5: encodeUInt16(null, (Integer) value); break;
+            case 5: encodeUInt16(null, (UShort) value); break;
             case 6: encodeInt32(null, (Integer) value); break;
-            case 7: encodeUInt32(null, (Long) value); break;
+            case 7: encodeUInt32(null, (UInteger) value); break;
             case 8: encodeInt64(null, (Long) value); break;
-            case 9: encodeUInt64(null, (Long) value); break;
+            case 9: encodeUInt64(null, (ULong) value); break;
             case 10: encodeFloat(null, (Float) value); break;
             case 11: encodeDouble(null, (Double) value); break;
             case 12: encodeString(null, (String) value); break;

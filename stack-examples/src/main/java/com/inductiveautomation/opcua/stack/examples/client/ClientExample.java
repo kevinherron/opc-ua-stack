@@ -19,6 +19,8 @@ import com.inductiveautomation.opcua.stack.core.types.structured.RequestHeader;
 import com.inductiveautomation.opcua.stack.core.types.structured.TestStackRequest;
 import com.inductiveautomation.opcua.stack.core.types.structured.TestStackResponse;
 
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
+
 public class ClientExample {
 
     private final AtomicLong requestHandle = new AtomicLong(1L);
@@ -30,7 +32,7 @@ public class ClientExample {
         EndpointDescription[] endpoints = UaTcpClient.getEndpoints("opc.tcp://localhost:12685/example").get();
 
         EndpointDescription endpoint = Arrays.stream(endpoints)
-                .sorted((e1, e2) -> e2.getSecurityLevel() - e1.getSecurityLevel())
+                .sorted((e1, e2) -> e2.getSecurityLevel().intValue() - e1.getSecurityLevel().intValue())
                 .findFirst()
                 .orElseThrow(() -> new Exception("no endpoints returned"));
 
@@ -46,11 +48,11 @@ public class ClientExample {
         RequestHeader header = new RequestHeader(
                 NodeId.NullValue,
                 DateTime.now(),
-                requestHandle.getAndIncrement(),
-                0L, null, 60L, null
+                uint(requestHandle.getAndIncrement()),
+                uint(0), null, uint(60), null
         );
 
-        TestStackRequest request = new TestStackRequest(header, 0L, 1, new Variant(input));
+        TestStackRequest request = new TestStackRequest(header, uint(0), 1, new Variant(input));
 
         return client.sendRequest(request);
     }

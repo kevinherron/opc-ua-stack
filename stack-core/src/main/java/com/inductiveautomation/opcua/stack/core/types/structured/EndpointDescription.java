@@ -7,6 +7,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
 
 public class EndpointDescription implements UaStructure {
@@ -22,9 +23,9 @@ public class EndpointDescription implements UaStructure {
     protected final String _securityPolicyUri;
     protected final UserTokenPolicy[] _userIdentityTokens;
     protected final String _transportProfileUri;
-    protected final Short _securityLevel;
+    protected final UByte _securityLevel;
 
-    public EndpointDescription(String _endpointUrl, ApplicationDescription _server, ByteString _serverCertificate, MessageSecurityMode _securityMode, String _securityPolicyUri, UserTokenPolicy[] _userIdentityTokens, String _transportProfileUri, Short _securityLevel) {
+    public EndpointDescription(String _endpointUrl, ApplicationDescription _server, ByteString _serverCertificate, MessageSecurityMode _securityMode, String _securityPolicyUri, UserTokenPolicy[] _userIdentityTokens, String _transportProfileUri, UByte _securityLevel) {
         this._endpointUrl = _endpointUrl;
         this._server = _server;
         this._serverCertificate = _serverCertificate;
@@ -35,30 +36,52 @@ public class EndpointDescription implements UaStructure {
         this._securityLevel = _securityLevel;
     }
 
-    public String getEndpointUrl() { return _endpointUrl; }
+    public String getEndpointUrl() {
+        return _endpointUrl;
+    }
 
-    public ApplicationDescription getServer() { return _server; }
+    public ApplicationDescription getServer() {
+        return _server;
+    }
 
-    public ByteString getServerCertificate() { return _serverCertificate; }
+    public ByteString getServerCertificate() {
+        return _serverCertificate;
+    }
 
-    public MessageSecurityMode getSecurityMode() { return _securityMode; }
+    public MessageSecurityMode getSecurityMode() {
+        return _securityMode;
+    }
 
-    public String getSecurityPolicyUri() { return _securityPolicyUri; }
+    public String getSecurityPolicyUri() {
+        return _securityPolicyUri;
+    }
 
-    public UserTokenPolicy[] getUserIdentityTokens() { return _userIdentityTokens; }
+    public UserTokenPolicy[] getUserIdentityTokens() {
+        return _userIdentityTokens;
+    }
 
-    public String getTransportProfileUri() { return _transportProfileUri; }
+    public String getTransportProfileUri() {
+        return _transportProfileUri;
+    }
 
-    public Short getSecurityLevel() { return _securityLevel; }
+    public UByte getSecurityLevel() {
+        return _securityLevel;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(EndpointDescription endpointDescription, UaEncoder encoder) {
@@ -80,7 +103,7 @@ public class EndpointDescription implements UaStructure {
         String _securityPolicyUri = decoder.decodeString("SecurityPolicyUri");
         UserTokenPolicy[] _userIdentityTokens = decoder.decodeArray("UserIdentityTokens", decoder::decodeSerializable, UserTokenPolicy.class);
         String _transportProfileUri = decoder.decodeString("TransportProfileUri");
-        Short _securityLevel = decoder.decodeByte("SecurityLevel");
+        UByte _securityLevel = decoder.decodeByte("SecurityLevel");
 
         return new EndpointDescription(_endpointUrl, _server, _serverCertificate, _securityMode, _securityPolicyUri, _userIdentityTokens, _transportProfileUri, _securityLevel);
     }

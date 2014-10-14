@@ -2,7 +2,7 @@ package com.inductiveautomation.opcua.stack.core.types.builtin;
 
 import javax.annotation.Nullable;
 
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16Primitive;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -13,7 +13,7 @@ public class QualifiedName {
 
     public static final QualifiedName NullValue = new QualifiedName(0, null);
 
-    @UInt16
+    @UInt16Primitive
     private final int namespaceIndex;
     private final String name;
 
@@ -24,7 +24,7 @@ public class QualifiedName {
      *                       namespace in the local Server’s NamespaceArray.
      * @param name           the text portion of the QualifiedName.
      */
-    public QualifiedName(@UInt16 int namespaceIndex, @Nullable String name) {
+    public QualifiedName(@UInt16Primitive int namespaceIndex, @Nullable String name) {
         Preconditions.checkArgument(namespaceIndex >= 0 && namespaceIndex <= 0xFFFF, "namespaceIndex");
         Preconditions.checkArgument(name == null || name.length() <= 512, "name");
 
@@ -32,7 +32,7 @@ public class QualifiedName {
         this.name = name;
     }
 
-    @UInt16
+    @UInt16Primitive
     public int getNamespaceIndex() {
         return namespaceIndex;
     }

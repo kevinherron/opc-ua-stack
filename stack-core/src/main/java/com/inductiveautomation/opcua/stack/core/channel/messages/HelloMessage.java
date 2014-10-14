@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 
 import com.inductiveautomation.opcua.stack.core.serialization.binary.BinaryDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.binary.BinaryEncoder;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
 import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
 
@@ -12,19 +12,19 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 public class HelloMessage {
 
-    @UInt32
+    @UInt32Primitive
     private final long protocolVersion;
 
-    @UInt32
+    @UInt32Primitive
     private final long receiveBufferSize;
 
-    @UInt32
+    @UInt32Primitive
     private final long sendBufferSize;
 
-    @UInt32
+    @UInt32Primitive
     private final long maxMessageSize;
 
-    @UInt32
+    @UInt32Primitive
     private final long maxChunkCount;
 
     private final String endpointUrl;
@@ -43,11 +43,11 @@ public class HelloMessage {
      * @param endpointUrl       the URL of the Endpoint which the Client wished to connect to. The encoded value shall
      *                          be less than 4096 bytes.
      */
-    public HelloMessage(@UInt32 long protocolVersion,
-                        @UInt32 long receiveBufferSize,
-                        @UInt32 long sendBufferSize,
-                        @UInt32 long maxMessageSize,
-                        @UInt32 long maxChunkCount,
+    public HelloMessage(@UInt32Primitive long protocolVersion,
+                        @UInt32Primitive long receiveBufferSize,
+                        @UInt32Primitive long sendBufferSize,
+                        @UInt32Primitive long maxMessageSize,
+                        @UInt32Primitive long maxChunkCount,
                         @Nonnull String endpointUrl) {
 
         checkArgument(receiveBufferSize >= 8192, "receiverBufferSize must be at least 8192 bytes");
@@ -62,27 +62,27 @@ public class HelloMessage {
         this.endpointUrl = endpointUrl;
     }
 
-    @UInt32
+    @UInt32Primitive
     public long getProtocolVersion() {
         return protocolVersion;
     }
 
-    @UInt32
+    @UInt32Primitive
     public long getReceiveBufferSize() {
         return receiveBufferSize;
     }
 
-    @UInt32
+    @UInt32Primitive
     public long getSendBufferSize() {
         return sendBufferSize;
     }
 
-    @UInt32
+    @UInt32Primitive
     public long getMaxMessageSize() {
         return maxMessageSize;
     }
 
-    @UInt32
+    @UInt32Primitive
     public long getMaxChunkCount() {
         return maxChunkCount;
     }

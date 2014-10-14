@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class CancelRequest implements UaRequestMessage {
 
@@ -14,25 +15,35 @@ public class CancelRequest implements UaRequestMessage {
     public static final NodeId XmlEncodingId = Identifiers.CancelRequest_Encoding_DefaultXml;
 
     protected final RequestHeader _requestHeader;
-    protected final Long _requestHandle;
+    protected final UInteger _requestHandle;
 
-    public CancelRequest(RequestHeader _requestHeader, Long _requestHandle) {
+    public CancelRequest(RequestHeader _requestHeader, UInteger _requestHandle) {
         this._requestHeader = _requestHeader;
         this._requestHandle = _requestHandle;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public Long getRequestHandle() { return _requestHandle; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public UInteger getRequestHandle() {
+        return _requestHandle;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(CancelRequest cancelRequest, UaEncoder encoder) {
@@ -42,7 +53,7 @@ public class CancelRequest implements UaRequestMessage {
 
     public static CancelRequest decode(UaDecoder decoder) {
         RequestHeader _requestHeader = decoder.decodeSerializable("RequestHeader", RequestHeader.class);
-        Long _requestHandle = decoder.decodeUInt32("RequestHandle");
+        UInteger _requestHandle = decoder.decodeUInt32("RequestHandle");
 
         return new CancelRequest(_requestHeader, _requestHandle);
     }

@@ -35,32 +35,56 @@ public class EndpointConfiguration implements UaStructure {
         this._securityTokenLifetime = _securityTokenLifetime;
     }
 
-    public Integer getOperationTimeout() { return _operationTimeout; }
+    public Integer getOperationTimeout() {
+        return _operationTimeout;
+    }
 
-    public Boolean getUseBinaryEncoding() { return _useBinaryEncoding; }
+    public Boolean getUseBinaryEncoding() {
+        return _useBinaryEncoding;
+    }
 
-    public Integer getMaxStringLength() { return _maxStringLength; }
+    public Integer getMaxStringLength() {
+        return _maxStringLength;
+    }
 
-    public Integer getMaxByteStringLength() { return _maxByteStringLength; }
+    public Integer getMaxByteStringLength() {
+        return _maxByteStringLength;
+    }
 
-    public Integer getMaxArrayLength() { return _maxArrayLength; }
+    public Integer getMaxArrayLength() {
+        return _maxArrayLength;
+    }
 
-    public Integer getMaxMessageSize() { return _maxMessageSize; }
+    public Integer getMaxMessageSize() {
+        return _maxMessageSize;
+    }
 
-    public Integer getMaxBufferSize() { return _maxBufferSize; }
+    public Integer getMaxBufferSize() {
+        return _maxBufferSize;
+    }
 
-    public Integer getChannelLifetime() { return _channelLifetime; }
+    public Integer getChannelLifetime() {
+        return _channelLifetime;
+    }
 
-    public Integer getSecurityTokenLifetime() { return _securityTokenLifetime; }
+    public Integer getSecurityTokenLifetime() {
+        return _securityTokenLifetime;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(EndpointConfiguration endpointConfiguration, UaEncoder encoder) {

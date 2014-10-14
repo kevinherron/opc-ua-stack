@@ -28,22 +28,36 @@ public class CallMethodResult implements UaStructure {
         this._outputArguments = _outputArguments;
     }
 
-    public StatusCode getStatusCode() { return _statusCode; }
+    public StatusCode getStatusCode() {
+        return _statusCode;
+    }
 
-    public StatusCode[] getInputArgumentResults() { return _inputArgumentResults; }
+    public StatusCode[] getInputArgumentResults() {
+        return _inputArgumentResults;
+    }
 
-    public DiagnosticInfo[] getInputArgumentDiagnosticInfos() { return _inputArgumentDiagnosticInfos; }
+    public DiagnosticInfo[] getInputArgumentDiagnosticInfos() {
+        return _inputArgumentDiagnosticInfos;
+    }
 
-    public Variant[] getOutputArguments() { return _outputArguments; }
+    public Variant[] getOutputArguments() {
+        return _outputArguments;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(CallMethodResult callMethodResult, UaEncoder encoder) {

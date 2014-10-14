@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class SetPublishingModeRequest implements UaRequestMessage {
 
@@ -15,28 +16,40 @@ public class SetPublishingModeRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final Boolean _publishingEnabled;
-    protected final Long[] _subscriptionIds;
+    protected final UInteger[] _subscriptionIds;
 
-    public SetPublishingModeRequest(RequestHeader _requestHeader, Boolean _publishingEnabled, Long[] _subscriptionIds) {
+    public SetPublishingModeRequest(RequestHeader _requestHeader, Boolean _publishingEnabled, UInteger[] _subscriptionIds) {
         this._requestHeader = _requestHeader;
         this._publishingEnabled = _publishingEnabled;
         this._subscriptionIds = _subscriptionIds;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public Boolean getPublishingEnabled() { return _publishingEnabled; }
+    public Boolean getPublishingEnabled() {
+        return _publishingEnabled;
+    }
 
-    public Long[] getSubscriptionIds() { return _subscriptionIds; }
+    public UInteger[] getSubscriptionIds() {
+        return _subscriptionIds;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(SetPublishingModeRequest setPublishingModeRequest, UaEncoder encoder) {
@@ -48,7 +61,7 @@ public class SetPublishingModeRequest implements UaRequestMessage {
     public static SetPublishingModeRequest decode(UaDecoder decoder) {
         RequestHeader _requestHeader = decoder.decodeSerializable("RequestHeader", RequestHeader.class);
         Boolean _publishingEnabled = decoder.decodeBoolean("PublishingEnabled");
-        Long[] _subscriptionIds = decoder.decodeArray("SubscriptionIds", decoder::decodeUInt32, Long.class);
+        UInteger[] _subscriptionIds = decoder.decodeArray("SubscriptionIds", decoder::decodeUInt32, UInteger.class);
 
         return new SetPublishingModeRequest(_requestHeader, _publishingEnabled, _subscriptionIds);
     }

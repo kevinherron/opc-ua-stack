@@ -6,6 +6,8 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class ModifySubscriptionRequest implements UaRequestMessage {
 
@@ -14,14 +16,14 @@ public class ModifySubscriptionRequest implements UaRequestMessage {
     public static final NodeId XmlEncodingId = Identifiers.ModifySubscriptionRequest_Encoding_DefaultXml;
 
     protected final RequestHeader _requestHeader;
-    protected final Long _subscriptionId;
+    protected final UInteger _subscriptionId;
     protected final Double _requestedPublishingInterval;
-    protected final Long _requestedLifetimeCount;
-    protected final Long _requestedMaxKeepAliveCount;
-    protected final Long _maxNotificationsPerPublish;
-    protected final Short _priority;
+    protected final UInteger _requestedLifetimeCount;
+    protected final UInteger _requestedMaxKeepAliveCount;
+    protected final UInteger _maxNotificationsPerPublish;
+    protected final UByte _priority;
 
-    public ModifySubscriptionRequest(RequestHeader _requestHeader, Long _subscriptionId, Double _requestedPublishingInterval, Long _requestedLifetimeCount, Long _requestedMaxKeepAliveCount, Long _maxNotificationsPerPublish, Short _priority) {
+    public ModifySubscriptionRequest(RequestHeader _requestHeader, UInteger _subscriptionId, Double _requestedPublishingInterval, UInteger _requestedLifetimeCount, UInteger _requestedMaxKeepAliveCount, UInteger _maxNotificationsPerPublish, UByte _priority) {
         this._requestHeader = _requestHeader;
         this._subscriptionId = _subscriptionId;
         this._requestedPublishingInterval = _requestedPublishingInterval;
@@ -31,28 +33,48 @@ public class ModifySubscriptionRequest implements UaRequestMessage {
         this._priority = _priority;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public Long getSubscriptionId() { return _subscriptionId; }
+    public UInteger getSubscriptionId() {
+        return _subscriptionId;
+    }
 
-    public Double getRequestedPublishingInterval() { return _requestedPublishingInterval; }
+    public Double getRequestedPublishingInterval() {
+        return _requestedPublishingInterval;
+    }
 
-    public Long getRequestedLifetimeCount() { return _requestedLifetimeCount; }
+    public UInteger getRequestedLifetimeCount() {
+        return _requestedLifetimeCount;
+    }
 
-    public Long getRequestedMaxKeepAliveCount() { return _requestedMaxKeepAliveCount; }
+    public UInteger getRequestedMaxKeepAliveCount() {
+        return _requestedMaxKeepAliveCount;
+    }
 
-    public Long getMaxNotificationsPerPublish() { return _maxNotificationsPerPublish; }
+    public UInteger getMaxNotificationsPerPublish() {
+        return _maxNotificationsPerPublish;
+    }
 
-    public Short getPriority() { return _priority; }
+    public UByte getPriority() {
+        return _priority;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ModifySubscriptionRequest modifySubscriptionRequest, UaEncoder encoder) {
@@ -67,12 +89,12 @@ public class ModifySubscriptionRequest implements UaRequestMessage {
 
     public static ModifySubscriptionRequest decode(UaDecoder decoder) {
         RequestHeader _requestHeader = decoder.decodeSerializable("RequestHeader", RequestHeader.class);
-        Long _subscriptionId = decoder.decodeUInt32("SubscriptionId");
+        UInteger _subscriptionId = decoder.decodeUInt32("SubscriptionId");
         Double _requestedPublishingInterval = decoder.decodeDouble("RequestedPublishingInterval");
-        Long _requestedLifetimeCount = decoder.decodeUInt32("RequestedLifetimeCount");
-        Long _requestedMaxKeepAliveCount = decoder.decodeUInt32("RequestedMaxKeepAliveCount");
-        Long _maxNotificationsPerPublish = decoder.decodeUInt32("MaxNotificationsPerPublish");
-        Short _priority = decoder.decodeByte("Priority");
+        UInteger _requestedLifetimeCount = decoder.decodeUInt32("RequestedLifetimeCount");
+        UInteger _requestedMaxKeepAliveCount = decoder.decodeUInt32("RequestedMaxKeepAliveCount");
+        UInteger _maxNotificationsPerPublish = decoder.decodeUInt32("MaxNotificationsPerPublish");
+        UByte _priority = decoder.decodeByte("Priority");
 
         return new ModifySubscriptionRequest(_requestHeader, _subscriptionId, _requestedPublishingInterval, _requestedLifetimeCount, _requestedMaxKeepAliveCount, _maxNotificationsPerPublish, _priority);
     }

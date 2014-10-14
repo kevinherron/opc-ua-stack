@@ -11,6 +11,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import com.inductiveautomation.opcua.stack.client.fsm.ConnectionStateContext;
 import com.inductiveautomation.opcua.stack.client.fsm.ConnectionStateEvent;
 import com.inductiveautomation.opcua.stack.client.fsm.states.ConnectionState;
@@ -35,8 +37,6 @@ import com.inductiveautomation.opcua.stack.core.types.structured.RequestHeader;
 import com.inductiveautomation.opcua.stack.core.types.structured.ResponseHeader;
 import com.inductiveautomation.opcua.stack.core.types.structured.ServiceFault;
 import com.inductiveautomation.opcua.stack.core.util.CertificateUtil;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -50,6 +50,8 @@ import io.netty.util.HashedWheelTimer;
 import io.netty.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 
 public class UaTcpClient implements UaClient {
 
@@ -152,7 +154,7 @@ public class UaTcpClient implements UaClient {
 
         channelFuture.whenComplete((ch, ex) -> {
             if (ch != null) {
-                Long requestHandle = request.getRequestHeader().getRequestHandle();
+                long requestHandle = request.getRequestHeader().getRequestHandle().longValue();
 
                 Timeout timeout = wheelTimer.newTimeout(t -> {
                     timeouts.remove(requestHandle);
@@ -192,7 +194,7 @@ public class UaTcpClient implements UaClient {
                     CompletableFuture<UaResponseMessage> future =
                             (CompletableFuture<UaResponseMessage>) futureIterator.next();
 
-                    Long requestHandle = request.getRequestHeader().getRequestHandle();
+                    long requestHandle = request.getRequestHeader().getRequestHandle().longValue();
 
                     Timeout timeout = wheelTimer.newTimeout(t -> {
                         timeouts.remove(requestHandle);
@@ -236,7 +238,7 @@ public class UaTcpClient implements UaClient {
 
     public void receiveServiceResponse(UaResponseMessage response) {
         ResponseHeader header = response.getResponseHeader();
-        Long requestHandle = header.getRequestHandle();
+        long requestHandle = header.getRequestHandle().longValue();
 
         CompletableFuture<UaResponseMessage> future = pending.remove(requestHandle);
 
@@ -250,7 +252,7 @@ public class UaTcpClient implements UaClient {
 
     public void receiveServiceFault(ServiceFault serviceFault) {
         ResponseHeader header = serviceFault.getResponseHeader();
-        Long requestHandle = header.getRequestHandle();
+        long requestHandle = header.getRequestHandle().longValue();
 
         CompletableFuture<UaResponseMessage> future = pending.remove(requestHandle);
 
@@ -368,7 +370,7 @@ public class UaTcpClient implements UaClient {
         UaTcpClient client = new UaTcpClientBuilder().build(endpointUrl);
 
         GetEndpointsRequest request = new GetEndpointsRequest(
-                new RequestHeader(null, DateTime.now(), 1L, 0L, null, 5000L, null),
+                new RequestHeader(null, DateTime.now(), uint(1), uint(0), null, uint(5000), null),
                 endpointUrl, null, new String[]{Stack.UA_TCP_BINARY_TRANSPORT_URI}
         );
 

@@ -8,6 +8,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class NotificationMessage implements UaStructure {
 
@@ -15,30 +16,42 @@ public class NotificationMessage implements UaStructure {
     public static final NodeId BinaryEncodingId = Identifiers.NotificationMessage_Encoding_DefaultBinary;
     public static final NodeId XmlEncodingId = Identifiers.NotificationMessage_Encoding_DefaultXml;
 
-    protected final Long _sequenceNumber;
+    protected final UInteger _sequenceNumber;
     protected final DateTime _publishTime;
     protected final ExtensionObject[] _notificationData;
 
-    public NotificationMessage(Long _sequenceNumber, DateTime _publishTime, ExtensionObject[] _notificationData) {
+    public NotificationMessage(UInteger _sequenceNumber, DateTime _publishTime, ExtensionObject[] _notificationData) {
         this._sequenceNumber = _sequenceNumber;
         this._publishTime = _publishTime;
         this._notificationData = _notificationData;
     }
 
-    public Long getSequenceNumber() { return _sequenceNumber; }
+    public UInteger getSequenceNumber() {
+        return _sequenceNumber;
+    }
 
-    public DateTime getPublishTime() { return _publishTime; }
+    public DateTime getPublishTime() {
+        return _publishTime;
+    }
 
-    public ExtensionObject[] getNotificationData() { return _notificationData; }
+    public ExtensionObject[] getNotificationData() {
+        return _notificationData;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(NotificationMessage notificationMessage, UaEncoder encoder) {
@@ -48,7 +61,7 @@ public class NotificationMessage implements UaStructure {
     }
 
     public static NotificationMessage decode(UaDecoder decoder) {
-        Long _sequenceNumber = decoder.decodeUInt32("SequenceNumber");
+        UInteger _sequenceNumber = decoder.decodeUInt32("SequenceNumber");
         DateTime _publishTime = decoder.decodeDateTime("PublishTime");
         ExtensionObject[] _notificationData = decoder.decodeArray("NotificationData", decoder::decodeExtensionObject, ExtensionObject.class);
 

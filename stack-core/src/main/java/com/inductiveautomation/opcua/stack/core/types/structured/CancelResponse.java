@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class CancelResponse implements UaResponseMessage {
 
@@ -14,25 +15,35 @@ public class CancelResponse implements UaResponseMessage {
     public static final NodeId XmlEncodingId = Identifiers.CancelResponse_Encoding_DefaultXml;
 
     protected final ResponseHeader _responseHeader;
-    protected final Long _cancelCount;
+    protected final UInteger _cancelCount;
 
-    public CancelResponse(ResponseHeader _responseHeader, Long _cancelCount) {
+    public CancelResponse(ResponseHeader _responseHeader, UInteger _cancelCount) {
         this._responseHeader = _responseHeader;
         this._cancelCount = _cancelCount;
     }
 
-    public ResponseHeader getResponseHeader() { return _responseHeader; }
+    public ResponseHeader getResponseHeader() {
+        return _responseHeader;
+    }
 
-    public Long getCancelCount() { return _cancelCount; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public UInteger getCancelCount() {
+        return _cancelCount;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(CancelResponse cancelResponse, UaEncoder encoder) {
@@ -42,7 +53,7 @@ public class CancelResponse implements UaResponseMessage {
 
     public static CancelResponse decode(UaDecoder decoder) {
         ResponseHeader _responseHeader = decoder.decodeSerializable("ResponseHeader", ResponseHeader.class);
-        Long _cancelCount = decoder.decodeUInt32("CancelCount");
+        UInteger _cancelCount = decoder.decodeUInt32("CancelCount");
 
         return new CancelResponse(_responseHeader, _cancelCount);
     }

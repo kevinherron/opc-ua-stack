@@ -7,6 +7,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class NodeAttributes implements UaStructure {
 
@@ -14,13 +15,13 @@ public class NodeAttributes implements UaStructure {
     public static final NodeId BinaryEncodingId = Identifiers.NodeAttributes_Encoding_DefaultBinary;
     public static final NodeId XmlEncodingId = Identifiers.NodeAttributes_Encoding_DefaultXml;
 
-    protected final Long _specifiedAttributes;
+    protected final UInteger _specifiedAttributes;
     protected final LocalizedText _displayName;
     protected final LocalizedText _description;
-    protected final Long _writeMask;
-    protected final Long _userWriteMask;
+    protected final UInteger _writeMask;
+    protected final UInteger _userWriteMask;
 
-    public NodeAttributes(Long _specifiedAttributes, LocalizedText _displayName, LocalizedText _description, Long _writeMask, Long _userWriteMask) {
+    public NodeAttributes(UInteger _specifiedAttributes, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask) {
         this._specifiedAttributes = _specifiedAttributes;
         this._displayName = _displayName;
         this._description = _description;
@@ -28,24 +29,40 @@ public class NodeAttributes implements UaStructure {
         this._userWriteMask = _userWriteMask;
     }
 
-    public Long getSpecifiedAttributes() { return _specifiedAttributes; }
+    public UInteger getSpecifiedAttributes() {
+        return _specifiedAttributes;
+    }
 
-    public LocalizedText getDisplayName() { return _displayName; }
+    public LocalizedText getDisplayName() {
+        return _displayName;
+    }
 
-    public LocalizedText getDescription() { return _description; }
+    public LocalizedText getDescription() {
+        return _description;
+    }
 
-    public Long getWriteMask() { return _writeMask; }
+    public UInteger getWriteMask() {
+        return _writeMask;
+    }
 
-    public Long getUserWriteMask() { return _userWriteMask; }
+    public UInteger getUserWriteMask() {
+        return _userWriteMask;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(NodeAttributes nodeAttributes, UaEncoder encoder) {
@@ -57,11 +74,11 @@ public class NodeAttributes implements UaStructure {
     }
 
     public static NodeAttributes decode(UaDecoder decoder) {
-        Long _specifiedAttributes = decoder.decodeUInt32("SpecifiedAttributes");
+        UInteger _specifiedAttributes = decoder.decodeUInt32("SpecifiedAttributes");
         LocalizedText _displayName = decoder.decodeLocalizedText("DisplayName");
         LocalizedText _description = decoder.decodeLocalizedText("Description");
-        Long _writeMask = decoder.decodeUInt32("WriteMask");
-        Long _userWriteMask = decoder.decodeUInt32("UserWriteMask");
+        UInteger _writeMask = decoder.decodeUInt32("WriteMask");
+        UInteger _userWriteMask = decoder.decodeUInt32("UserWriteMask");
 
         return new NodeAttributes(_specifiedAttributes, _displayName, _description, _writeMask, _userWriteMask);
     }

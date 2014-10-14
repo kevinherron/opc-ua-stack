@@ -21,18 +21,28 @@ public class SemanticChangeStructureDataType implements UaStructure {
         this._affectedType = _affectedType;
     }
 
-    public NodeId getAffected() { return _affected; }
+    public NodeId getAffected() {
+        return _affected;
+    }
 
-    public NodeId getAffectedType() { return _affectedType; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getAffectedType() {
+        return _affectedType;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(SemanticChangeStructureDataType semanticChangeStructureDataType, UaEncoder encoder) {

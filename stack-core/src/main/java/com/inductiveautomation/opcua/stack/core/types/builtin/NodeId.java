@@ -7,8 +7,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.inductiveautomation.opcua.stack.core.types.enumerated.IdType;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16Primitive;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
 import com.google.common.base.Objects;
 import com.google.common.primitives.UnsignedInteger;
 
@@ -24,7 +24,7 @@ public class NodeId {
 
     public static final NodeId NullValue = NullNumeric;
 
-    @UInt16
+    @UInt16Primitive
     private final int namespaceIndex;
     private final Object identifier;
 
@@ -32,7 +32,7 @@ public class NodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public NodeId(@UInt16 int namespaceIndex, @UInt32 Number identifier) {
+    public NodeId(@UInt16Primitive int namespaceIndex, @UInt32Primitive Number identifier) {
         checkArgument(identifier.longValue() >= 0 && identifier.longValue() <= UnsignedInteger.MAX_VALUE.longValue());
 
         this.namespaceIndex = namespaceIndex;
@@ -43,7 +43,7 @@ public class NodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public NodeId(@UInt16 int namespaceIndex, String identifier) {
+    public NodeId(@UInt16Primitive int namespaceIndex, String identifier) {
         checkNotNull(identifier);
 
         this.namespaceIndex = namespaceIndex;
@@ -54,7 +54,7 @@ public class NodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public NodeId(@UInt16 int namespaceIndex, UUID identifier) {
+    public NodeId(@UInt16Primitive int namespaceIndex, UUID identifier) {
         checkNotNull(identifier);
 
         this.namespaceIndex = namespaceIndex;
@@ -65,7 +65,7 @@ public class NodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public NodeId(@UInt16 int namespaceIndex, ByteString identifier) {
+    public NodeId(@UInt16Primitive int namespaceIndex, ByteString identifier) {
         checkNotNull(identifier);
 
         this.namespaceIndex = namespaceIndex;

@@ -10,6 +10,7 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class ResponseHeader implements UaStructure {
 
@@ -18,13 +19,13 @@ public class ResponseHeader implements UaStructure {
     public static final NodeId XmlEncodingId = Identifiers.ResponseHeader_Encoding_DefaultXml;
 
     protected final DateTime _timestamp;
-    protected final Long _requestHandle;
+    protected final UInteger _requestHandle;
     protected final StatusCode _serviceResult;
     protected final DiagnosticInfo _serviceDiagnostics;
     protected final String[] _stringTable;
     protected final ExtensionObject _additionalHeader;
 
-    public ResponseHeader(DateTime _timestamp, Long _requestHandle, StatusCode _serviceResult, DiagnosticInfo _serviceDiagnostics, String[] _stringTable, ExtensionObject _additionalHeader) {
+    public ResponseHeader(DateTime _timestamp, UInteger _requestHandle, StatusCode _serviceResult, DiagnosticInfo _serviceDiagnostics, String[] _stringTable, ExtensionObject _additionalHeader) {
         this._timestamp = _timestamp;
         this._requestHandle = _requestHandle;
         this._serviceResult = _serviceResult;
@@ -33,26 +34,44 @@ public class ResponseHeader implements UaStructure {
         this._additionalHeader = _additionalHeader;
     }
 
-    public DateTime getTimestamp() { return _timestamp; }
+    public DateTime getTimestamp() {
+        return _timestamp;
+    }
 
-    public Long getRequestHandle() { return _requestHandle; }
+    public UInteger getRequestHandle() {
+        return _requestHandle;
+    }
 
-    public StatusCode getServiceResult() { return _serviceResult; }
+    public StatusCode getServiceResult() {
+        return _serviceResult;
+    }
 
-    public DiagnosticInfo getServiceDiagnostics() { return _serviceDiagnostics; }
+    public DiagnosticInfo getServiceDiagnostics() {
+        return _serviceDiagnostics;
+    }
 
-    public String[] getStringTable() { return _stringTable; }
+    public String[] getStringTable() {
+        return _stringTable;
+    }
 
-    public ExtensionObject getAdditionalHeader() { return _additionalHeader; }
+    public ExtensionObject getAdditionalHeader() {
+        return _additionalHeader;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ResponseHeader responseHeader, UaEncoder encoder) {
@@ -66,7 +85,7 @@ public class ResponseHeader implements UaStructure {
 
     public static ResponseHeader decode(UaDecoder decoder) {
         DateTime _timestamp = decoder.decodeDateTime("Timestamp");
-        Long _requestHandle = decoder.decodeUInt32("RequestHandle");
+        UInteger _requestHandle = decoder.decodeUInt32("RequestHandle");
         StatusCode _serviceResult = decoder.decodeStatusCode("ServiceResult");
         DiagnosticInfo _serviceDiagnostics = decoder.decodeDiagnosticInfo("ServiceDiagnostics");
         String[] _stringTable = decoder.decodeArray("StringTable", decoder::decodeString, String.class);

@@ -35,30 +35,52 @@ public class RegisteredServer implements UaStructure {
         this._isOnline = _isOnline;
     }
 
-    public String getServerUri() { return _serverUri; }
+    public String getServerUri() {
+        return _serverUri;
+    }
 
-    public String getProductUri() { return _productUri; }
+    public String getProductUri() {
+        return _productUri;
+    }
 
-    public LocalizedText[] getServerNames() { return _serverNames; }
+    public LocalizedText[] getServerNames() {
+        return _serverNames;
+    }
 
-    public ApplicationType getServerType() { return _serverType; }
+    public ApplicationType getServerType() {
+        return _serverType;
+    }
 
-    public String getGatewayServerUri() { return _gatewayServerUri; }
+    public String getGatewayServerUri() {
+        return _gatewayServerUri;
+    }
 
-    public String[] getDiscoveryUrls() { return _discoveryUrls; }
+    public String[] getDiscoveryUrls() {
+        return _discoveryUrls;
+    }
 
-    public String getSemaphoreFilePath() { return _semaphoreFilePath; }
+    public String getSemaphoreFilePath() {
+        return _semaphoreFilePath;
+    }
 
-    public Boolean getIsOnline() { return _isOnline; }
+    public Boolean getIsOnline() {
+        return _isOnline;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(RegisteredServer registeredServer, UaEncoder encoder) {

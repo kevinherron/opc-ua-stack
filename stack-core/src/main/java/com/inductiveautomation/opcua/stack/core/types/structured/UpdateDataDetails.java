@@ -23,18 +23,28 @@ public class UpdateDataDetails extends HistoryUpdateDetails {
         this._updateValues = _updateValues;
     }
 
-    public PerformUpdateType getPerformInsertReplace() { return _performInsertReplace; }
+    public PerformUpdateType getPerformInsertReplace() {
+        return _performInsertReplace;
+    }
 
-    public DataValue[] getUpdateValues() { return _updateValues; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public DataValue[] getUpdateValues() {
+        return _updateValues;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(UpdateDataDetails updateDataDetails, UaEncoder encoder) {

@@ -21,18 +21,28 @@ public class CompositeTestType implements UaStructure {
         this._field2 = _field2;
     }
 
-    public ScalarTestType getField1() { return _field1; }
+    public ScalarTestType getField1() {
+        return _field1;
+    }
 
-    public ArrayTestType getField2() { return _field2; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public ArrayTestType getField2() {
+        return _field2;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(CompositeTestType compositeTestType, UaEncoder encoder) {

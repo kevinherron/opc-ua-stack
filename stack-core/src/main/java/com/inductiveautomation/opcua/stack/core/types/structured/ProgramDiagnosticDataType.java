@@ -38,34 +38,60 @@ public class ProgramDiagnosticDataType implements UaStructure {
         this._lastMethodReturnStatus = _lastMethodReturnStatus;
     }
 
-    public NodeId getCreateSessionId() { return _createSessionId; }
+    public NodeId getCreateSessionId() {
+        return _createSessionId;
+    }
 
-    public String getCreateClientName() { return _createClientName; }
+    public String getCreateClientName() {
+        return _createClientName;
+    }
 
-    public DateTime getInvocationCreationTime() { return _invocationCreationTime; }
+    public DateTime getInvocationCreationTime() {
+        return _invocationCreationTime;
+    }
 
-    public DateTime getLastTransitionTime() { return _lastTransitionTime; }
+    public DateTime getLastTransitionTime() {
+        return _lastTransitionTime;
+    }
 
-    public String getLastMethodCall() { return _lastMethodCall; }
+    public String getLastMethodCall() {
+        return _lastMethodCall;
+    }
 
-    public NodeId getLastMethodSessionId() { return _lastMethodSessionId; }
+    public NodeId getLastMethodSessionId() {
+        return _lastMethodSessionId;
+    }
 
-    public Argument[] getLastMethodInputArguments() { return _lastMethodInputArguments; }
+    public Argument[] getLastMethodInputArguments() {
+        return _lastMethodInputArguments;
+    }
 
-    public Argument[] getLastMethodOutputArguments() { return _lastMethodOutputArguments; }
+    public Argument[] getLastMethodOutputArguments() {
+        return _lastMethodOutputArguments;
+    }
 
-    public DateTime getLastMethodCallTime() { return _lastMethodCallTime; }
+    public DateTime getLastMethodCallTime() {
+        return _lastMethodCallTime;
+    }
 
-    public StatusResult getLastMethodReturnStatus() { return _lastMethodReturnStatus; }
+    public StatusResult getLastMethodReturnStatus() {
+        return _lastMethodReturnStatus;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ProgramDiagnosticDataType programDiagnosticDataType, UaEncoder encoder) {

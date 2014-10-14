@@ -5,6 +5,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class AttributeOperand extends FilterOperand {
 
@@ -15,10 +16,10 @@ public class AttributeOperand extends FilterOperand {
     protected final NodeId _nodeId;
     protected final String _alias;
     protected final RelativePath _browsePath;
-    protected final Long _attributeId;
+    protected final UInteger _attributeId;
     protected final String _indexRange;
 
-    public AttributeOperand(NodeId _nodeId, String _alias, RelativePath _browsePath, Long _attributeId, String _indexRange) {
+    public AttributeOperand(NodeId _nodeId, String _alias, RelativePath _browsePath, UInteger _attributeId, String _indexRange) {
         super();
         this._nodeId = _nodeId;
         this._alias = _alias;
@@ -27,24 +28,40 @@ public class AttributeOperand extends FilterOperand {
         this._indexRange = _indexRange;
     }
 
-    public NodeId getNodeId() { return _nodeId; }
+    public NodeId getNodeId() {
+        return _nodeId;
+    }
 
-    public String getAlias() { return _alias; }
+    public String getAlias() {
+        return _alias;
+    }
 
-    public RelativePath getBrowsePath() { return _browsePath; }
+    public RelativePath getBrowsePath() {
+        return _browsePath;
+    }
 
-    public Long getAttributeId() { return _attributeId; }
+    public UInteger getAttributeId() {
+        return _attributeId;
+    }
 
-    public String getIndexRange() { return _indexRange; }
+    public String getIndexRange() {
+        return _indexRange;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(AttributeOperand attributeOperand, UaEncoder encoder) {
@@ -59,7 +76,7 @@ public class AttributeOperand extends FilterOperand {
         NodeId _nodeId = decoder.decodeNodeId("NodeId");
         String _alias = decoder.decodeString("Alias");
         RelativePath _browsePath = decoder.decodeSerializable("BrowsePath", RelativePath.class);
-        Long _attributeId = decoder.decodeUInt32("AttributeId");
+        UInteger _attributeId = decoder.decodeUInt32("AttributeId");
         String _indexRange = decoder.decodeString("IndexRange");
 
         return new AttributeOperand(_nodeId, _alias, _browsePath, _attributeId, _indexRange);

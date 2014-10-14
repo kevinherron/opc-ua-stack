@@ -7,6 +7,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class ViewDescription implements UaStructure {
 
@@ -16,28 +17,40 @@ public class ViewDescription implements UaStructure {
 
     protected final NodeId _viewId;
     protected final DateTime _timestamp;
-    protected final Long _viewVersion;
+    protected final UInteger _viewVersion;
 
-    public ViewDescription(NodeId _viewId, DateTime _timestamp, Long _viewVersion) {
+    public ViewDescription(NodeId _viewId, DateTime _timestamp, UInteger _viewVersion) {
         this._viewId = _viewId;
         this._timestamp = _timestamp;
         this._viewVersion = _viewVersion;
     }
 
-    public NodeId getViewId() { return _viewId; }
+    public NodeId getViewId() {
+        return _viewId;
+    }
 
-    public DateTime getTimestamp() { return _timestamp; }
+    public DateTime getTimestamp() {
+        return _timestamp;
+    }
 
-    public Long getViewVersion() { return _viewVersion; }
+    public UInteger getViewVersion() {
+        return _viewVersion;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ViewDescription viewDescription, UaEncoder encoder) {
@@ -49,7 +62,7 @@ public class ViewDescription implements UaStructure {
     public static ViewDescription decode(UaDecoder decoder) {
         NodeId _viewId = decoder.decodeNodeId("ViewId");
         DateTime _timestamp = decoder.decodeDateTime("Timestamp");
-        Long _viewVersion = decoder.decodeUInt32("ViewVersion");
+        UInteger _viewVersion = decoder.decodeUInt32("ViewVersion");
 
         return new ViewDescription(_viewId, _timestamp, _viewVersion);
     }

@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class QueryFirstRequest implements UaRequestMessage {
 
@@ -17,10 +18,10 @@ public class QueryFirstRequest implements UaRequestMessage {
     protected final ViewDescription _view;
     protected final NodeTypeDescription[] _nodeTypes;
     protected final ContentFilter _filter;
-    protected final Long _maxDataSetsToReturn;
-    protected final Long _maxReferencesToReturn;
+    protected final UInteger _maxDataSetsToReturn;
+    protected final UInteger _maxReferencesToReturn;
 
-    public QueryFirstRequest(RequestHeader _requestHeader, ViewDescription _view, NodeTypeDescription[] _nodeTypes, ContentFilter _filter, Long _maxDataSetsToReturn, Long _maxReferencesToReturn) {
+    public QueryFirstRequest(RequestHeader _requestHeader, ViewDescription _view, NodeTypeDescription[] _nodeTypes, ContentFilter _filter, UInteger _maxDataSetsToReturn, UInteger _maxReferencesToReturn) {
         this._requestHeader = _requestHeader;
         this._view = _view;
         this._nodeTypes = _nodeTypes;
@@ -29,26 +30,44 @@ public class QueryFirstRequest implements UaRequestMessage {
         this._maxReferencesToReturn = _maxReferencesToReturn;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public ViewDescription getView() { return _view; }
+    public ViewDescription getView() {
+        return _view;
+    }
 
-    public NodeTypeDescription[] getNodeTypes() { return _nodeTypes; }
+    public NodeTypeDescription[] getNodeTypes() {
+        return _nodeTypes;
+    }
 
-    public ContentFilter getFilter() { return _filter; }
+    public ContentFilter getFilter() {
+        return _filter;
+    }
 
-    public Long getMaxDataSetsToReturn() { return _maxDataSetsToReturn; }
+    public UInteger getMaxDataSetsToReturn() {
+        return _maxDataSetsToReturn;
+    }
 
-    public Long getMaxReferencesToReturn() { return _maxReferencesToReturn; }
+    public UInteger getMaxReferencesToReturn() {
+        return _maxReferencesToReturn;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(QueryFirstRequest queryFirstRequest, UaEncoder encoder) {
@@ -65,8 +84,8 @@ public class QueryFirstRequest implements UaRequestMessage {
         ViewDescription _view = decoder.decodeSerializable("View", ViewDescription.class);
         NodeTypeDescription[] _nodeTypes = decoder.decodeArray("NodeTypes", decoder::decodeSerializable, NodeTypeDescription.class);
         ContentFilter _filter = decoder.decodeSerializable("Filter", ContentFilter.class);
-        Long _maxDataSetsToReturn = decoder.decodeUInt32("MaxDataSetsToReturn");
-        Long _maxReferencesToReturn = decoder.decodeUInt32("MaxReferencesToReturn");
+        UInteger _maxDataSetsToReturn = decoder.decodeUInt32("MaxDataSetsToReturn");
+        UInteger _maxReferencesToReturn = decoder.decodeUInt32("MaxReferencesToReturn");
 
         return new QueryFirstRequest(_requestHeader, _view, _nodeTypes, _filter, _maxDataSetsToReturn, _maxReferencesToReturn);
     }

@@ -3,8 +3,8 @@ package com.inductiveautomation.opcua.stack.core.types.builtin;
 import java.util.UUID;
 
 import com.inductiveautomation.opcua.stack.core.types.enumerated.IdType;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16Primitive;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
 import com.google.common.base.Objects;
 import com.google.common.primitives.UnsignedInteger;
 
@@ -33,7 +33,7 @@ public class ExpandedNodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public ExpandedNodeId(@UInt16 int namespaceIndex, @UInt32 Number identifier, String namespaceUri, long serverIndex) {
+    public ExpandedNodeId(@UInt16Primitive int namespaceIndex, @UInt32Primitive Number identifier, String namespaceUri, long serverIndex) {
         checkArgument(identifier.longValue() >= 0 && identifier.longValue() <= UnsignedInteger.MAX_VALUE.longValue());
 
         this.nodeId = new NodeId(namespaceIndex, identifier);
@@ -45,7 +45,7 @@ public class ExpandedNodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public ExpandedNodeId(@UInt16 int namespaceIndex, String identifier, String namespaceUri, long serverIndex) {
+    public ExpandedNodeId(@UInt16Primitive int namespaceIndex, String identifier, String namespaceUri, long serverIndex) {
         checkNotNull(identifier);
 
         this.nodeId = new NodeId(namespaceIndex, identifier);
@@ -57,7 +57,7 @@ public class ExpandedNodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public ExpandedNodeId(@UInt16 int namespaceIndex, UUID identifier, String namespaceUri, long serverIndex) {
+    public ExpandedNodeId(@UInt16Primitive int namespaceIndex, UUID identifier, String namespaceUri, long serverIndex) {
         checkNotNull(identifier);
 
         this.nodeId = new NodeId(namespaceIndex, identifier);
@@ -69,7 +69,7 @@ public class ExpandedNodeId {
      * @param namespaceIndex the index for a namespace URI. An index of 0 is used for OPC UA defined NodeIds.
      * @param identifier     the identifier for a node in the address space of an OPC UA Server.
      */
-    public ExpandedNodeId(@UInt16 int namespaceIndex, ByteString identifier, String namespaceUri, long serverIndex) {
+    public ExpandedNodeId(@UInt16Primitive int namespaceIndex, ByteString identifier, String namespaceUri, long serverIndex) {
         checkNotNull(identifier);
 
         this.nodeId = new NodeId(namespaceIndex, identifier);

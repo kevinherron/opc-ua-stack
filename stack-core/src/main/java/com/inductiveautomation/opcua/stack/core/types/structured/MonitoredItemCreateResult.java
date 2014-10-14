@@ -8,6 +8,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class MonitoredItemCreateResult implements UaStructure {
 
@@ -16,12 +17,12 @@ public class MonitoredItemCreateResult implements UaStructure {
     public static final NodeId XmlEncodingId = Identifiers.MonitoredItemCreateResult_Encoding_DefaultXml;
 
     protected final StatusCode _statusCode;
-    protected final Long _monitoredItemId;
+    protected final UInteger _monitoredItemId;
     protected final Double _revisedSamplingInterval;
-    protected final Long _revisedQueueSize;
+    protected final UInteger _revisedQueueSize;
     protected final ExtensionObject _filterResult;
 
-    public MonitoredItemCreateResult(StatusCode _statusCode, Long _monitoredItemId, Double _revisedSamplingInterval, Long _revisedQueueSize, ExtensionObject _filterResult) {
+    public MonitoredItemCreateResult(StatusCode _statusCode, UInteger _monitoredItemId, Double _revisedSamplingInterval, UInteger _revisedQueueSize, ExtensionObject _filterResult) {
         this._statusCode = _statusCode;
         this._monitoredItemId = _monitoredItemId;
         this._revisedSamplingInterval = _revisedSamplingInterval;
@@ -29,24 +30,40 @@ public class MonitoredItemCreateResult implements UaStructure {
         this._filterResult = _filterResult;
     }
 
-    public StatusCode getStatusCode() { return _statusCode; }
+    public StatusCode getStatusCode() {
+        return _statusCode;
+    }
 
-    public Long getMonitoredItemId() { return _monitoredItemId; }
+    public UInteger getMonitoredItemId() {
+        return _monitoredItemId;
+    }
 
-    public Double getRevisedSamplingInterval() { return _revisedSamplingInterval; }
+    public Double getRevisedSamplingInterval() {
+        return _revisedSamplingInterval;
+    }
 
-    public Long getRevisedQueueSize() { return _revisedQueueSize; }
+    public UInteger getRevisedQueueSize() {
+        return _revisedQueueSize;
+    }
 
-    public ExtensionObject getFilterResult() { return _filterResult; }
+    public ExtensionObject getFilterResult() {
+        return _filterResult;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(MonitoredItemCreateResult monitoredItemCreateResult, UaEncoder encoder) {
@@ -59,9 +76,9 @@ public class MonitoredItemCreateResult implements UaStructure {
 
     public static MonitoredItemCreateResult decode(UaDecoder decoder) {
         StatusCode _statusCode = decoder.decodeStatusCode("StatusCode");
-        Long _monitoredItemId = decoder.decodeUInt32("MonitoredItemId");
+        UInteger _monitoredItemId = decoder.decodeUInt32("MonitoredItemId");
         Double _revisedSamplingInterval = decoder.decodeDouble("RevisedSamplingInterval");
-        Long _revisedQueueSize = decoder.decodeUInt32("RevisedQueueSize");
+        UInteger _revisedQueueSize = decoder.decodeUInt32("RevisedQueueSize");
         ExtensionObject _filterResult = decoder.decodeExtensionObject("FilterResult");
 
         return new MonitoredItemCreateResult(_statusCode, _monitoredItemId, _revisedSamplingInterval, _revisedQueueSize, _filterResult);

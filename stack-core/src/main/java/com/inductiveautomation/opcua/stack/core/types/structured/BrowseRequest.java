@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class BrowseRequest implements UaRequestMessage {
 
@@ -15,32 +16,46 @@ public class BrowseRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final ViewDescription _view;
-    protected final Long _requestedMaxReferencesPerNode;
+    protected final UInteger _requestedMaxReferencesPerNode;
     protected final BrowseDescription[] _nodesToBrowse;
 
-    public BrowseRequest(RequestHeader _requestHeader, ViewDescription _view, Long _requestedMaxReferencesPerNode, BrowseDescription[] _nodesToBrowse) {
+    public BrowseRequest(RequestHeader _requestHeader, ViewDescription _view, UInteger _requestedMaxReferencesPerNode, BrowseDescription[] _nodesToBrowse) {
         this._requestHeader = _requestHeader;
         this._view = _view;
         this._requestedMaxReferencesPerNode = _requestedMaxReferencesPerNode;
         this._nodesToBrowse = _nodesToBrowse;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public ViewDescription getView() { return _view; }
+    public ViewDescription getView() {
+        return _view;
+    }
 
-    public Long getRequestedMaxReferencesPerNode() { return _requestedMaxReferencesPerNode; }
+    public UInteger getRequestedMaxReferencesPerNode() {
+        return _requestedMaxReferencesPerNode;
+    }
 
-    public BrowseDescription[] getNodesToBrowse() { return _nodesToBrowse; }
+    public BrowseDescription[] getNodesToBrowse() {
+        return _nodesToBrowse;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(BrowseRequest browseRequest, UaEncoder encoder) {
@@ -53,7 +68,7 @@ public class BrowseRequest implements UaRequestMessage {
     public static BrowseRequest decode(UaDecoder decoder) {
         RequestHeader _requestHeader = decoder.decodeSerializable("RequestHeader", RequestHeader.class);
         ViewDescription _view = decoder.decodeSerializable("View", ViewDescription.class);
-        Long _requestedMaxReferencesPerNode = decoder.decodeUInt32("RequestedMaxReferencesPerNode");
+        UInteger _requestedMaxReferencesPerNode = decoder.decodeUInt32("RequestedMaxReferencesPerNode");
         BrowseDescription[] _nodesToBrowse = decoder.decodeArray("NodesToBrowse", decoder::decodeSerializable, BrowseDescription.class);
 
         return new BrowseRequest(_requestHeader, _view, _requestedMaxReferencesPerNode, _nodesToBrowse);

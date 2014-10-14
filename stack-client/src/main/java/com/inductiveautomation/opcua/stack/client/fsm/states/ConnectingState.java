@@ -10,6 +10,8 @@ import com.inductiveautomation.opcua.stack.core.types.structured.CloseSecureChan
 import com.inductiveautomation.opcua.stack.core.types.structured.RequestHeader;
 import io.netty.channel.Channel;
 
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
+
 public class ConnectingState implements ConnectionState {
 
     private final CompletableFuture<Channel> channelFuture;
@@ -30,7 +32,7 @@ public class ConnectingState implements ConnectionState {
             case DisconnectRequested:
                 channelFuture.thenAccept(ch -> {
                     RequestHeader requestHeader = new RequestHeader(
-                            NodeId.NullValue, DateTime.now(), 0L, 0L, null, 0L, null);
+                            NodeId.NullValue, DateTime.now(), uint(0), uint(0), null, uint(0), null);
 
                     CloseSecureChannelRequest request = new CloseSecureChannelRequest(requestHeader);
 

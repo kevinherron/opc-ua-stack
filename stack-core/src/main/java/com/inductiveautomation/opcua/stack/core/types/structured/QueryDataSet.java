@@ -25,20 +25,32 @@ public class QueryDataSet implements UaStructure {
         this._values = _values;
     }
 
-    public ExpandedNodeId getNodeId() { return _nodeId; }
+    public ExpandedNodeId getNodeId() {
+        return _nodeId;
+    }
 
-    public ExpandedNodeId getTypeDefinitionNode() { return _typeDefinitionNode; }
+    public ExpandedNodeId getTypeDefinitionNode() {
+        return _typeDefinitionNode;
+    }
 
-    public Variant[] getValues() { return _values; }
+    public Variant[] getValues() {
+        return _values;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(QueryDataSet queryDataSet, UaEncoder encoder) {

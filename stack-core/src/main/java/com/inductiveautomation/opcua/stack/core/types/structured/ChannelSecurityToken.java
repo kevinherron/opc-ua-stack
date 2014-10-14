@@ -7,6 +7,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class ChannelSecurityToken implements UaStructure {
 
@@ -14,34 +15,48 @@ public class ChannelSecurityToken implements UaStructure {
     public static final NodeId BinaryEncodingId = Identifiers.ChannelSecurityToken_Encoding_DefaultBinary;
     public static final NodeId XmlEncodingId = Identifiers.ChannelSecurityToken_Encoding_DefaultXml;
 
-    protected final Long _channelId;
-    protected final Long _tokenId;
+    protected final UInteger _channelId;
+    protected final UInteger _tokenId;
     protected final DateTime _createdAt;
-    protected final Long _revisedLifetime;
+    protected final UInteger _revisedLifetime;
 
-    public ChannelSecurityToken(Long _channelId, Long _tokenId, DateTime _createdAt, Long _revisedLifetime) {
+    public ChannelSecurityToken(UInteger _channelId, UInteger _tokenId, DateTime _createdAt, UInteger _revisedLifetime) {
         this._channelId = _channelId;
         this._tokenId = _tokenId;
         this._createdAt = _createdAt;
         this._revisedLifetime = _revisedLifetime;
     }
 
-    public Long getChannelId() { return _channelId; }
+    public UInteger getChannelId() {
+        return _channelId;
+    }
 
-    public Long getTokenId() { return _tokenId; }
+    public UInteger getTokenId() {
+        return _tokenId;
+    }
 
-    public DateTime getCreatedAt() { return _createdAt; }
+    public DateTime getCreatedAt() {
+        return _createdAt;
+    }
 
-    public Long getRevisedLifetime() { return _revisedLifetime; }
+    public UInteger getRevisedLifetime() {
+        return _revisedLifetime;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ChannelSecurityToken channelSecurityToken, UaEncoder encoder) {
@@ -52,10 +67,10 @@ public class ChannelSecurityToken implements UaStructure {
     }
 
     public static ChannelSecurityToken decode(UaDecoder decoder) {
-        Long _channelId = decoder.decodeUInt32("ChannelId");
-        Long _tokenId = decoder.decodeUInt32("TokenId");
+        UInteger _channelId = decoder.decodeUInt32("ChannelId");
+        UInteger _tokenId = decoder.decodeUInt32("TokenId");
         DateTime _createdAt = decoder.decodeDateTime("CreatedAt");
-        Long _revisedLifetime = decoder.decodeUInt32("RevisedLifetime");
+        UInteger _revisedLifetime = decoder.decodeUInt32("RevisedLifetime");
 
         return new ChannelSecurityToken(_channelId, _tokenId, _createdAt, _revisedLifetime);
     }

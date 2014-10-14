@@ -7,6 +7,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DataValue;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class WriteValue implements UaStructure {
 
@@ -15,33 +16,47 @@ public class WriteValue implements UaStructure {
     public static final NodeId XmlEncodingId = Identifiers.WriteValue_Encoding_DefaultXml;
 
     protected final NodeId _nodeId;
-    protected final Long _attributeId;
+    protected final UInteger _attributeId;
     protected final String _indexRange;
     protected final DataValue _value;
 
-    public WriteValue(NodeId _nodeId, Long _attributeId, String _indexRange, DataValue _value) {
+    public WriteValue(NodeId _nodeId, UInteger _attributeId, String _indexRange, DataValue _value) {
         this._nodeId = _nodeId;
         this._attributeId = _attributeId;
         this._indexRange = _indexRange;
         this._value = _value;
     }
 
-    public NodeId getNodeId() { return _nodeId; }
+    public NodeId getNodeId() {
+        return _nodeId;
+    }
 
-    public Long getAttributeId() { return _attributeId; }
+    public UInteger getAttributeId() {
+        return _attributeId;
+    }
 
-    public String getIndexRange() { return _indexRange; }
+    public String getIndexRange() {
+        return _indexRange;
+    }
 
-    public DataValue getValue() { return _value; }
+    public DataValue getValue() {
+        return _value;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(WriteValue writeValue, UaEncoder encoder) {
@@ -53,7 +68,7 @@ public class WriteValue implements UaStructure {
 
     public static WriteValue decode(UaDecoder decoder) {
         NodeId _nodeId = decoder.decodeNodeId("NodeId");
-        Long _attributeId = decoder.decodeUInt32("AttributeId");
+        UInteger _attributeId = decoder.decodeUInt32("AttributeId");
         String _indexRange = decoder.decodeString("IndexRange");
         DataValue _value = decoder.decodeDataValue("Value");
 

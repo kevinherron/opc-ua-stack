@@ -1,15 +1,16 @@
 package com.inductiveautomation.opcua.stack;
 
-import com.inductiveautomation.opcua.stack.core.channel.ClientSecureChannel;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelSecurity;
+import com.inductiveautomation.opcua.stack.core.channel.ClientSecureChannel;
 import com.inductiveautomation.opcua.stack.core.channel.SecureChannel;
+import com.inductiveautomation.opcua.stack.core.channel.ServerSecureChannel;
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.inductiveautomation.opcua.stack.core.types.structured.ChannelSecurityToken;
-import com.inductiveautomation.opcua.stack.core.channel.ServerSecureChannel;
 
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 import static com.inductiveautomation.opcua.stack.core.util.NonceUtil.generateNonce;
 import static com.inductiveautomation.opcua.stack.core.util.NonceUtil.getNonceLength;
 
@@ -52,7 +53,7 @@ public abstract class SecureChannelFixture extends SecurityFixture {
                     );
 
                     ChannelSecurityToken clientToken = new ChannelSecurityToken(
-                            0L, 1L, DateTime.now(), 60000L);
+                            uint(0), uint(1), DateTime.now(), uint(60000));
 
                     clientChannel.setChannelSecurity(new ChannelSecurity(clientSecrets, clientToken));
                 }
@@ -70,7 +71,7 @@ public abstract class SecureChannelFixture extends SecurityFixture {
                     );
 
                     ChannelSecurityToken serverToken = new ChannelSecurityToken(
-                            0L, 1L, DateTime.now(), 60000L);
+                            uint(0), uint(1), DateTime.now(), uint(60000));
 
                     serverChannel.setChannelSecurity(new ChannelSecurity(serverSecrets, serverToken));
                 }

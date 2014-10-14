@@ -25,20 +25,32 @@ public class ContentFilterElementResult implements UaStructure {
         this._operandDiagnosticInfos = _operandDiagnosticInfos;
     }
 
-    public StatusCode getStatusCode() { return _statusCode; }
+    public StatusCode getStatusCode() {
+        return _statusCode;
+    }
 
-    public StatusCode[] getOperandStatusCodes() { return _operandStatusCodes; }
+    public StatusCode[] getOperandStatusCodes() {
+        return _operandStatusCodes;
+    }
 
-    public DiagnosticInfo[] getOperandDiagnosticInfos() { return _operandDiagnosticInfos; }
+    public DiagnosticInfo[] getOperandDiagnosticInfos() {
+        return _operandDiagnosticInfos;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ContentFilterElementResult contentFilterElementResult, UaEncoder encoder) {

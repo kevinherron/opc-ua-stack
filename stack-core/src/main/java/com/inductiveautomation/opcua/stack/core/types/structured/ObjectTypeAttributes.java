@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class ObjectTypeAttributes extends NodeAttributes {
 
@@ -15,21 +16,29 @@ public class ObjectTypeAttributes extends NodeAttributes {
 
     protected final Boolean _isAbstract;
 
-    public ObjectTypeAttributes(Long _specifiedAttributes, LocalizedText _displayName, LocalizedText _description, Long _writeMask, Long _userWriteMask, Boolean _isAbstract) {
+    public ObjectTypeAttributes(UInteger _specifiedAttributes, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, Boolean _isAbstract) {
         super(_specifiedAttributes, _displayName, _description, _writeMask, _userWriteMask);
         this._isAbstract = _isAbstract;
     }
 
-    public Boolean getIsAbstract() { return _isAbstract; }
+    public Boolean getIsAbstract() {
+        return _isAbstract;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ObjectTypeAttributes objectTypeAttributes, UaEncoder encoder) {
@@ -42,11 +51,11 @@ public class ObjectTypeAttributes extends NodeAttributes {
     }
 
     public static ObjectTypeAttributes decode(UaDecoder decoder) {
-        Long _specifiedAttributes = decoder.decodeUInt32("SpecifiedAttributes");
+        UInteger _specifiedAttributes = decoder.decodeUInt32("SpecifiedAttributes");
         LocalizedText _displayName = decoder.decodeLocalizedText("DisplayName");
         LocalizedText _description = decoder.decodeLocalizedText("Description");
-        Long _writeMask = decoder.decodeUInt32("WriteMask");
-        Long _userWriteMask = decoder.decodeUInt32("UserWriteMask");
+        UInteger _writeMask = decoder.decodeUInt32("WriteMask");
+        UInteger _userWriteMask = decoder.decodeUInt32("UserWriteMask");
         Boolean _isAbstract = decoder.decodeBoolean("IsAbstract");
 
         return new ObjectTypeAttributes(_specifiedAttributes, _displayName, _description, _writeMask, _userWriteMask, _isAbstract);

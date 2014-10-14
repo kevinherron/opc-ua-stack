@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.google.common.collect.Lists;
 import com.inductiveautomation.opcua.stack.client.UaTcpClient;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
@@ -29,13 +30,14 @@ import com.inductiveautomation.opcua.stack.core.types.structured.OpenSecureChann
 import com.inductiveautomation.opcua.stack.core.types.structured.RequestHeader;
 import com.inductiveautomation.opcua.stack.core.util.BufferUtil;
 import com.inductiveautomation.opcua.stack.core.util.NonceUtil;
-import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 
 public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<ByteBuf> implements HeaderDecoder {
 
@@ -86,12 +88,12 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
         secureChannel.setLocalNonce(clientNonce);
 
         OpenSecureChannelRequest request = new OpenSecureChannelRequest(
-                new RequestHeader(null, DateTime.now(), 0L, 0L, null, 0L, null),
-                PROTOCOL_VERSION,
+                new RequestHeader(null, DateTime.now(), uint(0), uint(0), null, uint(0), null),
+                uint(PROTOCOL_VERSION),
                 requestType,
                 secureChannel.getMessageSecurityMode(),
                 secureChannel.getLocalNonce(),
-                60 * 1000L
+                uint(60 * 1000L)
         );
 
         sendOpenSecureChannelRequest(ctx, request);
@@ -178,7 +180,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                                 .setBuffer(messageBuffer)
                                 .decodeMessage(null);
 
-                        secureChannel.setChannelId(response.getSecurityToken().getChannelId());
+                        secureChannel.setChannelId(response.getSecurityToken().getChannelId().longValue());
                         logger.debug("Received OpenSecureChannelResponse.");
 
                         installSecurityToken(ctx, response);
@@ -197,7 +199,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
     }
 
     private void installSecurityToken(ChannelHandlerContext ctx, OpenSecureChannelResponse response) {ChannelSecurity.SecuritySecrets newKeys = null;
-        if (response.getServerProtocolVersion() < PROTOCOL_VERSION) {
+        if (response.getServerProtocolVersion().longValue() < PROTOCOL_VERSION) {
             throw new UaRuntimeException(StatusCodes.Bad_ProtocolVersionUnsupported,
                                          "server protocol version unsupported: " + response.getServerProtocolVersion());
         }
@@ -221,7 +223,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
         secureChannel.setChannelSecurity(new ChannelSecurity(newKeys, newToken, oldKeys, oldToken));
 
         DateTime createdAt = response.getSecurityToken().getCreatedAt();
-        long revisedLifetime = response.getSecurityToken().getRevisedLifetime();
+        long revisedLifetime = response.getSecurityToken().getRevisedLifetime().longValue();
         long renewAt = (long) (revisedLifetime * 0.75);
 
         renewFuture = ctx.executor().schedule(() -> renewSecureChannel(ctx), renewAt, TimeUnit.MILLISECONDS);
@@ -307,12 +309,12 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
         secureChannel.setLocalNonce(clientNonce);
 
         OpenSecureChannelRequest request = new OpenSecureChannelRequest(
-                new RequestHeader(null, DateTime.now(), 0L, 0L, null, 0L, null),
-                PROTOCOL_VERSION,
+                new RequestHeader(null, DateTime.now(), uint(0), uint(0), null, uint(0), null),
+                uint(PROTOCOL_VERSION),
                 SecurityTokenRequestType.Renew,
                 secureChannel.getMessageSecurityMode(),
                 secureChannel.getLocalNonce(),
-                60 * 1000L
+                uint(60 * 1000L)
         );
 
         sendOpenSecureChannelRequest(ctx, request);

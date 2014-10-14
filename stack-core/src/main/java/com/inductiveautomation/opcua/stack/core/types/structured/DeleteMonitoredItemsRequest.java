@@ -6,6 +6,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public class DeleteMonitoredItemsRequest implements UaRequestMessage {
 
@@ -14,29 +15,41 @@ public class DeleteMonitoredItemsRequest implements UaRequestMessage {
     public static final NodeId XmlEncodingId = Identifiers.DeleteMonitoredItemsRequest_Encoding_DefaultXml;
 
     protected final RequestHeader _requestHeader;
-    protected final Long _subscriptionId;
-    protected final Long[] _monitoredItemIds;
+    protected final UInteger _subscriptionId;
+    protected final UInteger[] _monitoredItemIds;
 
-    public DeleteMonitoredItemsRequest(RequestHeader _requestHeader, Long _subscriptionId, Long[] _monitoredItemIds) {
+    public DeleteMonitoredItemsRequest(RequestHeader _requestHeader, UInteger _subscriptionId, UInteger[] _monitoredItemIds) {
         this._requestHeader = _requestHeader;
         this._subscriptionId = _subscriptionId;
         this._monitoredItemIds = _monitoredItemIds;
     }
 
-    public RequestHeader getRequestHeader() { return _requestHeader; }
+    public RequestHeader getRequestHeader() {
+        return _requestHeader;
+    }
 
-    public Long getSubscriptionId() { return _subscriptionId; }
+    public UInteger getSubscriptionId() {
+        return _subscriptionId;
+    }
 
-    public Long[] getMonitoredItemIds() { return _monitoredItemIds; }
+    public UInteger[] getMonitoredItemIds() {
+        return _monitoredItemIds;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(DeleteMonitoredItemsRequest deleteMonitoredItemsRequest, UaEncoder encoder) {
@@ -47,8 +60,8 @@ public class DeleteMonitoredItemsRequest implements UaRequestMessage {
 
     public static DeleteMonitoredItemsRequest decode(UaDecoder decoder) {
         RequestHeader _requestHeader = decoder.decodeSerializable("RequestHeader", RequestHeader.class);
-        Long _subscriptionId = decoder.decodeUInt32("SubscriptionId");
-        Long[] _monitoredItemIds = decoder.decodeArray("MonitoredItemIds", decoder::decodeUInt32, Long.class);
+        UInteger _subscriptionId = decoder.decodeUInt32("SubscriptionId");
+        UInteger[] _monitoredItemIds = decoder.decodeArray("MonitoredItemIds", decoder::decodeUInt32, UInteger.class);
 
         return new DeleteMonitoredItemsRequest(_requestHeader, _subscriptionId, _monitoredItemIds);
     }

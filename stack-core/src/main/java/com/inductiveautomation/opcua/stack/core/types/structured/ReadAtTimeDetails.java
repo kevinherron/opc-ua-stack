@@ -22,18 +22,28 @@ public class ReadAtTimeDetails extends HistoryReadDetails {
         this._useSimpleBounds = _useSimpleBounds;
     }
 
-    public DateTime[] getReqTimes() { return _reqTimes; }
+    public DateTime[] getReqTimes() {
+        return _reqTimes;
+    }
 
-    public Boolean getUseSimpleBounds() { return _useSimpleBounds; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public Boolean getUseSimpleBounds() {
+        return _useSimpleBounds;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ReadAtTimeDetails readAtTimeDetails, UaEncoder encoder) {

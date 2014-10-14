@@ -8,6 +8,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.NodeClass;
 
 public class Node implements UaStructure {
@@ -21,11 +22,11 @@ public class Node implements UaStructure {
     protected final QualifiedName _browseName;
     protected final LocalizedText _displayName;
     protected final LocalizedText _description;
-    protected final Long _writeMask;
-    protected final Long _userWriteMask;
+    protected final UInteger _writeMask;
+    protected final UInteger _userWriteMask;
     protected final ReferenceNode[] _references;
 
-    public Node(NodeId _nodeId, NodeClass _nodeClass, QualifiedName _browseName, LocalizedText _displayName, LocalizedText _description, Long _writeMask, Long _userWriteMask, ReferenceNode[] _references) {
+    public Node(NodeId _nodeId, NodeClass _nodeClass, QualifiedName _browseName, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, ReferenceNode[] _references) {
         this._nodeId = _nodeId;
         this._nodeClass = _nodeClass;
         this._browseName = _browseName;
@@ -36,30 +37,52 @@ public class Node implements UaStructure {
         this._references = _references;
     }
 
-    public NodeId getNodeId() { return _nodeId; }
+    public NodeId getNodeId() {
+        return _nodeId;
+    }
 
-    public NodeClass getNodeClass() { return _nodeClass; }
+    public NodeClass getNodeClass() {
+        return _nodeClass;
+    }
 
-    public QualifiedName getBrowseName() { return _browseName; }
+    public QualifiedName getBrowseName() {
+        return _browseName;
+    }
 
-    public LocalizedText getDisplayName() { return _displayName; }
+    public LocalizedText getDisplayName() {
+        return _displayName;
+    }
 
-    public LocalizedText getDescription() { return _description; }
+    public LocalizedText getDescription() {
+        return _description;
+    }
 
-    public Long getWriteMask() { return _writeMask; }
+    public UInteger getWriteMask() {
+        return _writeMask;
+    }
 
-    public Long getUserWriteMask() { return _userWriteMask; }
+    public UInteger getUserWriteMask() {
+        return _userWriteMask;
+    }
 
-    public ReferenceNode[] getReferences() { return _references; }
+    public ReferenceNode[] getReferences() {
+        return _references;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(Node node, UaEncoder encoder) {
@@ -79,8 +102,8 @@ public class Node implements UaStructure {
         QualifiedName _browseName = decoder.decodeQualifiedName("BrowseName");
         LocalizedText _displayName = decoder.decodeLocalizedText("DisplayName");
         LocalizedText _description = decoder.decodeLocalizedText("Description");
-        Long _writeMask = decoder.decodeUInt32("WriteMask");
-        Long _userWriteMask = decoder.decodeUInt32("UserWriteMask");
+        UInteger _writeMask = decoder.decodeUInt32("WriteMask");
+        UInteger _userWriteMask = decoder.decodeUInt32("UserWriteMask");
         ReferenceNode[] _references = decoder.decodeArray("References", decoder::decodeSerializable, ReferenceNode.class);
 
         return new Node(_nodeId, _nodeClass, _browseName, _displayName, _description, _writeMask, _userWriteMask, _references);

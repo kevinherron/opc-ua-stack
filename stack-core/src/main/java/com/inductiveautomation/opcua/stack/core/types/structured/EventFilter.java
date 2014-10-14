@@ -21,18 +21,28 @@ public class EventFilter extends MonitoringFilter {
         this._whereClause = _whereClause;
     }
 
-    public SimpleAttributeOperand[] getSelectClauses() { return _selectClauses; }
+    public SimpleAttributeOperand[] getSelectClauses() {
+        return _selectClauses;
+    }
 
-    public ContentFilter getWhereClause() { return _whereClause; }
-
-    @Override
-    public NodeId getTypeId() { return TypeId; }
-
-    @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public ContentFilter getWhereClause() {
+        return _whereClause;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
+
+    @Override
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
+
+    @Override
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(EventFilter eventFilter, UaEncoder encoder) {

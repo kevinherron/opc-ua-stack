@@ -28,24 +28,40 @@ public class ReadProcessedDetails extends HistoryReadDetails {
         this._aggregateConfiguration = _aggregateConfiguration;
     }
 
-    public DateTime getStartTime() { return _startTime; }
+    public DateTime getStartTime() {
+        return _startTime;
+    }
 
-    public DateTime getEndTime() { return _endTime; }
+    public DateTime getEndTime() {
+        return _endTime;
+    }
 
-    public Double getProcessingInterval() { return _processingInterval; }
+    public Double getProcessingInterval() {
+        return _processingInterval;
+    }
 
-    public NodeId[] getAggregateType() { return _aggregateType; }
+    public NodeId[] getAggregateType() {
+        return _aggregateType;
+    }
 
-    public AggregateConfiguration getAggregateConfiguration() { return _aggregateConfiguration; }
+    public AggregateConfiguration getAggregateConfiguration() {
+        return _aggregateConfiguration;
+    }
 
     @Override
-    public NodeId getTypeId() { return TypeId; }
+    public NodeId getTypeId() {
+        return TypeId;
+    }
 
     @Override
-    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+    public NodeId getBinaryEncodingId() {
+        return BinaryEncodingId;
+    }
 
     @Override
-    public NodeId getXmlEncodingId() { return XmlEncodingId; }
+    public NodeId getXmlEncodingId() {
+        return XmlEncodingId;
+    }
 
 
     public static void encode(ReadProcessedDetails readProcessedDetails, UaEncoder encoder) {
