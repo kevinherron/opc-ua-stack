@@ -87,6 +87,17 @@ public class ServiceRequest<ReqT extends UaRequestMessage, ResT extends UaRespon
         );
     }
 
+    public ServiceFault createServiceFault(long statusCode) {
+        ResponseHeader responseHeader = new ResponseHeader(
+                DateTime.now(),
+                request.getRequestHeader().getRequestHandle(),
+                new StatusCode(statusCode),
+                null, null, null
+        );
+
+        return new ServiceFault(responseHeader);
+    }
+
     public ServiceFault createServiceFault(Throwable throwable) {
         UaException exception = (throwable instanceof UaException) ?
                 (UaException) throwable : new UaException(throwable);

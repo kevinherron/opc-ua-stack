@@ -15,7 +15,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.Sets;
 import com.inductiveautomation.opcua.stack.core.Stack;
+import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.application.UaServer;
 import com.inductiveautomation.opcua.stack.core.application.services.AttributeServiceSet;
@@ -51,12 +58,6 @@ import com.inductiveautomation.opcua.stack.core.types.structured.SignedSoftwareC
 import com.inductiveautomation.opcua.stack.core.types.structured.UserTokenPolicy;
 import com.inductiveautomation.opcua.stack.core.util.DigestUtil;
 import com.inductiveautomation.opcua.stack.server.Endpoint;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.Sets;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import io.netty.util.HashedWheelTimer;
@@ -210,7 +211,12 @@ public class UaTcpServer implements UaServer {
         ServiceRequestHandler<UaRequestMessage, UaResponseMessage> handler = handlers.get(requestClass);
 
         try {
-            handler.handle(serviceRequest);
+            if (handler != null) {
+                handler.handle(serviceRequest);
+            } else {
+                ServiceFault serviceFault = serviceRequest.createServiceFault(StatusCodes.Bad_ServiceUnsupported);
+                serviceRequest.setResponse(serviceFault);
+            }
         } catch (UaException e) {
             ServiceFault serviceFault = serviceRequest.createServiceFault(e);
 
