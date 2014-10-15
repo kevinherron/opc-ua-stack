@@ -3,6 +3,7 @@ package com.inductiveautomation.opcua.stack.core.channel;
 import java.security.KeyPair;
 import java.security.cert.Certificate;
 
+import com.google.common.base.Objects;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelSecurity;
 import com.inductiveautomation.opcua.stack.core.channel.SecureChannel;
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
@@ -112,6 +113,14 @@ public class ServerSecureChannel extends DefaultAttributeMap implements SecureCh
     @Override
     public ByteString getRemoteNonce() {
         return remoteNonce;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("channelId", channelId)
+                .add("securityPolicy", securityPolicy)
+                .toString();
     }
 
 }

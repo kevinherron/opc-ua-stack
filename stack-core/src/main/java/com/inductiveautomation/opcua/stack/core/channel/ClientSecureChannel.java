@@ -3,6 +3,7 @@ package com.inductiveautomation.opcua.stack.core.channel;
 import java.security.KeyPair;
 import java.security.cert.Certificate;
 
+import com.google.common.base.Objects;
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
@@ -107,6 +108,14 @@ public class ClientSecureChannel extends DefaultAttributeMap implements SecureCh
     @Override
     public ChannelSecurity.SecretKeys getDecryptionKeys(ChannelSecurity.SecuritySecrets secretKeys) {
         return secretKeys.getServerKeys();
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("channelId", channelId)
+                .add("securityPolicy", securityPolicy)
+                .toString();
     }
 
 }
