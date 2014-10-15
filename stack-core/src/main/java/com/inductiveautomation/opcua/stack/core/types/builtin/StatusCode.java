@@ -38,6 +38,15 @@ public class StatusCode {
         return (value & SeverityMask) == SeverityUncertain;
     }
 
+    /**
+     * Set the DataValue InfoType and Overflow InfoBits.
+     *
+     * @return a new {@link StatusCode} DataValue and Overflow bits set.
+     */
+    public StatusCode withOverflow() {
+        return new StatusCode(value | 0x480);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

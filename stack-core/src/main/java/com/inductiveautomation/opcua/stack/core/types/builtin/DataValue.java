@@ -56,6 +56,18 @@ public class DataValue {
         return serverTime;
     }
 
+    public DataValue withStatus(StatusCode status) {
+        return new DataValue(value, status, serverTime, sourceTime);
+    }
+
+    public DataValue withServerTime(@Nullable DateTime serverTime) {
+        return new DataValue(value, status, serverTime, sourceTime);
+    }
+
+    public DataValue withSourceTime(@Nullable DateTime sourceTime) {
+        return new DataValue(value, status, serverTime, sourceTime);
+    }
+
     /**
      * Derive a new {@link DataValue} from a given {@link DataValue}.
      *
