@@ -3,6 +3,7 @@ package com.inductiveautomation.opcua.stack.server.handlers;
 import java.nio.ByteOrder;
 import java.util.List;
 
+import com.google.common.primitives.Ints;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelConfig;
@@ -17,7 +18,6 @@ import com.inductiveautomation.opcua.stack.core.channel.messages.TcpMessageDecod
 import com.inductiveautomation.opcua.stack.core.channel.messages.TcpMessageEncoder;
 import com.inductiveautomation.opcua.stack.server.tcp.SocketServer;
 import com.inductiveautomation.opcua.stack.server.tcp.UaTcpServer;
-import com.google.common.primitives.Ints;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -75,8 +75,6 @@ public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements Hea
         long remoteMaxChunkCount = hello.getMaxChunkCount();
 
         if (remoteProtocolVersion < PROTOCOL_VERSION) {
-            logger.error("Unsupported protocol version: {}", remoteProtocolVersion);
-
             throw new UaException(StatusCodes.Bad_ProtocolVersionUnsupported,
                     "unsupported protocol version: " + remoteProtocolVersion);
         }
@@ -133,6 +131,7 @@ public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements Hea
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         ExceptionHandler.exceptionCaught(ctx, cause);
+        logger.error("Send ErrorMessage.", cause.getCause());
     }
 
 }
