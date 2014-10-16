@@ -28,6 +28,10 @@ public class ByteString {
         return bytes == null;
     }
 
+    public boolean isNotNull() {
+        return bytes != null;
+    }
+
     public static ByteString of(byte[] bs) {
         return new ByteString(bs);
     }
