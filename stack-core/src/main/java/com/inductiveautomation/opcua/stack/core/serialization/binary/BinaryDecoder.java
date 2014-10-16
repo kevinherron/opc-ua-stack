@@ -299,7 +299,7 @@ public class BinaryDecoder implements UaDecoder {
         DateTime sourceTime = ((mask & 0x04) == 0x04) ? decodeDateTime(null) : DateTime.MinValue;
         DateTime serverTime = ((mask & 0x08) == 0x08) ? decodeDateTime(null) : DateTime.MinValue;
 
-        return new DataValue(value, status, serverTime, sourceTime);
+        return new DataValue(value, status, sourceTime, serverTime);
     }
 
     @Override

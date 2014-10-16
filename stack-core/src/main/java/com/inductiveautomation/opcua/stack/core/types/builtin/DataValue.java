@@ -31,7 +31,7 @@ public class DataValue {
         this(value, status, time, time);
     }
 
-    public DataValue(Variant value, StatusCode status, @Nullable DateTime serverTime, @Nullable DateTime sourceTime) {
+    public DataValue(Variant value, StatusCode status, @Nullable DateTime sourceTime, @Nullable DateTime serverTime) {
         this.value = value;
         this.status = status;
         this.sourceTime = sourceTime;
@@ -57,15 +57,15 @@ public class DataValue {
     }
 
     public DataValue withStatus(StatusCode status) {
-        return new DataValue(value, status, serverTime, sourceTime);
-    }
-
-    public DataValue withServerTime(@Nullable DateTime serverTime) {
-        return new DataValue(value, status, serverTime, sourceTime);
+        return new DataValue(value, status, sourceTime, serverTime);
     }
 
     public DataValue withSourceTime(@Nullable DateTime sourceTime) {
-        return new DataValue(value, status, serverTime, sourceTime);
+        return new DataValue(value, status, sourceTime, serverTime);
+    }
+
+    public DataValue withServerTime(@Nullable DateTime serverTime) {
+        return new DataValue(value, status, sourceTime, serverTime);
     }
 
     /**
@@ -76,14 +76,14 @@ public class DataValue {
      * @return a derived {@link DataValue}.
      */
     public static DataValue derivedValue(DataValue from, TimestampsToReturn timestamps) {
-        boolean includeServer = timestamps == TimestampsToReturn.Server || timestamps == TimestampsToReturn.Both;
         boolean includeSource = timestamps == TimestampsToReturn.Source || timestamps == TimestampsToReturn.Both;
+        boolean includeServer = timestamps == TimestampsToReturn.Server || timestamps == TimestampsToReturn.Both;
 
         return new DataValue(
                 from.value,
                 from.status,
-                includeServer ? from.serverTime : null,
-                includeSource ? from.sourceTime : null
+                includeSource ? from.sourceTime : null,
+                includeServer ? from.serverTime : null
         );
     }
 
@@ -102,8 +102,8 @@ public class DataValue {
         return new DataValue(
                 from.value,
                 from.status,
-                includeServer ? from.serverTime : null,
-                null
+                null,
+                includeServer ? from.serverTime : null
         );
     }
 
