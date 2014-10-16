@@ -184,6 +184,8 @@ public class UaTcpServer implements UaServer {
     }
 
     public void receiveRequest(ServiceRequest<UaRequestMessage, UaResponseMessage> serviceRequest) {
+        logger.trace("Received {} on {}.", serviceRequest, serviceRequest.getSecureChannel());
+
         serviceRequest.getFuture().whenComplete((response, throwable) -> {
             long requestId = serviceRequest.getRequestId();
 
