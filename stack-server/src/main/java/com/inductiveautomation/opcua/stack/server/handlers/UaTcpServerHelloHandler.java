@@ -65,7 +65,7 @@ public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements Hea
 
         if (server == null) {
             throw new UaException(StatusCodes.Bad_TcpEndpointUrlInvalid,
-                    "unrecognized endpoint: " + hello.getEndpointUrl());
+                    String.format("unrecognized endpoint url: \"%s\"", hello.getEndpointUrl()));
         }
 
         long remoteProtocolVersion = hello.getProtocolVersion();
