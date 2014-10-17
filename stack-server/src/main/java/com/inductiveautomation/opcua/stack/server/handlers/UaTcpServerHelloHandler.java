@@ -131,7 +131,8 @@ public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements Hea
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         ExceptionHandler.exceptionCaught(ctx, cause);
-        logger.error("Send ErrorMessage.", cause.getCause());
+
+        logger.error("Sent ErrorMessage.", cause.getCause());
     }
 
 }
