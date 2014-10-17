@@ -201,7 +201,7 @@ public class UaTcpServer implements UaServer {
 
                 if (channel != null) {
                     logger.trace("Sending {} on {}.", serviceResponse, secureChannel);
-                    channel.writeAndFlush(serviceResponse);
+                    channel.writeAndFlush(serviceResponse, channel.voidPromise());
                 } else {
                     logger.trace("Queueing {} for unbound {}.", serviceResponse, secureChannel);
                     responseQueues.put(secureChannel.getChannelId(), serviceResponse);
