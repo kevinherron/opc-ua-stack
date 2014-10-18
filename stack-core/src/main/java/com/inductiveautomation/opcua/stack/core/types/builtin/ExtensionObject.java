@@ -2,9 +2,9 @@ package com.inductiveautomation.opcua.stack.core.types.builtin;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.base.Objects;
 import com.inductiveautomation.opcua.stack.core.serialization.UaSerializable;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
-import com.google.common.base.Objects;
 
 public class ExtensionObject {
 

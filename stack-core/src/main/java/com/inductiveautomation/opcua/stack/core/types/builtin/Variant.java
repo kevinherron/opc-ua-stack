@@ -35,8 +35,19 @@ public class Variant {
             value = ((UaEnumeration) value).getValue();
         }
 
-        if (value instanceof UaStructure) {
+        else if (value instanceof UaStructure) {
             value = new ExtensionObject((UaStructure) value);
+        }
+
+        else if (value instanceof UaStructure[]) {
+            UaStructure[] values = (UaStructure[]) value;
+            ExtensionObject[] xos = new ExtensionObject[values.length];
+
+            for (int i = 0; i < values.length; i++) {
+                xos[i] = new ExtensionObject(values[i]);
+            }
+
+            value = xos;
         }
 
         this.value = value;
