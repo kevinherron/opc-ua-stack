@@ -1,5 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.types.enumerated;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
@@ -23,14 +25,24 @@ public enum HistoryUpdateType implements UaEnumeration {
         return value;
     }
 
+    private static final ImmutableMap<Integer, HistoryUpdateType> VALUES;
+
+    static {
+        Builder<Integer, HistoryUpdateType> builder = ImmutableMap.builder();
+        for (HistoryUpdateType e : values()) {
+            builder.put(e.getValue(), e);
+        }
+        VALUES = builder.build();
+    }
+
     public static void encode(HistoryUpdateType historyUpdateType, UaEncoder encoder) {
-        encoder.encodeInt32(null, historyUpdateType.ordinal());
+        encoder.encodeInt32(null, historyUpdateType.getValue());
     }
 
     public static HistoryUpdateType decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
 
-        return value < values().length ? values()[value] : null;
+        return VALUES.getOrDefault(value, null);
     }
 
     static {

@@ -1,5 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.types.enumerated;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
@@ -22,14 +24,24 @@ public enum DataChangeTrigger implements UaEnumeration {
         return value;
     }
 
+    private static final ImmutableMap<Integer, DataChangeTrigger> VALUES;
+
+    static {
+        Builder<Integer, DataChangeTrigger> builder = ImmutableMap.builder();
+        for (DataChangeTrigger e : values()) {
+            builder.put(e.getValue(), e);
+        }
+        VALUES = builder.build();
+    }
+
     public static void encode(DataChangeTrigger dataChangeTrigger, UaEncoder encoder) {
-        encoder.encodeInt32(null, dataChangeTrigger.ordinal());
+        encoder.encodeInt32(null, dataChangeTrigger.getValue());
     }
 
     public static DataChangeTrigger decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
 
-        return value < values().length ? values()[value] : null;
+        return VALUES.getOrDefault(value, null);
     }
 
     static {

@@ -1,5 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.types.enumerated;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
@@ -24,14 +26,24 @@ public enum ModelChangeStructureVerbMask implements UaEnumeration {
         return value;
     }
 
+    private static final ImmutableMap<Integer, ModelChangeStructureVerbMask> VALUES;
+
+    static {
+        Builder<Integer, ModelChangeStructureVerbMask> builder = ImmutableMap.builder();
+        for (ModelChangeStructureVerbMask e : values()) {
+            builder.put(e.getValue(), e);
+        }
+        VALUES = builder.build();
+    }
+
     public static void encode(ModelChangeStructureVerbMask modelChangeStructureVerbMask, UaEncoder encoder) {
-        encoder.encodeInt32(null, modelChangeStructureVerbMask.ordinal());
+        encoder.encodeInt32(null, modelChangeStructureVerbMask.getValue());
     }
 
     public static ModelChangeStructureVerbMask decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
 
-        return value < values().length ? values()[value] : null;
+        return VALUES.getOrDefault(value, null);
     }
 
     static {

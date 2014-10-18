@@ -1,5 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.types.enumerated;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
@@ -42,14 +44,24 @@ public enum AttributeWriteMask implements UaEnumeration {
         return value;
     }
 
+    private static final ImmutableMap<Integer, AttributeWriteMask> VALUES;
+
+    static {
+        Builder<Integer, AttributeWriteMask> builder = ImmutableMap.builder();
+        for (AttributeWriteMask e : values()) {
+            builder.put(e.getValue(), e);
+        }
+        VALUES = builder.build();
+    }
+
     public static void encode(AttributeWriteMask attributeWriteMask, UaEncoder encoder) {
-        encoder.encodeInt32(null, attributeWriteMask.ordinal());
+        encoder.encodeInt32(null, attributeWriteMask.getValue());
     }
 
     public static AttributeWriteMask decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
 
-        return value < values().length ? values()[value] : null;
+        return VALUES.getOrDefault(value, null);
     }
 
     static {

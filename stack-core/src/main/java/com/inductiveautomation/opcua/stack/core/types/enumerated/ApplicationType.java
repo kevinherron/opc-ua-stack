@@ -1,5 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.types.enumerated;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
@@ -23,14 +25,24 @@ public enum ApplicationType implements UaEnumeration {
         return value;
     }
 
+    private static final ImmutableMap<Integer, ApplicationType> VALUES;
+
+    static {
+        Builder<Integer, ApplicationType> builder = ImmutableMap.builder();
+        for (ApplicationType e : values()) {
+            builder.put(e.getValue(), e);
+        }
+        VALUES = builder.build();
+    }
+
     public static void encode(ApplicationType applicationType, UaEncoder encoder) {
-        encoder.encodeInt32(null, applicationType.ordinal());
+        encoder.encodeInt32(null, applicationType.getValue());
     }
 
     public static ApplicationType decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
 
-        return value < values().length ? values()[value] : null;
+        return VALUES.getOrDefault(value, null);
     }
 
     static {

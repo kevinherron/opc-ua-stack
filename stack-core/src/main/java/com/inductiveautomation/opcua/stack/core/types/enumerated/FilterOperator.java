@@ -1,5 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.types.enumerated;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
@@ -37,14 +39,24 @@ public enum FilterOperator implements UaEnumeration {
         return value;
     }
 
+    private static final ImmutableMap<Integer, FilterOperator> VALUES;
+
+    static {
+        Builder<Integer, FilterOperator> builder = ImmutableMap.builder();
+        for (FilterOperator e : values()) {
+            builder.put(e.getValue(), e);
+        }
+        VALUES = builder.build();
+    }
+
     public static void encode(FilterOperator filterOperator, UaEncoder encoder) {
-        encoder.encodeInt32(null, filterOperator.ordinal());
+        encoder.encodeInt32(null, filterOperator.getValue());
     }
 
     public static FilterOperator decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
 
-        return value < values().length ? values()[value] : null;
+        return VALUES.getOrDefault(value, null);
     }
 
     static {

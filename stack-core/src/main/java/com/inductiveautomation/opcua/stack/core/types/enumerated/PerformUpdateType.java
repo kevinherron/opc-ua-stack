@@ -1,5 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.types.enumerated;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
@@ -23,14 +25,24 @@ public enum PerformUpdateType implements UaEnumeration {
         return value;
     }
 
+    private static final ImmutableMap<Integer, PerformUpdateType> VALUES;
+
+    static {
+        Builder<Integer, PerformUpdateType> builder = ImmutableMap.builder();
+        for (PerformUpdateType e : values()) {
+            builder.put(e.getValue(), e);
+        }
+        VALUES = builder.build();
+    }
+
     public static void encode(PerformUpdateType performUpdateType, UaEncoder encoder) {
-        encoder.encodeInt32(null, performUpdateType.ordinal());
+        encoder.encodeInt32(null, performUpdateType.getValue());
     }
 
     public static PerformUpdateType decode(UaDecoder decoder) {
         int value = decoder.decodeInt32(null);
 
-        return value < values().length ? values()[value] : null;
+        return VALUES.getOrDefault(value, null);
     }
 
     static {

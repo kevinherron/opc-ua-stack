@@ -2,6 +2,8 @@
 
 package com.inductiveautomation.opcua.stack.core.types.enumerated;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.*;
 import com.inductiveautomation.opcua.stack.core.types.builtin.*;
@@ -25,14 +27,23 @@ public enum ${enumeratedType.name} implements UaEnumeration {
         return value;
     }
 
+    private static final ImmutableMap<Integer, ${enumeratedType.name}> VALUES;
+    static {
+        Builder<Integer, ${enumeratedType.name}> builder = ImmutableMap.builder();
+        for (${enumeratedType.name} e : values()) {
+            builder.put(e.getValue(), e);
+        }
+        VALUES = builder.build();
+    }
+
 	public static void encode(${enumeratedType.name} ${enumeratedType.javaName}, UaEncoder encoder) {
-		encoder.encodeInt32(null, ${enumeratedType.javaName}.ordinal());
+		encoder.encodeInt32(null, ${enumeratedType.javaName}.getValue());
 	}
 
 	public static ${enumeratedType.name} decode(UaDecoder decoder) {
-		int value = decoder.decodeInt32(null);
+        int value = decoder.decodeInt32(null);
 
-		return value < values().length ? values()[value] : null;
+        return VALUES.getOrDefault(value, null);
 	}
 
 	static {
