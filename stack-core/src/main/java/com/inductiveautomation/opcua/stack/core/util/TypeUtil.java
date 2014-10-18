@@ -69,9 +69,9 @@ public class TypeUtil {
      */
     public static int getBuiltinTypeId(Class<?> backingType) {
         if (backingType.isPrimitive()) {
-            return PrimitiveBuiltinTypeIds.get(backingType);
+            return PrimitiveBuiltinTypeIds.getOrDefault(backingType, 22);
         } else {
-            return BackingClasses.inverse().get(backingType);
+            return BackingClasses.inverse().getOrDefault(backingType, 22);
         }
     }
 
