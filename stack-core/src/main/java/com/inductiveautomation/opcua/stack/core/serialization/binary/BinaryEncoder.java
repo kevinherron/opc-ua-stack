@@ -384,23 +384,23 @@ public class BinaryEncoder implements UaEncoder {
             Object object = value.getObject();
 
             if (object instanceof UaSerializable) {
-                UaSerializable structure = (UaSerializable) object;
+                UaSerializable serializable = (UaSerializable) object;
 
                 encodeNodeId(null, value.getDataTypeEncodingId());
                 buffer.writeByte(1); // Body is binary encoded
 
                 // Record the current index and write a placeholder for the length.
-                buffer.markWriterIndex();
+                int lengthIndex = buffer.writerIndex();
                 buffer.writeInt(0);
 
                 // Write the body.
                 int indexBefore = buffer.writerIndex();
-                encodeSerializable(null, structure);
+                encodeSerializable(null, serializable);
                 int indexAfter = buffer.writerIndex();
                 int bytesWritten = indexAfter - indexBefore;
 
                 // Go back and update the length.
-                buffer.resetWriterIndex();
+                buffer.writerIndex(lengthIndex);
                 buffer.writeInt(bytesWritten);
 
                 // Return to where we were after writing the body.
@@ -454,7 +454,7 @@ public class BinaryEncoder implements UaEncoder {
         if (value == null) {
             buffer.writeByte(0);
         } else {
-            int typeId = TypeUtil.getBuiltinTypeId(getType(value));
+            int typeId = TypeUtil.getBuiltinTypeId(getClass(value));
 
             if (value.getClass().isArray()) {
                 int[] dimensions = ArrayUtil.getDimensions(value);
@@ -493,7 +493,7 @@ public class BinaryEncoder implements UaEncoder {
         }
     }
 
-    private Class<?> getType(@Nonnull Object o) {
+    private Class<?> getClass(@Nonnull Object o) {
         if (o.getClass().isArray()) {
             return ArrayUtil.getType(o);
         } else {
