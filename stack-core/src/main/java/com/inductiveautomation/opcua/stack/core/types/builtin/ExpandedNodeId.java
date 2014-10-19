@@ -1,5 +1,6 @@
 package com.inductiveautomation.opcua.stack.core.types.builtin;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import com.google.common.base.Objects;
@@ -137,6 +138,16 @@ public class ExpandedNodeId {
 
     public boolean isNull() {
         return nodeId.isNull();
+    }
+
+    /**
+     * If this {@link ExpandedNodeId} resides on the local server ({@code serverIndex == 0}), return its representation
+     * as a local {@link NodeId}.
+     *
+     * @return a local {@link NodeId}, if {@code serverIndex == 0}.
+     */
+    public Optional<NodeId> local() {
+        return isLocal() ? Optional.of(nodeId) : Optional.empty();
     }
 
     @Override
