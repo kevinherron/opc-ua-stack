@@ -16,6 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <guava.version>17.0</guava.version>
+        <javassist.version>3.18.2-GA</javassist.version>
         <jsr305.version>2.0.3</jsr305.version>
         <netty.version>4.0.21.Final</netty.version>
         <slf4j.version>1.7.7</slf4j.version>
@@ -42,6 +43,11 @@
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
             <version>${netty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>${javassist.version}</version>
         </dependency>
 
         <dependency>
