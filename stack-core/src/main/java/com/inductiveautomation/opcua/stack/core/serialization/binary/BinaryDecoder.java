@@ -294,7 +294,7 @@ public class BinaryDecoder implements UaDecoder {
     public DataValue decodeDataValue(String field) throws UaSerializationException {
         int mask = buffer.readByte() & 0x0F;
 
-        Variant value = ((mask & 0x01) == 0x01) ? decodeVariant(null) : null;
+        Variant value = ((mask & 0x01) == 0x01) ? decodeVariant(null) : Variant.NullValue;
         StatusCode status = ((mask & 0x02) == 0x02) ? decodeStatusCode(null) : StatusCode.Good;
         DateTime sourceTime = ((mask & 0x04) == 0x04) ? decodeDateTime(null) : DateTime.MinValue;
         DateTime serverTime = ((mask & 0x08) == 0x08) ? decodeDateTime(null) : DateTime.MinValue;
