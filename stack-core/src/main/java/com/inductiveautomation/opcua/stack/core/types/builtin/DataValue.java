@@ -16,7 +16,7 @@ public class DataValue {
     }
 
     public DataValue(StatusCode statusCode) {
-        this(Variant.NullValue, statusCode);
+        this(Variant.NullValue, statusCode, DateTime.MinValue);
     }
 
     public DataValue(Variant value) {
