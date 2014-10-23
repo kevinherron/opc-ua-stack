@@ -65,13 +65,13 @@ public class TypeUtil {
 
     /**
      * @param backingType the backing {@link Class} of the builtin type.
-     * @return the id of the builtin type backed by {@code backingType}.
+     * @return the id of the builtin type backed by {@code backingType}, or -1 if backingType is not builtin.
      */
     public static int getBuiltinTypeId(Class<?> backingType) {
         if (backingType.isPrimitive()) {
-            return PrimitiveBuiltinTypeIds.getOrDefault(backingType, 22);
+            return PrimitiveBuiltinTypeIds.getOrDefault(backingType, -1);
         } else {
-            return BackingClasses.inverse().getOrDefault(backingType, 22);
+            return BackingClasses.inverse().getOrDefault(backingType, -1);
         }
     }
 

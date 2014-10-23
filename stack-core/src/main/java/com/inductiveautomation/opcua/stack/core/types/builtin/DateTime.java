@@ -40,6 +40,10 @@ public class DateTime {
 		return new Date(utcToJava(utcTime));
 	}
 
+    public boolean isNull() {
+        return utcTime == 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
