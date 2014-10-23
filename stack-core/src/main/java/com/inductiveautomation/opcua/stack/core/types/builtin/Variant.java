@@ -57,6 +57,14 @@ public class Variant {
         return value;
     }
 
+    public boolean isNull() {
+        return value == null;
+    }
+
+    public boolean isNotNull() {
+        return !isNull();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

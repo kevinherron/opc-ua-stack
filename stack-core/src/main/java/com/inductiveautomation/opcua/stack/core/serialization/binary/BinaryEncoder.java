@@ -434,7 +434,7 @@ public class BinaryEncoder implements UaEncoder {
 
         int mask = 0x00;
 
-        if (value.getValue() != null) mask |= 0x01;
+        if (value.getValue() != null && value.getValue().isNotNull()) mask |= 0x01;
         if (!StatusCode.Good.equals(value.getStatusCode())) mask |= 0x02;
         if (!DateTime.MinValue.equals(value.getSourceTime())) mask |= 0x04;
         if (!DateTime.MinValue.equals(value.getServerTime())) mask |= 0x08;
