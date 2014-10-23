@@ -280,11 +280,13 @@ public class ChunkDecoder implements HeaderConstants {
                             .map(t -> t.getTokenId().longValue())
                             .orElse(-1L);
 
-                    if (tokenId == previousTokenId && channelSecurity.getPreviousKeys().isPresent()) {
-                        securitySecrets = channelSecurity.getPreviousKeys().get();
-                    } else {
+                    if (tokenId != previousTokenId) {
                         throw new UaException(StatusCodes.Bad_SecureChannelTokenUnknown,
                                 "unknown secure channel token: " + tokenId);
+                    }
+
+                    if (channel.isSymmetricEncryptionEnabled() && channelSecurity.getPreviousKeys().isPresent()) {
+                        securitySecrets = channelSecurity.getPreviousKeys().get();
                     }
                 }
             }
