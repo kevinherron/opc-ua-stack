@@ -18,11 +18,6 @@ public class ByteString {
         this.bytes = bytes;
     }
 
-    @Nullable
-    public byte[] bytes() {
-        return bytes;
-    }
-
     public int length() {
         return bytes != null ? bytes.length : 0;
     }
@@ -35,8 +30,9 @@ public class ByteString {
         return bytes != null;
     }
 
-    public static ByteString of(byte[] bs) {
-        return new ByteString(bs);
+    @Nullable
+    public byte[] bytes() {
+        return bytes;
     }
 
     @Nullable
@@ -48,6 +44,16 @@ public class ByteString {
             bs[i] = ubyte(bytes[i]);
         }
         return bs;
+    }
+
+    public byte byteAt(int index) {
+        if (bytes == null) throw new IndexOutOfBoundsException("index=" + index);
+
+        return bytes[index];
+    }
+
+    public UByte uByteAt(int index) {
+        return ubyte(byteAt(index));
     }
 
     @Override
@@ -63,6 +69,10 @@ public class ByteString {
     @Override
     public int hashCode() {
         return bytes != null ? Arrays.hashCode(bytes) : 0;
+    }
+
+    public static ByteString of(byte[] bs) {
+        return new ByteString(bs);
     }
 
     @Override
