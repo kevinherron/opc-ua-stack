@@ -460,9 +460,6 @@ public class UaTcpServer implements UaServer {
         public void onFindServers(ServiceRequest<FindServersRequest, FindServersResponse> serviceRequest) {
             FindServersRequest request = serviceRequest.getRequest();
 
-            request.getEndpointUrl();
-            request.getLocaleIds();
-
             List<String> serverUris = request.getServerUris() != null ?
                     Lists.newArrayList(request.getServerUris()) :
                     Lists.newArrayList();

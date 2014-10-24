@@ -57,15 +57,14 @@ public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements Hea
     }
 
     private void onHello(ChannelHandlerContext ctx, ByteBuf buffer) throws UaException {
-        logger.debug("Received Hello message.");
+        logger.debug("[remote={}] Received Hello message.", ctx.channel().remoteAddress());
 
         HelloMessage hello = TcpMessageDecoder.decodeHello(buffer);
 
         UaTcpServer server = socketServer.getServer(hello.getEndpointUrl());
 
         if (server == null) {
-            throw new UaException(StatusCodes.Bad_TcpEndpointUrlInvalid,
-                    String.format("unrecognized endpoint url: \"%s\"", hello.getEndpointUrl()));
+            server = socketServer.getFallbackServer();
         }
 
         long remoteProtocolVersion = hello.getProtocolVersion();
@@ -111,7 +110,7 @@ public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements Hea
         ctx.pipeline().addLast(new UaTcpServerAsymmetricHandler(server, serializationQueue));
         ctx.pipeline().remove(this);
 
-        logger.debug("Removed HelloHandler, added AsymmetricHandler.");
+        logger.debug("[remote={}] Removed HelloHandler, added AsymmetricHandler.", ctx.channel().remoteAddress());
 
         AcknowledgeMessage acknowledge = new AcknowledgeMessage(
                 PROTOCOL_VERSION,
@@ -125,14 +124,14 @@ public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements Hea
 
         ctx.executor().execute(() -> ctx.writeAndFlush(messageBuffer));
 
-        logger.debug("Sent Acknowledge message.");
+        logger.debug("[remote={}] Sent Acknowledge message.", ctx.channel().remoteAddress());
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         ExceptionHandler.exceptionCaught(ctx, cause);
 
-        logger.error("Sent ErrorMessage.", cause.getCause());
+        logger.error("[remote={}] Sent ErrorMessage.", ctx.channel().remoteAddress(), cause.getCause());
     }
 
 }

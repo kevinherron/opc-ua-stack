@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import com.google.common.collect.Maps;
 import com.inductiveautomation.opcua.stack.core.Stack;
 import com.inductiveautomation.opcua.stack.server.handlers.UaTcpServerHelloHandler;
-import com.google.common.collect.Maps;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -30,12 +30,16 @@ public class SocketServer {
 
     private volatile Channel channel;
 
+    private final FallbackServer fallbackServer;
+
     private final ServerBootstrap bootstrap = new ServerBootstrap();
 
     private final InetSocketAddress address;
 
     private SocketServer(InetSocketAddress address) {
         this.address = address;
+
+        fallbackServer = new FallbackServer();
 
         bootstrap.group(Stack.sharedEventLoop())
                 .handler(new LoggingHandler(SocketServer.class))
@@ -74,6 +78,8 @@ public class SocketServer {
                 logger.debug("Added server at {}", url);
             }
         });
+
+        fallbackServer.registerServer(server);
     }
 
     public void removeServer(UaTcpServer server) {
@@ -81,6 +87,12 @@ public class SocketServer {
             servers.remove(url);
             logger.debug("Removed server at {}", url);
         });
+
+        fallbackServer.unregisterServer(server);
+    }
+
+    public UaTcpServer getFallbackServer() {
+        return fallbackServer.getServer();
     }
 
     public UaTcpServer getServer(String endpointUrl) {
