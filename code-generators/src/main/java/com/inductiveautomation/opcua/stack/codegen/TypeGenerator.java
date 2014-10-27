@@ -50,7 +50,7 @@ public class TypeGenerator {
 
             File f = new File(structuredOutputDir, structuredType.getName() + ".java");
             FileWriter fw = new FileWriter(f);
-            Velocity.mergeTemplate("StructuredType.vt", "UTF-8", context, fw);
+            Velocity.mergeTemplate("StructuredType.vm", "UTF-8", context, fw);
             fw.flush();
             fw.close();
         }
@@ -61,7 +61,7 @@ public class TypeGenerator {
 
             File f = new File(enumeratedOutputDir, enumeratedType.getName() + ".java");
             FileWriter fw = new FileWriter(f);
-            Velocity.mergeTemplate("EnumeratedType.vt", "UTF-8", context, fw);
+            Velocity.mergeTemplate("EnumeratedType.vm", "UTF-8", context, fw);
             fw.flush();
             fw.close();
         }
