@@ -83,6 +83,50 @@ public final class Unsigned {
     }
 
     /**
+     * Create a UByte[] from {@code values}.
+     */
+    public static UByte[] ubyte_a(byte... values) {
+        UByte[] array = new UByte[values.length];
+        for (int i = 0; i < values.length; i++) {
+            array[i] = ubyte(values[i]);
+        }
+        return array;
+    }
+
+    /**
+     * Create a UByte[] from {@code values}.
+     */
+    public static UByte[] ubyte_a(short... values) {
+        UByte[] array = new UByte[values.length];
+        for (int i = 0; i < values.length; i++) {
+            array[i] = ubyte(values[i]);
+        }
+        return array;
+    }
+
+    /**
+     * Create a UByte[] from {@code values}.
+     */
+    public static UByte[] ubyte_a(int... values) {
+        UByte[] array = new UByte[values.length];
+        for (int i = 0; i < values.length; i++) {
+            array[i] = ubyte(values[i]);
+        }
+        return array;
+    }
+
+    /**
+     * Create a UByte[] from {@code values}.
+     */
+    public static UByte[] ubyte_a(long... values) {
+        UByte[] array = new UByte[values.length];
+        for (int i = 0; i < values.length; i++) {
+            array[i] = ubyte(values[i]);
+        }
+        return array;
+    }
+
+    /**
      * Create an <code>unsigned short</code>
      *
      * @throws NumberFormatException If <code>value</code> does not contain a
@@ -113,6 +157,28 @@ public final class Unsigned {
      */
     public static UShort ushort(int value) throws NumberFormatException {
         return UShort.valueOf(value);
+    }
+
+    /**
+     * Create a UShort[] from {@code values}.
+     */
+    public static UShort[] ushort_a(short... values) {
+        UShort[] array = new UShort[values.length];
+        for (int i = 0; i < values.length; i++) {
+            array[i] = ushort(values[i]);
+        }
+        return array;
+    }
+
+    /**
+     * Create a UShort[] from {@code values}.
+     */
+    public static UShort[] ushort_a(int... values) {
+        UShort[] array = new UShort[values.length];
+        for (int i = 0; i < values.length; i++) {
+            array[i] = ushort(values[i]);
+        }
+        return array;
     }
 
     /**
@@ -149,6 +215,28 @@ public final class Unsigned {
     }
 
     /**
+     * Create a UInteger[] from {@code values}.
+     */
+    public static UInteger[] uint_a(int... values) {
+        UInteger[] array = new UInteger[values.length];
+        for (int i = 0; i < values.length; i++) {
+            array[i] = uint(values[i]);
+        }
+        return array;
+    }
+
+    /**
+     * Create a UInteger[] from {@code values}.
+     */
+    public static UInteger[] uint_a(long... values) {
+        UInteger[] array = new UInteger[values.length];
+        for (int i = 0; i < values.length; i++) {
+            array[i] = uint(values[i]);
+        }
+        return array;
+    }
+
+    /**
      * Create an <code>unsigned long</code>
      *
      * @throws NumberFormatException If <code>value</code> does not contain a
@@ -179,6 +267,17 @@ public final class Unsigned {
      */
     public static ULong ulong(BigInteger value) throws NumberFormatException {
         return ULong.valueOf(value);
+    }
+
+    /**
+     * Create a ULong[] from {@code values}.
+     */
+    public static ULong[] ulong_a(long... values) {
+        ULong[] array = new ULong[values.length];
+        for (int i = 0; i < values.length; i++) {
+            array[i] = ulong(values[i]);
+        }
+        return array;
     }
 
     /**
