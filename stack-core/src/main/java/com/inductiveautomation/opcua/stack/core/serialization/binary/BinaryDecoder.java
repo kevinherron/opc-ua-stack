@@ -320,6 +320,11 @@ public class BinaryDecoder implements UaDecoder {
 
                 for (int i = 0; i < length; i++) {
                     Object element = decodeBuiltinType(typeId);
+
+                    if (element instanceof ExtensionObject) {
+                        element = ((ExtensionObject) element).getObject();
+                    }
+
                     Array.set(flatArray, i, element);
                 }
 
@@ -329,6 +334,10 @@ public class BinaryDecoder implements UaDecoder {
                 return new Variant(array);
             } else {
                 Object value = decodeBuiltinType(typeId);
+
+                if (value instanceof ExtensionObject) {
+                    value = ((ExtensionObject) value).getObject();
+                }
 
                 return new Variant(value);
             }

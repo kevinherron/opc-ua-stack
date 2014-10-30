@@ -31,24 +31,24 @@ public class Variant {
             checkArgument(!DiagnosticInfo.class.equals(clazz), "Variant cannot contain DiagnosticInfo");
         }
 
-        if (value instanceof UaEnumeration) {
-            value = ((UaEnumeration) value).getValue();
-        }
-
-        else if (value instanceof UaStructure) {
-            value = new ExtensionObject((UaStructure) value);
-        }
-
-        else if (value instanceof UaStructure[]) {
-            UaStructure[] values = (UaStructure[]) value;
-            ExtensionObject[] xos = new ExtensionObject[values.length];
-
-            for (int i = 0; i < values.length; i++) {
-                xos[i] = new ExtensionObject(values[i]);
-            }
-
-            value = xos;
-        }
+//        if (value instanceof UaEnumeration) {
+//            value = ((UaEnumeration) value).getValue();
+//        }
+//
+//        else if (value instanceof UaStructure) {
+//            value = new ExtensionObject((UaStructure) value);
+//        }
+//
+//        else if (value instanceof UaStructure[]) {
+//            UaStructure[] values = (UaStructure[]) value;
+//            ExtensionObject[] xos = new ExtensionObject[values.length];
+//
+//            for (int i = 0; i < values.length; i++) {
+//                xos[i] = new ExtensionObject(values[i]);
+//            }
+//
+//            value = xos;
+//        }
 
         this.value = value;
     }

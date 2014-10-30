@@ -13,6 +13,7 @@ import com.inductiveautomation.opcua.stack.core.channel.ChannelConfig;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.EncoderDelegate;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.serialization.UaEnumeration;
 import com.inductiveautomation.opcua.stack.core.serialization.UaSerializable;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
@@ -67,77 +68,137 @@ public class BinaryEncoder implements UaEncoder {
 
 	@Override
     public void encodeBoolean(String field, Boolean value) {
-        buffer.writeBoolean(value);
+        if (buffer != null) {
+            buffer.writeBoolean(value);
+        } else {
+            buffer.writeBoolean(false);
+        }
     }
 
     @Override
     public void encodeSByte(String field, Byte value) {
-        buffer.writeByte(value);
+        if (value != null) {
+            buffer.writeByte(value);
+        } else {
+            buffer.writeByte(0);
+        }
     }
 
     @Override
     public void encodeInt16(String field, Short value) {
-        buffer.writeShort(value);
+        if (value != null) {
+            buffer.writeShort(value);
+        } else {
+            buffer.writeShort(0);
+        }
     }
 
     @Override
     public void encodeInt32(String field, Integer value) {
-        buffer.writeInt(value);
+        if (value != null) {
+            buffer.writeInt(value);
+        } else {
+            buffer.writeInt(0);
+        }
     }
 
     @Override
     public void encodeInt64(String field, Long value) {
-        buffer.writeLong(value);
+        if (buffer != null) {
+            buffer.writeLong(value);
+        } else {
+            buffer.writeLong(0);
+        }
     }
 
     @Override
     public void encodeByte(String field, @UBytePrimitive Short value) {
-        buffer.writeByte(value);
+        if (buffer != null) {
+            buffer.writeByte(value);
+        } else {
+            buffer.writeByte(0);
+        }
     }
 
     @Override
     public void encodeByte(String field, UByte value) throws UaSerializationException {
-        encodeByte(field, value.shortValue());
+        if (buffer != null) {
+            encodeByte(field, value.shortValue());
+        } else {
+            buffer.writeByte(0);
+        }
     }
 
     @Override
     public void encodeUInt16(String field, @UInt16Primitive Integer value) {
-        buffer.writeShort(value);
+        if (buffer != null) {
+            buffer.writeShort(value);
+        } else {
+            buffer.writeShort(0);
+        }
     }
 
     @Override
     public void encodeUInt16(String field, UShort value) throws UaSerializationException {
-        encodeUInt16(field, value.intValue());
+        if (value != null) {
+            encodeUInt16(field, value.intValue());
+        } else {
+            buffer.writeShort(0);
+        }
     }
 
     @Override
     public void encodeUInt32(String field, @UInt32Primitive Long value) {
-        buffer.writeInt(value.intValue());
+        if (value != null) {
+            buffer.writeInt(value.intValue());
+        } else {
+            buffer.writeInt(0);
+        }
     }
 
     @Override
     public void encodeUInt32(String field, UInteger value) throws UaSerializationException {
-        encodeUInt32(field, value.longValue());
+        if (value != null) {
+            encodeUInt32(field, value.longValue());
+        } else {
+            buffer.writeInt(0);
+        }
     }
 
     @Override
     public void encodeUInt64(String field, @UInt64Primitive Long value) {
-        buffer.writeLong(value);
+        if (value != null) {
+            buffer.writeLong(value);
+        } else {
+            buffer.writeLong(0);
+        }
     }
 
     @Override
     public void encodeUInt64(String field, ULong value) throws UaSerializationException {
-        encodeUInt64(field, value.longValue());
+        if (value != null) {
+            encodeUInt64(field, value.longValue());
+        } else {
+            buffer.writeLong(0);
+        }
     }
 
     @Override
     public void encodeFloat(String field, Float value) {
-        buffer.writeFloat(value);
+        if (value != null) {
+            buffer.writeFloat(value);
+        } else {
+            buffer.writeFloat(0);
+        }
     }
 
     @Override
     public void encodeDouble(String field, Double value) {
-        buffer.writeDouble(value);
+        if (value != null) {
+            buffer.writeDouble(value);
+        } else {
+            buffer.writeDouble(0);
+        }
     }
 
     @Override
@@ -454,7 +515,19 @@ public class BinaryEncoder implements UaEncoder {
         if (value == null) {
             buffer.writeByte(0);
         } else {
-            int typeId = TypeUtil.getBuiltinTypeId(getClass(value));
+            boolean enumeration = false;
+            boolean extensionObject = false;
+            Class<?> valueClass = getClass(value);
+
+            if (UaStructure.class.isAssignableFrom(valueClass)) {
+                valueClass = ExtensionObject.class;
+                extensionObject = true;
+            } else if (UaEnumeration.class.isAssignableFrom(valueClass)) {
+                valueClass = Integer.class;
+                enumeration = true;
+            }
+
+            int typeId = TypeUtil.getBuiltinTypeId(valueClass);
 
             if (value.getClass().isArray()) {
                 int[] dimensions = ArrayUtil.getDimensions(value);
@@ -467,7 +540,10 @@ public class BinaryEncoder implements UaEncoder {
 
                     for (int i = 0; i < length; i++) {
                         Object o = Array.get(value, i);
-                        encodeBuiltinType(typeId, o);
+
+                        if (extensionObject) encodeBuiltinType(typeId, new ExtensionObject((UaStructure) o));
+                        else if (enumeration) encodeBuiltinType(typeId, ((UaEnumeration) o).getValue());
+                        else encodeBuiltinType(typeId, o);
                     }
                 } else {
                     buffer.writeByte(typeId | 0xC0);
@@ -478,7 +554,10 @@ public class BinaryEncoder implements UaEncoder {
 
                     for (int i = 0; i < length; i++) {
                         Object o = Array.get(flattened, i);
-                        encodeBuiltinType(typeId, o);
+
+                        if (extensionObject) encodeBuiltinType(typeId, new ExtensionObject((UaStructure) o));
+                        else if (enumeration) encodeBuiltinType(typeId, ((UaEnumeration) o).getValue());
+                        else encodeBuiltinType(typeId, o);
                     }
 
                     encodeInt32(null, dimensions.length);
@@ -488,7 +567,10 @@ public class BinaryEncoder implements UaEncoder {
                 }
             } else {
                 buffer.writeByte(typeId);
-                encodeBuiltinType(typeId, value);
+
+                if (extensionObject) encodeBuiltinType(typeId, new ExtensionObject((UaStructure) value));
+                else if (enumeration) encodeBuiltinType(typeId, ((UaEnumeration) value).getValue());
+                else encodeBuiltinType(typeId, value);
             }
         }
     }
