@@ -36,6 +36,11 @@ public enum ${enumeratedType.name} implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static ${enumeratedType.name} from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
 	public static void encode(${enumeratedType.name} ${enumeratedType.javaName}, UaEncoder encoder) {
 		encoder.encodeInt32(null, ${enumeratedType.javaName}.getValue());
 	}

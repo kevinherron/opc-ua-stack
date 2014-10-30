@@ -35,6 +35,11 @@ public enum IdType implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static IdType from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(IdType idType, UaEncoder encoder) {
         encoder.encodeInt32(null, idType.getValue());
     }

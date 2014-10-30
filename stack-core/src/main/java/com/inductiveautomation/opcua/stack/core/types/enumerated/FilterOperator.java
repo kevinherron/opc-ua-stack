@@ -49,6 +49,11 @@ public enum FilterOperator implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static FilterOperator from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(FilterOperator filterOperator, UaEncoder encoder) {
         encoder.encodeInt32(null, filterOperator.getValue());
     }

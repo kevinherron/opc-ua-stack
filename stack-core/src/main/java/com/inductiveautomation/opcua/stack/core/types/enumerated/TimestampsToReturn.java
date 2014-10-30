@@ -35,6 +35,11 @@ public enum TimestampsToReturn implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static TimestampsToReturn from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(TimestampsToReturn timestampsToReturn, UaEncoder encoder) {
         encoder.encodeInt32(null, timestampsToReturn.getValue());
     }

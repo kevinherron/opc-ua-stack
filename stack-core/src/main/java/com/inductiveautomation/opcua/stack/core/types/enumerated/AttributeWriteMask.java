@@ -54,6 +54,11 @@ public enum AttributeWriteMask implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static AttributeWriteMask from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(AttributeWriteMask attributeWriteMask, UaEncoder encoder) {
         encoder.encodeInt32(null, attributeWriteMask.getValue());
     }

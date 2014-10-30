@@ -35,6 +35,11 @@ public enum HistoryUpdateType implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static HistoryUpdateType from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(HistoryUpdateType historyUpdateType, UaEncoder encoder) {
         encoder.encodeInt32(null, historyUpdateType.getValue());
     }

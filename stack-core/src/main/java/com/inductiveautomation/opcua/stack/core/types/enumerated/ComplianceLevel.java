@@ -35,6 +35,11 @@ public enum ComplianceLevel implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static ComplianceLevel from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(ComplianceLevel complianceLevel, UaEncoder encoder) {
         encoder.encodeInt32(null, complianceLevel.getValue());
     }

@@ -34,6 +34,11 @@ public enum DeadbandType implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static DeadbandType from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(DeadbandType deadbandType, UaEncoder encoder) {
         encoder.encodeInt32(null, deadbandType.getValue());
     }

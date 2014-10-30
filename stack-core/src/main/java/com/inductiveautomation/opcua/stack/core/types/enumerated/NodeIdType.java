@@ -37,6 +37,11 @@ public enum NodeIdType implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static NodeIdType from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(NodeIdType nodeIdType, UaEncoder encoder) {
         encoder.encodeInt32(null, nodeIdType.getValue());
     }

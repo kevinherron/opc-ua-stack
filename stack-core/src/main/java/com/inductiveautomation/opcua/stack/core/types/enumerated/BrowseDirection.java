@@ -34,6 +34,11 @@ public enum BrowseDirection implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static BrowseDirection from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(BrowseDirection browseDirection, UaEncoder encoder) {
         encoder.encodeInt32(null, browseDirection.getValue());
     }

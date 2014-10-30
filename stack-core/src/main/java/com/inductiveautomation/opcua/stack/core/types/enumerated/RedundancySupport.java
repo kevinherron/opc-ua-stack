@@ -37,6 +37,11 @@ public enum RedundancySupport implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static RedundancySupport from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(RedundancySupport redundancySupport, UaEncoder encoder) {
         encoder.encodeInt32(null, redundancySupport.getValue());
     }

@@ -35,6 +35,11 @@ public enum OpenFileMode implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static OpenFileMode from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(OpenFileMode openFileMode, UaEncoder encoder) {
         encoder.encodeInt32(null, openFileMode.getValue());
     }

@@ -35,6 +35,11 @@ public enum ApplicationType implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static ApplicationType from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(ApplicationType applicationType, UaEncoder encoder) {
         encoder.encodeInt32(null, applicationType.getValue());
     }

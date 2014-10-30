@@ -34,6 +34,11 @@ public enum EnumeratedTestType implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static EnumeratedTestType from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(EnumeratedTestType enumeratedTestType, UaEncoder encoder) {
         encoder.encodeInt32(null, enumeratedTestType.getValue());
     }

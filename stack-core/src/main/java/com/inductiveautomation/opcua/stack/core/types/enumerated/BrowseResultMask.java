@@ -41,6 +41,11 @@ public enum BrowseResultMask implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static BrowseResultMask from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(BrowseResultMask browseResultMask, UaEncoder encoder) {
         encoder.encodeInt32(null, browseResultMask.getValue());
     }

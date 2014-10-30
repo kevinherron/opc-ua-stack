@@ -34,6 +34,11 @@ public enum AxisScaleEnumeration implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static AxisScaleEnumeration from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(AxisScaleEnumeration axisScaleEnumeration, UaEncoder encoder) {
         encoder.encodeInt32(null, axisScaleEnumeration.getValue());
     }

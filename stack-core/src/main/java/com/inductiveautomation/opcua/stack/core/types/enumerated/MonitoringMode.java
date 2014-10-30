@@ -34,6 +34,11 @@ public enum MonitoringMode implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static MonitoringMode from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(MonitoringMode monitoringMode, UaEncoder encoder) {
         encoder.encodeInt32(null, monitoringMode.getValue());
     }

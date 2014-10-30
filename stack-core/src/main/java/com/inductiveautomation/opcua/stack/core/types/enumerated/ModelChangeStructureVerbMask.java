@@ -36,6 +36,11 @@ public enum ModelChangeStructureVerbMask implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static ModelChangeStructureVerbMask from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(ModelChangeStructureVerbMask modelChangeStructureVerbMask, UaEncoder encoder) {
         encoder.encodeInt32(null, modelChangeStructureVerbMask.getValue());
     }

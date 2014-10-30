@@ -35,6 +35,11 @@ public enum UserTokenType implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static UserTokenType from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(UserTokenType userTokenType, UaEncoder encoder) {
         encoder.encodeInt32(null, userTokenType.getValue());
     }

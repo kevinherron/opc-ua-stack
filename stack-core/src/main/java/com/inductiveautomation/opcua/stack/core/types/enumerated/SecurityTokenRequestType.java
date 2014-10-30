@@ -33,6 +33,11 @@ public enum SecurityTokenRequestType implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static SecurityTokenRequestType from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(SecurityTokenRequestType securityTokenRequestType, UaEncoder encoder) {
         encoder.encodeInt32(null, securityTokenRequestType.getValue());
     }

@@ -63,6 +63,11 @@ public enum NodeAttributesMask implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static NodeAttributesMask from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(NodeAttributesMask nodeAttributesMask, UaEncoder encoder) {
         encoder.encodeInt32(null, nodeAttributesMask.getValue());
     }

@@ -40,6 +40,11 @@ public enum NodeClass implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static NodeClass from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(NodeClass nodeClass, UaEncoder encoder) {
         encoder.encodeInt32(null, nodeClass.getValue());
     }

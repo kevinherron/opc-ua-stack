@@ -35,6 +35,11 @@ public enum PerformUpdateType implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static PerformUpdateType from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(PerformUpdateType performUpdateType, UaEncoder encoder) {
         encoder.encodeInt32(null, performUpdateType.getValue());
     }

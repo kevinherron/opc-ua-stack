@@ -36,6 +36,11 @@ public enum ExceptionDeviationFormat implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static ExceptionDeviationFormat from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(ExceptionDeviationFormat exceptionDeviationFormat, UaEncoder encoder) {
         encoder.encodeInt32(null, exceptionDeviationFormat.getValue());
     }

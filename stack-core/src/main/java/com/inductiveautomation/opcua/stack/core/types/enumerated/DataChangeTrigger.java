@@ -34,6 +34,11 @@ public enum DataChangeTrigger implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static DataChangeTrigger from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(DataChangeTrigger dataChangeTrigger, UaEncoder encoder) {
         encoder.encodeInt32(null, dataChangeTrigger.getValue());
     }

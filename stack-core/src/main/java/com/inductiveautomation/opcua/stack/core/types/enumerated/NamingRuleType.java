@@ -50,6 +50,11 @@ public enum NamingRuleType implements UaEnumeration {
         VALUES = builder.build();
     }
 
+    public static NamingRuleType from(Integer value) {
+        if (value == null) return null;
+        return VALUES.getOrDefault(value, null);
+    }
+
     public static void encode(NamingRuleType namingRuleType, UaEncoder encoder) {
         encoder.encodeInt32(null, namingRuleType.getValue());
     }
