@@ -3,11 +3,14 @@ package com.inductiveautomation.opcua.stack.core.types.builtin;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 
 import com.google.common.base.Objects.ToStringHelper;
+import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEnumeration;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.util.ArrayUtil;
+import com.inductiveautomation.opcua.stack.core.util.TypeUtil;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -31,26 +34,25 @@ public class Variant {
             checkArgument(!DiagnosticInfo.class.equals(clazz), "Variant cannot contain DiagnosticInfo");
         }
 
-//        if (value instanceof UaEnumeration) {
-//            value = ((UaEnumeration) value).getValue();
-//        }
-//
-//        else if (value instanceof UaStructure) {
-//            value = new ExtensionObject((UaStructure) value);
-//        }
-//
-//        else if (value instanceof UaStructure[]) {
-//            UaStructure[] values = (UaStructure[]) value;
-//            ExtensionObject[] xos = new ExtensionObject[values.length];
-//
-//            for (int i = 0; i < values.length; i++) {
-//                xos[i] = new ExtensionObject(values[i]);
-//            }
-//
-//            value = xos;
-//        }
-
         this.value = value;
+    }
+
+    public Optional<NodeId> getDataType() {
+        if (value == null) return Optional.empty();
+
+        if (value instanceof UaStructure) {
+            return Optional.of(((UaStructure) value).getTypeId());
+        } else if (value instanceof UaEnumeration) {
+            return Optional.of(Identifiers.Int32);
+        } else {
+            Class<?> clazz = value.getClass().isArray() ?
+                    ArrayUtil.getType(value) : value.getClass();
+
+            int typeId = TypeUtil.getBuiltinTypeId(clazz);
+
+            return typeId == -1 ?
+                    Optional.empty() : Optional.of(new NodeId(0, typeId));
+        }
     }
 
     public Object getValue() {
