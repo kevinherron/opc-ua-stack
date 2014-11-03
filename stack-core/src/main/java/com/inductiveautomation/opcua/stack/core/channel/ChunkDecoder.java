@@ -257,32 +257,38 @@ public class ChunkDecoder implements HeaderConstants {
 
     private static class SymmetricDelegate implements Delegate {
 
+        private final Logger logger = LoggerFactory.getLogger(getClass());
+
         private volatile ChannelSecurity.SecuritySecrets securitySecrets;
 
         @Override
         public void readSecurityHeader(SecureChannel channel, ByteBuf chunkBuffer) throws UaException {
-            long tokenId = SymmetricSecurityHeader.decode(chunkBuffer).getTokenId();
+            long receivedTokenId = SymmetricSecurityHeader.decode(chunkBuffer).getTokenId();
 
             ChannelSecurity channelSecurity = channel.getChannelSecurity();
 
             if (channelSecurity == null) {
-                if (tokenId != 0L) {
+                if (receivedTokenId != 0L) {
                     throw new UaException(StatusCodes.Bad_SecureChannelTokenUnknown,
-                            "unknown secure channel token: " + tokenId);
+                            "unknown secure channel token: " + receivedTokenId);
                 }
             } else {
                 long currentTokenId = channelSecurity.getCurrentToken().getTokenId().longValue();
 
-                if (tokenId == currentTokenId) {
+                if (receivedTokenId == currentTokenId) {
                     securitySecrets = channelSecurity.getCurrentKeys();
                 } else {
                     long previousTokenId = channelSecurity.getPreviousToken()
                             .map(t -> t.getTokenId().longValue())
                             .orElse(-1L);
 
-                    if (tokenId != previousTokenId) {
+                    logger.debug("Attempting to use SecuritySecrets from previousTokenId={}", previousTokenId);
+
+                    if (receivedTokenId != previousTokenId) {
+                        logger.warn("receivedTokenId={} did not match previousTokenId={}", receivedTokenId, previousTokenId);
+
                         throw new UaException(StatusCodes.Bad_SecureChannelTokenUnknown,
-                                "unknown secure channel token: " + tokenId);
+                                "unknown secure channel token: " + receivedTokenId);
                     }
 
                     if (channel.isSymmetricEncryptionEnabled() && channelSecurity.getPreviousKeys().isPresent()) {

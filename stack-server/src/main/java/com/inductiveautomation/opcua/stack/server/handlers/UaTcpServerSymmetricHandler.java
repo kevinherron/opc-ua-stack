@@ -138,16 +138,26 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
 
             ChannelSecurity channelSecurity = secureChannel.getChannelSecurity();
             long currentTokenId = channelSecurity.getCurrentToken().getTokenId().longValue();
+            long receivedTokenId = securityHeader.getTokenId();
 
-            if (securityHeader.getTokenId() != currentTokenId) {
+            if (receivedTokenId != currentTokenId) {
                 long previousTokenId = channelSecurity.getPreviousToken()
                         .map(t -> t.getTokenId().longValue())
                         .orElse(-1L);
 
-                if (securityHeader.getTokenId() != previousTokenId) {
+                logger.debug("receivedTokenId={} did not match currentTokenId={}",
+                        receivedTokenId, currentTokenId);
+
+                if (receivedTokenId != previousTokenId) {
+                    logger.warn("receivedTokenId={} did not match previousTokenId={}",
+                            receivedTokenId, previousTokenId);
+
                     throw new UaException(StatusCodes.Bad_SecureChannelTokenUnknown,
-                            "unknown secure channel token: " + securityHeader.getTokenId());
+                            "unknown secure channel token: " + receivedTokenId);
                 }
+
+                logger.debug("receivedTokenId={} matched previousTokenId={}",
+                        receivedTokenId, previousTokenId);
             }
 
             chunkBuffers.add(buffer.readerIndex(0).retain());
@@ -194,6 +204,8 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        logger.error("exceptionCaught()", cause);
+
         chunkBuffers.forEach(ByteBuf::release);
         chunkBuffers.clear();
 

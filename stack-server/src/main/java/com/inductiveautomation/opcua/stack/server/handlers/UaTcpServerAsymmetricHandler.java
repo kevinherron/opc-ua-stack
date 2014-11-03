@@ -88,6 +88,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                         server.closeSecureChannel(secureChannel);
                     }
                     buffer.skipBytes(messageLength);
+                    break;
 
                 default:
                     throw new UaException(StatusCodes.Bad_TcpMessageTypeInvalid,
@@ -319,6 +320,8 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        logger.error("exceptionCaught()", cause);
+
         chunkBuffers.forEach(ByteBuf::release);
         chunkBuffers.clear();
 

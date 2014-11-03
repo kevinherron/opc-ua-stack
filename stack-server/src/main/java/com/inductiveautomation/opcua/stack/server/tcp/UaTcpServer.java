@@ -184,7 +184,7 @@ public class UaTcpServer implements UaServer {
     }
 
     public void receiveRequest(ServiceRequest<UaRequestMessage, UaResponseMessage> serviceRequest) {
-        logger.trace("Received {} on {}.", serviceRequest, serviceRequest.getSecureChannel());
+        logger.debug("Received {} on {}.", serviceRequest, serviceRequest.getSecureChannel());
 
         serviceRequest.getFuture().whenComplete((response, throwable) -> {
             long requestId = serviceRequest.getRequestId();
@@ -200,7 +200,7 @@ public class UaTcpServer implements UaServer {
                 Channel channel = secureChannel.attr(BoundChannelKey).get();
 
                 if (channel != null) {
-                    logger.trace("Sending {} on {}.", serviceResponse, secureChannel);
+                    logger.debug("Sending {} on {}.", serviceResponse, secureChannel);
                     channel.writeAndFlush(serviceResponse, channel.voidPromise());
                 } else {
                     logger.trace("Queueing {} for unbound {}.", serviceResponse, secureChannel);
