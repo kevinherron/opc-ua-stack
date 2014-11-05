@@ -11,6 +11,8 @@ public class NonceUtil {
 
     private static final Random random = new Random();
 
+    private static volatile boolean secureRandomEnabled = true;
+
     private static volatile SecureRandom secureRandom;
 
     static {
@@ -30,6 +32,18 @@ public class NonceUtil {
         }).start();
     }
 
+    public static void enableSecureRandom() {
+        secureRandomEnabled = true;
+    }
+
+    public static void disableSecureRandom() {
+        secureRandomEnabled = false;
+    }
+
+    public static boolean isSecureRandomEnabled() {
+        return secureRandomEnabled;
+    }
+
     /**
      * @param length the length of the nonce to generate.
      * @return a nonce of the given length.
@@ -39,10 +53,10 @@ public class NonceUtil {
 
         byte[] bs = new byte[length];
 
-        if (secureRandom == null) {
-            random.nextBytes(bs);
-        } else {
+        if (secureRandom != null && secureRandomEnabled) {
             secureRandom.nextBytes(bs);
+        } else {
+            random.nextBytes(bs);
         }
 
         return new ByteString(bs);
