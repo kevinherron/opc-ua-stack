@@ -93,6 +93,7 @@ public class UaTcpServer implements UaServer {
     private final HashedWheelTimer wheelTimer = Stack.sharedWheelTimer();
     private final Map<Long, Timeout> timeouts = Maps.newConcurrentMap();
 
+    private final String serverName;
     private final LocalizedText applicationName;
     private final String applicationUri;
     private final String productUri;
@@ -103,7 +104,8 @@ public class UaTcpServer implements UaServer {
     private final List<SignedSoftwareCertificate> softwareCertificates;
     private final ChannelConfig channelConfig;
 
-    public UaTcpServer(LocalizedText applicationName,
+    public UaTcpServer(String serverName,
+                       LocalizedText applicationName,
                        String applicationUri,
                        String productUri,
                        Certificate certificate,
@@ -113,6 +115,7 @@ public class UaTcpServer implements UaServer {
                        List<SignedSoftwareCertificate> softwareCertificates,
                        ChannelConfig channelConfig) {
 
+        this.serverName = serverName;
         this.applicationName = applicationName;
         this.applicationUri = applicationUri;
         this.productUri = productUri;
@@ -145,20 +148,31 @@ public class UaTcpServer implements UaServer {
         for (Endpoint endpoint : validEndpoints) {
             try {
                 URI endpointUri = endpoint.getEndpointUri();
-                String address = endpoint.getBindAddress().orElse(endpointUri.getHost());
+                String bindAddress = endpoint.getBindAddress().orElse(endpointUri.getHost());
 
-                SocketServer socketServer = SocketServer.boundTo(address, endpointUri.getPort());
+                SocketServer socketServer = SocketServer.boundTo(bindAddress, endpointUri.getPort());
+
+                logger.info("{} bound to {}.", endpoint.getEndpointUri(), socketServer.getLocalAddress());
+
+                addDiscoveryUrl(endpointUri);
+
                 socketServer.addServer(this);
-
-                logger.info("{} [{}/{}] bound to {}.",
-                        endpoint.getEndpointUri(), endpoint.getSecurityPolicy(),
-                        endpoint.getMessageSecurity(), socketServer.getLocalAddress());
-
-                discoveryUrls.add(endpointUri.toString());
             } catch (Exception e) {
                 logger.error("Error binding {}: {}.", endpoint, e.getMessage(), e);
             }
         }
+    }
+
+    private void addDiscoveryUrl(URI endpointUri) {
+        StringBuilder discoveryUrl = new StringBuilder();
+
+        discoveryUrl.append("opc.tcp://").append(endpointUri.getHost()).append(":").append(endpointUri.getPort());
+        if (!serverName.isEmpty()) {
+            discoveryUrl.append("/").append(serverName);
+        }
+        discoveryUrl.append("/discovery");
+
+        discoveryUrls.add(discoveryUrl.toString());
     }
 
     @Override
@@ -261,6 +275,10 @@ public class UaTcpServer implements UaServer {
 
     public List<String> getEndpointUrls() {
         return endpoints.stream().map(e -> e.getEndpointUri().toString()).collect(Collectors.toList());
+    }
+
+    public Set<String> getDiscoveryUrls() {
+        return discoveryUrls;
     }
 
     @Override

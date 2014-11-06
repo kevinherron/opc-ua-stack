@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -37,6 +36,9 @@ import com.inductiveautomation.opcua.stack.core.types.structured.GetEndpointsReq
 import com.inductiveautomation.opcua.stack.core.types.structured.GetEndpointsResponse;
 import com.inductiveautomation.opcua.stack.core.types.structured.ResponseHeader;
 
+/**
+ * Provides a "fallback" server for when a UA TCP Hello contains an unknown endpoint URL.
+ */
 public class FallbackServer {
 
     private final Set<UaTcpServer> registered = Sets.newConcurrentHashSet();
@@ -57,13 +59,13 @@ public class FallbackServer {
 
     public void registerServer(UaTcpServer server) {
         if (registered.add(server)) {
-            server.getEndpointUrls().forEach(url -> servers.put(url, server));
+            server.getDiscoveryUrls().forEach(url -> servers.put(url, server));
         }
     }
 
     public void unregisterServer(UaTcpServer server) {
         if (registered.remove(server)) {
-            server.getEndpointUrls().forEach(servers::remove);
+            server.getDiscoveryUrls().forEach(servers::remove);
         }
     }
 
@@ -90,17 +92,15 @@ public class FallbackServer {
                     Lists.newArrayList(request.getProfileUris()) :
                     Lists.newArrayList();
 
-            List<EndpointDescription> filtered = Arrays.stream(endpoints)
+            EndpointDescription[] filtered = Arrays.stream(endpoints)
                     .filter(ed -> filterProfileUris(ed, profileUris))
                     .filter(this::filterEndpointUrls)
-                    .collect(Collectors.toList());
+                    .toArray(EndpointDescription[]::new);
 
-            GetEndpointsResponse response = new GetEndpointsResponse(
+            service.setResponse(new GetEndpointsResponse(
                     service.createResponseHeader(),
-                    filtered.toArray(new EndpointDescription[filtered.size()])
-            );
-
-            service.setResponse(response);
+                    filtered
+            ));
         }
 
         private boolean filterProfileUris(EndpointDescription endpoint, List<String> profileUris) {

@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 
 public class UaTcpServerBuilder {
 
+    private String serverName = "";
     private LocalizedText applicationName = LocalizedText.english("server application name not configured");
     private String applicationUri = "server application uri not configured";
     private String productUri = "http://www.inductiveautomation.com/opc-ua/stack";
@@ -25,6 +26,11 @@ public class UaTcpServerBuilder {
     private ExecutorService executor = Stack.sharedExecutor();
     private List<UserTokenPolicy> userTokenPolicies = Lists.newArrayList();
     private List<SignedSoftwareCertificate> softwareCertificates = Lists.newArrayList();
+
+    public UaTcpServerBuilder setServerName(String serverName) {
+        this.serverName = serverName;
+        return this;
+    }
 
     public UaTcpServerBuilder setApplicationName(LocalizedText applicationName) {
         this.applicationName = applicationName;
@@ -73,6 +79,7 @@ public class UaTcpServerBuilder {
 
     public UaTcpServer build() {
         return new UaTcpServer(
+                serverName,
                 applicationName,
                 applicationUri,
                 productUri,

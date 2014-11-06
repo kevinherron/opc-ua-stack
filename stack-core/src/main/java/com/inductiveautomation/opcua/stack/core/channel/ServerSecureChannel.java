@@ -4,8 +4,6 @@ import java.security.KeyPair;
 import java.security.cert.Certificate;
 
 import com.google.common.base.Objects;
-import com.inductiveautomation.opcua.stack.core.channel.ChannelSecurity;
-import com.inductiveautomation.opcua.stack.core.channel.SecureChannel;
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;

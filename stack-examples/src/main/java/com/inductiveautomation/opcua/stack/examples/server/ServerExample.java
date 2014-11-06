@@ -19,6 +19,7 @@ public class ServerExample {
 
     public ServerExample(Certificate certificate, KeyPair keyPair) throws Exception {
         server = new UaTcpServerBuilder()
+                .setServerName("example")
                 .setApplicationName(LocalizedText.english("Stack Example Server"))
                 .setApplicationUri(String.format("urn:example-server:%s", UUID.randomUUID()))
                 .setCertificate(certificate)

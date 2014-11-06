@@ -89,6 +89,7 @@ public class ClientServerTest extends SecurityFixture {
         // ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);
 
         server = new UaTcpServerBuilder()
+                .setServerName("test")
                 .setCertificate(serverCertificate)
                 .setKeyPair(serverKeyPair)
                 .build();

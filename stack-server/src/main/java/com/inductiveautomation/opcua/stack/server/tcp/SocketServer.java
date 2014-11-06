@@ -78,12 +78,22 @@ public class SocketServer {
                 logger.debug("Added server at {}", url);
             }
         });
+        server.getDiscoveryUrls().forEach(url -> {
+            if (!servers.containsKey(url)) {
+                servers.put(url, server);
+                logger.debug("Added server at {}", url);
+            }
+        });
 
         fallbackServer.registerServer(server);
     }
 
     public void removeServer(UaTcpServer server) {
         server.getEndpointUrls().forEach(url -> {
+            servers.remove(url);
+            logger.debug("Removed server at {}", url);
+        });
+        server.getDiscoveryUrls().forEach(url -> {
             servers.remove(url);
             logger.debug("Removed server at {}", url);
         });
@@ -124,23 +134,23 @@ public class SocketServer {
     }
 
     public static synchronized SocketServer boundTo(InetSocketAddress address) throws Exception {
-        if (stackServers.containsKey(address)) {
-            return stackServers.get(address);
+        if (socketServers.containsKey(address)) {
+            return socketServers.get(address);
         } else {
             SocketServer server = new SocketServer(address);
             server.bind();
 
-            stackServers.put(address, server);
+            socketServers.put(address, server);
 
             return server;
         }
     }
 
     public static synchronized void shutdownAll() {
-        stackServers.values().forEach(SocketServer::shutdown);
-        stackServers.clear();
+        socketServers.values().forEach(SocketServer::shutdown);
+        socketServers.clear();
     }
 
-    private static final Map<InetSocketAddress, SocketServer> stackServers = Maps.newConcurrentMap();
+    private static final Map<InetSocketAddress, SocketServer> socketServers = Maps.newConcurrentMap();
 
 }
