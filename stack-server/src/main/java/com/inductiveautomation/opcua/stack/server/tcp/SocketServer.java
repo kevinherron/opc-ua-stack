@@ -90,12 +90,14 @@ public class SocketServer {
 
     public void removeServer(UaTcpServer server) {
         server.getEndpointUrls().forEach(url -> {
-            servers.remove(url);
-            logger.debug("Removed server at {}", url);
+            if (servers.remove(url) != null) {
+                logger.debug("Removed server at {}", url);
+            }
         });
         server.getDiscoveryUrls().forEach(url -> {
-            servers.remove(url);
-            logger.debug("Removed server at {}", url);
+            if (servers.remove(url) != null) {
+                logger.debug("Removed server at {}", url);
+            }
         });
 
         fallbackServer.unregisterServer(server);
