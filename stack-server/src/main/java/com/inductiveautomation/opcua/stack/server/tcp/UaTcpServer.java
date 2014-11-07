@@ -53,7 +53,6 @@ import com.inductiveautomation.opcua.stack.core.types.structured.FindServersRequ
 import com.inductiveautomation.opcua.stack.core.types.structured.FindServersResponse;
 import com.inductiveautomation.opcua.stack.core.types.structured.GetEndpointsRequest;
 import com.inductiveautomation.opcua.stack.core.types.structured.GetEndpointsResponse;
-import com.inductiveautomation.opcua.stack.core.types.structured.ServiceFault;
 import com.inductiveautomation.opcua.stack.core.types.structured.SignedSoftwareCertificate;
 import com.inductiveautomation.opcua.stack.core.types.structured.UserTokenPolicy;
 import com.inductiveautomation.opcua.stack.core.util.DigestUtil;
@@ -170,7 +169,6 @@ public class UaTcpServer implements UaServer {
         if (!serverName.isEmpty()) {
             discoveryUrl.append("/").append(serverName);
         }
-        discoveryUrl.append("/discovery");
 
         discoveryUrls.add(discoveryUrl.toString());
     }
@@ -230,13 +228,13 @@ public class UaTcpServer implements UaServer {
             if (handler != null) {
                 handler.handle(serviceRequest);
             } else {
-                ServiceFault serviceFault = serviceRequest.createServiceFault(StatusCodes.Bad_ServiceUnsupported);
-                serviceRequest.setResponse(serviceFault);
+                serviceRequest.setServiceFault(StatusCodes.Bad_ServiceUnsupported);
             }
         } catch (UaException e) {
-            ServiceFault serviceFault = serviceRequest.createServiceFault(e);
-
-            serviceRequest.setResponse(serviceFault);
+            serviceRequest.setServiceFault(e);
+        } catch (Throwable t) {
+            logger.error("Uncaught Throwable executing ServiceRequestHandler: {}", handler, t);
+            serviceRequest.setServiceFault(StatusCodes.Bad_InternalError);
         }
     }
 
