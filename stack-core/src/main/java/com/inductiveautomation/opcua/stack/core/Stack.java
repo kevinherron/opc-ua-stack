@@ -2,6 +2,8 @@ package com.inductiveautomation.opcua.stack.core;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicLong;
 
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
@@ -41,15 +43,39 @@ public final class Stack {
     }
 
     private static class EventLoopHolder {
-        private static final NioEventLoopGroup EVENT_LOOP = new NioEventLoopGroup();
+        private static final NioEventLoopGroup EVENT_LOOP = new NioEventLoopGroup(0, new ThreadFactory() {
+            private final AtomicLong threadNumber = new AtomicLong(0L);
+
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r, "netty-event-loop-" + threadNumber.getAndIncrement());
+                thread.setDaemon(true);
+                return thread;
+            }
+        });
     }
 
     private static class ExecutorHolder {
-        private static final ExecutorService EXECUTOR_SERVICE = Executors.newWorkStealingPool();
+        private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(
+                Runtime.getRuntime().availableProcessors() * 2,
+                new ThreadFactory() {
+                    private final AtomicLong threadNumber = new AtomicLong(0L);
+
+                    @Override
+                    public Thread newThread(Runnable r) {
+                        Thread thread = new Thread(r, "ua-shared-pool-" + threadNumber.getAndIncrement());
+                        thread.setDaemon(true);
+                        return thread;
+                    }
+                });
     }
 
     private static class WheelTimerHolder {
-        private static final HashedWheelTimer WHEEL_TIMER = new HashedWheelTimer();
+        private static final HashedWheelTimer WHEEL_TIMER = new HashedWheelTimer(r -> {
+            Thread thread = new Thread(r, "netty-wheel-timer");
+            thread.setDaemon(true);
+            return thread;
+        });
     }
 
 }
