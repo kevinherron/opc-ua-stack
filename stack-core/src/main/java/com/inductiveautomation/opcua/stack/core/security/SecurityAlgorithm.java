@@ -5,6 +5,9 @@ import javax.crypto.Mac;
 import java.security.MessageDigest;
 import java.security.Signature;
 
+import com.inductiveautomation.opcua.stack.core.StatusCodes;
+import com.inductiveautomation.opcua.stack.core.UaException;
+
 public enum SecurityAlgorithm {
 
     None("", ""),
@@ -99,6 +102,17 @@ public enum SecurityAlgorithm {
      */
     public String getTransformation() {
         return transformation;
+    }
+
+    public static SecurityAlgorithm fromUri(String securityAlgorithmUri) throws UaException {
+        for (SecurityAlgorithm algorithm: values()) {
+            if (algorithm.getUri().equals(securityAlgorithmUri)) {
+                return algorithm;
+            }
+        }
+
+        throw new UaException(StatusCodes.Bad_SecurityChecksFailed,
+                "unknown securityAlgorithmUri: " + securityAlgorithmUri);
     }
 
 }
