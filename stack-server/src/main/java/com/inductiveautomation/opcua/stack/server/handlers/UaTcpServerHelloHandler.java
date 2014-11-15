@@ -21,10 +21,13 @@ import com.inductiveautomation.opcua.stack.server.tcp.UaTcpServer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.util.AttributeKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements HeaderDecoder {
+
+    public static final AttributeKey<String> ENDPOINT_URL_KEY = AttributeKey.valueOf("endpoint-url");
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -66,6 +69,8 @@ public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements Hea
         if (server == null) {
             server = socketServer.getFallbackServer();
         }
+
+        ctx.channel().attr(ENDPOINT_URL_KEY).set(hello.getEndpointUrl());
 
         long remoteProtocolVersion = hello.getProtocolVersion();
         long remoteReceiveBufferSize = hello.getReceiveBufferSize();
