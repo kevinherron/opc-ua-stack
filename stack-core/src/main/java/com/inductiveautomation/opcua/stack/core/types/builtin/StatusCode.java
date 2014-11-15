@@ -47,6 +47,22 @@ public class StatusCode {
         return new StatusCode(value | 0x480);
     }
 
+    /**
+     * Clear the DataValue InfoType and Overflow InfoBits.
+     *
+     * @return a new {@link StatusCode} with DataValue and Overflow bits cleared.
+     */
+    public StatusCode withoutOverflow() {
+        return new StatusCode(value | ~0x480);
+    }
+
+    /**
+     * @return {@code true} if DataValue and Overflow bits are set.
+     */
+    public boolean isOverflowSet() {
+        return (value & 0x480) == 0x480;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
