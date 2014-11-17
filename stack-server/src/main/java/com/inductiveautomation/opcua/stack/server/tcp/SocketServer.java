@@ -14,6 +14,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.SocketChannel;
@@ -55,12 +56,15 @@ public class SocketServer {
 
         CompletableFuture<Void> bindFuture = new CompletableFuture<>();
 
-        bootstrap.bind(address).addListener(future -> {
-            if (future.isSuccess()) {
-                this.channel = ((ChannelFuture) future).channel();
-                bindFuture.complete(null);
-            } else {
-                bindFuture.completeExceptionally(future.cause());
+        bootstrap.bind(address).addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+                if (future.isSuccess()) {
+                    channel = future.channel();
+                    bindFuture.complete(null);
+                } else {
+                    bindFuture.completeExceptionally(future.cause());
+                }
             }
         });
 
