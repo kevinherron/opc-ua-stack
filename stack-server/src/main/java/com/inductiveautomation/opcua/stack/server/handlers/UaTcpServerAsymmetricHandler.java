@@ -114,6 +114,20 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
 
             if (secureChannelId == 0) {
                 // Okay, this is the first OpenSecureChannelRequest... carry on.
+                String endpointUrl = ctx.channel().attr(UaTcpServerHelloHandler.ENDPOINT_URL_KEY).get();
+                String securityPolicyUri = securityHeader.getSecurityPolicyUri();
+
+                boolean validPolicyForEndpoint = server.getEndpoints().stream()
+                        .anyMatch(e -> {
+                            boolean uriMatch = e.getEndpointUri().toString().equals(endpointUrl);
+                            boolean policyMatch = e.getSecurityPolicy().getSecurityPolicyUri().equals(securityPolicyUri);
+                            return uriMatch && policyMatch;
+                        });
+
+                if (!validPolicyForEndpoint) {
+                    throw new UaException(StatusCodes.Bad_SecurityChecksFailed, "SecurityPolicy URI did not match");
+                }
+
                 secureChannel = server.openSecureChannel();
             } else {
                 secureChannel = server.getSecureChannel(secureChannelId);
