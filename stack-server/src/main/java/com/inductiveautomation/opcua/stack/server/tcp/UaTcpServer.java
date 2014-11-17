@@ -151,7 +151,9 @@ public class UaTcpServer implements UaServer {
 
                 SocketServer socketServer = SocketServer.boundTo(bindAddress, endpointUri.getPort());
 
-                logger.info("{} bound to {}.", endpoint.getEndpointUri(), socketServer.getLocalAddress());
+                logger.info("{} bound to {} [{}/{}]",
+                        endpoint.getEndpointUri(), socketServer.getLocalAddress(),
+                        endpoint.getSecurityPolicy(), endpoint.getMessageSecurity());
 
                 addDiscoveryUrl(endpointUri);
 
