@@ -67,7 +67,8 @@ public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements Hea
         UaTcpServer server = socketServer.getServer(hello.getEndpointUrl());
 
         if (server == null) {
-            server = socketServer.getFallbackServer();
+            throw new UaException(StatusCodes.Bad_TcpEndpointUrlInvalid,
+                    "unrecognized endpoint url: " + hello.getEndpointUrl());
         }
 
         ctx.channel().attr(ENDPOINT_URL_KEY).set(hello.getEndpointUrl());
