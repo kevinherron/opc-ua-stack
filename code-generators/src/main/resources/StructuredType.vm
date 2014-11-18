@@ -64,7 +64,11 @@ public class ${structuredType.name} ${structuredType.inheritanceBlurb} {
 #end
 #else
 #if(${field.array})
+		#if($field.isEnumeration())
+        encoder.encodeArray("${field.name}", ${structuredType.javaName}.${field.javaName}, encoder::encodeEnumeration);
+		#else
         encoder.encodeArray("${field.name}", ${structuredType.javaName}.${field.javaName}, encoder::encodeSerializable);
+		#end
 #else
 		#if($field.isEnumeration())
 		encoder.encodeEnumeration("${field.name}", ${structuredType.javaName}.${field.javaName});
@@ -86,7 +90,11 @@ public class ${structuredType.name} ${structuredType.inheritanceBlurb} {
 #end
 #else
 #if(${field.array})
+		#if($field.isEnumeration())
+		${field.type.typeDeclaration} ${field.javaName} = decoder.decodeArray("${field.name}", decoder::decodeEnumeration, ${field.type.javaClass}.class);
+		#else
         ${field.type.typeDeclaration} ${field.javaName} = decoder.decodeArray("${field.name}", decoder::decodeSerializable, ${field.type.javaClass}.class);
+		#end
 #else
 		#if($field.isEnumeration())
 		${field.type.typeDeclaration} ${field.javaName} = decoder.decodeEnumeration("${field.name}", ${field.type.javaClass}.class);

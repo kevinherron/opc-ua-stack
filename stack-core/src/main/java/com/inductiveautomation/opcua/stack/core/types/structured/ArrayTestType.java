@@ -255,7 +255,7 @@ public class ArrayTestType implements UaStructure {
         encoder.encodeArray("ExtensionObjects", arrayTestType._extensionObjects, encoder::encodeExtensionObject);
         encoder.encodeArray("DataValues", arrayTestType._dataValues, encoder::encodeDataValue);
         encoder.encodeArray("Variants", arrayTestType._variants, encoder::encodeVariant);
-        encoder.encodeArray("EnumeratedValues", arrayTestType._enumeratedValues, encoder::encodeSerializable);
+        encoder.encodeArray("EnumeratedValues", arrayTestType._enumeratedValues, encoder::encodeEnumeration);
     }
 
     public static ArrayTestType decode(UaDecoder decoder) {
@@ -283,7 +283,7 @@ public class ArrayTestType implements UaStructure {
         ExtensionObject[] _extensionObjects = decoder.decodeArray("ExtensionObjects", decoder::decodeExtensionObject, ExtensionObject.class);
         DataValue[] _dataValues = decoder.decodeArray("DataValues", decoder::decodeDataValue, DataValue.class);
         Variant[] _variants = decoder.decodeArray("Variants", decoder::decodeVariant, Variant.class);
-        EnumeratedTestType[] _enumeratedValues = decoder.decodeArray("EnumeratedValues", decoder::decodeSerializable, EnumeratedTestType.class);
+        EnumeratedTestType[] _enumeratedValues = decoder.decodeArray("EnumeratedValues", decoder::decodeEnumeration, EnumeratedTestType.class);
 
         return new ArrayTestType(_booleans, _sBytes, _int16s, _uInt16s, _int32s, _uInt32s, _int64s, _uInt64s, _floats, _doubles, _strings, _dateTimes, _guids, _byteStrings, _xmlElements, _nodeIds, _expandedNodeIds, _statusCodes, _diagnosticInfos, _qualifiedNames, _localizedTexts, _extensionObjects, _dataValues, _variants, _enumeratedValues);
     }
