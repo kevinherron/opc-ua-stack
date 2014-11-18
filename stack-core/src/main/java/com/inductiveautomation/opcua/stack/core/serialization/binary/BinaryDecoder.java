@@ -199,8 +199,10 @@ public class BinaryDecoder implements UaDecoder {
             return new NodeId(ushort(buffer.readUnsignedShort()), uint(buffer.readUnsignedInt()));
         } else if (format == 0x03) {
             /* String format */
-            String id = decodeString(null);
-            return new NodeId(ushort(buffer.readUnsignedShort()), id != null ? id : "");
+            int index = buffer.readUnsignedShort();
+            String identifier = decodeString(null);
+            
+            return new NodeId(ushort(index), identifier != null ? identifier : "");
         } else if (format == 0x04) {
             /* Guid format */
             return new NodeId(ushort(buffer.readUnsignedShort()), decodeGuid(null));
