@@ -12,7 +12,7 @@ import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Un
 /**
  * This Built-in DataType contains a qualified name. It is, for example, used as BrowseName.
  */
-public class QualifiedName {
+public final class QualifiedName {
 
     public static final QualifiedName NullValue = new QualifiedName(ushort(0), null);
 
@@ -52,6 +52,14 @@ public class QualifiedName {
     @Nullable
     public String getName() {
         return name;
+    }
+
+    public boolean isNull() {
+        return name == null;
+    }
+
+    public boolean isNotNull() {
+        return !isNull();
     }
 
     @Override
