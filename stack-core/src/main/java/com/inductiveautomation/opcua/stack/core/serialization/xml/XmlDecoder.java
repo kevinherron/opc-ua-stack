@@ -189,7 +189,7 @@ public class XmlDecoder implements UaDecoder {
                 throw new UaSerializationException(StatusCodes.Bad_DecodingError, e);
             }
         } else {
-            nodeId = NodeId.NullValue;
+            nodeId = NodeId.NULL_VALUE;
         }
 
         return nodeId;

@@ -32,7 +32,7 @@ public class ConnectingState implements ConnectionState {
             case DisconnectRequested:
                 channelFuture.thenAccept(ch -> {
                     RequestHeader requestHeader = new RequestHeader(
-                            NodeId.NullValue, DateTime.now(), uint(0), uint(0), null, uint(0), null);
+                            NodeId.NULL_VALUE, DateTime.now(), uint(0), uint(0), null, uint(0), null);
 
                     CloseSecureChannelRequest request = new CloseSecureChannelRequest(requestHeader);
 

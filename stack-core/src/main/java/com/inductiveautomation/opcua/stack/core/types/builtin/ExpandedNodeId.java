@@ -16,7 +16,7 @@ import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Un
 
 public class ExpandedNodeId {
 
-    public static final ExpandedNodeId NullValue = new ExpandedNodeId(NodeId.NullValue, null, 0);
+    public static final ExpandedNodeId NullValue = new ExpandedNodeId(NodeId.NULL_VALUE, null, 0);
 
     private final NodeId nodeId;
     private final String namespaceUri;

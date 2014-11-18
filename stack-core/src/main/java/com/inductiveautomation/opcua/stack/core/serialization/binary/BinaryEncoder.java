@@ -288,7 +288,7 @@ public class BinaryEncoder implements UaEncoder {
 
     @Override
     public void encodeNodeId(String field, NodeId value) throws UaSerializationException {
-		if (value == null) value = NodeId.NullValue;
+		if (value == null) value = NodeId.NULL_VALUE;
 
         int namespaceIndex = value.getNamespaceIndex().intValue();
 
@@ -447,7 +447,7 @@ public class BinaryEncoder implements UaEncoder {
     @Override
     public void encodeExtensionObject(String field, ExtensionObject value) throws UaSerializationException {
         if (value == null || value.getObject() == null) {
-            encodeNodeId(null, NodeId.NullValue);
+            encodeNodeId(null, NodeId.NULL_VALUE);
             buffer.writeByte(0); // No body is encoded
         } else {
             Object object = value.getObject();

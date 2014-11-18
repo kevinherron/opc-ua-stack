@@ -15,14 +15,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
 
-public class NodeId {
+public final class NodeId {
 
-    public static final NodeId NullNumeric = new NodeId(ushort(0), uint(0));
-    public static final NodeId NullString = new NodeId(ushort(0), "");
-    public static final NodeId NullGuid = new NodeId(ushort(0), new UUID(0, 0));
-    public static final NodeId NullOpaque = new NodeId(ushort(0), ByteString.NullValue);
+    public static final NodeId NULL_NUMERIC = new NodeId(ushort(0), uint(0));
+    public static final NodeId NULL_STRING = new NodeId(ushort(0), "");
+    public static final NodeId NULL_GUID = new NodeId(ushort(0), new UUID(0, 0));
+    public static final NodeId NULL_OPAQUE = new NodeId(ushort(0), ByteString.NullValue);
 
-    public static final NodeId NullValue = NullNumeric;
+    public static final NodeId NULL_VALUE = NULL_NUMERIC;
 
     private final UShort namespaceIndex;
     private final Object identifier;
@@ -77,7 +77,8 @@ public class NodeId {
      */
     public NodeId(UShort namespaceIndex, String identifier) {
         checkNotNull(namespaceIndex);
-        checkNotNull(identifier);
+
+        if (identifier == null) identifier = "";
 
         this.namespaceIndex = namespaceIndex;
         this.identifier = identifier;
@@ -133,7 +134,8 @@ public class NodeId {
 
     public boolean isNull() {
         return namespaceIndex.intValue() == 0 &&
-                (NullNumeric.equals(this) || NullString.equals(this) || NullGuid.equals(this) || NullOpaque.equals(this));
+                (NULL_NUMERIC.equals(this) || NULL_STRING.equals(this) ||
+                        NULL_GUID.equals(this) || NULL_OPAQUE.equals(this));
     }
 
     @Override

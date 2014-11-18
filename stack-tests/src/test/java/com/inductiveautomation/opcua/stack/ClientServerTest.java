@@ -71,7 +71,7 @@ public class ClientServerTest extends SecurityFixture {
                 {new Variant(StatusCode.Good)},
                 {new Variant(new QualifiedName(0, "QualifiedName"))},
                 {new Variant(LocalizedText.english("LocalizedText"))},
-                {new Variant(new ExtensionObject(new ReadValueId(NodeId.NullValue, uint(1), null, new QualifiedName(0, "DataEncoding"))))},
+                {new Variant(new ExtensionObject(new ReadValueId(NodeId.NULL_VALUE, uint(1), null, new QualifiedName(0, "DataEncoding"))))},
         };
     }
 
@@ -226,7 +226,7 @@ public class ClientServerTest extends SecurityFixture {
 
         for (int i = 0; i < 100; i++) {
             RequestHeader header = new RequestHeader(
-                    NodeId.NullValue,
+                    NodeId.NULL_VALUE,
                     DateTime.now(),
                     uint(i), uint(0), null, uint(60), null
             );

@@ -46,7 +46,7 @@ public class ClientExample {
 
     public CompletableFuture<TestStackResponse> testStack(int input) {
         RequestHeader header = new RequestHeader(
-                NodeId.NullValue,
+                NodeId.NULL_VALUE,
                 DateTime.now(),
                 uint(requestHandle.getAndIncrement()),
                 uint(0), null, uint(60), null

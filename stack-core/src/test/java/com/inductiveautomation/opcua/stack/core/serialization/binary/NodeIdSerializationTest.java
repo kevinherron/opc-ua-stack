@@ -29,10 +29,10 @@ public class NodeIdSerializationTest extends BinarySerializationFixture {
                 {new NodeId(1, UUID.randomUUID())},
                 {new NodeId(0, new ByteString(new byte[] {1, 2, 3, 4}))},
                 {new NodeId(1, new ByteString(new byte[] {1, 2, 3, 4}))},
-                {NodeId.NullNumeric},
-                {NodeId.NullString},
-                {NodeId.NullGuid},
-                {NodeId.NullOpaque}
+                {NodeId.NULL_NUMERIC},
+                {NodeId.NULL_STRING},
+                {NodeId.NULL_GUID},
+                {NodeId.NULL_OPAQUE}
         };
     }
 
