@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("SetPublishingModeResponse")
 public class SetPublishingModeResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.SetPublishingModeResponse;
@@ -18,6 +20,12 @@ public class SetPublishingModeResponse implements UaResponseMessage {
     protected final ResponseHeader _responseHeader;
     protected final StatusCode[] _results;
     protected final DiagnosticInfo[] _diagnosticInfos;
+
+    public SetPublishingModeResponse() {
+        this._responseHeader = null;
+        this._results = null;
+        this._diagnosticInfos = null;
+    }
 
     public SetPublishingModeResponse(ResponseHeader _responseHeader, StatusCode[] _results, DiagnosticInfo[] _diagnosticInfos) {
         this._responseHeader = _responseHeader;
@@ -54,7 +62,7 @@ public class SetPublishingModeResponse implements UaResponseMessage {
 
 
     public static void encode(SetPublishingModeResponse setPublishingModeResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", setPublishingModeResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", setPublishingModeResponse._responseHeader != null ? setPublishingModeResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("Results", setPublishingModeResponse._results, encoder::encodeStatusCode);
         encoder.encodeArray("DiagnosticInfos", setPublishingModeResponse._diagnosticInfos, encoder::encodeDiagnosticInfo);
     }

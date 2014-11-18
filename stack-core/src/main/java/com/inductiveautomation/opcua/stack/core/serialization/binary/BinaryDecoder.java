@@ -14,6 +14,7 @@ import com.inductiveautomation.opcua.stack.core.channel.ChannelConfig;
 import com.inductiveautomation.opcua.stack.core.serialization.DecoderDelegate;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
+import com.inductiveautomation.opcua.stack.core.serialization.UaEnumeration;
 import com.inductiveautomation.opcua.stack.core.serialization.UaSerializable;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
@@ -126,7 +127,7 @@ public class BinaryDecoder implements UaDecoder {
         } else {
             if (length > maxStringLength) {
                 throw new UaSerializationException(StatusCodes.Bad_EncodingLimitsExceeded,
-                        "max string length exceeded");
+                        String.format("max string length exceeded (length=%s, max=%s)", length, maxStringLength));
             }
 
             String s = buffer.toString(buffer.readerIndex(), length, Charset.forName("UTF-8"));
@@ -186,6 +187,7 @@ public class BinaryDecoder implements UaDecoder {
     public NodeId decodeNodeId(String field) throws UaSerializationException {
         int format = buffer.readByte() & 0x0F;
 
+
         if (format == 0x00) {
             /* Two-byte format */
             return new NodeId(ushort(0), uint(buffer.readUnsignedByte()));
@@ -197,7 +199,8 @@ public class BinaryDecoder implements UaDecoder {
             return new NodeId(ushort(buffer.readUnsignedShort()), uint(buffer.readUnsignedInt()));
         } else if (format == 0x03) {
             /* String format */
-            return new NodeId(ushort(buffer.readUnsignedShort()), decodeString(null));
+            String id = decodeString(null);
+            return new NodeId(ushort(buffer.readUnsignedShort()), id != null ? id : "");
         } else if (format == 0x04) {
             /* Guid format */
             return new NodeId(ushort(buffer.readUnsignedShort()), decodeGuid(null));
@@ -205,7 +208,7 @@ public class BinaryDecoder implements UaDecoder {
             /* Opaque format */
             return new NodeId(ushort(buffer.readUnsignedShort()), decodeByteString(null));
         } else {
-            throw new UaSerializationException(StatusCodes.Bad_EncodingError, "invalid NodeId format: " + format);
+            throw new UaSerializationException(StatusCodes.Bad_DecodingError, "invalid NodeId format: " + format);
         }
     }
 
@@ -374,6 +377,13 @@ public class BinaryDecoder implements UaDecoder {
     }
 
     @Override
+    public <T extends UaEnumeration> T decodeEnumeration(String field, Class<T> clazz) throws UaSerializationException {
+        DecoderDelegate<T> delegate = DelegateRegistry.getDecoder(clazz);
+
+        return delegate.decode(this);
+    }
+
+    @Override
     public <T extends UaSerializable> T decodeSerializable(String field, Class<T> clazz) throws UaSerializationException {
         DecoderDelegate<T> delegate = DelegateRegistry.getDecoder(clazz);
 
@@ -413,7 +423,7 @@ public class BinaryDecoder implements UaDecoder {
         } else {
             if (length > maxArrayLength) {
                 throw new UaSerializationException(StatusCodes.Bad_EncodingLimitsExceeded,
-                        "max array length exceeded");
+                        String.format("max array length exceeded (length=%s, max=%s", length, maxArrayLength));
             }
 
             T[] array = (T[]) Array.newInstance(clazz, length);

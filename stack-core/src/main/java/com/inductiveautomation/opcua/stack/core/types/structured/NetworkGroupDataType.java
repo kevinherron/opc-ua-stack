@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("NetworkGroupDataType")
 public class NetworkGroupDataType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.NetworkGroupDataType;
@@ -15,6 +17,11 @@ public class NetworkGroupDataType implements UaStructure {
 
     protected final String _serverUri;
     protected final EndpointUrlListDataType[] _networkPaths;
+
+    public NetworkGroupDataType() {
+        this._serverUri = null;
+        this._networkPaths = null;
+    }
 
     public NetworkGroupDataType(String _serverUri, EndpointUrlListDataType[] _networkPaths) {
         this._serverUri = _serverUri;

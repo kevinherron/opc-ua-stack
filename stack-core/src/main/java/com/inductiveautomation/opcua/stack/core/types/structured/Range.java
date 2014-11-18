@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("Range")
 public class Range implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.Range;
@@ -15,6 +17,11 @@ public class Range implements UaStructure {
 
     protected final Double _low;
     protected final Double _high;
+
+    public Range() {
+        this._low = null;
+        this._high = null;
+    }
 
     public Range(Double _low, Double _high) {
         this._low = _low;

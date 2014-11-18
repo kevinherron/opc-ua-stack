@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("DoubleComplexNumberType")
 public class DoubleComplexNumberType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.DoubleComplexNumberType;
@@ -15,6 +17,11 @@ public class DoubleComplexNumberType implements UaStructure {
 
     protected final Double _real;
     protected final Double _imaginary;
+
+    public DoubleComplexNumberType() {
+        this._real = null;
+        this._imaginary = null;
+    }
 
     public DoubleComplexNumberType(Double _real, Double _imaginary) {
         this._real = _real;

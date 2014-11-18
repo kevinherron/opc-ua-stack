@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("TransferSubscriptionsResponse")
 public class TransferSubscriptionsResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.TransferSubscriptionsResponse;
@@ -17,6 +19,12 @@ public class TransferSubscriptionsResponse implements UaResponseMessage {
     protected final ResponseHeader _responseHeader;
     protected final TransferResult[] _results;
     protected final DiagnosticInfo[] _diagnosticInfos;
+
+    public TransferSubscriptionsResponse() {
+        this._responseHeader = null;
+        this._results = null;
+        this._diagnosticInfos = null;
+    }
 
     public TransferSubscriptionsResponse(ResponseHeader _responseHeader, TransferResult[] _results, DiagnosticInfo[] _diagnosticInfos) {
         this._responseHeader = _responseHeader;
@@ -53,7 +61,7 @@ public class TransferSubscriptionsResponse implements UaResponseMessage {
 
 
     public static void encode(TransferSubscriptionsResponse transferSubscriptionsResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", transferSubscriptionsResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", transferSubscriptionsResponse._responseHeader != null ? transferSubscriptionsResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("Results", transferSubscriptionsResponse._results, encoder::encodeSerializable);
         encoder.encodeArray("DiagnosticInfos", transferSubscriptionsResponse._diagnosticInfos, encoder::encodeDiagnosticInfo);
     }

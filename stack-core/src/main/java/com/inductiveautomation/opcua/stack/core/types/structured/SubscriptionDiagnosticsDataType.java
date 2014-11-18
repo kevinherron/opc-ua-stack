@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("SubscriptionDiagnosticsDataType")
 public class SubscriptionDiagnosticsDataType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.SubscriptionDiagnosticsDataType;
@@ -46,6 +48,40 @@ public class SubscriptionDiagnosticsDataType implements UaStructure {
     protected final UInteger _monitoringQueueOverflowCount;
     protected final UInteger _nextSequenceNumber;
     protected final UInteger _eventQueueOverFlowCount;
+
+    public SubscriptionDiagnosticsDataType() {
+        this._sessionId = null;
+        this._subscriptionId = null;
+        this._priority = null;
+        this._publishingInterval = null;
+        this._maxKeepAliveCount = null;
+        this._maxLifetimeCount = null;
+        this._maxNotificationsPerPublish = null;
+        this._publishingEnabled = null;
+        this._modifyCount = null;
+        this._enableCount = null;
+        this._disableCount = null;
+        this._republishRequestCount = null;
+        this._republishMessageRequestCount = null;
+        this._republishMessageCount = null;
+        this._transferRequestCount = null;
+        this._transferredToAltClientCount = null;
+        this._transferredToSameClientCount = null;
+        this._publishRequestCount = null;
+        this._dataChangeNotificationsCount = null;
+        this._eventNotificationsCount = null;
+        this._notificationsCount = null;
+        this._latePublishRequestCount = null;
+        this._currentKeepAliveCount = null;
+        this._currentLifetimeCount = null;
+        this._unacknowledgedMessageCount = null;
+        this._discardedMessageCount = null;
+        this._monitoredItemCount = null;
+        this._disabledMonitoredItemCount = null;
+        this._monitoringQueueOverflowCount = null;
+        this._nextSequenceNumber = null;
+        this._eventQueueOverFlowCount = null;
+    }
 
     public SubscriptionDiagnosticsDataType(NodeId _sessionId, UInteger _subscriptionId, UByte _priority, Double _publishingInterval, UInteger _maxKeepAliveCount, UInteger _maxLifetimeCount, UInteger _maxNotificationsPerPublish, Boolean _publishingEnabled, UInteger _modifyCount, UInteger _enableCount, UInteger _disableCount, UInteger _republishRequestCount, UInteger _republishMessageRequestCount, UInteger _republishMessageCount, UInteger _transferRequestCount, UInteger _transferredToAltClientCount, UInteger _transferredToSameClientCount, UInteger _publishRequestCount, UInteger _dataChangeNotificationsCount, UInteger _eventNotificationsCount, UInteger _notificationsCount, UInteger _latePublishRequestCount, UInteger _currentKeepAliveCount, UInteger _currentLifetimeCount, UInteger _unacknowledgedMessageCount, UInteger _discardedMessageCount, UInteger _monitoredItemCount, UInteger _disabledMonitoredItemCount, UInteger _monitoringQueueOverflowCount, UInteger _nextSequenceNumber, UInteger _eventQueueOverFlowCount) {
         this._sessionId = _sessionId;

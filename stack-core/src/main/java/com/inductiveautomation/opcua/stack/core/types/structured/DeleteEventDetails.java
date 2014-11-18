@@ -4,9 +4,11 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("DeleteEventDetails")
 public class DeleteEventDetails extends HistoryUpdateDetails {
 
     public static final NodeId TypeId = Identifiers.DeleteEventDetails;
@@ -14,6 +16,11 @@ public class DeleteEventDetails extends HistoryUpdateDetails {
     public static final NodeId XmlEncodingId = Identifiers.DeleteEventDetails_Encoding_DefaultXml;
 
     protected final ByteString[] _eventIds;
+
+    public DeleteEventDetails() {
+        super(null);
+        this._eventIds = null;
+    }
 
     public DeleteEventDetails(NodeId _nodeId, ByteString[] _eventIds) {
         super(_nodeId);

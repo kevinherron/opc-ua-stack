@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("CreateSubscriptionResponse")
 public class CreateSubscriptionResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.CreateSubscriptionResponse;
@@ -19,6 +21,14 @@ public class CreateSubscriptionResponse implements UaResponseMessage {
     protected final Double _revisedPublishingInterval;
     protected final UInteger _revisedLifetimeCount;
     protected final UInteger _revisedMaxKeepAliveCount;
+
+    public CreateSubscriptionResponse() {
+        this._responseHeader = null;
+        this._subscriptionId = null;
+        this._revisedPublishingInterval = null;
+        this._revisedLifetimeCount = null;
+        this._revisedMaxKeepAliveCount = null;
+    }
 
     public CreateSubscriptionResponse(ResponseHeader _responseHeader, UInteger _subscriptionId, Double _revisedPublishingInterval, UInteger _revisedLifetimeCount, UInteger _revisedMaxKeepAliveCount) {
         this._responseHeader = _responseHeader;
@@ -65,7 +75,7 @@ public class CreateSubscriptionResponse implements UaResponseMessage {
 
 
     public static void encode(CreateSubscriptionResponse createSubscriptionResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", createSubscriptionResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", createSubscriptionResponse._responseHeader != null ? createSubscriptionResponse._responseHeader : new ResponseHeader());
         encoder.encodeUInt32("SubscriptionId", createSubscriptionResponse._subscriptionId);
         encoder.encodeDouble("RevisedPublishingInterval", createSubscriptionResponse._revisedPublishingInterval);
         encoder.encodeUInt32("RevisedLifetimeCount", createSubscriptionResponse._revisedLifetimeCount);

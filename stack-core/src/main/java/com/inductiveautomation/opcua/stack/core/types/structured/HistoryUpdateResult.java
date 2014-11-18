@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("HistoryUpdateResult")
 public class HistoryUpdateResult implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.HistoryUpdateResult;
@@ -18,6 +20,12 @@ public class HistoryUpdateResult implements UaStructure {
     protected final StatusCode _statusCode;
     protected final StatusCode[] _operationResults;
     protected final DiagnosticInfo[] _diagnosticInfos;
+
+    public HistoryUpdateResult() {
+        this._statusCode = null;
+        this._operationResults = null;
+        this._diagnosticInfos = null;
+    }
 
     public HistoryUpdateResult(StatusCode _statusCode, StatusCode[] _operationResults, DiagnosticInfo[] _diagnosticInfos) {
         this._statusCode = _statusCode;

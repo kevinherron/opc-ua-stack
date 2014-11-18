@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("CreateSessionRequest")
 public class CreateSessionRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.CreateSessionRequest;
@@ -24,6 +26,18 @@ public class CreateSessionRequest implements UaRequestMessage {
     protected final ByteString _clientCertificate;
     protected final Double _requestedSessionTimeout;
     protected final UInteger _maxResponseMessageSize;
+
+    public CreateSessionRequest() {
+        this._requestHeader = null;
+        this._clientDescription = null;
+        this._serverUri = null;
+        this._endpointUrl = null;
+        this._sessionName = null;
+        this._clientNonce = null;
+        this._clientCertificate = null;
+        this._requestedSessionTimeout = null;
+        this._maxResponseMessageSize = null;
+    }
 
     public CreateSessionRequest(RequestHeader _requestHeader, ApplicationDescription _clientDescription, String _serverUri, String _endpointUrl, String _sessionName, ByteString _clientNonce, ByteString _clientCertificate, Double _requestedSessionTimeout, UInteger _maxResponseMessageSize) {
         this._requestHeader = _requestHeader;
@@ -90,8 +104,8 @@ public class CreateSessionRequest implements UaRequestMessage {
 
 
     public static void encode(CreateSessionRequest createSessionRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", createSessionRequest._requestHeader);
-        encoder.encodeSerializable("ClientDescription", createSessionRequest._clientDescription);
+        encoder.encodeSerializable("RequestHeader", createSessionRequest._requestHeader != null ? createSessionRequest._requestHeader : new RequestHeader());
+        encoder.encodeSerializable("ClientDescription", createSessionRequest._clientDescription != null ? createSessionRequest._clientDescription : new ApplicationDescription());
         encoder.encodeString("ServerUri", createSessionRequest._serverUri);
         encoder.encodeString("EndpointUrl", createSessionRequest._endpointUrl);
         encoder.encodeString("SessionName", createSessionRequest._sessionName);

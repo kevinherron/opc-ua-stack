@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("CancelRequest")
 public class CancelRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.CancelRequest;
@@ -16,6 +18,11 @@ public class CancelRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final UInteger _requestHandle;
+
+    public CancelRequest() {
+        this._requestHeader = null;
+        this._requestHandle = null;
+    }
 
     public CancelRequest(RequestHeader _requestHeader, UInteger _requestHandle) {
         this._requestHeader = _requestHeader;
@@ -47,7 +54,7 @@ public class CancelRequest implements UaRequestMessage {
 
 
     public static void encode(CancelRequest cancelRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", cancelRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", cancelRequest._requestHeader != null ? cancelRequest._requestHeader : new RequestHeader());
         encoder.encodeUInt32("RequestHandle", cancelRequest._requestHandle);
     }
 

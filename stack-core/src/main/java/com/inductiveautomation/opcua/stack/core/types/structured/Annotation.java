@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("Annotation")
 public class Annotation implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.Annotation;
@@ -17,6 +19,12 @@ public class Annotation implements UaStructure {
     protected final String _message;
     protected final String _userName;
     protected final DateTime _annotationTime;
+
+    public Annotation() {
+        this._message = null;
+        this._userName = null;
+        this._annotationTime = null;
+    }
 
     public Annotation(String _message, String _userName, DateTime _annotationTime) {
         this._message = _message;

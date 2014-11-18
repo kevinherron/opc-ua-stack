@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("UserIdentityToken")
 public class UserIdentityToken implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.UserIdentityToken;
@@ -14,6 +16,10 @@ public class UserIdentityToken implements UaStructure {
     public static final NodeId XmlEncodingId = Identifiers.UserIdentityToken_Encoding_DefaultXml;
 
     protected final String _policyId;
+
+    public UserIdentityToken() {
+        this._policyId = null;
+    }
 
     public UserIdentityToken(String _policyId) {
         this._policyId = _policyId;

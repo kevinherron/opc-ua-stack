@@ -4,9 +4,11 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.PerformUpdateType;
 
+@UaDataType("UpdateEventDetails")
 public class UpdateEventDetails extends HistoryUpdateDetails {
 
     public static final NodeId TypeId = Identifiers.UpdateEventDetails;
@@ -16,6 +18,13 @@ public class UpdateEventDetails extends HistoryUpdateDetails {
     protected final PerformUpdateType _performInsertReplace;
     protected final EventFilter _filter;
     protected final HistoryEventFieldList[] _eventData;
+
+    public UpdateEventDetails() {
+        super(null);
+        this._performInsertReplace = null;
+        this._filter = null;
+        this._eventData = null;
+    }
 
     public UpdateEventDetails(NodeId _nodeId, PerformUpdateType _performInsertReplace, EventFilter _filter, HistoryEventFieldList[] _eventData) {
         super(_nodeId);
@@ -54,14 +63,14 @@ public class UpdateEventDetails extends HistoryUpdateDetails {
 
     public static void encode(UpdateEventDetails updateEventDetails, UaEncoder encoder) {
         encoder.encodeNodeId("NodeId", updateEventDetails._nodeId);
-        encoder.encodeSerializable("PerformInsertReplace", updateEventDetails._performInsertReplace);
-        encoder.encodeSerializable("Filter", updateEventDetails._filter);
+        encoder.encodeEnumeration("PerformInsertReplace", updateEventDetails._performInsertReplace);
+        encoder.encodeSerializable("Filter", updateEventDetails._filter != null ? updateEventDetails._filter : new EventFilter());
         encoder.encodeArray("EventData", updateEventDetails._eventData, encoder::encodeSerializable);
     }
 
     public static UpdateEventDetails decode(UaDecoder decoder) {
         NodeId _nodeId = decoder.decodeNodeId("NodeId");
-        PerformUpdateType _performInsertReplace = decoder.decodeSerializable("PerformInsertReplace", PerformUpdateType.class);
+        PerformUpdateType _performInsertReplace = decoder.decodeEnumeration("PerformInsertReplace", PerformUpdateType.class);
         EventFilter _filter = decoder.decodeSerializable("Filter", EventFilter.class);
         HistoryEventFieldList[] _eventData = decoder.decodeArray("EventData", decoder::decodeSerializable, HistoryEventFieldList.class);
 

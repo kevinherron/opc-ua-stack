@@ -4,12 +4,14 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.NodeClass;
 
+@UaDataType("DataTypeNode")
 public class DataTypeNode extends TypeNode {
 
     public static final NodeId TypeId = Identifiers.DataTypeNode;
@@ -17,6 +19,11 @@ public class DataTypeNode extends TypeNode {
     public static final NodeId XmlEncodingId = Identifiers.DataTypeNode_Encoding_DefaultXml;
 
     protected final Boolean _isAbstract;
+
+    public DataTypeNode() {
+        super(null, null, null, null, null, null, null, null);
+        this._isAbstract = null;
+    }
 
     public DataTypeNode(NodeId _nodeId, NodeClass _nodeClass, QualifiedName _browseName, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, ReferenceNode[] _references, Boolean _isAbstract) {
         super(_nodeId, _nodeClass, _browseName, _displayName, _description, _writeMask, _userWriteMask, _references);
@@ -45,7 +52,7 @@ public class DataTypeNode extends TypeNode {
 
     public static void encode(DataTypeNode dataTypeNode, UaEncoder encoder) {
         encoder.encodeNodeId("NodeId", dataTypeNode._nodeId);
-        encoder.encodeSerializable("NodeClass", dataTypeNode._nodeClass);
+        encoder.encodeEnumeration("NodeClass", dataTypeNode._nodeClass);
         encoder.encodeQualifiedName("BrowseName", dataTypeNode._browseName);
         encoder.encodeLocalizedText("DisplayName", dataTypeNode._displayName);
         encoder.encodeLocalizedText("Description", dataTypeNode._description);
@@ -57,7 +64,7 @@ public class DataTypeNode extends TypeNode {
 
     public static DataTypeNode decode(UaDecoder decoder) {
         NodeId _nodeId = decoder.decodeNodeId("NodeId");
-        NodeClass _nodeClass = decoder.decodeSerializable("NodeClass", NodeClass.class);
+        NodeClass _nodeClass = decoder.decodeEnumeration("NodeClass", NodeClass.class);
         QualifiedName _browseName = decoder.decodeQualifiedName("BrowseName");
         LocalizedText _displayName = decoder.decodeLocalizedText("DisplayName");
         LocalizedText _description = decoder.decodeLocalizedText("Description");

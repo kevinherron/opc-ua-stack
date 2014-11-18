@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("EUInformation")
 public class EUInformation implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.EUInformation;
@@ -18,6 +20,13 @@ public class EUInformation implements UaStructure {
     protected final Integer _unitId;
     protected final LocalizedText _displayName;
     protected final LocalizedText _description;
+
+    public EUInformation() {
+        this._namespaceUri = null;
+        this._unitId = null;
+        this._displayName = null;
+        this._description = null;
+    }
 
     public EUInformation(String _namespaceUri, Integer _unitId, LocalizedText _displayName, LocalizedText _description) {
         this._namespaceUri = _namespaceUri;

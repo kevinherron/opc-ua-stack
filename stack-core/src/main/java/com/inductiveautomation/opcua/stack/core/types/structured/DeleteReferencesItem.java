@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExpandedNodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("DeleteReferencesItem")
 public class DeleteReferencesItem implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.DeleteReferencesItem;
@@ -19,6 +21,14 @@ public class DeleteReferencesItem implements UaStructure {
     protected final Boolean _isForward;
     protected final ExpandedNodeId _targetNodeId;
     protected final Boolean _deleteBidirectional;
+
+    public DeleteReferencesItem() {
+        this._sourceNodeId = null;
+        this._referenceTypeId = null;
+        this._isForward = null;
+        this._targetNodeId = null;
+        this._deleteBidirectional = null;
+    }
 
     public DeleteReferencesItem(NodeId _sourceNodeId, NodeId _referenceTypeId, Boolean _isForward, ExpandedNodeId _targetNodeId, Boolean _deleteBidirectional) {
         this._sourceNodeId = _sourceNodeId;

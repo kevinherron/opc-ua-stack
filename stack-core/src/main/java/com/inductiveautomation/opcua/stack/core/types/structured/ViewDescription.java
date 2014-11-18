@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("ViewDescription")
 public class ViewDescription implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ViewDescription;
@@ -18,6 +20,12 @@ public class ViewDescription implements UaStructure {
     protected final NodeId _viewId;
     protected final DateTime _timestamp;
     protected final UInteger _viewVersion;
+
+    public ViewDescription() {
+        this._viewId = null;
+        this._timestamp = null;
+        this._viewVersion = null;
+    }
 
     public ViewDescription(NodeId _viewId, DateTime _timestamp, UInteger _viewVersion) {
         this._viewId = _viewId;

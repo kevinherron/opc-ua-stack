@@ -4,10 +4,12 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("StatusChangeNotification")
 public class StatusChangeNotification extends NotificationData {
 
     public static final NodeId TypeId = Identifiers.StatusChangeNotification;
@@ -16,6 +18,12 @@ public class StatusChangeNotification extends NotificationData {
 
     protected final StatusCode _status;
     protected final DiagnosticInfo _diagnosticInfo;
+
+    public StatusChangeNotification() {
+        super();
+        this._status = null;
+        this._diagnosticInfo = null;
+    }
 
     public StatusChangeNotification(StatusCode _status, DiagnosticInfo _diagnosticInfo) {
         super();

@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("RegisterServerResponse")
 public class RegisterServerResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.RegisterServerResponse;
@@ -14,6 +16,10 @@ public class RegisterServerResponse implements UaResponseMessage {
     public static final NodeId XmlEncodingId = Identifiers.RegisterServerResponse_Encoding_DefaultXml;
 
     protected final ResponseHeader _responseHeader;
+
+    public RegisterServerResponse() {
+        this._responseHeader = null;
+    }
 
     public RegisterServerResponse(ResponseHeader _responseHeader) {
         this._responseHeader = _responseHeader;
@@ -40,7 +46,7 @@ public class RegisterServerResponse implements UaResponseMessage {
 
 
     public static void encode(RegisterServerResponse registerServerResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", registerServerResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", registerServerResponse._responseHeader != null ? registerServerResponse._responseHeader : new ResponseHeader());
     }
 
     public static RegisterServerResponse decode(UaDecoder decoder) {

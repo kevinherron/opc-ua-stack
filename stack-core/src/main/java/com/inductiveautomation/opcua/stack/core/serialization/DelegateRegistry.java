@@ -4,13 +4,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
-import com.inductiveautomation.opcua.stack.core.StatusCodes;
-import com.inductiveautomation.opcua.stack.core.UaSerializationException;
-import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.reflect.ClassPath;
+import com.inductiveautomation.opcua.stack.core.StatusCodes;
+import com.inductiveautomation.opcua.stack.core.UaSerializationException;
+import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,58 +46,52 @@ public class DelegateRegistry {
 
     @SuppressWarnings("unchecked")
     public static <T extends UaSerializable> EncoderDelegate<T> getEncoder(T t) throws UaSerializationException {
-        EncoderDelegate<T> encoder = (EncoderDelegate<T>) encodersByClass.get(t.getClass());
-
-        if (encoder == null) {
-            throw new UaSerializationException(StatusCodes.Bad_EncodingError, "no encoder registered for " + t.getClass());
+        try {
+            return (EncoderDelegate<T>) encodersByClass.get(t.getClass());
+        } catch (NullPointerException e) {
+            throw new UaSerializationException(StatusCodes.Bad_EncodingError,
+                    "no encoder registered for class=" + t);
         }
-
-        return encoder;
     }
 
     @SuppressWarnings("unchecked")
     public static <T extends UaSerializable> EncoderDelegate<T> getEncoder(Class<T> clazz) throws UaSerializationException {
-        EncoderDelegate<T> encoder = (EncoderDelegate<T>) encodersByClass.get(clazz);
-
-        if (encoder == null) {
-            throw new UaSerializationException(StatusCodes.Bad_EncodingError, "no encoder registered for " + clazz);
+        try {
+            return (EncoderDelegate<T>) encodersByClass.get(clazz);
+        } catch (NullPointerException e) {
+            throw new UaSerializationException(StatusCodes.Bad_EncodingError,
+                    "no encoder registered for class=" + clazz);
         }
-
-        return encoder;
     }
 
     @SuppressWarnings("unchecked")
     public static <T extends UaSerializable> EncoderDelegate<T> getEncoder(NodeId encodingId) throws UaSerializationException {
-        EncoderDelegate<T> encoder = (EncoderDelegate<T>) encodersById.get(encodingId);
-
-        if (encoder == null) {
+        try {
+            return (EncoderDelegate<T>) encodersById.get(encodingId);
+        } catch (NullPointerException e) {
             throw new UaSerializationException(StatusCodes.Bad_EncodingError,
                     "no encoder registered for encodingId=" + encodingId);
         }
-
-        return encoder;
     }
 
     @SuppressWarnings("unchecked")
     public static <T extends UaSerializable> DecoderDelegate<T> getDecoder(T t) throws UaSerializationException {
-        DecoderDelegate<T> decoder = (DecoderDelegate<T>) decodersByClass.get(t.getClass());
-
-        if (decoder == null) {
-            throw new UaSerializationException(StatusCodes.Bad_DecodingError, "no decoder registered for " + t.getClass());
+        try {
+            return (DecoderDelegate<T>) decodersByClass.get(t.getClass());
+        } catch (NullPointerException e) {
+            throw new UaSerializationException(StatusCodes.Bad_DecodingError,
+                    "no decoder registered for class=" + t);
         }
-
-        return decoder;
     }
 
     @SuppressWarnings("unchecked")
     public static <T extends UaSerializable> DecoderDelegate<T> getDecoder(Class<T> clazz) throws UaSerializationException {
-        DecoderDelegate<T> decoder = (DecoderDelegate<T>) decodersByClass.get(clazz);
-
-        if (decoder == null) {
-            throw new UaSerializationException(StatusCodes.Bad_DecodingError, "no decoder registered for " + clazz);
+        try {
+            return (DecoderDelegate<T>) decodersByClass.get(clazz);
+        } catch (NullPointerException e) {
+            throw new UaSerializationException(StatusCodes.Bad_DecodingError,
+                    "no decoder registered for class=" + clazz);
         }
-
-        return decoder;
     }
 
     public static DecoderDelegate<? extends UaSerializable> getDecoder(NodeId encodingId) {

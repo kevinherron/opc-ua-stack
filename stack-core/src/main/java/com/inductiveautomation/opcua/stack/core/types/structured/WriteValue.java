@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DataValue;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("WriteValue")
 public class WriteValue implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.WriteValue;
@@ -19,6 +21,13 @@ public class WriteValue implements UaStructure {
     protected final UInteger _attributeId;
     protected final String _indexRange;
     protected final DataValue _value;
+
+    public WriteValue() {
+        this._nodeId = null;
+        this._attributeId = null;
+        this._indexRange = null;
+        this._value = null;
+    }
 
     public WriteValue(NodeId _nodeId, UInteger _attributeId, String _indexRange, DataValue _value) {
         this._nodeId = _nodeId;

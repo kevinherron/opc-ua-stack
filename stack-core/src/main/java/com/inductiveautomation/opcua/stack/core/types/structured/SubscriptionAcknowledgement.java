@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("SubscriptionAcknowledgement")
 public class SubscriptionAcknowledgement implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.SubscriptionAcknowledgement;
@@ -16,6 +18,11 @@ public class SubscriptionAcknowledgement implements UaStructure {
 
     protected final UInteger _subscriptionId;
     protected final UInteger _sequenceNumber;
+
+    public SubscriptionAcknowledgement() {
+        this._subscriptionId = null;
+        this._sequenceNumber = null;
+    }
 
     public SubscriptionAcknowledgement(UInteger _subscriptionId, UInteger _sequenceNumber) {
         this._subscriptionId = _subscriptionId;

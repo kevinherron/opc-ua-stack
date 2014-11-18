@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("PublishRequest")
 public class PublishRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.PublishRequest;
@@ -15,6 +17,11 @@ public class PublishRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final SubscriptionAcknowledgement[] _subscriptionAcknowledgements;
+
+    public PublishRequest() {
+        this._requestHeader = null;
+        this._subscriptionAcknowledgements = null;
+    }
 
     public PublishRequest(RequestHeader _requestHeader, SubscriptionAcknowledgement[] _subscriptionAcknowledgements) {
         this._requestHeader = _requestHeader;
@@ -46,7 +53,7 @@ public class PublishRequest implements UaRequestMessage {
 
 
     public static void encode(PublishRequest publishRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", publishRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", publishRequest._requestHeader != null ? publishRequest._requestHeader : new RequestHeader());
         encoder.encodeArray("SubscriptionAcknowledgements", publishRequest._subscriptionAcknowledgements, encoder::encodeSerializable);
     }
 

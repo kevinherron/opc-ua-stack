@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("RepublishResponse")
 public class RepublishResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.RepublishResponse;
@@ -15,6 +17,11 @@ public class RepublishResponse implements UaResponseMessage {
 
     protected final ResponseHeader _responseHeader;
     protected final NotificationMessage _notificationMessage;
+
+    public RepublishResponse() {
+        this._responseHeader = null;
+        this._notificationMessage = null;
+    }
 
     public RepublishResponse(ResponseHeader _responseHeader, NotificationMessage _notificationMessage) {
         this._responseHeader = _responseHeader;
@@ -46,8 +53,8 @@ public class RepublishResponse implements UaResponseMessage {
 
 
     public static void encode(RepublishResponse republishResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", republishResponse._responseHeader);
-        encoder.encodeSerializable("NotificationMessage", republishResponse._notificationMessage);
+        encoder.encodeSerializable("ResponseHeader", republishResponse._responseHeader != null ? republishResponse._responseHeader : new ResponseHeader());
+        encoder.encodeSerializable("NotificationMessage", republishResponse._notificationMessage != null ? republishResponse._notificationMessage : new NotificationMessage());
     }
 
     public static RepublishResponse decode(UaDecoder decoder) {

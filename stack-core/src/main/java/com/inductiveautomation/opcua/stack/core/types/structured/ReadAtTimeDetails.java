@@ -4,9 +4,11 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("ReadAtTimeDetails")
 public class ReadAtTimeDetails extends HistoryReadDetails {
 
     public static final NodeId TypeId = Identifiers.ReadAtTimeDetails;
@@ -15,6 +17,12 @@ public class ReadAtTimeDetails extends HistoryReadDetails {
 
     protected final DateTime[] _reqTimes;
     protected final Boolean _useSimpleBounds;
+
+    public ReadAtTimeDetails() {
+        super();
+        this._reqTimes = null;
+        this._useSimpleBounds = null;
+    }
 
     public ReadAtTimeDetails(DateTime[] _reqTimes, Boolean _useSimpleBounds) {
         super();

@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("WriteRequest")
 public class WriteRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.WriteRequest;
@@ -15,6 +17,11 @@ public class WriteRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final WriteValue[] _nodesToWrite;
+
+    public WriteRequest() {
+        this._requestHeader = null;
+        this._nodesToWrite = null;
+    }
 
     public WriteRequest(RequestHeader _requestHeader, WriteValue[] _nodesToWrite) {
         this._requestHeader = _requestHeader;
@@ -46,7 +53,7 @@ public class WriteRequest implements UaRequestMessage {
 
 
     public static void encode(WriteRequest writeRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", writeRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", writeRequest._requestHeader != null ? writeRequest._requestHeader : new RequestHeader());
         encoder.encodeArray("NodesToWrite", writeRequest._nodesToWrite, encoder::encodeSerializable);
     }
 

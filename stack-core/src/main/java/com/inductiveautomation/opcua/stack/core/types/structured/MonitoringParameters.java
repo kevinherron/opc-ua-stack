@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("MonitoringParameters")
 public class MonitoringParameters implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.MonitoringParameters;
@@ -20,6 +22,14 @@ public class MonitoringParameters implements UaStructure {
     protected final ExtensionObject _filter;
     protected final UInteger _queueSize;
     protected final Boolean _discardOldest;
+
+    public MonitoringParameters() {
+        this._clientHandle = null;
+        this._samplingInterval = null;
+        this._filter = null;
+        this._queueSize = null;
+        this._discardOldest = null;
+    }
 
     public MonitoringParameters(UInteger _clientHandle, Double _samplingInterval, ExtensionObject _filter, UInteger _queueSize, Boolean _discardOldest) {
         this._clientHandle = _clientHandle;

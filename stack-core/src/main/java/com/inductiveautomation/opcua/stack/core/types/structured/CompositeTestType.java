@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("CompositeTestType")
 public class CompositeTestType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.CompositeTestType;
@@ -15,6 +17,11 @@ public class CompositeTestType implements UaStructure {
 
     protected final ScalarTestType _field1;
     protected final ArrayTestType _field2;
+
+    public CompositeTestType() {
+        this._field1 = null;
+        this._field2 = null;
+    }
 
     public CompositeTestType(ScalarTestType _field1, ArrayTestType _field2) {
         this._field1 = _field1;
@@ -46,8 +53,8 @@ public class CompositeTestType implements UaStructure {
 
 
     public static void encode(CompositeTestType compositeTestType, UaEncoder encoder) {
-        encoder.encodeSerializable("Field1", compositeTestType._field1);
-        encoder.encodeSerializable("Field2", compositeTestType._field2);
+        encoder.encodeSerializable("Field1", compositeTestType._field1 != null ? compositeTestType._field1 : new ScalarTestType());
+        encoder.encodeSerializable("Field2", compositeTestType._field2 != null ? compositeTestType._field2 : new ArrayTestType());
     }
 
     public static CompositeTestType decode(UaDecoder decoder) {

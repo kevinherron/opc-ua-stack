@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("HistoryUpdateDetails")
 public class HistoryUpdateDetails implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.HistoryUpdateDetails;
@@ -14,6 +16,10 @@ public class HistoryUpdateDetails implements UaStructure {
     public static final NodeId XmlEncodingId = Identifiers.HistoryUpdateDetails_Encoding_DefaultXml;
 
     protected final NodeId _nodeId;
+
+    public HistoryUpdateDetails() {
+        this._nodeId = null;
+    }
 
     public HistoryUpdateDetails(NodeId _nodeId) {
         this._nodeId = _nodeId;

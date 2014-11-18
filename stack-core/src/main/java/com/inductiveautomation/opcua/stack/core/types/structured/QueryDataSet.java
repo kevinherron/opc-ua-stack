@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExpandedNodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 
+@UaDataType("QueryDataSet")
 public class QueryDataSet implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.QueryDataSet;
@@ -18,6 +20,12 @@ public class QueryDataSet implements UaStructure {
     protected final ExpandedNodeId _nodeId;
     protected final ExpandedNodeId _typeDefinitionNode;
     protected final Variant[] _values;
+
+    public QueryDataSet() {
+        this._nodeId = null;
+        this._typeDefinitionNode = null;
+        this._values = null;
+    }
 
     public QueryDataSet(ExpandedNodeId _nodeId, ExpandedNodeId _typeDefinitionNode, Variant[] _values) {
         this._nodeId = _nodeId;

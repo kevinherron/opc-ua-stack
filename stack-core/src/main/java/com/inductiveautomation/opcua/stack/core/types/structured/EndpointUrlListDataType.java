@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("EndpointUrlListDataType")
 public class EndpointUrlListDataType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.EndpointUrlListDataType;
@@ -14,6 +16,10 @@ public class EndpointUrlListDataType implements UaStructure {
     public static final NodeId XmlEncodingId = Identifiers.EndpointUrlListDataType_Encoding_DefaultXml;
 
     protected final String[] _endpointUrlList;
+
+    public EndpointUrlListDataType() {
+        this._endpointUrlList = null;
+    }
 
     public EndpointUrlListDataType(String[] _endpointUrlList) {
         this._endpointUrlList = _endpointUrlList;

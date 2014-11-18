@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("MonitoredItemModifyRequest")
 public class MonitoredItemModifyRequest implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.MonitoredItemModifyRequest;
@@ -16,6 +18,11 @@ public class MonitoredItemModifyRequest implements UaStructure {
 
     protected final UInteger _monitoredItemId;
     protected final MonitoringParameters _requestedParameters;
+
+    public MonitoredItemModifyRequest() {
+        this._monitoredItemId = null;
+        this._requestedParameters = null;
+    }
 
     public MonitoredItemModifyRequest(UInteger _monitoredItemId, MonitoringParameters _requestedParameters) {
         this._monitoredItemId = _monitoredItemId;
@@ -48,7 +55,7 @@ public class MonitoredItemModifyRequest implements UaStructure {
 
     public static void encode(MonitoredItemModifyRequest monitoredItemModifyRequest, UaEncoder encoder) {
         encoder.encodeUInt32("MonitoredItemId", monitoredItemModifyRequest._monitoredItemId);
-        encoder.encodeSerializable("RequestedParameters", monitoredItemModifyRequest._requestedParameters);
+        encoder.encodeSerializable("RequestedParameters", monitoredItemModifyRequest._requestedParameters != null ? monitoredItemModifyRequest._requestedParameters : new MonitoringParameters());
     }
 
     public static MonitoredItemModifyRequest decode(UaDecoder decoder) {

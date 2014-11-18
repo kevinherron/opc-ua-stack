@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("RelativePath")
 public class RelativePath implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.RelativePath;
@@ -14,6 +16,10 @@ public class RelativePath implements UaStructure {
     public static final NodeId XmlEncodingId = Identifiers.RelativePath_Encoding_DefaultXml;
 
     protected final RelativePathElement[] _elements;
+
+    public RelativePath() {
+        this._elements = null;
+    }
 
     public RelativePath(RelativePathElement[] _elements) {
         this._elements = _elements;

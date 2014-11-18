@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.TimestampsToReturn;
 
+@UaDataType("ModifyMonitoredItemsRequest")
 public class ModifyMonitoredItemsRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.ModifyMonitoredItemsRequest;
@@ -19,6 +21,13 @@ public class ModifyMonitoredItemsRequest implements UaRequestMessage {
     protected final UInteger _subscriptionId;
     protected final TimestampsToReturn _timestampsToReturn;
     protected final MonitoredItemModifyRequest[] _itemsToModify;
+
+    public ModifyMonitoredItemsRequest() {
+        this._requestHeader = null;
+        this._subscriptionId = null;
+        this._timestampsToReturn = null;
+        this._itemsToModify = null;
+    }
 
     public ModifyMonitoredItemsRequest(RequestHeader _requestHeader, UInteger _subscriptionId, TimestampsToReturn _timestampsToReturn, MonitoredItemModifyRequest[] _itemsToModify) {
         this._requestHeader = _requestHeader;
@@ -60,16 +69,16 @@ public class ModifyMonitoredItemsRequest implements UaRequestMessage {
 
 
     public static void encode(ModifyMonitoredItemsRequest modifyMonitoredItemsRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", modifyMonitoredItemsRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", modifyMonitoredItemsRequest._requestHeader != null ? modifyMonitoredItemsRequest._requestHeader : new RequestHeader());
         encoder.encodeUInt32("SubscriptionId", modifyMonitoredItemsRequest._subscriptionId);
-        encoder.encodeSerializable("TimestampsToReturn", modifyMonitoredItemsRequest._timestampsToReturn);
+        encoder.encodeEnumeration("TimestampsToReturn", modifyMonitoredItemsRequest._timestampsToReturn);
         encoder.encodeArray("ItemsToModify", modifyMonitoredItemsRequest._itemsToModify, encoder::encodeSerializable);
     }
 
     public static ModifyMonitoredItemsRequest decode(UaDecoder decoder) {
         RequestHeader _requestHeader = decoder.decodeSerializable("RequestHeader", RequestHeader.class);
         UInteger _subscriptionId = decoder.decodeUInt32("SubscriptionId");
-        TimestampsToReturn _timestampsToReturn = decoder.decodeSerializable("TimestampsToReturn", TimestampsToReturn.class);
+        TimestampsToReturn _timestampsToReturn = decoder.decodeEnumeration("TimestampsToReturn", TimestampsToReturn.class);
         MonitoredItemModifyRequest[] _itemsToModify = decoder.decodeArray("ItemsToModify", decoder::decodeSerializable, MonitoredItemModifyRequest.class);
 
         return new ModifyMonitoredItemsRequest(_requestHeader, _subscriptionId, _timestampsToReturn, _itemsToModify);

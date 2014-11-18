@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.BrowseDirection;
 
+@UaDataType("BrowseDescription")
 public class BrowseDescription implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.BrowseDescription;
@@ -21,6 +23,15 @@ public class BrowseDescription implements UaStructure {
     protected final Boolean _includeSubtypes;
     protected final UInteger _nodeClassMask;
     protected final UInteger _resultMask;
+
+    public BrowseDescription() {
+        this._nodeId = null;
+        this._browseDirection = null;
+        this._referenceTypeId = null;
+        this._includeSubtypes = null;
+        this._nodeClassMask = null;
+        this._resultMask = null;
+    }
 
     public BrowseDescription(NodeId _nodeId, BrowseDirection _browseDirection, NodeId _referenceTypeId, Boolean _includeSubtypes, UInteger _nodeClassMask, UInteger _resultMask) {
         this._nodeId = _nodeId;
@@ -73,7 +84,7 @@ public class BrowseDescription implements UaStructure {
 
     public static void encode(BrowseDescription browseDescription, UaEncoder encoder) {
         encoder.encodeNodeId("NodeId", browseDescription._nodeId);
-        encoder.encodeSerializable("BrowseDirection", browseDescription._browseDirection);
+        encoder.encodeEnumeration("BrowseDirection", browseDescription._browseDirection);
         encoder.encodeNodeId("ReferenceTypeId", browseDescription._referenceTypeId);
         encoder.encodeBoolean("IncludeSubtypes", browseDescription._includeSubtypes);
         encoder.encodeUInt32("NodeClassMask", browseDescription._nodeClassMask);
@@ -82,7 +93,7 @@ public class BrowseDescription implements UaStructure {
 
     public static BrowseDescription decode(UaDecoder decoder) {
         NodeId _nodeId = decoder.decodeNodeId("NodeId");
-        BrowseDirection _browseDirection = decoder.decodeSerializable("BrowseDirection", BrowseDirection.class);
+        BrowseDirection _browseDirection = decoder.decodeEnumeration("BrowseDirection", BrowseDirection.class);
         NodeId _referenceTypeId = decoder.decodeNodeId("ReferenceTypeId");
         Boolean _includeSubtypes = decoder.decodeBoolean("IncludeSubtypes");
         UInteger _nodeClassMask = decoder.decodeUInt32("NodeClassMask");

@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("AddReferencesRequest")
 public class AddReferencesRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.AddReferencesRequest;
@@ -15,6 +17,11 @@ public class AddReferencesRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final AddReferencesItem[] _referencesToAdd;
+
+    public AddReferencesRequest() {
+        this._requestHeader = null;
+        this._referencesToAdd = null;
+    }
 
     public AddReferencesRequest(RequestHeader _requestHeader, AddReferencesItem[] _referencesToAdd) {
         this._requestHeader = _requestHeader;
@@ -46,7 +53,7 @@ public class AddReferencesRequest implements UaRequestMessage {
 
 
     public static void encode(AddReferencesRequest addReferencesRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", addReferencesRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", addReferencesRequest._requestHeader != null ? addReferencesRequest._requestHeader : new RequestHeader());
         encoder.encodeArray("ReferencesToAdd", addReferencesRequest._referencesToAdd, encoder::encodeSerializable);
     }
 

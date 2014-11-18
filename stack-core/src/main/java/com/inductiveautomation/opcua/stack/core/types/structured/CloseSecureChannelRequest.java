@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("CloseSecureChannelRequest")
 public class CloseSecureChannelRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.CloseSecureChannelRequest;
@@ -14,6 +16,10 @@ public class CloseSecureChannelRequest implements UaRequestMessage {
     public static final NodeId XmlEncodingId = Identifiers.CloseSecureChannelRequest_Encoding_DefaultXml;
 
     protected final RequestHeader _requestHeader;
+
+    public CloseSecureChannelRequest() {
+        this._requestHeader = null;
+    }
 
     public CloseSecureChannelRequest(RequestHeader _requestHeader) {
         this._requestHeader = _requestHeader;
@@ -40,7 +46,7 @@ public class CloseSecureChannelRequest implements UaRequestMessage {
 
 
     public static void encode(CloseSecureChannelRequest closeSecureChannelRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", closeSecureChannelRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", closeSecureChannelRequest._requestHeader != null ? closeSecureChannelRequest._requestHeader : new RequestHeader());
     }
 
     public static CloseSecureChannelRequest decode(UaDecoder decoder) {

@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("SetTriggeringRequest")
 public class SetTriggeringRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.SetTriggeringRequest;
@@ -19,6 +21,14 @@ public class SetTriggeringRequest implements UaRequestMessage {
     protected final UInteger _triggeringItemId;
     protected final UInteger[] _linksToAdd;
     protected final UInteger[] _linksToRemove;
+
+    public SetTriggeringRequest() {
+        this._requestHeader = null;
+        this._subscriptionId = null;
+        this._triggeringItemId = null;
+        this._linksToAdd = null;
+        this._linksToRemove = null;
+    }
 
     public SetTriggeringRequest(RequestHeader _requestHeader, UInteger _subscriptionId, UInteger _triggeringItemId, UInteger[] _linksToAdd, UInteger[] _linksToRemove) {
         this._requestHeader = _requestHeader;
@@ -65,7 +75,7 @@ public class SetTriggeringRequest implements UaRequestMessage {
 
 
     public static void encode(SetTriggeringRequest setTriggeringRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", setTriggeringRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", setTriggeringRequest._requestHeader != null ? setTriggeringRequest._requestHeader : new RequestHeader());
         encoder.encodeUInt32("SubscriptionId", setTriggeringRequest._subscriptionId);
         encoder.encodeUInt32("TriggeringItemId", setTriggeringRequest._triggeringItemId);
         encoder.encodeArray("LinksToAdd", setTriggeringRequest._linksToAdd, encoder::encodeUInt32);

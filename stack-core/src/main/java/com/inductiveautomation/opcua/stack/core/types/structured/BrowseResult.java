@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("BrowseResult")
 public class BrowseResult implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.BrowseResult;
@@ -18,6 +20,12 @@ public class BrowseResult implements UaStructure {
     protected final StatusCode _statusCode;
     protected final ByteString _continuationPoint;
     protected final ReferenceDescription[] _references;
+
+    public BrowseResult() {
+        this._statusCode = null;
+        this._continuationPoint = null;
+        this._references = null;
+    }
 
     public BrowseResult(StatusCode _statusCode, ByteString _continuationPoint, ReferenceDescription[] _references) {
         this._statusCode = _statusCode;

@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("TestStackExRequest")
 public class TestStackExRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.TestStackExRequest;
@@ -18,6 +20,13 @@ public class TestStackExRequest implements UaRequestMessage {
     protected final UInteger _testId;
     protected final Integer _iteration;
     protected final CompositeTestType _input;
+
+    public TestStackExRequest() {
+        this._requestHeader = null;
+        this._testId = null;
+        this._iteration = null;
+        this._input = null;
+    }
 
     public TestStackExRequest(RequestHeader _requestHeader, UInteger _testId, Integer _iteration, CompositeTestType _input) {
         this._requestHeader = _requestHeader;
@@ -59,10 +68,10 @@ public class TestStackExRequest implements UaRequestMessage {
 
 
     public static void encode(TestStackExRequest testStackExRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", testStackExRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", testStackExRequest._requestHeader != null ? testStackExRequest._requestHeader : new RequestHeader());
         encoder.encodeUInt32("TestId", testStackExRequest._testId);
         encoder.encodeInt32("Iteration", testStackExRequest._iteration);
-        encoder.encodeSerializable("Input", testStackExRequest._input);
+        encoder.encodeSerializable("Input", testStackExRequest._input != null ? testStackExRequest._input : new CompositeTestType());
     }
 
     public static TestStackExRequest decode(UaDecoder decoder) {

@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("NodeAttributes")
 public class NodeAttributes implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.NodeAttributes;
@@ -20,6 +22,14 @@ public class NodeAttributes implements UaStructure {
     protected final LocalizedText _description;
     protected final UInteger _writeMask;
     protected final UInteger _userWriteMask;
+
+    public NodeAttributes() {
+        this._specifiedAttributes = null;
+        this._displayName = null;
+        this._description = null;
+        this._writeMask = null;
+        this._userWriteMask = null;
+    }
 
     public NodeAttributes(UInteger _specifiedAttributes, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask) {
         this._specifiedAttributes = _specifiedAttributes;

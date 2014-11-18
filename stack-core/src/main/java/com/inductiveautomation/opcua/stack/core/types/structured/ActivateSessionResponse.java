@@ -5,11 +5,13 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("ActivateSessionResponse")
 public class ActivateSessionResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.ActivateSessionResponse;
@@ -20,6 +22,13 @@ public class ActivateSessionResponse implements UaResponseMessage {
     protected final ByteString _serverNonce;
     protected final StatusCode[] _results;
     protected final DiagnosticInfo[] _diagnosticInfos;
+
+    public ActivateSessionResponse() {
+        this._responseHeader = null;
+        this._serverNonce = null;
+        this._results = null;
+        this._diagnosticInfos = null;
+    }
 
     public ActivateSessionResponse(ResponseHeader _responseHeader, ByteString _serverNonce, StatusCode[] _results, DiagnosticInfo[] _diagnosticInfos) {
         this._responseHeader = _responseHeader;
@@ -61,7 +70,7 @@ public class ActivateSessionResponse implements UaResponseMessage {
 
 
     public static void encode(ActivateSessionResponse activateSessionResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", activateSessionResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", activateSessionResponse._responseHeader != null ? activateSessionResponse._responseHeader : new ResponseHeader());
         encoder.encodeByteString("ServerNonce", activateSessionResponse._serverNonce);
         encoder.encodeArray("Results", activateSessionResponse._results, encoder::encodeStatusCode);
         encoder.encodeArray("DiagnosticInfos", activateSessionResponse._diagnosticInfos, encoder::encodeDiagnosticInfo);

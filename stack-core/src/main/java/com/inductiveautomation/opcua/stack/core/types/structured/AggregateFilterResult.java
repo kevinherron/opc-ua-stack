@@ -4,9 +4,11 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("AggregateFilterResult")
 public class AggregateFilterResult extends MonitoringFilterResult {
 
     public static final NodeId TypeId = Identifiers.AggregateFilterResult;
@@ -16,6 +18,13 @@ public class AggregateFilterResult extends MonitoringFilterResult {
     protected final DateTime _revisedStartTime;
     protected final Double _revisedProcessingInterval;
     protected final AggregateConfiguration _revisedAggregateConfiguration;
+
+    public AggregateFilterResult() {
+        super();
+        this._revisedStartTime = null;
+        this._revisedProcessingInterval = null;
+        this._revisedAggregateConfiguration = null;
+    }
 
     public AggregateFilterResult(DateTime _revisedStartTime, Double _revisedProcessingInterval, AggregateConfiguration _revisedAggregateConfiguration) {
         super();
@@ -55,7 +64,7 @@ public class AggregateFilterResult extends MonitoringFilterResult {
     public static void encode(AggregateFilterResult aggregateFilterResult, UaEncoder encoder) {
         encoder.encodeDateTime("RevisedStartTime", aggregateFilterResult._revisedStartTime);
         encoder.encodeDouble("RevisedProcessingInterval", aggregateFilterResult._revisedProcessingInterval);
-        encoder.encodeSerializable("RevisedAggregateConfiguration", aggregateFilterResult._revisedAggregateConfiguration);
+        encoder.encodeSerializable("RevisedAggregateConfiguration", aggregateFilterResult._revisedAggregateConfiguration != null ? aggregateFilterResult._revisedAggregateConfiguration : new AggregateConfiguration());
     }
 
     public static AggregateFilterResult decode(UaDecoder decoder) {

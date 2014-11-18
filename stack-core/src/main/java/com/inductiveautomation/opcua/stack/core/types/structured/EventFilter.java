@@ -4,8 +4,10 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("EventFilter")
 public class EventFilter extends MonitoringFilter {
 
     public static final NodeId TypeId = Identifiers.EventFilter;
@@ -14,6 +16,12 @@ public class EventFilter extends MonitoringFilter {
 
     protected final SimpleAttributeOperand[] _selectClauses;
     protected final ContentFilter _whereClause;
+
+    public EventFilter() {
+        super();
+        this._selectClauses = null;
+        this._whereClause = null;
+    }
 
     public EventFilter(SimpleAttributeOperand[] _selectClauses, ContentFilter _whereClause) {
         super();
@@ -47,7 +55,7 @@ public class EventFilter extends MonitoringFilter {
 
     public static void encode(EventFilter eventFilter, UaEncoder encoder) {
         encoder.encodeArray("SelectClauses", eventFilter._selectClauses, encoder::encodeSerializable);
-        encoder.encodeSerializable("WhereClause", eventFilter._whereClause);
+        encoder.encodeSerializable("WhereClause", eventFilter._whereClause != null ? eventFilter._whereClause : new ContentFilter());
     }
 
     public static EventFilter decode(UaDecoder decoder) {

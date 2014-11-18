@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("ContentFilterResult")
 public class ContentFilterResult implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ContentFilterResult;
@@ -16,6 +18,11 @@ public class ContentFilterResult implements UaStructure {
 
     protected final ContentFilterElementResult[] _elementResults;
     protected final DiagnosticInfo[] _elementDiagnosticInfos;
+
+    public ContentFilterResult() {
+        this._elementResults = null;
+        this._elementDiagnosticInfos = null;
+    }
 
     public ContentFilterResult(ContentFilterElementResult[] _elementResults, DiagnosticInfo[] _elementDiagnosticInfos) {
         this._elementResults = _elementResults;

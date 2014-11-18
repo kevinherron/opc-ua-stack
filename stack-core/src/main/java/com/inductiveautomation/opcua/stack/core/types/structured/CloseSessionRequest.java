@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("CloseSessionRequest")
 public class CloseSessionRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.CloseSessionRequest;
@@ -15,6 +17,11 @@ public class CloseSessionRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final Boolean _deleteSubscriptions;
+
+    public CloseSessionRequest() {
+        this._requestHeader = null;
+        this._deleteSubscriptions = null;
+    }
 
     public CloseSessionRequest(RequestHeader _requestHeader, Boolean _deleteSubscriptions) {
         this._requestHeader = _requestHeader;
@@ -46,7 +53,7 @@ public class CloseSessionRequest implements UaRequestMessage {
 
 
     public static void encode(CloseSessionRequest closeSessionRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", closeSessionRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", closeSessionRequest._requestHeader != null ? closeSessionRequest._requestHeader : new RequestHeader());
         encoder.encodeBoolean("DeleteSubscriptions", closeSessionRequest._deleteSubscriptions);
     }
 

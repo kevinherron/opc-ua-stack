@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("FindServersResponse")
 public class FindServersResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.FindServersResponse;
@@ -15,6 +17,11 @@ public class FindServersResponse implements UaResponseMessage {
 
     protected final ResponseHeader _responseHeader;
     protected final ApplicationDescription[] _servers;
+
+    public FindServersResponse() {
+        this._responseHeader = null;
+        this._servers = null;
+    }
 
     public FindServersResponse(ResponseHeader _responseHeader, ApplicationDescription[] _servers) {
         this._responseHeader = _responseHeader;
@@ -46,7 +53,7 @@ public class FindServersResponse implements UaResponseMessage {
 
 
     public static void encode(FindServersResponse findServersResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", findServersResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", findServersResponse._responseHeader != null ? findServersResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("Servers", findServersResponse._servers, encoder::encodeSerializable);
     }
 

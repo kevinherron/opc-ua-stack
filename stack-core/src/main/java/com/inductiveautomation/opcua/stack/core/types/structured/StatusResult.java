@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("StatusResult")
 public class StatusResult implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.StatusResult;
@@ -17,6 +19,11 @@ public class StatusResult implements UaStructure {
 
     protected final StatusCode _statusCode;
     protected final DiagnosticInfo _diagnosticInfo;
+
+    public StatusResult() {
+        this._statusCode = null;
+        this._diagnosticInfo = null;
+    }
 
     public StatusResult(StatusCode _statusCode, DiagnosticInfo _diagnosticInfo) {
         this._statusCode = _statusCode;

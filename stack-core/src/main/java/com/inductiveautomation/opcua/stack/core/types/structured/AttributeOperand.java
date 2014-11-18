@@ -4,9 +4,11 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("AttributeOperand")
 public class AttributeOperand extends FilterOperand {
 
     public static final NodeId TypeId = Identifiers.AttributeOperand;
@@ -18,6 +20,15 @@ public class AttributeOperand extends FilterOperand {
     protected final RelativePath _browsePath;
     protected final UInteger _attributeId;
     protected final String _indexRange;
+
+    public AttributeOperand() {
+        super();
+        this._nodeId = null;
+        this._alias = null;
+        this._browsePath = null;
+        this._attributeId = null;
+        this._indexRange = null;
+    }
 
     public AttributeOperand(NodeId _nodeId, String _alias, RelativePath _browsePath, UInteger _attributeId, String _indexRange) {
         super();
@@ -67,7 +78,7 @@ public class AttributeOperand extends FilterOperand {
     public static void encode(AttributeOperand attributeOperand, UaEncoder encoder) {
         encoder.encodeNodeId("NodeId", attributeOperand._nodeId);
         encoder.encodeString("Alias", attributeOperand._alias);
-        encoder.encodeSerializable("BrowsePath", attributeOperand._browsePath);
+        encoder.encodeSerializable("BrowsePath", attributeOperand._browsePath != null ? attributeOperand._browsePath : new RelativePath());
         encoder.encodeUInt32("AttributeId", attributeOperand._attributeId);
         encoder.encodeString("IndexRange", attributeOperand._indexRange);
     }

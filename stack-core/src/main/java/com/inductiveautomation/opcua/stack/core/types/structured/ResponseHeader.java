@@ -5,6 +5,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
@@ -12,6 +13,7 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("ResponseHeader")
 public class ResponseHeader implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ResponseHeader;
@@ -24,6 +26,15 @@ public class ResponseHeader implements UaStructure {
     protected final DiagnosticInfo _serviceDiagnostics;
     protected final String[] _stringTable;
     protected final ExtensionObject _additionalHeader;
+
+    public ResponseHeader() {
+        this._timestamp = null;
+        this._requestHandle = null;
+        this._serviceResult = null;
+        this._serviceDiagnostics = null;
+        this._stringTable = null;
+        this._additionalHeader = null;
+    }
 
     public ResponseHeader(DateTime _timestamp, UInteger _requestHandle, StatusCode _serviceResult, DiagnosticInfo _serviceDiagnostics, String[] _stringTable, ExtensionObject _additionalHeader) {
         this._timestamp = _timestamp;

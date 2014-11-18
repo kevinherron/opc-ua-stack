@@ -4,14 +4,20 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("AnonymousIdentityToken")
 public class AnonymousIdentityToken extends UserIdentityToken {
 
     public static final NodeId TypeId = Identifiers.AnonymousIdentityToken;
     public static final NodeId BinaryEncodingId = Identifiers.AnonymousIdentityToken_Encoding_DefaultBinary;
     public static final NodeId XmlEncodingId = Identifiers.AnonymousIdentityToken_Encoding_DefaultXml;
 
+
+    public AnonymousIdentityToken() {
+        super(null);
+    }
 
     public AnonymousIdentityToken(String _policyId) {
         super(_policyId);

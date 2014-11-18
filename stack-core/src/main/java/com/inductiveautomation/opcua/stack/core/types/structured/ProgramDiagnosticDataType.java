@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("ProgramDiagnosticDataType")
 public class ProgramDiagnosticDataType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ProgramDiagnosticDataType;
@@ -24,6 +26,19 @@ public class ProgramDiagnosticDataType implements UaStructure {
     protected final Argument[] _lastMethodOutputArguments;
     protected final DateTime _lastMethodCallTime;
     protected final StatusResult _lastMethodReturnStatus;
+
+    public ProgramDiagnosticDataType() {
+        this._createSessionId = null;
+        this._createClientName = null;
+        this._invocationCreationTime = null;
+        this._lastTransitionTime = null;
+        this._lastMethodCall = null;
+        this._lastMethodSessionId = null;
+        this._lastMethodInputArguments = null;
+        this._lastMethodOutputArguments = null;
+        this._lastMethodCallTime = null;
+        this._lastMethodReturnStatus = null;
+    }
 
     public ProgramDiagnosticDataType(NodeId _createSessionId, String _createClientName, DateTime _invocationCreationTime, DateTime _lastTransitionTime, String _lastMethodCall, NodeId _lastMethodSessionId, Argument[] _lastMethodInputArguments, Argument[] _lastMethodOutputArguments, DateTime _lastMethodCallTime, StatusResult _lastMethodReturnStatus) {
         this._createSessionId = _createSessionId;
@@ -104,7 +119,7 @@ public class ProgramDiagnosticDataType implements UaStructure {
         encoder.encodeArray("LastMethodInputArguments", programDiagnosticDataType._lastMethodInputArguments, encoder::encodeSerializable);
         encoder.encodeArray("LastMethodOutputArguments", programDiagnosticDataType._lastMethodOutputArguments, encoder::encodeSerializable);
         encoder.encodeDateTime("LastMethodCallTime", programDiagnosticDataType._lastMethodCallTime);
-        encoder.encodeSerializable("LastMethodReturnStatus", programDiagnosticDataType._lastMethodReturnStatus);
+        encoder.encodeSerializable("LastMethodReturnStatus", programDiagnosticDataType._lastMethodReturnStatus != null ? programDiagnosticDataType._lastMethodReturnStatus : new StatusResult());
     }
 
     public static ProgramDiagnosticDataType decode(UaDecoder decoder) {

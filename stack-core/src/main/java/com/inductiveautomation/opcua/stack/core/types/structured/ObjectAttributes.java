@@ -4,11 +4,13 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("ObjectAttributes")
 public class ObjectAttributes extends NodeAttributes {
 
     public static final NodeId TypeId = Identifiers.ObjectAttributes;
@@ -16,6 +18,11 @@ public class ObjectAttributes extends NodeAttributes {
     public static final NodeId XmlEncodingId = Identifiers.ObjectAttributes_Encoding_DefaultXml;
 
     protected final UByte _eventNotifier;
+
+    public ObjectAttributes() {
+        super(null, null, null, null, null);
+        this._eventNotifier = null;
+    }
 
     public ObjectAttributes(UInteger _specifiedAttributes, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, UByte _eventNotifier) {
         super(_specifiedAttributes, _displayName, _description, _writeMask, _userWriteMask);

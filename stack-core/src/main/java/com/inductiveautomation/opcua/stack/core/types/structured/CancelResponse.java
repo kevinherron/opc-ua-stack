@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("CancelResponse")
 public class CancelResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.CancelResponse;
@@ -16,6 +18,11 @@ public class CancelResponse implements UaResponseMessage {
 
     protected final ResponseHeader _responseHeader;
     protected final UInteger _cancelCount;
+
+    public CancelResponse() {
+        this._responseHeader = null;
+        this._cancelCount = null;
+    }
 
     public CancelResponse(ResponseHeader _responseHeader, UInteger _cancelCount) {
         this._responseHeader = _responseHeader;
@@ -47,7 +54,7 @@ public class CancelResponse implements UaResponseMessage {
 
 
     public static void encode(CancelResponse cancelResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", cancelResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", cancelResponse._responseHeader != null ? cancelResponse._responseHeader : new ResponseHeader());
         encoder.encodeUInt32("CancelCount", cancelResponse._cancelCount);
     }
 

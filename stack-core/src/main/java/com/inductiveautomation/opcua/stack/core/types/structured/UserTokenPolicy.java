@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.UserTokenType;
 
+@UaDataType("UserTokenPolicy")
 public class UserTokenPolicy implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.UserTokenPolicy;
@@ -19,6 +21,14 @@ public class UserTokenPolicy implements UaStructure {
     protected final String _issuedTokenType;
     protected final String _issuerEndpointUrl;
     protected final String _securityPolicyUri;
+
+    public UserTokenPolicy() {
+        this._policyId = null;
+        this._tokenType = null;
+        this._issuedTokenType = null;
+        this._issuerEndpointUrl = null;
+        this._securityPolicyUri = null;
+    }
 
     public UserTokenPolicy(String _policyId, UserTokenType _tokenType, String _issuedTokenType, String _issuerEndpointUrl, String _securityPolicyUri) {
         this._policyId = _policyId;
@@ -66,7 +76,7 @@ public class UserTokenPolicy implements UaStructure {
 
     public static void encode(UserTokenPolicy userTokenPolicy, UaEncoder encoder) {
         encoder.encodeString("PolicyId", userTokenPolicy._policyId);
-        encoder.encodeSerializable("TokenType", userTokenPolicy._tokenType);
+        encoder.encodeEnumeration("TokenType", userTokenPolicy._tokenType);
         encoder.encodeString("IssuedTokenType", userTokenPolicy._issuedTokenType);
         encoder.encodeString("IssuerEndpointUrl", userTokenPolicy._issuerEndpointUrl);
         encoder.encodeString("SecurityPolicyUri", userTokenPolicy._securityPolicyUri);
@@ -74,7 +84,7 @@ public class UserTokenPolicy implements UaStructure {
 
     public static UserTokenPolicy decode(UaDecoder decoder) {
         String _policyId = decoder.decodeString("PolicyId");
-        UserTokenType _tokenType = decoder.decodeSerializable("TokenType", UserTokenType.class);
+        UserTokenType _tokenType = decoder.decodeEnumeration("TokenType", UserTokenType.class);
         String _issuedTokenType = decoder.decodeString("IssuedTokenType");
         String _issuerEndpointUrl = decoder.decodeString("IssuerEndpointUrl");
         String _securityPolicyUri = decoder.decodeString("SecurityPolicyUri");

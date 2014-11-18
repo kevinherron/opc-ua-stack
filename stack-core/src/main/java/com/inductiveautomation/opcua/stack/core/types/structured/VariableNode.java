@@ -4,6 +4,7 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
@@ -12,6 +13,7 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.NodeClass;
 
+@UaDataType("VariableNode")
 public class VariableNode extends InstanceNode {
 
     public static final NodeId TypeId = Identifiers.VariableNode;
@@ -26,6 +28,18 @@ public class VariableNode extends InstanceNode {
     protected final UByte _userAccessLevel;
     protected final Double _minimumSamplingInterval;
     protected final Boolean _historizing;
+
+    public VariableNode() {
+        super(null, null, null, null, null, null, null, null);
+        this._value = null;
+        this._dataType = null;
+        this._valueRank = null;
+        this._arrayDimensions = null;
+        this._accessLevel = null;
+        this._userAccessLevel = null;
+        this._minimumSamplingInterval = null;
+        this._historizing = null;
+    }
 
     public VariableNode(NodeId _nodeId, NodeClass _nodeClass, QualifiedName _browseName, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, ReferenceNode[] _references, Variant _value, NodeId _dataType, Integer _valueRank, UInteger[] _arrayDimensions, UByte _accessLevel, UByte _userAccessLevel, Double _minimumSamplingInterval, Boolean _historizing) {
         super(_nodeId, _nodeClass, _browseName, _displayName, _description, _writeMask, _userWriteMask, _references);
@@ -89,7 +103,7 @@ public class VariableNode extends InstanceNode {
 
     public static void encode(VariableNode variableNode, UaEncoder encoder) {
         encoder.encodeNodeId("NodeId", variableNode._nodeId);
-        encoder.encodeSerializable("NodeClass", variableNode._nodeClass);
+        encoder.encodeEnumeration("NodeClass", variableNode._nodeClass);
         encoder.encodeQualifiedName("BrowseName", variableNode._browseName);
         encoder.encodeLocalizedText("DisplayName", variableNode._displayName);
         encoder.encodeLocalizedText("Description", variableNode._description);
@@ -108,7 +122,7 @@ public class VariableNode extends InstanceNode {
 
     public static VariableNode decode(UaDecoder decoder) {
         NodeId _nodeId = decoder.decodeNodeId("NodeId");
-        NodeClass _nodeClass = decoder.decodeSerializable("NodeClass", NodeClass.class);
+        NodeClass _nodeClass = decoder.decodeEnumeration("NodeClass", NodeClass.class);
         QualifiedName _browseName = decoder.decodeQualifiedName("BrowseName");
         LocalizedText _displayName = decoder.decodeLocalizedText("DisplayName");
         LocalizedText _description = decoder.decodeLocalizedText("Description");

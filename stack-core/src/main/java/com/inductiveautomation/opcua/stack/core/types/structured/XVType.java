@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("XVType")
 public class XVType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.XVType;
@@ -15,6 +17,11 @@ public class XVType implements UaStructure {
 
     protected final Double _x;
     protected final Float _value;
+
+    public XVType() {
+        this._x = null;
+        this._value = null;
+    }
 
     public XVType(Double _x, Float _value) {
         this._x = _x;

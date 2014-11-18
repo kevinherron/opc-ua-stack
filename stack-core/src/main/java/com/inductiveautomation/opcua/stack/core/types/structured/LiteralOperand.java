@@ -4,9 +4,11 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 
+@UaDataType("LiteralOperand")
 public class LiteralOperand extends FilterOperand {
 
     public static final NodeId TypeId = Identifiers.LiteralOperand;
@@ -14,6 +16,11 @@ public class LiteralOperand extends FilterOperand {
     public static final NodeId XmlEncodingId = Identifiers.LiteralOperand_Encoding_DefaultXml;
 
     protected final Variant _value;
+
+    public LiteralOperand() {
+        super();
+        this._value = null;
+    }
 
     public LiteralOperand(Variant _value) {
         super();

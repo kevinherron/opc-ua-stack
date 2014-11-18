@@ -5,12 +5,14 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExpandedNodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.NodeClass;
 
+@UaDataType("ReferenceDescription")
 public class ReferenceDescription implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ReferenceDescription;
@@ -24,6 +26,16 @@ public class ReferenceDescription implements UaStructure {
     protected final LocalizedText _displayName;
     protected final NodeClass _nodeClass;
     protected final ExpandedNodeId _typeDefinition;
+
+    public ReferenceDescription() {
+        this._referenceTypeId = null;
+        this._isForward = null;
+        this._nodeId = null;
+        this._browseName = null;
+        this._displayName = null;
+        this._nodeClass = null;
+        this._typeDefinition = null;
+    }
 
     public ReferenceDescription(NodeId _referenceTypeId, Boolean _isForward, ExpandedNodeId _nodeId, QualifiedName _browseName, LocalizedText _displayName, NodeClass _nodeClass, ExpandedNodeId _typeDefinition) {
         this._referenceTypeId = _referenceTypeId;
@@ -85,7 +97,7 @@ public class ReferenceDescription implements UaStructure {
         encoder.encodeExpandedNodeId("NodeId", referenceDescription._nodeId);
         encoder.encodeQualifiedName("BrowseName", referenceDescription._browseName);
         encoder.encodeLocalizedText("DisplayName", referenceDescription._displayName);
-        encoder.encodeSerializable("NodeClass", referenceDescription._nodeClass);
+        encoder.encodeEnumeration("NodeClass", referenceDescription._nodeClass);
         encoder.encodeExpandedNodeId("TypeDefinition", referenceDescription._typeDefinition);
     }
 
@@ -95,7 +107,7 @@ public class ReferenceDescription implements UaStructure {
         ExpandedNodeId _nodeId = decoder.decodeExpandedNodeId("NodeId");
         QualifiedName _browseName = decoder.decodeQualifiedName("BrowseName");
         LocalizedText _displayName = decoder.decodeLocalizedText("DisplayName");
-        NodeClass _nodeClass = decoder.decodeSerializable("NodeClass", NodeClass.class);
+        NodeClass _nodeClass = decoder.decodeEnumeration("NodeClass", NodeClass.class);
         ExpandedNodeId _typeDefinition = decoder.decodeExpandedNodeId("TypeDefinition");
 
         return new ReferenceDescription(_referenceTypeId, _isForward, _nodeId, _browseName, _displayName, _nodeClass, _typeDefinition);

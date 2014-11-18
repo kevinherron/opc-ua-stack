@@ -4,9 +4,11 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("ReadProcessedDetails")
 public class ReadProcessedDetails extends HistoryReadDetails {
 
     public static final NodeId TypeId = Identifiers.ReadProcessedDetails;
@@ -18,6 +20,15 @@ public class ReadProcessedDetails extends HistoryReadDetails {
     protected final Double _processingInterval;
     protected final NodeId[] _aggregateType;
     protected final AggregateConfiguration _aggregateConfiguration;
+
+    public ReadProcessedDetails() {
+        super();
+        this._startTime = null;
+        this._endTime = null;
+        this._processingInterval = null;
+        this._aggregateType = null;
+        this._aggregateConfiguration = null;
+    }
 
     public ReadProcessedDetails(DateTime _startTime, DateTime _endTime, Double _processingInterval, NodeId[] _aggregateType, AggregateConfiguration _aggregateConfiguration) {
         super();
@@ -69,7 +80,7 @@ public class ReadProcessedDetails extends HistoryReadDetails {
         encoder.encodeDateTime("EndTime", readProcessedDetails._endTime);
         encoder.encodeDouble("ProcessingInterval", readProcessedDetails._processingInterval);
         encoder.encodeArray("AggregateType", readProcessedDetails._aggregateType, encoder::encodeNodeId);
-        encoder.encodeSerializable("AggregateConfiguration", readProcessedDetails._aggregateConfiguration);
+        encoder.encodeSerializable("AggregateConfiguration", readProcessedDetails._aggregateConfiguration != null ? readProcessedDetails._aggregateConfiguration : new AggregateConfiguration());
     }
 
     public static ReadProcessedDetails decode(UaDecoder decoder) {

@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 
+@UaDataType("HistoryReadValueId")
 public class HistoryReadValueId implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.HistoryReadValueId;
@@ -19,6 +21,13 @@ public class HistoryReadValueId implements UaStructure {
     protected final String _indexRange;
     protected final QualifiedName _dataEncoding;
     protected final ByteString _continuationPoint;
+
+    public HistoryReadValueId() {
+        this._nodeId = null;
+        this._indexRange = null;
+        this._dataEncoding = null;
+        this._continuationPoint = null;
+    }
 
     public HistoryReadValueId(NodeId _nodeId, String _indexRange, QualifiedName _dataEncoding, ByteString _continuationPoint) {
         this._nodeId = _nodeId;

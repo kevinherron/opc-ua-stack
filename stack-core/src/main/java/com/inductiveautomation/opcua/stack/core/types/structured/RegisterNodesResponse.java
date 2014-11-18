@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("RegisterNodesResponse")
 public class RegisterNodesResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.RegisterNodesResponse;
@@ -15,6 +17,11 @@ public class RegisterNodesResponse implements UaResponseMessage {
 
     protected final ResponseHeader _responseHeader;
     protected final NodeId[] _registeredNodeIds;
+
+    public RegisterNodesResponse() {
+        this._responseHeader = null;
+        this._registeredNodeIds = null;
+    }
 
     public RegisterNodesResponse(ResponseHeader _responseHeader, NodeId[] _registeredNodeIds) {
         this._responseHeader = _responseHeader;
@@ -46,7 +53,7 @@ public class RegisterNodesResponse implements UaResponseMessage {
 
 
     public static void encode(RegisterNodesResponse registerNodesResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", registerNodesResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", registerNodesResponse._responseHeader != null ? registerNodesResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("RegisteredNodeIds", registerNodesResponse._registeredNodeIds, encoder::encodeNodeId);
     }
 

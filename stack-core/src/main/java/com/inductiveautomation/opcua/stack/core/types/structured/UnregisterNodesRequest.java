@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("UnregisterNodesRequest")
 public class UnregisterNodesRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.UnregisterNodesRequest;
@@ -15,6 +17,11 @@ public class UnregisterNodesRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final NodeId[] _nodesToUnregister;
+
+    public UnregisterNodesRequest() {
+        this._requestHeader = null;
+        this._nodesToUnregister = null;
+    }
 
     public UnregisterNodesRequest(RequestHeader _requestHeader, NodeId[] _nodesToUnregister) {
         this._requestHeader = _requestHeader;
@@ -46,7 +53,7 @@ public class UnregisterNodesRequest implements UaRequestMessage {
 
 
     public static void encode(UnregisterNodesRequest unregisterNodesRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", unregisterNodesRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", unregisterNodesRequest._requestHeader != null ? unregisterNodesRequest._requestHeader : new RequestHeader());
         encoder.encodeArray("NodesToUnregister", unregisterNodesRequest._nodesToUnregister, encoder::encodeNodeId);
     }
 

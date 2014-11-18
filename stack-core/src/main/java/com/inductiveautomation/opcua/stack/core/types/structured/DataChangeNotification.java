@@ -4,9 +4,11 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("DataChangeNotification")
 public class DataChangeNotification extends NotificationData {
 
     public static final NodeId TypeId = Identifiers.DataChangeNotification;
@@ -15,6 +17,12 @@ public class DataChangeNotification extends NotificationData {
 
     protected final MonitoredItemNotification[] _monitoredItems;
     protected final DiagnosticInfo[] _diagnosticInfos;
+
+    public DataChangeNotification() {
+        super();
+        this._monitoredItems = null;
+        this._diagnosticInfos = null;
+    }
 
     public DataChangeNotification(MonitoredItemNotification[] _monitoredItems, DiagnosticInfo[] _diagnosticInfos) {
         super();

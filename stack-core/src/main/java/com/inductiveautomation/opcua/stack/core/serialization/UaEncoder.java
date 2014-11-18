@@ -83,6 +83,8 @@ public interface UaEncoder {
 
     <T extends UaStructure> void encodeMessage(String field, T message) throws UaSerializationException;
 
+    <T extends UaEnumeration> void encodeEnumeration(String field, T value) throws UaSerializationException;
+
     <T extends UaSerializable> void encodeSerializable(String field, T value) throws UaSerializationException;
 
     <T> void encodeArray(String field, T[] values, BiConsumer<String, T> encoder) throws UaSerializationException;

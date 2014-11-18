@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("ChannelSecurityToken")
 public class ChannelSecurityToken implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ChannelSecurityToken;
@@ -19,6 +21,13 @@ public class ChannelSecurityToken implements UaStructure {
     protected final UInteger _tokenId;
     protected final DateTime _createdAt;
     protected final UInteger _revisedLifetime;
+
+    public ChannelSecurityToken() {
+        this._channelId = null;
+        this._tokenId = null;
+        this._createdAt = null;
+        this._revisedLifetime = null;
+    }
 
     public ChannelSecurityToken(UInteger _channelId, UInteger _tokenId, DateTime _createdAt, UInteger _revisedLifetime) {
         this._channelId = _channelId;

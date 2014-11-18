@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("HistoryUpdateResponse")
 public class HistoryUpdateResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.HistoryUpdateResponse;
@@ -17,6 +19,12 @@ public class HistoryUpdateResponse implements UaResponseMessage {
     protected final ResponseHeader _responseHeader;
     protected final HistoryUpdateResult[] _results;
     protected final DiagnosticInfo[] _diagnosticInfos;
+
+    public HistoryUpdateResponse() {
+        this._responseHeader = null;
+        this._results = null;
+        this._diagnosticInfos = null;
+    }
 
     public HistoryUpdateResponse(ResponseHeader _responseHeader, HistoryUpdateResult[] _results, DiagnosticInfo[] _diagnosticInfos) {
         this._responseHeader = _responseHeader;
@@ -53,7 +61,7 @@ public class HistoryUpdateResponse implements UaResponseMessage {
 
 
     public static void encode(HistoryUpdateResponse historyUpdateResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", historyUpdateResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", historyUpdateResponse._responseHeader != null ? historyUpdateResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("Results", historyUpdateResponse._results, encoder::encodeSerializable);
         encoder.encodeArray("DiagnosticInfos", historyUpdateResponse._diagnosticInfos, encoder::encodeDiagnosticInfo);
     }

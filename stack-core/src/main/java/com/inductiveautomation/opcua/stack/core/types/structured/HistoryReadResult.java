@@ -5,11 +5,13 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("HistoryReadResult")
 public class HistoryReadResult implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.HistoryReadResult;
@@ -19,6 +21,12 @@ public class HistoryReadResult implements UaStructure {
     protected final StatusCode _statusCode;
     protected final ByteString _continuationPoint;
     protected final ExtensionObject _historyData;
+
+    public HistoryReadResult() {
+        this._statusCode = null;
+        this._continuationPoint = null;
+        this._historyData = null;
+    }
 
     public HistoryReadResult(StatusCode _statusCode, ByteString _continuationPoint, ExtensionObject _historyData) {
         this._statusCode = _statusCode;

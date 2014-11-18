@@ -4,12 +4,14 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.NodeClass;
 
+@UaDataType("ReferenceTypeNode")
 public class ReferenceTypeNode extends TypeNode {
 
     public static final NodeId TypeId = Identifiers.ReferenceTypeNode;
@@ -19,6 +21,13 @@ public class ReferenceTypeNode extends TypeNode {
     protected final Boolean _isAbstract;
     protected final Boolean _symmetric;
     protected final LocalizedText _inverseName;
+
+    public ReferenceTypeNode() {
+        super(null, null, null, null, null, null, null, null);
+        this._isAbstract = null;
+        this._symmetric = null;
+        this._inverseName = null;
+    }
 
     public ReferenceTypeNode(NodeId _nodeId, NodeClass _nodeClass, QualifiedName _browseName, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, ReferenceNode[] _references, Boolean _isAbstract, Boolean _symmetric, LocalizedText _inverseName) {
         super(_nodeId, _nodeClass, _browseName, _displayName, _description, _writeMask, _userWriteMask, _references);
@@ -57,7 +66,7 @@ public class ReferenceTypeNode extends TypeNode {
 
     public static void encode(ReferenceTypeNode referenceTypeNode, UaEncoder encoder) {
         encoder.encodeNodeId("NodeId", referenceTypeNode._nodeId);
-        encoder.encodeSerializable("NodeClass", referenceTypeNode._nodeClass);
+        encoder.encodeEnumeration("NodeClass", referenceTypeNode._nodeClass);
         encoder.encodeQualifiedName("BrowseName", referenceTypeNode._browseName);
         encoder.encodeLocalizedText("DisplayName", referenceTypeNode._displayName);
         encoder.encodeLocalizedText("Description", referenceTypeNode._description);
@@ -71,7 +80,7 @@ public class ReferenceTypeNode extends TypeNode {
 
     public static ReferenceTypeNode decode(UaDecoder decoder) {
         NodeId _nodeId = decoder.decodeNodeId("NodeId");
-        NodeClass _nodeClass = decoder.decodeSerializable("NodeClass", NodeClass.class);
+        NodeClass _nodeClass = decoder.decodeEnumeration("NodeClass", NodeClass.class);
         QualifiedName _browseName = decoder.decodeQualifiedName("BrowseName");
         LocalizedText _displayName = decoder.decodeLocalizedText("DisplayName");
         LocalizedText _description = decoder.decodeLocalizedText("Description");

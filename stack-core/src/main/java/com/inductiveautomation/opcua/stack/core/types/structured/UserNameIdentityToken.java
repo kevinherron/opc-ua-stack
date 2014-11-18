@@ -4,9 +4,11 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("UserNameIdentityToken")
 public class UserNameIdentityToken extends UserIdentityToken {
 
     public static final NodeId TypeId = Identifiers.UserNameIdentityToken;
@@ -16,6 +18,13 @@ public class UserNameIdentityToken extends UserIdentityToken {
     protected final String _userName;
     protected final ByteString _password;
     protected final String _encryptionAlgorithm;
+
+    public UserNameIdentityToken() {
+        super(null);
+        this._userName = null;
+        this._password = null;
+        this._encryptionAlgorithm = null;
+    }
 
     public UserNameIdentityToken(String _policyId, String _userName, ByteString _password, String _encryptionAlgorithm) {
         super(_policyId);

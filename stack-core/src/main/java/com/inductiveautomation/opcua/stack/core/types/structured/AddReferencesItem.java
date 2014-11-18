@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExpandedNodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.NodeClass;
 
+@UaDataType("AddReferencesItem")
 public class AddReferencesItem implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.AddReferencesItem;
@@ -21,6 +23,15 @@ public class AddReferencesItem implements UaStructure {
     protected final String _targetServerUri;
     protected final ExpandedNodeId _targetNodeId;
     protected final NodeClass _targetNodeClass;
+
+    public AddReferencesItem() {
+        this._sourceNodeId = null;
+        this._referenceTypeId = null;
+        this._isForward = null;
+        this._targetServerUri = null;
+        this._targetNodeId = null;
+        this._targetNodeClass = null;
+    }
 
     public AddReferencesItem(NodeId _sourceNodeId, NodeId _referenceTypeId, Boolean _isForward, String _targetServerUri, ExpandedNodeId _targetNodeId, NodeClass _targetNodeClass) {
         this._sourceNodeId = _sourceNodeId;
@@ -77,7 +88,7 @@ public class AddReferencesItem implements UaStructure {
         encoder.encodeBoolean("IsForward", addReferencesItem._isForward);
         encoder.encodeString("TargetServerUri", addReferencesItem._targetServerUri);
         encoder.encodeExpandedNodeId("TargetNodeId", addReferencesItem._targetNodeId);
-        encoder.encodeSerializable("TargetNodeClass", addReferencesItem._targetNodeClass);
+        encoder.encodeEnumeration("TargetNodeClass", addReferencesItem._targetNodeClass);
     }
 
     public static AddReferencesItem decode(UaDecoder decoder) {
@@ -86,7 +97,7 @@ public class AddReferencesItem implements UaStructure {
         Boolean _isForward = decoder.decodeBoolean("IsForward");
         String _targetServerUri = decoder.decodeString("TargetServerUri");
         ExpandedNodeId _targetNodeId = decoder.decodeExpandedNodeId("TargetNodeId");
-        NodeClass _targetNodeClass = decoder.decodeSerializable("TargetNodeClass", NodeClass.class);
+        NodeClass _targetNodeClass = decoder.decodeEnumeration("TargetNodeClass", NodeClass.class);
 
         return new AddReferencesItem(_sourceNodeId, _referenceTypeId, _isForward, _targetServerUri, _targetNodeId, _targetNodeClass);
     }

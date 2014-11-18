@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("CreateSessionResponse")
 public class CreateSessionResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.CreateSessionResponse;
@@ -25,6 +27,19 @@ public class CreateSessionResponse implements UaResponseMessage {
     protected final SignedSoftwareCertificate[] _serverSoftwareCertificates;
     protected final SignatureData _serverSignature;
     protected final UInteger _maxRequestMessageSize;
+
+    public CreateSessionResponse() {
+        this._responseHeader = null;
+        this._sessionId = null;
+        this._authenticationToken = null;
+        this._revisedSessionTimeout = null;
+        this._serverNonce = null;
+        this._serverCertificate = null;
+        this._serverEndpoints = null;
+        this._serverSoftwareCertificates = null;
+        this._serverSignature = null;
+        this._maxRequestMessageSize = null;
+    }
 
     public CreateSessionResponse(ResponseHeader _responseHeader, NodeId _sessionId, NodeId _authenticationToken, Double _revisedSessionTimeout, ByteString _serverNonce, ByteString _serverCertificate, EndpointDescription[] _serverEndpoints, SignedSoftwareCertificate[] _serverSoftwareCertificates, SignatureData _serverSignature, UInteger _maxRequestMessageSize) {
         this._responseHeader = _responseHeader;
@@ -96,7 +111,7 @@ public class CreateSessionResponse implements UaResponseMessage {
 
 
     public static void encode(CreateSessionResponse createSessionResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", createSessionResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", createSessionResponse._responseHeader != null ? createSessionResponse._responseHeader : new ResponseHeader());
         encoder.encodeNodeId("SessionId", createSessionResponse._sessionId);
         encoder.encodeNodeId("AuthenticationToken", createSessionResponse._authenticationToken);
         encoder.encodeDouble("RevisedSessionTimeout", createSessionResponse._revisedSessionTimeout);
@@ -104,7 +119,7 @@ public class CreateSessionResponse implements UaResponseMessage {
         encoder.encodeByteString("ServerCertificate", createSessionResponse._serverCertificate);
         encoder.encodeArray("ServerEndpoints", createSessionResponse._serverEndpoints, encoder::encodeSerializable);
         encoder.encodeArray("ServerSoftwareCertificates", createSessionResponse._serverSoftwareCertificates, encoder::encodeSerializable);
-        encoder.encodeSerializable("ServerSignature", createSessionResponse._serverSignature);
+        encoder.encodeSerializable("ServerSignature", createSessionResponse._serverSignature != null ? createSessionResponse._serverSignature : new SignatureData());
         encoder.encodeUInt32("MaxRequestMessageSize", createSessionResponse._maxRequestMessageSize);
     }
 

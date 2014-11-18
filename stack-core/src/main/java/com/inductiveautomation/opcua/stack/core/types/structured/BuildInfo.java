@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("BuildInfo")
 public class BuildInfo implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.BuildInfo;
@@ -20,6 +22,15 @@ public class BuildInfo implements UaStructure {
     protected final String _softwareVersion;
     protected final String _buildNumber;
     protected final DateTime _buildDate;
+
+    public BuildInfo() {
+        this._productUri = null;
+        this._manufacturerName = null;
+        this._productName = null;
+        this._softwareVersion = null;
+        this._buildNumber = null;
+        this._buildDate = null;
+    }
 
     public BuildInfo(String _productUri, String _manufacturerName, String _productName, String _softwareVersion, String _buildNumber, DateTime _buildDate) {
         this._productUri = _productUri;

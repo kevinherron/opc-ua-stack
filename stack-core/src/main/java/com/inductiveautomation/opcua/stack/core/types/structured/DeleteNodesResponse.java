@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("DeleteNodesResponse")
 public class DeleteNodesResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.DeleteNodesResponse;
@@ -18,6 +20,12 @@ public class DeleteNodesResponse implements UaResponseMessage {
     protected final ResponseHeader _responseHeader;
     protected final StatusCode[] _results;
     protected final DiagnosticInfo[] _diagnosticInfos;
+
+    public DeleteNodesResponse() {
+        this._responseHeader = null;
+        this._results = null;
+        this._diagnosticInfos = null;
+    }
 
     public DeleteNodesResponse(ResponseHeader _responseHeader, StatusCode[] _results, DiagnosticInfo[] _diagnosticInfos) {
         this._responseHeader = _responseHeader;
@@ -54,7 +62,7 @@ public class DeleteNodesResponse implements UaResponseMessage {
 
 
     public static void encode(DeleteNodesResponse deleteNodesResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", deleteNodesResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", deleteNodesResponse._responseHeader != null ? deleteNodesResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("Results", deleteNodesResponse._results, encoder::encodeStatusCode);
         encoder.encodeArray("DiagnosticInfos", deleteNodesResponse._diagnosticInfos, encoder::encodeDiagnosticInfo);
     }

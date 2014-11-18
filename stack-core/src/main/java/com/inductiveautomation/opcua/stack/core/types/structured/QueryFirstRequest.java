@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("QueryFirstRequest")
 public class QueryFirstRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.QueryFirstRequest;
@@ -20,6 +22,15 @@ public class QueryFirstRequest implements UaRequestMessage {
     protected final ContentFilter _filter;
     protected final UInteger _maxDataSetsToReturn;
     protected final UInteger _maxReferencesToReturn;
+
+    public QueryFirstRequest() {
+        this._requestHeader = null;
+        this._view = null;
+        this._nodeTypes = null;
+        this._filter = null;
+        this._maxDataSetsToReturn = null;
+        this._maxReferencesToReturn = null;
+    }
 
     public QueryFirstRequest(RequestHeader _requestHeader, ViewDescription _view, NodeTypeDescription[] _nodeTypes, ContentFilter _filter, UInteger _maxDataSetsToReturn, UInteger _maxReferencesToReturn) {
         this._requestHeader = _requestHeader;
@@ -71,10 +82,10 @@ public class QueryFirstRequest implements UaRequestMessage {
 
 
     public static void encode(QueryFirstRequest queryFirstRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", queryFirstRequest._requestHeader);
-        encoder.encodeSerializable("View", queryFirstRequest._view);
+        encoder.encodeSerializable("RequestHeader", queryFirstRequest._requestHeader != null ? queryFirstRequest._requestHeader : new RequestHeader());
+        encoder.encodeSerializable("View", queryFirstRequest._view != null ? queryFirstRequest._view : new ViewDescription());
         encoder.encodeArray("NodeTypes", queryFirstRequest._nodeTypes, encoder::encodeSerializable);
-        encoder.encodeSerializable("Filter", queryFirstRequest._filter);
+        encoder.encodeSerializable("Filter", queryFirstRequest._filter != null ? queryFirstRequest._filter : new ContentFilter());
         encoder.encodeUInt32("MaxDataSetsToReturn", queryFirstRequest._maxDataSetsToReturn);
         encoder.encodeUInt32("MaxReferencesToReturn", queryFirstRequest._maxReferencesToReturn);
     }

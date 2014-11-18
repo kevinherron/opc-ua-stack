@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("CreateSubscriptionRequest")
 public class CreateSubscriptionRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.CreateSubscriptionRequest;
@@ -22,6 +24,16 @@ public class CreateSubscriptionRequest implements UaRequestMessage {
     protected final UInteger _maxNotificationsPerPublish;
     protected final Boolean _publishingEnabled;
     protected final UByte _priority;
+
+    public CreateSubscriptionRequest() {
+        this._requestHeader = null;
+        this._requestedPublishingInterval = null;
+        this._requestedLifetimeCount = null;
+        this._requestedMaxKeepAliveCount = null;
+        this._maxNotificationsPerPublish = null;
+        this._publishingEnabled = null;
+        this._priority = null;
+    }
 
     public CreateSubscriptionRequest(RequestHeader _requestHeader, Double _requestedPublishingInterval, UInteger _requestedLifetimeCount, UInteger _requestedMaxKeepAliveCount, UInteger _maxNotificationsPerPublish, Boolean _publishingEnabled, UByte _priority) {
         this._requestHeader = _requestHeader;
@@ -78,7 +90,7 @@ public class CreateSubscriptionRequest implements UaRequestMessage {
 
 
     public static void encode(CreateSubscriptionRequest createSubscriptionRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", createSubscriptionRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", createSubscriptionRequest._requestHeader != null ? createSubscriptionRequest._requestHeader : new RequestHeader());
         encoder.encodeDouble("RequestedPublishingInterval", createSubscriptionRequest._requestedPublishingInterval);
         encoder.encodeUInt32("RequestedLifetimeCount", createSubscriptionRequest._requestedLifetimeCount);
         encoder.encodeUInt32("RequestedMaxKeepAliveCount", createSubscriptionRequest._requestedMaxKeepAliveCount);

@@ -4,9 +4,11 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DataValue;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("HistoryModifiedData")
 public class HistoryModifiedData extends HistoryData {
 
     public static final NodeId TypeId = Identifiers.HistoryModifiedData;
@@ -14,6 +16,11 @@ public class HistoryModifiedData extends HistoryData {
     public static final NodeId XmlEncodingId = Identifiers.HistoryModifiedData_Encoding_DefaultXml;
 
     protected final ModificationInfo[] _modificationInfos;
+
+    public HistoryModifiedData() {
+        super(null);
+        this._modificationInfos = null;
+    }
 
     public HistoryModifiedData(DataValue[] _dataValues, ModificationInfo[] _modificationInfos) {
         super(_dataValues);

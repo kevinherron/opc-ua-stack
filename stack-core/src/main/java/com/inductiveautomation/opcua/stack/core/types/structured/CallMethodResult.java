@@ -5,11 +5,13 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 
+@UaDataType("CallMethodResult")
 public class CallMethodResult implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.CallMethodResult;
@@ -20,6 +22,13 @@ public class CallMethodResult implements UaStructure {
     protected final StatusCode[] _inputArgumentResults;
     protected final DiagnosticInfo[] _inputArgumentDiagnosticInfos;
     protected final Variant[] _outputArguments;
+
+    public CallMethodResult() {
+        this._statusCode = null;
+        this._inputArgumentResults = null;
+        this._inputArgumentDiagnosticInfos = null;
+        this._outputArguments = null;
+    }
 
     public CallMethodResult(StatusCode _statusCode, StatusCode[] _inputArgumentResults, DiagnosticInfo[] _inputArgumentDiagnosticInfos, Variant[] _outputArguments) {
         this._statusCode = _statusCode;

@@ -4,10 +4,12 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DataValue;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.PerformUpdateType;
 
+@UaDataType("UpdateDataDetails")
 public class UpdateDataDetails extends HistoryUpdateDetails {
 
     public static final NodeId TypeId = Identifiers.UpdateDataDetails;
@@ -16,6 +18,12 @@ public class UpdateDataDetails extends HistoryUpdateDetails {
 
     protected final PerformUpdateType _performInsertReplace;
     protected final DataValue[] _updateValues;
+
+    public UpdateDataDetails() {
+        super(null);
+        this._performInsertReplace = null;
+        this._updateValues = null;
+    }
 
     public UpdateDataDetails(NodeId _nodeId, PerformUpdateType _performInsertReplace, DataValue[] _updateValues) {
         super(_nodeId);
@@ -49,13 +57,13 @@ public class UpdateDataDetails extends HistoryUpdateDetails {
 
     public static void encode(UpdateDataDetails updateDataDetails, UaEncoder encoder) {
         encoder.encodeNodeId("NodeId", updateDataDetails._nodeId);
-        encoder.encodeSerializable("PerformInsertReplace", updateDataDetails._performInsertReplace);
+        encoder.encodeEnumeration("PerformInsertReplace", updateDataDetails._performInsertReplace);
         encoder.encodeArray("UpdateValues", updateDataDetails._updateValues, encoder::encodeDataValue);
     }
 
     public static UpdateDataDetails decode(UaDecoder decoder) {
         NodeId _nodeId = decoder.decodeNodeId("NodeId");
-        PerformUpdateType _performInsertReplace = decoder.decodeSerializable("PerformInsertReplace", PerformUpdateType.class);
+        PerformUpdateType _performInsertReplace = decoder.decodeEnumeration("PerformInsertReplace", PerformUpdateType.class);
         DataValue[] _updateValues = decoder.decodeArray("UpdateValues", decoder::decodeDataValue, DataValue.class);
 
         return new UpdateDataDetails(_nodeId, _performInsertReplace, _updateValues);

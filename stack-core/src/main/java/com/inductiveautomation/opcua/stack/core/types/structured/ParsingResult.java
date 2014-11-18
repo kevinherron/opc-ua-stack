@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("ParsingResult")
 public class ParsingResult implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ParsingResult;
@@ -18,6 +20,12 @@ public class ParsingResult implements UaStructure {
     protected final StatusCode _statusCode;
     protected final StatusCode[] _dataStatusCodes;
     protected final DiagnosticInfo[] _dataDiagnosticInfos;
+
+    public ParsingResult() {
+        this._statusCode = null;
+        this._dataStatusCodes = null;
+        this._dataDiagnosticInfos = null;
+    }
 
     public ParsingResult(StatusCode _statusCode, StatusCode[] _dataStatusCodes, DiagnosticInfo[] _dataDiagnosticInfos) {
         this._statusCode = _statusCode;

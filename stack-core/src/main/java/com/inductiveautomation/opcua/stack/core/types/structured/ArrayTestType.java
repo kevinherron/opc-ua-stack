@@ -7,6 +7,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DataValue;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
@@ -24,6 +25,7 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.ULong;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.EnumeratedTestType;
 
+@UaDataType("ArrayTestType")
 public class ArrayTestType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ArrayTestType;
@@ -55,6 +57,34 @@ public class ArrayTestType implements UaStructure {
     protected final DataValue[] _dataValues;
     protected final Variant[] _variants;
     protected final EnumeratedTestType[] _enumeratedValues;
+
+    public ArrayTestType() {
+        this._booleans = null;
+        this._sBytes = null;
+        this._int16s = null;
+        this._uInt16s = null;
+        this._int32s = null;
+        this._uInt32s = null;
+        this._int64s = null;
+        this._uInt64s = null;
+        this._floats = null;
+        this._doubles = null;
+        this._strings = null;
+        this._dateTimes = null;
+        this._guids = null;
+        this._byteStrings = null;
+        this._xmlElements = null;
+        this._nodeIds = null;
+        this._expandedNodeIds = null;
+        this._statusCodes = null;
+        this._diagnosticInfos = null;
+        this._qualifiedNames = null;
+        this._localizedTexts = null;
+        this._extensionObjects = null;
+        this._dataValues = null;
+        this._variants = null;
+        this._enumeratedValues = null;
+    }
 
     public ArrayTestType(Boolean[] _booleans, Byte[] _sBytes, Short[] _int16s, UShort[] _uInt16s, Integer[] _int32s, UInteger[] _uInt32s, Long[] _int64s, ULong[] _uInt64s, Float[] _floats, Double[] _doubles, String[] _strings, DateTime[] _dateTimes, UUID[] _guids, ByteString[] _byteStrings, XmlElement[] _xmlElements, NodeId[] _nodeIds, ExpandedNodeId[] _expandedNodeIds, StatusCode[] _statusCodes, DiagnosticInfo[] _diagnosticInfos, QualifiedName[] _qualifiedNames, LocalizedText[] _localizedTexts, ExtensionObject[] _extensionObjects, DataValue[] _dataValues, Variant[] _variants, EnumeratedTestType[] _enumeratedValues) {
         this._booleans = _booleans;

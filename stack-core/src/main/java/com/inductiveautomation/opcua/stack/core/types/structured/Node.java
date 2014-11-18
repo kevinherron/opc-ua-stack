@@ -5,12 +5,14 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.NodeClass;
 
+@UaDataType("Node")
 public class Node implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.Node;
@@ -25,6 +27,17 @@ public class Node implements UaStructure {
     protected final UInteger _writeMask;
     protected final UInteger _userWriteMask;
     protected final ReferenceNode[] _references;
+
+    public Node() {
+        this._nodeId = null;
+        this._nodeClass = null;
+        this._browseName = null;
+        this._displayName = null;
+        this._description = null;
+        this._writeMask = null;
+        this._userWriteMask = null;
+        this._references = null;
+    }
 
     public Node(NodeId _nodeId, NodeClass _nodeClass, QualifiedName _browseName, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, ReferenceNode[] _references) {
         this._nodeId = _nodeId;
@@ -87,7 +100,7 @@ public class Node implements UaStructure {
 
     public static void encode(Node node, UaEncoder encoder) {
         encoder.encodeNodeId("NodeId", node._nodeId);
-        encoder.encodeSerializable("NodeClass", node._nodeClass);
+        encoder.encodeEnumeration("NodeClass", node._nodeClass);
         encoder.encodeQualifiedName("BrowseName", node._browseName);
         encoder.encodeLocalizedText("DisplayName", node._displayName);
         encoder.encodeLocalizedText("Description", node._description);
@@ -98,7 +111,7 @@ public class Node implements UaStructure {
 
     public static Node decode(UaDecoder decoder) {
         NodeId _nodeId = decoder.decodeNodeId("NodeId");
-        NodeClass _nodeClass = decoder.decodeSerializable("NodeClass", NodeClass.class);
+        NodeClass _nodeClass = decoder.decodeEnumeration("NodeClass", NodeClass.class);
         QualifiedName _browseName = decoder.decodeQualifiedName("BrowseName");
         LocalizedText _displayName = decoder.decodeLocalizedText("DisplayName");
         LocalizedText _description = decoder.decodeLocalizedText("Description");

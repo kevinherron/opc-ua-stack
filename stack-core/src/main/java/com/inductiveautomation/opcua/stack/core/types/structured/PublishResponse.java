@@ -5,11 +5,13 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("PublishResponse")
 public class PublishResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.PublishResponse;
@@ -23,6 +25,16 @@ public class PublishResponse implements UaResponseMessage {
     protected final NotificationMessage _notificationMessage;
     protected final StatusCode[] _results;
     protected final DiagnosticInfo[] _diagnosticInfos;
+
+    public PublishResponse() {
+        this._responseHeader = null;
+        this._subscriptionId = null;
+        this._availableSequenceNumbers = null;
+        this._moreNotifications = null;
+        this._notificationMessage = null;
+        this._results = null;
+        this._diagnosticInfos = null;
+    }
 
     public PublishResponse(ResponseHeader _responseHeader, UInteger _subscriptionId, UInteger[] _availableSequenceNumbers, Boolean _moreNotifications, NotificationMessage _notificationMessage, StatusCode[] _results, DiagnosticInfo[] _diagnosticInfos) {
         this._responseHeader = _responseHeader;
@@ -79,11 +91,11 @@ public class PublishResponse implements UaResponseMessage {
 
 
     public static void encode(PublishResponse publishResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", publishResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", publishResponse._responseHeader != null ? publishResponse._responseHeader : new ResponseHeader());
         encoder.encodeUInt32("SubscriptionId", publishResponse._subscriptionId);
         encoder.encodeArray("AvailableSequenceNumbers", publishResponse._availableSequenceNumbers, encoder::encodeUInt32);
         encoder.encodeBoolean("MoreNotifications", publishResponse._moreNotifications);
-        encoder.encodeSerializable("NotificationMessage", publishResponse._notificationMessage);
+        encoder.encodeSerializable("NotificationMessage", publishResponse._notificationMessage != null ? publishResponse._notificationMessage : new NotificationMessage());
         encoder.encodeArray("Results", publishResponse._results, encoder::encodeStatusCode);
         encoder.encodeArray("DiagnosticInfos", publishResponse._diagnosticInfos, encoder::encodeDiagnosticInfo);
     }

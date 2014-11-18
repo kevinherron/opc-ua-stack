@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.TimestampsToReturn;
 
+@UaDataType("ReadRequest")
 public class ReadRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.ReadRequest;
@@ -18,6 +20,13 @@ public class ReadRequest implements UaRequestMessage {
     protected final Double _maxAge;
     protected final TimestampsToReturn _timestampsToReturn;
     protected final ReadValueId[] _nodesToRead;
+
+    public ReadRequest() {
+        this._requestHeader = null;
+        this._maxAge = null;
+        this._timestampsToReturn = null;
+        this._nodesToRead = null;
+    }
 
     public ReadRequest(RequestHeader _requestHeader, Double _maxAge, TimestampsToReturn _timestampsToReturn, ReadValueId[] _nodesToRead) {
         this._requestHeader = _requestHeader;
@@ -59,16 +68,16 @@ public class ReadRequest implements UaRequestMessage {
 
 
     public static void encode(ReadRequest readRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", readRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", readRequest._requestHeader != null ? readRequest._requestHeader : new RequestHeader());
         encoder.encodeDouble("MaxAge", readRequest._maxAge);
-        encoder.encodeSerializable("TimestampsToReturn", readRequest._timestampsToReturn);
+        encoder.encodeEnumeration("TimestampsToReturn", readRequest._timestampsToReturn);
         encoder.encodeArray("NodesToRead", readRequest._nodesToRead, encoder::encodeSerializable);
     }
 
     public static ReadRequest decode(UaDecoder decoder) {
         RequestHeader _requestHeader = decoder.decodeSerializable("RequestHeader", RequestHeader.class);
         Double _maxAge = decoder.decodeDouble("MaxAge");
-        TimestampsToReturn _timestampsToReturn = decoder.decodeSerializable("TimestampsToReturn", TimestampsToReturn.class);
+        TimestampsToReturn _timestampsToReturn = decoder.decodeEnumeration("TimestampsToReturn", TimestampsToReturn.class);
         ReadValueId[] _nodesToRead = decoder.decodeArray("NodesToRead", decoder::decodeSerializable, ReadValueId.class);
 
         return new ReadRequest(_requestHeader, _maxAge, _timestampsToReturn, _nodesToRead);

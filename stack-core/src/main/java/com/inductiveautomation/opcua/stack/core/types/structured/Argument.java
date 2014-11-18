@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("Argument")
 public class Argument implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.Argument;
@@ -20,6 +22,14 @@ public class Argument implements UaStructure {
     protected final Integer _valueRank;
     protected final UInteger[] _arrayDimensions;
     protected final LocalizedText _description;
+
+    public Argument() {
+        this._name = null;
+        this._dataType = null;
+        this._valueRank = null;
+        this._arrayDimensions = null;
+        this._description = null;
+    }
 
     public Argument(String _name, NodeId _dataType, Integer _valueRank, UInteger[] _arrayDimensions, LocalizedText _description) {
         this._name = _name;

@@ -4,12 +4,14 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("VariableAttributes")
 public class VariableAttributes extends NodeAttributes {
 
     public static final NodeId TypeId = Identifiers.VariableAttributes;
@@ -24,6 +26,18 @@ public class VariableAttributes extends NodeAttributes {
     protected final UByte _userAccessLevel;
     protected final Double _minimumSamplingInterval;
     protected final Boolean _historizing;
+
+    public VariableAttributes() {
+        super(null, null, null, null, null);
+        this._value = null;
+        this._dataType = null;
+        this._valueRank = null;
+        this._arrayDimensions = null;
+        this._accessLevel = null;
+        this._userAccessLevel = null;
+        this._minimumSamplingInterval = null;
+        this._historizing = null;
+    }
 
     public VariableAttributes(UInteger _specifiedAttributes, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, Variant _value, NodeId _dataType, Integer _valueRank, UInteger[] _arrayDimensions, UByte _accessLevel, UByte _userAccessLevel, Double _minimumSamplingInterval, Boolean _historizing) {
         super(_specifiedAttributes, _displayName, _description, _writeMask, _userWriteMask);

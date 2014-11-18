@@ -5,12 +5,14 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.SecurityTokenRequestType;
 
+@UaDataType("OpenSecureChannelRequest")
 public class OpenSecureChannelRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.OpenSecureChannelRequest;
@@ -23,6 +25,15 @@ public class OpenSecureChannelRequest implements UaRequestMessage {
     protected final MessageSecurityMode _securityMode;
     protected final ByteString _clientNonce;
     protected final UInteger _requestedLifetime;
+
+    public OpenSecureChannelRequest() {
+        this._requestHeader = null;
+        this._clientProtocolVersion = null;
+        this._requestType = null;
+        this._securityMode = null;
+        this._clientNonce = null;
+        this._requestedLifetime = null;
+    }
 
     public OpenSecureChannelRequest(RequestHeader _requestHeader, UInteger _clientProtocolVersion, SecurityTokenRequestType _requestType, MessageSecurityMode _securityMode, ByteString _clientNonce, UInteger _requestedLifetime) {
         this._requestHeader = _requestHeader;
@@ -74,10 +85,10 @@ public class OpenSecureChannelRequest implements UaRequestMessage {
 
 
     public static void encode(OpenSecureChannelRequest openSecureChannelRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", openSecureChannelRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", openSecureChannelRequest._requestHeader != null ? openSecureChannelRequest._requestHeader : new RequestHeader());
         encoder.encodeUInt32("ClientProtocolVersion", openSecureChannelRequest._clientProtocolVersion);
-        encoder.encodeSerializable("RequestType", openSecureChannelRequest._requestType);
-        encoder.encodeSerializable("SecurityMode", openSecureChannelRequest._securityMode);
+        encoder.encodeEnumeration("RequestType", openSecureChannelRequest._requestType);
+        encoder.encodeEnumeration("SecurityMode", openSecureChannelRequest._securityMode);
         encoder.encodeByteString("ClientNonce", openSecureChannelRequest._clientNonce);
         encoder.encodeUInt32("RequestedLifetime", openSecureChannelRequest._requestedLifetime);
     }
@@ -85,8 +96,8 @@ public class OpenSecureChannelRequest implements UaRequestMessage {
     public static OpenSecureChannelRequest decode(UaDecoder decoder) {
         RequestHeader _requestHeader = decoder.decodeSerializable("RequestHeader", RequestHeader.class);
         UInteger _clientProtocolVersion = decoder.decodeUInt32("ClientProtocolVersion");
-        SecurityTokenRequestType _requestType = decoder.decodeSerializable("RequestType", SecurityTokenRequestType.class);
-        MessageSecurityMode _securityMode = decoder.decodeSerializable("SecurityMode", MessageSecurityMode.class);
+        SecurityTokenRequestType _requestType = decoder.decodeEnumeration("RequestType", SecurityTokenRequestType.class);
+        MessageSecurityMode _securityMode = decoder.decodeEnumeration("SecurityMode", MessageSecurityMode.class);
         ByteString _clientNonce = decoder.decodeByteString("ClientNonce");
         UInteger _requestedLifetime = decoder.decodeUInt32("RequestedLifetime");
 

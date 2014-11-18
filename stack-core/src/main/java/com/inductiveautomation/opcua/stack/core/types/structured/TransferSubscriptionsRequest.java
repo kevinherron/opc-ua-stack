@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("TransferSubscriptionsRequest")
 public class TransferSubscriptionsRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.TransferSubscriptionsRequest;
@@ -17,6 +19,12 @@ public class TransferSubscriptionsRequest implements UaRequestMessage {
     protected final RequestHeader _requestHeader;
     protected final UInteger[] _subscriptionIds;
     protected final Boolean _sendInitialValues;
+
+    public TransferSubscriptionsRequest() {
+        this._requestHeader = null;
+        this._subscriptionIds = null;
+        this._sendInitialValues = null;
+    }
 
     public TransferSubscriptionsRequest(RequestHeader _requestHeader, UInteger[] _subscriptionIds, Boolean _sendInitialValues) {
         this._requestHeader = _requestHeader;
@@ -53,7 +61,7 @@ public class TransferSubscriptionsRequest implements UaRequestMessage {
 
 
     public static void encode(TransferSubscriptionsRequest transferSubscriptionsRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", transferSubscriptionsRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", transferSubscriptionsRequest._requestHeader != null ? transferSubscriptionsRequest._requestHeader : new RequestHeader());
         encoder.encodeArray("SubscriptionIds", transferSubscriptionsRequest._subscriptionIds, encoder::encodeUInt32);
         encoder.encodeBoolean("SendInitialValues", transferSubscriptionsRequest._sendInitialValues);
     }

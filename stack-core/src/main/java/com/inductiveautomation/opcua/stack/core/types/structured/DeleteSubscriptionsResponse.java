@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("DeleteSubscriptionsResponse")
 public class DeleteSubscriptionsResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.DeleteSubscriptionsResponse;
@@ -18,6 +20,12 @@ public class DeleteSubscriptionsResponse implements UaResponseMessage {
     protected final ResponseHeader _responseHeader;
     protected final StatusCode[] _results;
     protected final DiagnosticInfo[] _diagnosticInfos;
+
+    public DeleteSubscriptionsResponse() {
+        this._responseHeader = null;
+        this._results = null;
+        this._diagnosticInfos = null;
+    }
 
     public DeleteSubscriptionsResponse(ResponseHeader _responseHeader, StatusCode[] _results, DiagnosticInfo[] _diagnosticInfos) {
         this._responseHeader = _responseHeader;
@@ -54,7 +62,7 @@ public class DeleteSubscriptionsResponse implements UaResponseMessage {
 
 
     public static void encode(DeleteSubscriptionsResponse deleteSubscriptionsResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", deleteSubscriptionsResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", deleteSubscriptionsResponse._responseHeader != null ? deleteSubscriptionsResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("Results", deleteSubscriptionsResponse._results, encoder::encodeStatusCode);
         encoder.encodeArray("DiagnosticInfos", deleteSubscriptionsResponse._diagnosticInfos, encoder::encodeDiagnosticInfo);
     }

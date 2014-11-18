@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.FilterOperator;
 
+@UaDataType("ContentFilterElement")
 public class ContentFilterElement implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ContentFilterElement;
@@ -17,6 +19,11 @@ public class ContentFilterElement implements UaStructure {
 
     protected final FilterOperator _filterOperator;
     protected final ExtensionObject[] _filterOperands;
+
+    public ContentFilterElement() {
+        this._filterOperator = null;
+        this._filterOperands = null;
+    }
 
     public ContentFilterElement(FilterOperator _filterOperator, ExtensionObject[] _filterOperands) {
         this._filterOperator = _filterOperator;
@@ -48,12 +55,12 @@ public class ContentFilterElement implements UaStructure {
 
 
     public static void encode(ContentFilterElement contentFilterElement, UaEncoder encoder) {
-        encoder.encodeSerializable("FilterOperator", contentFilterElement._filterOperator);
+        encoder.encodeEnumeration("FilterOperator", contentFilterElement._filterOperator);
         encoder.encodeArray("FilterOperands", contentFilterElement._filterOperands, encoder::encodeExtensionObject);
     }
 
     public static ContentFilterElement decode(UaDecoder decoder) {
-        FilterOperator _filterOperator = decoder.decodeSerializable("FilterOperator", FilterOperator.class);
+        FilterOperator _filterOperator = decoder.decodeEnumeration("FilterOperator", FilterOperator.class);
         ExtensionObject[] _filterOperands = decoder.decodeArray("FilterOperands", decoder::decodeExtensionObject, ExtensionObject.class);
 
         return new ContentFilterElement(_filterOperator, _filterOperands);

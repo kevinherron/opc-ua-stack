@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExpandedNodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("BrowsePathTarget")
 public class BrowsePathTarget implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.BrowsePathTarget;
@@ -17,6 +19,11 @@ public class BrowsePathTarget implements UaStructure {
 
     protected final ExpandedNodeId _targetId;
     protected final UInteger _remainingPathIndex;
+
+    public BrowsePathTarget() {
+        this._targetId = null;
+        this._remainingPathIndex = null;
+    }
 
     public BrowsePathTarget(ExpandedNodeId _targetId, UInteger _remainingPathIndex) {
         this._targetId = _targetId;

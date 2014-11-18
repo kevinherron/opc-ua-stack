@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.ComplianceLevel;
 
+@UaDataType("SupportedProfile")
 public class SupportedProfile implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.SupportedProfile;
@@ -21,6 +23,15 @@ public class SupportedProfile implements UaStructure {
     protected final DateTime _complianceDate;
     protected final ComplianceLevel _complianceLevel;
     protected final String[] _unsupportedUnitIds;
+
+    public SupportedProfile() {
+        this._organizationUri = null;
+        this._profileId = null;
+        this._complianceTool = null;
+        this._complianceDate = null;
+        this._complianceLevel = null;
+        this._unsupportedUnitIds = null;
+    }
 
     public SupportedProfile(String _organizationUri, String _profileId, String _complianceTool, DateTime _complianceDate, ComplianceLevel _complianceLevel, String[] _unsupportedUnitIds) {
         this._organizationUri = _organizationUri;
@@ -76,7 +87,7 @@ public class SupportedProfile implements UaStructure {
         encoder.encodeString("ProfileId", supportedProfile._profileId);
         encoder.encodeString("ComplianceTool", supportedProfile._complianceTool);
         encoder.encodeDateTime("ComplianceDate", supportedProfile._complianceDate);
-        encoder.encodeSerializable("ComplianceLevel", supportedProfile._complianceLevel);
+        encoder.encodeEnumeration("ComplianceLevel", supportedProfile._complianceLevel);
         encoder.encodeArray("UnsupportedUnitIds", supportedProfile._unsupportedUnitIds, encoder::encodeString);
     }
 
@@ -85,7 +96,7 @@ public class SupportedProfile implements UaStructure {
         String _profileId = decoder.decodeString("ProfileId");
         String _complianceTool = decoder.decodeString("ComplianceTool");
         DateTime _complianceDate = decoder.decodeDateTime("ComplianceDate");
-        ComplianceLevel _complianceLevel = decoder.decodeSerializable("ComplianceLevel", ComplianceLevel.class);
+        ComplianceLevel _complianceLevel = decoder.decodeEnumeration("ComplianceLevel", ComplianceLevel.class);
         String[] _unsupportedUnitIds = decoder.decodeArray("UnsupportedUnitIds", decoder::decodeString, String.class);
 
         return new SupportedProfile(_organizationUri, _profileId, _complianceTool, _complianceDate, _complianceLevel, _unsupportedUnitIds);

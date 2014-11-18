@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("SemanticChangeStructureDataType")
 public class SemanticChangeStructureDataType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.SemanticChangeStructureDataType;
@@ -15,6 +17,11 @@ public class SemanticChangeStructureDataType implements UaStructure {
 
     protected final NodeId _affected;
     protected final NodeId _affectedType;
+
+    public SemanticChangeStructureDataType() {
+        this._affected = null;
+        this._affectedType = null;
+    }
 
     public SemanticChangeStructureDataType(NodeId _affected, NodeId _affectedType) {
         this._affected = _affected;

@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("HistoryEvent")
 public class HistoryEvent implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.HistoryEvent;
@@ -14,6 +16,10 @@ public class HistoryEvent implements UaStructure {
     public static final NodeId XmlEncodingId = Identifiers.HistoryEvent_Encoding_DefaultXml;
 
     protected final HistoryEventFieldList[] _events;
+
+    public HistoryEvent() {
+        this._events = null;
+    }
 
     public HistoryEvent(HistoryEventFieldList[] _events) {
         this._events = _events;

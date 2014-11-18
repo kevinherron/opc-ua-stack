@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("BrowseNextRequest")
 public class BrowseNextRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.BrowseNextRequest;
@@ -17,6 +19,12 @@ public class BrowseNextRequest implements UaRequestMessage {
     protected final RequestHeader _requestHeader;
     protected final Boolean _releaseContinuationPoints;
     protected final ByteString[] _continuationPoints;
+
+    public BrowseNextRequest() {
+        this._requestHeader = null;
+        this._releaseContinuationPoints = null;
+        this._continuationPoints = null;
+    }
 
     public BrowseNextRequest(RequestHeader _requestHeader, Boolean _releaseContinuationPoints, ByteString[] _continuationPoints) {
         this._requestHeader = _requestHeader;
@@ -53,7 +61,7 @@ public class BrowseNextRequest implements UaRequestMessage {
 
 
     public static void encode(BrowseNextRequest browseNextRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", browseNextRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", browseNextRequest._requestHeader != null ? browseNextRequest._requestHeader : new RequestHeader());
         encoder.encodeBoolean("ReleaseContinuationPoints", browseNextRequest._releaseContinuationPoints);
         encoder.encodeArray("ContinuationPoints", browseNextRequest._continuationPoints, encoder::encodeByteString);
     }

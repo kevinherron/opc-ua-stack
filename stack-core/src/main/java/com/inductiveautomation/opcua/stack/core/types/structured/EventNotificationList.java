@@ -4,8 +4,10 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("EventNotificationList")
 public class EventNotificationList extends NotificationData {
 
     public static final NodeId TypeId = Identifiers.EventNotificationList;
@@ -13,6 +15,11 @@ public class EventNotificationList extends NotificationData {
     public static final NodeId XmlEncodingId = Identifiers.EventNotificationList_Encoding_DefaultXml;
 
     protected final EventFieldList[] _events;
+
+    public EventNotificationList() {
+        super();
+        this._events = null;
+    }
 
     public EventNotificationList(EventFieldList[] _events) {
         super();

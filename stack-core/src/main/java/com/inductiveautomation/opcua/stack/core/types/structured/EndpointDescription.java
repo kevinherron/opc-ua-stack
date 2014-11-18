@@ -5,11 +5,13 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
 
+@UaDataType("EndpointDescription")
 public class EndpointDescription implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.EndpointDescription;
@@ -24,6 +26,17 @@ public class EndpointDescription implements UaStructure {
     protected final UserTokenPolicy[] _userIdentityTokens;
     protected final String _transportProfileUri;
     protected final UByte _securityLevel;
+
+    public EndpointDescription() {
+        this._endpointUrl = null;
+        this._server = null;
+        this._serverCertificate = null;
+        this._securityMode = null;
+        this._securityPolicyUri = null;
+        this._userIdentityTokens = null;
+        this._transportProfileUri = null;
+        this._securityLevel = null;
+    }
 
     public EndpointDescription(String _endpointUrl, ApplicationDescription _server, ByteString _serverCertificate, MessageSecurityMode _securityMode, String _securityPolicyUri, UserTokenPolicy[] _userIdentityTokens, String _transportProfileUri, UByte _securityLevel) {
         this._endpointUrl = _endpointUrl;
@@ -86,9 +99,9 @@ public class EndpointDescription implements UaStructure {
 
     public static void encode(EndpointDescription endpointDescription, UaEncoder encoder) {
         encoder.encodeString("EndpointUrl", endpointDescription._endpointUrl);
-        encoder.encodeSerializable("Server", endpointDescription._server);
+        encoder.encodeSerializable("Server", endpointDescription._server != null ? endpointDescription._server : new ApplicationDescription());
         encoder.encodeByteString("ServerCertificate", endpointDescription._serverCertificate);
-        encoder.encodeSerializable("SecurityMode", endpointDescription._securityMode);
+        encoder.encodeEnumeration("SecurityMode", endpointDescription._securityMode);
         encoder.encodeString("SecurityPolicyUri", endpointDescription._securityPolicyUri);
         encoder.encodeArray("UserIdentityTokens", endpointDescription._userIdentityTokens, encoder::encodeSerializable);
         encoder.encodeString("TransportProfileUri", endpointDescription._transportProfileUri);
@@ -99,7 +112,7 @@ public class EndpointDescription implements UaStructure {
         String _endpointUrl = decoder.decodeString("EndpointUrl");
         ApplicationDescription _server = decoder.decodeSerializable("Server", ApplicationDescription.class);
         ByteString _serverCertificate = decoder.decodeByteString("ServerCertificate");
-        MessageSecurityMode _securityMode = decoder.decodeSerializable("SecurityMode", MessageSecurityMode.class);
+        MessageSecurityMode _securityMode = decoder.decodeEnumeration("SecurityMode", MessageSecurityMode.class);
         String _securityPolicyUri = decoder.decodeString("SecurityPolicyUri");
         UserTokenPolicy[] _userIdentityTokens = decoder.decodeArray("UserIdentityTokens", decoder::decodeSerializable, UserTokenPolicy.class);
         String _transportProfileUri = decoder.decodeString("TransportProfileUri");

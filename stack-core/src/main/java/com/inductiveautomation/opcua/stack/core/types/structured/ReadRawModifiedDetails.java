@@ -4,10 +4,12 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("ReadRawModifiedDetails")
 public class ReadRawModifiedDetails extends HistoryReadDetails {
 
     public static final NodeId TypeId = Identifiers.ReadRawModifiedDetails;
@@ -19,6 +21,15 @@ public class ReadRawModifiedDetails extends HistoryReadDetails {
     protected final DateTime _endTime;
     protected final UInteger _numValuesPerNode;
     protected final Boolean _returnBounds;
+
+    public ReadRawModifiedDetails() {
+        super();
+        this._isReadModified = null;
+        this._startTime = null;
+        this._endTime = null;
+        this._numValuesPerNode = null;
+        this._returnBounds = null;
+    }
 
     public ReadRawModifiedDetails(Boolean _isReadModified, DateTime _startTime, DateTime _endTime, UInteger _numValuesPerNode, Boolean _returnBounds) {
         super();

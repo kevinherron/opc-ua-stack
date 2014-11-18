@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("ModifySubscriptionRequest")
 public class ModifySubscriptionRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.ModifySubscriptionRequest;
@@ -22,6 +24,16 @@ public class ModifySubscriptionRequest implements UaRequestMessage {
     protected final UInteger _requestedMaxKeepAliveCount;
     protected final UInteger _maxNotificationsPerPublish;
     protected final UByte _priority;
+
+    public ModifySubscriptionRequest() {
+        this._requestHeader = null;
+        this._subscriptionId = null;
+        this._requestedPublishingInterval = null;
+        this._requestedLifetimeCount = null;
+        this._requestedMaxKeepAliveCount = null;
+        this._maxNotificationsPerPublish = null;
+        this._priority = null;
+    }
 
     public ModifySubscriptionRequest(RequestHeader _requestHeader, UInteger _subscriptionId, Double _requestedPublishingInterval, UInteger _requestedLifetimeCount, UInteger _requestedMaxKeepAliveCount, UInteger _maxNotificationsPerPublish, UByte _priority) {
         this._requestHeader = _requestHeader;
@@ -78,7 +90,7 @@ public class ModifySubscriptionRequest implements UaRequestMessage {
 
 
     public static void encode(ModifySubscriptionRequest modifySubscriptionRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", modifySubscriptionRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", modifySubscriptionRequest._requestHeader != null ? modifySubscriptionRequest._requestHeader : new RequestHeader());
         encoder.encodeUInt32("SubscriptionId", modifySubscriptionRequest._subscriptionId);
         encoder.encodeDouble("RequestedPublishingInterval", modifySubscriptionRequest._requestedPublishingInterval);
         encoder.encodeUInt32("RequestedLifetimeCount", modifySubscriptionRequest._requestedLifetimeCount);

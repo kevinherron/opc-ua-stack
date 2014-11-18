@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExpandedNodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("NodeTypeDescription")
 public class NodeTypeDescription implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.NodeTypeDescription;
@@ -17,6 +19,12 @@ public class NodeTypeDescription implements UaStructure {
     protected final ExpandedNodeId _typeDefinitionNode;
     protected final Boolean _includeSubTypes;
     protected final QueryDataDescription[] _dataToReturn;
+
+    public NodeTypeDescription() {
+        this._typeDefinitionNode = null;
+        this._includeSubTypes = null;
+        this._dataToReturn = null;
+    }
 
     public NodeTypeDescription(ExpandedNodeId _typeDefinitionNode, Boolean _includeSubTypes, QueryDataDescription[] _dataToReturn) {
         this._typeDefinitionNode = _typeDefinitionNode;

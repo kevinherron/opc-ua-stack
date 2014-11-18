@@ -5,12 +5,14 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExpandedNodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.NodeClass;
 
+@UaDataType("AddNodesItem")
 public class AddNodesItem implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.AddNodesItem;
@@ -24,6 +26,16 @@ public class AddNodesItem implements UaStructure {
     protected final NodeClass _nodeClass;
     protected final ExtensionObject _nodeAttributes;
     protected final ExpandedNodeId _typeDefinition;
+
+    public AddNodesItem() {
+        this._parentNodeId = null;
+        this._referenceTypeId = null;
+        this._requestedNewNodeId = null;
+        this._browseName = null;
+        this._nodeClass = null;
+        this._nodeAttributes = null;
+        this._typeDefinition = null;
+    }
 
     public AddNodesItem(ExpandedNodeId _parentNodeId, NodeId _referenceTypeId, ExpandedNodeId _requestedNewNodeId, QualifiedName _browseName, NodeClass _nodeClass, ExtensionObject _nodeAttributes, ExpandedNodeId _typeDefinition) {
         this._parentNodeId = _parentNodeId;
@@ -84,7 +96,7 @@ public class AddNodesItem implements UaStructure {
         encoder.encodeNodeId("ReferenceTypeId", addNodesItem._referenceTypeId);
         encoder.encodeExpandedNodeId("RequestedNewNodeId", addNodesItem._requestedNewNodeId);
         encoder.encodeQualifiedName("BrowseName", addNodesItem._browseName);
-        encoder.encodeSerializable("NodeClass", addNodesItem._nodeClass);
+        encoder.encodeEnumeration("NodeClass", addNodesItem._nodeClass);
         encoder.encodeExtensionObject("NodeAttributes", addNodesItem._nodeAttributes);
         encoder.encodeExpandedNodeId("TypeDefinition", addNodesItem._typeDefinition);
     }
@@ -94,7 +106,7 @@ public class AddNodesItem implements UaStructure {
         NodeId _referenceTypeId = decoder.decodeNodeId("ReferenceTypeId");
         ExpandedNodeId _requestedNewNodeId = decoder.decodeExpandedNodeId("RequestedNewNodeId");
         QualifiedName _browseName = decoder.decodeQualifiedName("BrowseName");
-        NodeClass _nodeClass = decoder.decodeSerializable("NodeClass", NodeClass.class);
+        NodeClass _nodeClass = decoder.decodeEnumeration("NodeClass", NodeClass.class);
         ExtensionObject _nodeAttributes = decoder.decodeExtensionObject("NodeAttributes");
         ExpandedNodeId _typeDefinition = decoder.decodeExpandedNodeId("TypeDefinition");
 

@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("MonitoringFilter")
 public class MonitoringFilter implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.MonitoringFilter;
@@ -16,7 +18,6 @@ public class MonitoringFilter implements UaStructure {
 
     public MonitoringFilter() {
     }
-
 
     @Override
     public NodeId getTypeId() {

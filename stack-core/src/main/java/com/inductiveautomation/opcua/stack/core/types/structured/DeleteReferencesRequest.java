@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("DeleteReferencesRequest")
 public class DeleteReferencesRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.DeleteReferencesRequest;
@@ -15,6 +17,11 @@ public class DeleteReferencesRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final DeleteReferencesItem[] _referencesToDelete;
+
+    public DeleteReferencesRequest() {
+        this._requestHeader = null;
+        this._referencesToDelete = null;
+    }
 
     public DeleteReferencesRequest(RequestHeader _requestHeader, DeleteReferencesItem[] _referencesToDelete) {
         this._requestHeader = _requestHeader;
@@ -46,7 +53,7 @@ public class DeleteReferencesRequest implements UaRequestMessage {
 
 
     public static void encode(DeleteReferencesRequest deleteReferencesRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", deleteReferencesRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", deleteReferencesRequest._requestHeader != null ? deleteReferencesRequest._requestHeader : new RequestHeader());
         encoder.encodeArray("ReferencesToDelete", deleteReferencesRequest._referencesToDelete, encoder::encodeSerializable);
     }
 

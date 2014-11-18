@@ -4,11 +4,13 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("VariableTypeAttributes")
 public class VariableTypeAttributes extends NodeAttributes {
 
     public static final NodeId TypeId = Identifiers.VariableTypeAttributes;
@@ -20,6 +22,15 @@ public class VariableTypeAttributes extends NodeAttributes {
     protected final Integer _valueRank;
     protected final UInteger[] _arrayDimensions;
     protected final Boolean _isAbstract;
+
+    public VariableTypeAttributes() {
+        super(null, null, null, null, null);
+        this._value = null;
+        this._dataType = null;
+        this._valueRank = null;
+        this._arrayDimensions = null;
+        this._isAbstract = null;
+    }
 
     public VariableTypeAttributes(UInteger _specifiedAttributes, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, Variant _value, NodeId _dataType, Integer _valueRank, UInteger[] _arrayDimensions, Boolean _isAbstract) {
         super(_specifiedAttributes, _displayName, _description, _writeMask, _userWriteMask);

@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("EnumValueType")
 public class EnumValueType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.EnumValueType;
@@ -17,6 +19,12 @@ public class EnumValueType implements UaStructure {
     protected final Long _value;
     protected final LocalizedText _displayName;
     protected final LocalizedText _description;
+
+    public EnumValueType() {
+        this._value = null;
+        this._displayName = null;
+        this._description = null;
+    }
 
     public EnumValueType(Long _value, LocalizedText _displayName, LocalizedText _description) {
         this._value = _value;

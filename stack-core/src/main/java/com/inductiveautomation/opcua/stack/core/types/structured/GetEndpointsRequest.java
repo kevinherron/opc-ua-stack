@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("GetEndpointsRequest")
 public class GetEndpointsRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.GetEndpointsRequest;
@@ -17,6 +19,13 @@ public class GetEndpointsRequest implements UaRequestMessage {
     protected final String _endpointUrl;
     protected final String[] _localeIds;
     protected final String[] _profileUris;
+
+    public GetEndpointsRequest() {
+        this._requestHeader = null;
+        this._endpointUrl = null;
+        this._localeIds = null;
+        this._profileUris = null;
+    }
 
     public GetEndpointsRequest(RequestHeader _requestHeader, String _endpointUrl, String[] _localeIds, String[] _profileUris) {
         this._requestHeader = _requestHeader;
@@ -58,7 +67,7 @@ public class GetEndpointsRequest implements UaRequestMessage {
 
 
     public static void encode(GetEndpointsRequest getEndpointsRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", getEndpointsRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", getEndpointsRequest._requestHeader != null ? getEndpointsRequest._requestHeader : new RequestHeader());
         encoder.encodeString("EndpointUrl", getEndpointsRequest._endpointUrl);
         encoder.encodeArray("LocaleIds", getEndpointsRequest._localeIds, encoder::encodeString);
         encoder.encodeArray("ProfileUris", getEndpointsRequest._profileUris, encoder::encodeString);

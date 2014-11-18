@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.ApplicationType;
 
+@UaDataType("RegisteredServer")
 public class RegisteredServer implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.RegisteredServer;
@@ -23,6 +25,17 @@ public class RegisteredServer implements UaStructure {
     protected final String[] _discoveryUrls;
     protected final String _semaphoreFilePath;
     protected final Boolean _isOnline;
+
+    public RegisteredServer() {
+        this._serverUri = null;
+        this._productUri = null;
+        this._serverNames = null;
+        this._serverType = null;
+        this._gatewayServerUri = null;
+        this._discoveryUrls = null;
+        this._semaphoreFilePath = null;
+        this._isOnline = null;
+    }
 
     public RegisteredServer(String _serverUri, String _productUri, LocalizedText[] _serverNames, ApplicationType _serverType, String _gatewayServerUri, String[] _discoveryUrls, String _semaphoreFilePath, Boolean _isOnline) {
         this._serverUri = _serverUri;
@@ -87,7 +100,7 @@ public class RegisteredServer implements UaStructure {
         encoder.encodeString("ServerUri", registeredServer._serverUri);
         encoder.encodeString("ProductUri", registeredServer._productUri);
         encoder.encodeArray("ServerNames", registeredServer._serverNames, encoder::encodeLocalizedText);
-        encoder.encodeSerializable("ServerType", registeredServer._serverType);
+        encoder.encodeEnumeration("ServerType", registeredServer._serverType);
         encoder.encodeString("GatewayServerUri", registeredServer._gatewayServerUri);
         encoder.encodeArray("DiscoveryUrls", registeredServer._discoveryUrls, encoder::encodeString);
         encoder.encodeString("SemaphoreFilePath", registeredServer._semaphoreFilePath);
@@ -98,7 +111,7 @@ public class RegisteredServer implements UaStructure {
         String _serverUri = decoder.decodeString("ServerUri");
         String _productUri = decoder.decodeString("ProductUri");
         LocalizedText[] _serverNames = decoder.decodeArray("ServerNames", decoder::decodeLocalizedText, LocalizedText.class);
-        ApplicationType _serverType = decoder.decodeSerializable("ServerType", ApplicationType.class);
+        ApplicationType _serverType = decoder.decodeEnumeration("ServerType", ApplicationType.class);
         String _gatewayServerUri = decoder.decodeString("GatewayServerUri");
         String[] _discoveryUrls = decoder.decodeArray("DiscoveryUrls", decoder::decodeString, String.class);
         String _semaphoreFilePath = decoder.decodeString("SemaphoreFilePath");

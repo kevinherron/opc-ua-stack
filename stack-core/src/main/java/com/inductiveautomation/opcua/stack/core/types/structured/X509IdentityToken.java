@@ -4,9 +4,11 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("X509IdentityToken")
 public class X509IdentityToken extends UserIdentityToken {
 
     public static final NodeId TypeId = Identifiers.X509IdentityToken;
@@ -14,6 +16,11 @@ public class X509IdentityToken extends UserIdentityToken {
     public static final NodeId XmlEncodingId = Identifiers.X509IdentityToken_Encoding_DefaultXml;
 
     protected final ByteString _certificateData;
+
+    public X509IdentityToken() {
+        super(null);
+        this._certificateData = null;
+    }
 
     public X509IdentityToken(String _policyId, ByteString _certificateData) {
         super(_policyId);

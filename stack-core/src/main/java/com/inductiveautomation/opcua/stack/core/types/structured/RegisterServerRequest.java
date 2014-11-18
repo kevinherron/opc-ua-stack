@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("RegisterServerRequest")
 public class RegisterServerRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.RegisterServerRequest;
@@ -15,6 +17,11 @@ public class RegisterServerRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final RegisteredServer _server;
+
+    public RegisterServerRequest() {
+        this._requestHeader = null;
+        this._server = null;
+    }
 
     public RegisterServerRequest(RequestHeader _requestHeader, RegisteredServer _server) {
         this._requestHeader = _requestHeader;
@@ -46,8 +53,8 @@ public class RegisterServerRequest implements UaRequestMessage {
 
 
     public static void encode(RegisterServerRequest registerServerRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", registerServerRequest._requestHeader);
-        encoder.encodeSerializable("Server", registerServerRequest._server);
+        encoder.encodeSerializable("RequestHeader", registerServerRequest._requestHeader != null ? registerServerRequest._requestHeader : new RequestHeader());
+        encoder.encodeSerializable("Server", registerServerRequest._server != null ? registerServerRequest._server : new RegisteredServer());
     }
 
     public static RegisterServerRequest decode(UaDecoder decoder) {

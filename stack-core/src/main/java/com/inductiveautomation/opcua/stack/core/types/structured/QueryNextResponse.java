@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("QueryNextResponse")
 public class QueryNextResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.QueryNextResponse;
@@ -17,6 +19,12 @@ public class QueryNextResponse implements UaResponseMessage {
     protected final ResponseHeader _responseHeader;
     protected final QueryDataSet[] _queryDataSets;
     protected final ByteString _revisedContinuationPoint;
+
+    public QueryNextResponse() {
+        this._responseHeader = null;
+        this._queryDataSets = null;
+        this._revisedContinuationPoint = null;
+    }
 
     public QueryNextResponse(ResponseHeader _responseHeader, QueryDataSet[] _queryDataSets, ByteString _revisedContinuationPoint) {
         this._responseHeader = _responseHeader;
@@ -53,7 +61,7 @@ public class QueryNextResponse implements UaResponseMessage {
 
 
     public static void encode(QueryNextResponse queryNextResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", queryNextResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", queryNextResponse._responseHeader != null ? queryNextResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("QueryDataSets", queryNextResponse._queryDataSets, encoder::encodeSerializable);
         encoder.encodeByteString("RevisedContinuationPoint", queryNextResponse._revisedContinuationPoint);
     }

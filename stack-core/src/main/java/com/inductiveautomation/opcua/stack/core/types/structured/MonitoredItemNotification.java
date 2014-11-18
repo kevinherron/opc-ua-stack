@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DataValue;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("MonitoredItemNotification")
 public class MonitoredItemNotification implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.MonitoredItemNotification;
@@ -17,6 +19,11 @@ public class MonitoredItemNotification implements UaStructure {
 
     protected final UInteger _clientHandle;
     protected final DataValue _value;
+
+    public MonitoredItemNotification() {
+        this._clientHandle = null;
+        this._value = null;
+    }
 
     public MonitoredItemNotification(UInteger _clientHandle, DataValue _value) {
         this._clientHandle = _clientHandle;

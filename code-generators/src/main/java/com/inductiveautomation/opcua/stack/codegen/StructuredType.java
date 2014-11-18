@@ -96,12 +96,14 @@ public class StructuredType {
         private final FieldType type;
         private final Optional<String> sourceType;
         private final boolean array;
+        private final boolean enumeration;
 
-        public Field(String name, FieldType type, Optional<String> sourceType, boolean array) {
+        public Field(String name, FieldType type, Optional<String> sourceType, boolean array, boolean enumeration) {
             this.name = name;
             this.type = type;
             this.sourceType = sourceType;
             this.array = array;
+            this.enumeration = enumeration;
         }
 
         public String getName() {
@@ -123,6 +125,10 @@ public class StructuredType {
 
         public boolean isArray() {
             return array;
+        }
+
+        public boolean isEnumeration() {
+            return enumeration;
         }
 
         @Override

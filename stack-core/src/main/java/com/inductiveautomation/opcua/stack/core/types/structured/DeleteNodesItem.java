@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("DeleteNodesItem")
 public class DeleteNodesItem implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.DeleteNodesItem;
@@ -15,6 +17,11 @@ public class DeleteNodesItem implements UaStructure {
 
     protected final NodeId _nodeId;
     protected final Boolean _deleteTargetReferences;
+
+    public DeleteNodesItem() {
+        this._nodeId = null;
+        this._deleteTargetReferences = null;
+    }
 
     public DeleteNodesItem(NodeId _nodeId, Boolean _deleteTargetReferences) {
         this._nodeId = _nodeId;

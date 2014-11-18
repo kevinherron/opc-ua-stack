@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("ServerDiagnosticsSummaryDataType")
 public class ServerDiagnosticsSummaryDataType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ServerDiagnosticsSummaryDataType;
@@ -26,6 +28,21 @@ public class ServerDiagnosticsSummaryDataType implements UaStructure {
     protected final UInteger _publishingIntervalCount;
     protected final UInteger _securityRejectedRequestsCount;
     protected final UInteger _rejectedRequestsCount;
+
+    public ServerDiagnosticsSummaryDataType() {
+        this._serverViewCount = null;
+        this._currentSessionCount = null;
+        this._cumulatedSessionCount = null;
+        this._securityRejectedSessionCount = null;
+        this._rejectedSessionCount = null;
+        this._sessionTimeoutCount = null;
+        this._sessionAbortCount = null;
+        this._currentSubscriptionCount = null;
+        this._cumulatedSubscriptionCount = null;
+        this._publishingIntervalCount = null;
+        this._securityRejectedRequestsCount = null;
+        this._rejectedRequestsCount = null;
+    }
 
     public ServerDiagnosticsSummaryDataType(UInteger _serverViewCount, UInteger _currentSessionCount, UInteger _cumulatedSessionCount, UInteger _securityRejectedSessionCount, UInteger _rejectedSessionCount, UInteger _sessionTimeoutCount, UInteger _sessionAbortCount, UInteger _currentSubscriptionCount, UInteger _cumulatedSubscriptionCount, UInteger _publishingIntervalCount, UInteger _securityRejectedRequestsCount, UInteger _rejectedRequestsCount) {
         this._serverViewCount = _serverViewCount;

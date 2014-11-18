@@ -4,6 +4,7 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
@@ -11,6 +12,7 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.NodeClass;
 
+@UaDataType("VariableTypeNode")
 public class VariableTypeNode extends TypeNode {
 
     public static final NodeId TypeId = Identifiers.VariableTypeNode;
@@ -22,6 +24,15 @@ public class VariableTypeNode extends TypeNode {
     protected final Integer _valueRank;
     protected final UInteger[] _arrayDimensions;
     protected final Boolean _isAbstract;
+
+    public VariableTypeNode() {
+        super(null, null, null, null, null, null, null, null);
+        this._value = null;
+        this._dataType = null;
+        this._valueRank = null;
+        this._arrayDimensions = null;
+        this._isAbstract = null;
+    }
 
     public VariableTypeNode(NodeId _nodeId, NodeClass _nodeClass, QualifiedName _browseName, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, ReferenceNode[] _references, Variant _value, NodeId _dataType, Integer _valueRank, UInteger[] _arrayDimensions, Boolean _isAbstract) {
         super(_nodeId, _nodeClass, _browseName, _displayName, _description, _writeMask, _userWriteMask, _references);
@@ -70,7 +81,7 @@ public class VariableTypeNode extends TypeNode {
 
     public static void encode(VariableTypeNode variableTypeNode, UaEncoder encoder) {
         encoder.encodeNodeId("NodeId", variableTypeNode._nodeId);
-        encoder.encodeSerializable("NodeClass", variableTypeNode._nodeClass);
+        encoder.encodeEnumeration("NodeClass", variableTypeNode._nodeClass);
         encoder.encodeQualifiedName("BrowseName", variableTypeNode._browseName);
         encoder.encodeLocalizedText("DisplayName", variableTypeNode._displayName);
         encoder.encodeLocalizedText("Description", variableTypeNode._description);
@@ -86,7 +97,7 @@ public class VariableTypeNode extends TypeNode {
 
     public static VariableTypeNode decode(UaDecoder decoder) {
         NodeId _nodeId = decoder.decodeNodeId("NodeId");
-        NodeClass _nodeClass = decoder.decodeSerializable("NodeClass", NodeClass.class);
+        NodeClass _nodeClass = decoder.decodeEnumeration("NodeClass", NodeClass.class);
         QualifiedName _browseName = decoder.decodeQualifiedName("BrowseName");
         LocalizedText _displayName = decoder.decodeLocalizedText("DisplayName");
         LocalizedText _description = decoder.decodeLocalizedText("Description");

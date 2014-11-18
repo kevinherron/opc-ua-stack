@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("QueryDataDescription")
 public class QueryDataDescription implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.QueryDataDescription;
@@ -17,6 +19,12 @@ public class QueryDataDescription implements UaStructure {
     protected final RelativePath _relativePath;
     protected final UInteger _attributeId;
     protected final String _indexRange;
+
+    public QueryDataDescription() {
+        this._relativePath = null;
+        this._attributeId = null;
+        this._indexRange = null;
+    }
 
     public QueryDataDescription(RelativePath _relativePath, UInteger _attributeId, String _indexRange) {
         this._relativePath = _relativePath;
@@ -53,7 +61,7 @@ public class QueryDataDescription implements UaStructure {
 
 
     public static void encode(QueryDataDescription queryDataDescription, UaEncoder encoder) {
-        encoder.encodeSerializable("RelativePath", queryDataDescription._relativePath);
+        encoder.encodeSerializable("RelativePath", queryDataDescription._relativePath != null ? queryDataDescription._relativePath : new RelativePath());
         encoder.encodeUInt32("AttributeId", queryDataDescription._attributeId);
         encoder.encodeString("IndexRange", queryDataDescription._indexRange);
     }

@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("DeleteMonitoredItemsResponse")
 public class DeleteMonitoredItemsResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.DeleteMonitoredItemsResponse;
@@ -18,6 +20,12 @@ public class DeleteMonitoredItemsResponse implements UaResponseMessage {
     protected final ResponseHeader _responseHeader;
     protected final StatusCode[] _results;
     protected final DiagnosticInfo[] _diagnosticInfos;
+
+    public DeleteMonitoredItemsResponse() {
+        this._responseHeader = null;
+        this._results = null;
+        this._diagnosticInfos = null;
+    }
 
     public DeleteMonitoredItemsResponse(ResponseHeader _responseHeader, StatusCode[] _results, DiagnosticInfo[] _diagnosticInfos) {
         this._responseHeader = _responseHeader;
@@ -54,7 +62,7 @@ public class DeleteMonitoredItemsResponse implements UaResponseMessage {
 
 
     public static void encode(DeleteMonitoredItemsResponse deleteMonitoredItemsResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", deleteMonitoredItemsResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", deleteMonitoredItemsResponse._responseHeader != null ? deleteMonitoredItemsResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("Results", deleteMonitoredItemsResponse._results, encoder::encodeStatusCode);
         encoder.encodeArray("DiagnosticInfos", deleteMonitoredItemsResponse._diagnosticInfos, encoder::encodeDiagnosticInfo);
     }

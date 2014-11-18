@@ -4,10 +4,12 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("ReferenceTypeAttributes")
 public class ReferenceTypeAttributes extends NodeAttributes {
 
     public static final NodeId TypeId = Identifiers.ReferenceTypeAttributes;
@@ -17,6 +19,13 @@ public class ReferenceTypeAttributes extends NodeAttributes {
     protected final Boolean _isAbstract;
     protected final Boolean _symmetric;
     protected final LocalizedText _inverseName;
+
+    public ReferenceTypeAttributes() {
+        super(null, null, null, null, null);
+        this._isAbstract = null;
+        this._symmetric = null;
+        this._inverseName = null;
+    }
 
     public ReferenceTypeAttributes(UInteger _specifiedAttributes, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, Boolean _isAbstract, Boolean _symmetric, LocalizedText _inverseName) {
         super(_specifiedAttributes, _displayName, _description, _writeMask, _userWriteMask);

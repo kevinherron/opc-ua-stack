@@ -4,6 +4,7 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
@@ -11,6 +12,7 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.NodeClass;
 
+@UaDataType("ObjectNode")
 public class ObjectNode extends InstanceNode {
 
     public static final NodeId TypeId = Identifiers.ObjectNode;
@@ -18,6 +20,11 @@ public class ObjectNode extends InstanceNode {
     public static final NodeId XmlEncodingId = Identifiers.ObjectNode_Encoding_DefaultXml;
 
     protected final UByte _eventNotifier;
+
+    public ObjectNode() {
+        super(null, null, null, null, null, null, null, null);
+        this._eventNotifier = null;
+    }
 
     public ObjectNode(NodeId _nodeId, NodeClass _nodeClass, QualifiedName _browseName, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, ReferenceNode[] _references, UByte _eventNotifier) {
         super(_nodeId, _nodeClass, _browseName, _displayName, _description, _writeMask, _userWriteMask, _references);
@@ -46,7 +53,7 @@ public class ObjectNode extends InstanceNode {
 
     public static void encode(ObjectNode objectNode, UaEncoder encoder) {
         encoder.encodeNodeId("NodeId", objectNode._nodeId);
-        encoder.encodeSerializable("NodeClass", objectNode._nodeClass);
+        encoder.encodeEnumeration("NodeClass", objectNode._nodeClass);
         encoder.encodeQualifiedName("BrowseName", objectNode._browseName);
         encoder.encodeLocalizedText("DisplayName", objectNode._displayName);
         encoder.encodeLocalizedText("Description", objectNode._description);
@@ -58,7 +65,7 @@ public class ObjectNode extends InstanceNode {
 
     public static ObjectNode decode(UaDecoder decoder) {
         NodeId _nodeId = decoder.decodeNodeId("NodeId");
-        NodeClass _nodeClass = decoder.decodeSerializable("NodeClass", NodeClass.class);
+        NodeClass _nodeClass = decoder.decodeEnumeration("NodeClass", NodeClass.class);
         QualifiedName _browseName = decoder.decodeQualifiedName("BrowseName");
         LocalizedText _displayName = decoder.decodeLocalizedText("DisplayName");
         LocalizedText _description = decoder.decodeLocalizedText("Description");

@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExpandedNodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("ReferenceNode")
 public class ReferenceNode implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ReferenceNode;
@@ -17,6 +19,12 @@ public class ReferenceNode implements UaStructure {
     protected final NodeId _referenceTypeId;
     protected final Boolean _isInverse;
     protected final ExpandedNodeId _targetId;
+
+    public ReferenceNode() {
+        this._referenceTypeId = null;
+        this._isInverse = null;
+        this._targetId = null;
+    }
 
     public ReferenceNode(NodeId _referenceTypeId, Boolean _isInverse, ExpandedNodeId _targetId) {
         this._referenceTypeId = _referenceTypeId;

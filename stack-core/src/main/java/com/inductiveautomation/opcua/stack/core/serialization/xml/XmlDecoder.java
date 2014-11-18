@@ -14,6 +14,7 @@ import java.util.function.Function;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaSerializationException;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
+import com.inductiveautomation.opcua.stack.core.serialization.UaEnumeration;
 import com.inductiveautomation.opcua.stack.core.serialization.UaSerializable;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
@@ -236,6 +237,11 @@ public class XmlDecoder implements UaDecoder {
 
     @Override
     public <T extends UaStructure> T decodeMessage(String field) {
+        return null;
+    }
+
+    @Override
+    public <T extends UaEnumeration> T decodeEnumeration(String field, Class<T> clazz) throws UaSerializationException {
         return null;
     }
 

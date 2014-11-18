@@ -4,11 +4,13 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("ViewAttributes")
 public class ViewAttributes extends NodeAttributes {
 
     public static final NodeId TypeId = Identifiers.ViewAttributes;
@@ -17,6 +19,12 @@ public class ViewAttributes extends NodeAttributes {
 
     protected final Boolean _containsNoLoops;
     protected final UByte _eventNotifier;
+
+    public ViewAttributes() {
+        super(null, null, null, null, null);
+        this._containsNoLoops = null;
+        this._eventNotifier = null;
+    }
 
     public ViewAttributes(UInteger _specifiedAttributes, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, Boolean _containsNoLoops, UByte _eventNotifier) {
         super(_specifiedAttributes, _displayName, _description, _writeMask, _userWriteMask);

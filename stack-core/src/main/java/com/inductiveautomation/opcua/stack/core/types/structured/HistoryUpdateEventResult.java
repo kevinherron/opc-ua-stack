@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("HistoryUpdateEventResult")
 public class HistoryUpdateEventResult implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.HistoryUpdateEventResult;
@@ -16,6 +18,11 @@ public class HistoryUpdateEventResult implements UaStructure {
 
     protected final StatusCode _statusCode;
     protected final EventFilterResult _eventFilterResult;
+
+    public HistoryUpdateEventResult() {
+        this._statusCode = null;
+        this._eventFilterResult = null;
+    }
 
     public HistoryUpdateEventResult(StatusCode _statusCode, EventFilterResult _eventFilterResult) {
         this._statusCode = _statusCode;
@@ -48,7 +55,7 @@ public class HistoryUpdateEventResult implements UaStructure {
 
     public static void encode(HistoryUpdateEventResult historyUpdateEventResult, UaEncoder encoder) {
         encoder.encodeStatusCode("StatusCode", historyUpdateEventResult._statusCode);
-        encoder.encodeSerializable("EventFilterResult", historyUpdateEventResult._eventFilterResult);
+        encoder.encodeSerializable("EventFilterResult", historyUpdateEventResult._eventFilterResult != null ? historyUpdateEventResult._eventFilterResult : new EventFilterResult());
     }
 
     public static HistoryUpdateEventResult decode(UaDecoder decoder) {

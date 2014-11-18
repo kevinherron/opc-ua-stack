@@ -4,10 +4,12 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("ReadEventDetails")
 public class ReadEventDetails extends HistoryReadDetails {
 
     public static final NodeId TypeId = Identifiers.ReadEventDetails;
@@ -18,6 +20,14 @@ public class ReadEventDetails extends HistoryReadDetails {
     protected final DateTime _startTime;
     protected final DateTime _endTime;
     protected final EventFilter _filter;
+
+    public ReadEventDetails() {
+        super();
+        this._numValuesPerNode = null;
+        this._startTime = null;
+        this._endTime = null;
+        this._filter = null;
+    }
 
     public ReadEventDetails(UInteger _numValuesPerNode, DateTime _startTime, DateTime _endTime, EventFilter _filter) {
         super();
@@ -63,7 +73,7 @@ public class ReadEventDetails extends HistoryReadDetails {
         encoder.encodeUInt32("NumValuesPerNode", readEventDetails._numValuesPerNode);
         encoder.encodeDateTime("StartTime", readEventDetails._startTime);
         encoder.encodeDateTime("EndTime", readEventDetails._endTime);
-        encoder.encodeSerializable("Filter", readEventDetails._filter);
+        encoder.encodeSerializable("Filter", readEventDetails._filter != null ? readEventDetails._filter : new EventFilter());
     }
 
     public static ReadEventDetails decode(UaDecoder decoder) {

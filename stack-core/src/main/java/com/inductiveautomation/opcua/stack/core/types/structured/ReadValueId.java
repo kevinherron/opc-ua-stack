@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("ReadValueId")
 public class ReadValueId implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ReadValueId;
@@ -19,6 +21,13 @@ public class ReadValueId implements UaStructure {
     protected final UInteger _attributeId;
     protected final String _indexRange;
     protected final QualifiedName _dataEncoding;
+
+    public ReadValueId() {
+        this._nodeId = null;
+        this._attributeId = null;
+        this._indexRange = null;
+        this._dataEncoding = null;
+    }
 
     public ReadValueId(NodeId _nodeId, UInteger _attributeId, String _indexRange, QualifiedName _dataEncoding) {
         this._nodeId = _nodeId;

@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("SoftwareCertificate")
 public class SoftwareCertificate implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.SoftwareCertificate;
@@ -25,6 +27,19 @@ public class SoftwareCertificate implements UaStructure {
     protected final String _issuedBy;
     protected final DateTime _issueDate;
     protected final SupportedProfile[] _supportedProfiles;
+
+    public SoftwareCertificate() {
+        this._productName = null;
+        this._productUri = null;
+        this._vendorName = null;
+        this._vendorProductCertificate = null;
+        this._softwareVersion = null;
+        this._buildNumber = null;
+        this._buildDate = null;
+        this._issuedBy = null;
+        this._issueDate = null;
+        this._supportedProfiles = null;
+    }
 
     public SoftwareCertificate(String _productName, String _productUri, String _vendorName, ByteString _vendorProductCertificate, String _softwareVersion, String _buildNumber, DateTime _buildDate, String _issuedBy, DateTime _issueDate, SupportedProfile[] _supportedProfiles) {
         this._productName = _productName;

@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("DeleteMonitoredItemsRequest")
 public class DeleteMonitoredItemsRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.DeleteMonitoredItemsRequest;
@@ -17,6 +19,12 @@ public class DeleteMonitoredItemsRequest implements UaRequestMessage {
     protected final RequestHeader _requestHeader;
     protected final UInteger _subscriptionId;
     protected final UInteger[] _monitoredItemIds;
+
+    public DeleteMonitoredItemsRequest() {
+        this._requestHeader = null;
+        this._subscriptionId = null;
+        this._monitoredItemIds = null;
+    }
 
     public DeleteMonitoredItemsRequest(RequestHeader _requestHeader, UInteger _subscriptionId, UInteger[] _monitoredItemIds) {
         this._requestHeader = _requestHeader;
@@ -53,7 +61,7 @@ public class DeleteMonitoredItemsRequest implements UaRequestMessage {
 
 
     public static void encode(DeleteMonitoredItemsRequest deleteMonitoredItemsRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", deleteMonitoredItemsRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", deleteMonitoredItemsRequest._requestHeader != null ? deleteMonitoredItemsRequest._requestHeader : new RequestHeader());
         encoder.encodeUInt32("SubscriptionId", deleteMonitoredItemsRequest._subscriptionId);
         encoder.encodeArray("MonitoredItemIds", deleteMonitoredItemsRequest._monitoredItemIds, encoder::encodeUInt32);
     }

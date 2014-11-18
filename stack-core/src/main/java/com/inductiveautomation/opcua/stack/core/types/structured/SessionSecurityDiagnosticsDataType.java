@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
 
+@UaDataType("SessionSecurityDiagnosticsDataType")
 public class SessionSecurityDiagnosticsDataType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.SessionSecurityDiagnosticsDataType;
@@ -24,6 +26,18 @@ public class SessionSecurityDiagnosticsDataType implements UaStructure {
     protected final MessageSecurityMode _securityMode;
     protected final String _securityPolicyUri;
     protected final ByteString _clientCertificate;
+
+    public SessionSecurityDiagnosticsDataType() {
+        this._sessionId = null;
+        this._clientUserIdOfSession = null;
+        this._clientUserIdHistory = null;
+        this._authenticationMechanism = null;
+        this._encoding = null;
+        this._transportProtocol = null;
+        this._securityMode = null;
+        this._securityPolicyUri = null;
+        this._clientCertificate = null;
+    }
 
     public SessionSecurityDiagnosticsDataType(NodeId _sessionId, String _clientUserIdOfSession, String[] _clientUserIdHistory, String _authenticationMechanism, String _encoding, String _transportProtocol, MessageSecurityMode _securityMode, String _securityPolicyUri, ByteString _clientCertificate) {
         this._sessionId = _sessionId;
@@ -96,7 +110,7 @@ public class SessionSecurityDiagnosticsDataType implements UaStructure {
         encoder.encodeString("AuthenticationMechanism", sessionSecurityDiagnosticsDataType._authenticationMechanism);
         encoder.encodeString("Encoding", sessionSecurityDiagnosticsDataType._encoding);
         encoder.encodeString("TransportProtocol", sessionSecurityDiagnosticsDataType._transportProtocol);
-        encoder.encodeSerializable("SecurityMode", sessionSecurityDiagnosticsDataType._securityMode);
+        encoder.encodeEnumeration("SecurityMode", sessionSecurityDiagnosticsDataType._securityMode);
         encoder.encodeString("SecurityPolicyUri", sessionSecurityDiagnosticsDataType._securityPolicyUri);
         encoder.encodeByteString("ClientCertificate", sessionSecurityDiagnosticsDataType._clientCertificate);
     }
@@ -108,7 +122,7 @@ public class SessionSecurityDiagnosticsDataType implements UaStructure {
         String _authenticationMechanism = decoder.decodeString("AuthenticationMechanism");
         String _encoding = decoder.decodeString("Encoding");
         String _transportProtocol = decoder.decodeString("TransportProtocol");
-        MessageSecurityMode _securityMode = decoder.decodeSerializable("SecurityMode", MessageSecurityMode.class);
+        MessageSecurityMode _securityMode = decoder.decodeEnumeration("SecurityMode", MessageSecurityMode.class);
         String _securityPolicyUri = decoder.decodeString("SecurityPolicyUri");
         ByteString _clientCertificate = decoder.decodeByteString("ClientCertificate");
 

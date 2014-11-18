@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("QueryFirstResponse")
 public class QueryFirstResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.QueryFirstResponse;
@@ -21,6 +23,15 @@ public class QueryFirstResponse implements UaResponseMessage {
     protected final ParsingResult[] _parsingResults;
     protected final DiagnosticInfo[] _diagnosticInfos;
     protected final ContentFilterResult _filterResult;
+
+    public QueryFirstResponse() {
+        this._responseHeader = null;
+        this._queryDataSets = null;
+        this._continuationPoint = null;
+        this._parsingResults = null;
+        this._diagnosticInfos = null;
+        this._filterResult = null;
+    }
 
     public QueryFirstResponse(ResponseHeader _responseHeader, QueryDataSet[] _queryDataSets, ByteString _continuationPoint, ParsingResult[] _parsingResults, DiagnosticInfo[] _diagnosticInfos, ContentFilterResult _filterResult) {
         this._responseHeader = _responseHeader;
@@ -72,12 +83,12 @@ public class QueryFirstResponse implements UaResponseMessage {
 
 
     public static void encode(QueryFirstResponse queryFirstResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", queryFirstResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", queryFirstResponse._responseHeader != null ? queryFirstResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("QueryDataSets", queryFirstResponse._queryDataSets, encoder::encodeSerializable);
         encoder.encodeByteString("ContinuationPoint", queryFirstResponse._continuationPoint);
         encoder.encodeArray("ParsingResults", queryFirstResponse._parsingResults, encoder::encodeSerializable);
         encoder.encodeArray("DiagnosticInfos", queryFirstResponse._diagnosticInfos, encoder::encodeDiagnosticInfo);
-        encoder.encodeSerializable("FilterResult", queryFirstResponse._filterResult);
+        encoder.encodeSerializable("FilterResult", queryFirstResponse._filterResult != null ? queryFirstResponse._filterResult : new ContentFilterResult());
     }
 
     public static QueryFirstResponse decode(UaDecoder decoder) {

@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("EventFieldList")
 public class EventFieldList implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.EventFieldList;
@@ -17,6 +19,11 @@ public class EventFieldList implements UaStructure {
 
     protected final UInteger _clientHandle;
     protected final Variant[] _eventFields;
+
+    public EventFieldList() {
+        this._clientHandle = null;
+        this._eventFields = null;
+    }
 
     public EventFieldList(UInteger _clientHandle, Variant[] _eventFields) {
         this._clientHandle = _clientHandle;

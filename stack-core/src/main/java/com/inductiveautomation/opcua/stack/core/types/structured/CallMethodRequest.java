@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 
+@UaDataType("CallMethodRequest")
 public class CallMethodRequest implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.CallMethodRequest;
@@ -17,6 +19,12 @@ public class CallMethodRequest implements UaStructure {
     protected final NodeId _objectId;
     protected final NodeId _methodId;
     protected final Variant[] _inputArguments;
+
+    public CallMethodRequest() {
+        this._objectId = null;
+        this._methodId = null;
+        this._inputArguments = null;
+    }
 
     public CallMethodRequest(NodeId _objectId, NodeId _methodId, Variant[] _inputArguments) {
         this._objectId = _objectId;

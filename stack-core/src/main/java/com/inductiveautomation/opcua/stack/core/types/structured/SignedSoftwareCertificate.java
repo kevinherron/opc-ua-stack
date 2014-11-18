@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("SignedSoftwareCertificate")
 public class SignedSoftwareCertificate implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.SignedSoftwareCertificate;
@@ -16,6 +18,11 @@ public class SignedSoftwareCertificate implements UaStructure {
 
     protected final ByteString _certificateData;
     protected final ByteString _signature;
+
+    public SignedSoftwareCertificate() {
+        this._certificateData = null;
+        this._signature = null;
+    }
 
     public SignedSoftwareCertificate(ByteString _certificateData, ByteString _signature) {
         this._certificateData = _certificateData;

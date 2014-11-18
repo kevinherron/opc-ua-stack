@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.AxisScaleEnumeration;
 
+@UaDataType("AxisInformation")
 public class AxisInformation implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.AxisInformation;
@@ -20,6 +22,14 @@ public class AxisInformation implements UaStructure {
     protected final LocalizedText _title;
     protected final AxisScaleEnumeration _axisScaleType;
     protected final Double[] _axisSteps;
+
+    public AxisInformation() {
+        this._engineeringUnits = null;
+        this._eURange = null;
+        this._title = null;
+        this._axisScaleType = null;
+        this._axisSteps = null;
+    }
 
     public AxisInformation(EUInformation _engineeringUnits, Range _eURange, LocalizedText _title, AxisScaleEnumeration _axisScaleType, Double[] _axisSteps) {
         this._engineeringUnits = _engineeringUnits;
@@ -66,10 +76,10 @@ public class AxisInformation implements UaStructure {
 
 
     public static void encode(AxisInformation axisInformation, UaEncoder encoder) {
-        encoder.encodeSerializable("EngineeringUnits", axisInformation._engineeringUnits);
-        encoder.encodeSerializable("EURange", axisInformation._eURange);
+        encoder.encodeSerializable("EngineeringUnits", axisInformation._engineeringUnits != null ? axisInformation._engineeringUnits : new EUInformation());
+        encoder.encodeSerializable("EURange", axisInformation._eURange != null ? axisInformation._eURange : new Range());
         encoder.encodeLocalizedText("Title", axisInformation._title);
-        encoder.encodeSerializable("AxisScaleType", axisInformation._axisScaleType);
+        encoder.encodeEnumeration("AxisScaleType", axisInformation._axisScaleType);
         encoder.encodeArray("AxisSteps", axisInformation._axisSteps, encoder::encodeDouble);
     }
 
@@ -77,7 +87,7 @@ public class AxisInformation implements UaStructure {
         EUInformation _engineeringUnits = decoder.decodeSerializable("EngineeringUnits", EUInformation.class);
         Range _eURange = decoder.decodeSerializable("EURange", Range.class);
         LocalizedText _title = decoder.decodeLocalizedText("Title");
-        AxisScaleEnumeration _axisScaleType = decoder.decodeSerializable("AxisScaleType", AxisScaleEnumeration.class);
+        AxisScaleEnumeration _axisScaleType = decoder.decodeEnumeration("AxisScaleType", AxisScaleEnumeration.class);
         Double[] _axisSteps = decoder.decodeArray("AxisSteps", decoder::decodeDouble, Double.class);
 
         return new AxisInformation(_engineeringUnits, _eURange, _title, _axisScaleType, _axisSteps);

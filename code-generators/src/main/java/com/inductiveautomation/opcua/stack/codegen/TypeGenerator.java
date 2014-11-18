@@ -44,7 +44,10 @@ public class TypeGenerator {
         Element root = jdomDocument.getRootElement();
         Namespace opcNamespace = root.getNamespace("opc");
 
-        for (StructuredType structuredType : getStructuredTypes(root, opcNamespace)) {
+        List<EnumeratedType> enumeratedTypes = getEnumeratedTypes(root, opcNamespace);
+        List<StructuredType> structuredTypes = getStructuredTypes(root, opcNamespace, enumeratedTypes);
+
+        for (StructuredType structuredType : structuredTypes) {
             VelocityContext context = new VelocityContext();
             context.put("structuredType", structuredType);
 
@@ -55,7 +58,7 @@ public class TypeGenerator {
             fw.close();
         }
 
-        for (EnumeratedType enumeratedType : getEnumeratedTypes(root, opcNamespace)) {
+        for (EnumeratedType enumeratedType : enumeratedTypes) {
             VelocityContext context = new VelocityContext();
             context.put("enumeratedType", enumeratedType);
 
@@ -67,7 +70,7 @@ public class TypeGenerator {
         }
     }
 
-    private static List<StructuredType> getStructuredTypes(Element root, Namespace opcNamespace) throws JDOMException, IOException {
+    private static List<StructuredType> getStructuredTypes(Element root, Namespace opcNamespace, List<EnumeratedType> enumeratedTypes) throws JDOMException, IOException {
         List<StructuredType> structuredTypes = Lists.newArrayList();
 
         for (Element element : root.getChildren("StructuredType", opcNamespace)) {
@@ -83,12 +86,17 @@ public class TypeGenerator {
                     String fieldType = fieldElement.getAttributeValue("TypeName");
                     String fieldSourceType = fieldElement.getAttributeValue("SourceType");
                     boolean array = fieldElement.getAttributeValue("LengthField") != null;
+                    boolean enumeration = enumeratedTypes.stream().anyMatch(et -> {
+                        String[] ss = fieldType.split(":");
+                        return et.getName().equals(ss[ss.length-1]);
+                    });
 
                     StructuredType.Field field = new StructuredType.Field(
                             fieldName,
                             StructuredType.FieldType.from(fieldType, array),
                             Optional.ofNullable(fieldSourceType),
-                            array
+                            array,
+                            enumeration
                     );
 
                     if (!fieldName.startsWith("NoOf")) {

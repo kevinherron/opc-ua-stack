@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.ServerState;
 
+@UaDataType("RedundantServerDataType")
 public class RedundantServerDataType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.RedundantServerDataType;
@@ -18,6 +20,12 @@ public class RedundantServerDataType implements UaStructure {
     protected final String _serverId;
     protected final UByte _serviceLevel;
     protected final ServerState _serverState;
+
+    public RedundantServerDataType() {
+        this._serverId = null;
+        this._serviceLevel = null;
+        this._serverState = null;
+    }
 
     public RedundantServerDataType(String _serverId, UByte _serviceLevel, ServerState _serverState) {
         this._serverId = _serverId;
@@ -56,13 +64,13 @@ public class RedundantServerDataType implements UaStructure {
     public static void encode(RedundantServerDataType redundantServerDataType, UaEncoder encoder) {
         encoder.encodeString("ServerId", redundantServerDataType._serverId);
         encoder.encodeByte("ServiceLevel", redundantServerDataType._serviceLevel);
-        encoder.encodeSerializable("ServerState", redundantServerDataType._serverState);
+        encoder.encodeEnumeration("ServerState", redundantServerDataType._serverState);
     }
 
     public static RedundantServerDataType decode(UaDecoder decoder) {
         String _serverId = decoder.decodeString("ServerId");
         UByte _serviceLevel = decoder.decodeByte("ServiceLevel");
-        ServerState _serverState = decoder.decodeSerializable("ServerState", ServerState.class);
+        ServerState _serverState = decoder.decodeEnumeration("ServerState", ServerState.class);
 
         return new RedundantServerDataType(_serverId, _serviceLevel, _serverState);
     }

@@ -76,6 +76,8 @@ public interface UaDecoder {
 
     <T extends UaStructure> T decodeMessage(String field) throws UaSerializationException;
 
+    <T extends UaEnumeration> T decodeEnumeration(String field, Class<T> clazz) throws UaSerializationException;
+
     <T extends UaSerializable> T decodeSerializable(String field, Class<T> clazz) throws UaSerializationException;
 
     <T> T[] decodeArray(String field, Function<String, T> decoder, Class<T> clazz) throws UaSerializationException;

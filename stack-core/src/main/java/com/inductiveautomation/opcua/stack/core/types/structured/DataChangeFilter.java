@@ -4,10 +4,12 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.DataChangeTrigger;
 
+@UaDataType("DataChangeFilter")
 public class DataChangeFilter extends MonitoringFilter {
 
     public static final NodeId TypeId = Identifiers.DataChangeFilter;
@@ -17,6 +19,13 @@ public class DataChangeFilter extends MonitoringFilter {
     protected final DataChangeTrigger _trigger;
     protected final UInteger _deadbandType;
     protected final Double _deadbandValue;
+
+    public DataChangeFilter() {
+        super();
+        this._trigger = null;
+        this._deadbandType = null;
+        this._deadbandValue = null;
+    }
 
     public DataChangeFilter(DataChangeTrigger _trigger, UInteger _deadbandType, Double _deadbandValue) {
         super();
@@ -54,13 +63,13 @@ public class DataChangeFilter extends MonitoringFilter {
 
 
     public static void encode(DataChangeFilter dataChangeFilter, UaEncoder encoder) {
-        encoder.encodeSerializable("Trigger", dataChangeFilter._trigger);
+        encoder.encodeEnumeration("Trigger", dataChangeFilter._trigger);
         encoder.encodeUInt32("DeadbandType", dataChangeFilter._deadbandType);
         encoder.encodeDouble("DeadbandValue", dataChangeFilter._deadbandValue);
     }
 
     public static DataChangeFilter decode(UaDecoder decoder) {
-        DataChangeTrigger _trigger = decoder.decodeSerializable("Trigger", DataChangeTrigger.class);
+        DataChangeTrigger _trigger = decoder.decodeEnumeration("Trigger", DataChangeTrigger.class);
         UInteger _deadbandType = decoder.decodeUInt32("DeadbandType");
         Double _deadbandValue = decoder.decodeDouble("DeadbandValue");
 

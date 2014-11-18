@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("DeleteNodesRequest")
 public class DeleteNodesRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.DeleteNodesRequest;
@@ -15,6 +17,11 @@ public class DeleteNodesRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final DeleteNodesItem[] _nodesToDelete;
+
+    public DeleteNodesRequest() {
+        this._requestHeader = null;
+        this._nodesToDelete = null;
+    }
 
     public DeleteNodesRequest(RequestHeader _requestHeader, DeleteNodesItem[] _nodesToDelete) {
         this._requestHeader = _requestHeader;
@@ -46,7 +53,7 @@ public class DeleteNodesRequest implements UaRequestMessage {
 
 
     public static void encode(DeleteNodesRequest deleteNodesRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", deleteNodesRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", deleteNodesRequest._requestHeader != null ? deleteNodesRequest._requestHeader : new RequestHeader());
         encoder.encodeArray("NodesToDelete", deleteNodesRequest._nodesToDelete, encoder::encodeSerializable);
     }
 

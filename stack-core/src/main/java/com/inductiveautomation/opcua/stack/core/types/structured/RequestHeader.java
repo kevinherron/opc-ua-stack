@@ -5,11 +5,13 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("RequestHeader")
 public class RequestHeader implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.RequestHeader;
@@ -23,6 +25,16 @@ public class RequestHeader implements UaStructure {
     protected final String _auditEntryId;
     protected final UInteger _timeoutHint;
     protected final ExtensionObject _additionalHeader;
+
+    public RequestHeader() {
+        this._authenticationToken = null;
+        this._timestamp = null;
+        this._requestHandle = null;
+        this._returnDiagnostics = null;
+        this._auditEntryId = null;
+        this._timeoutHint = null;
+        this._additionalHeader = null;
+    }
 
     public RequestHeader(NodeId _authenticationToken, DateTime _timestamp, UInteger _requestHandle, UInteger _returnDiagnostics, String _auditEntryId, UInteger _timeoutHint, ExtensionObject _additionalHeader) {
         this._authenticationToken = _authenticationToken;

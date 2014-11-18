@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("CreateMonitoredItemsResponse")
 public class CreateMonitoredItemsResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.CreateMonitoredItemsResponse;
@@ -17,6 +19,12 @@ public class CreateMonitoredItemsResponse implements UaResponseMessage {
     protected final ResponseHeader _responseHeader;
     protected final MonitoredItemCreateResult[] _results;
     protected final DiagnosticInfo[] _diagnosticInfos;
+
+    public CreateMonitoredItemsResponse() {
+        this._responseHeader = null;
+        this._results = null;
+        this._diagnosticInfos = null;
+    }
 
     public CreateMonitoredItemsResponse(ResponseHeader _responseHeader, MonitoredItemCreateResult[] _results, DiagnosticInfo[] _diagnosticInfos) {
         this._responseHeader = _responseHeader;
@@ -53,7 +61,7 @@ public class CreateMonitoredItemsResponse implements UaResponseMessage {
 
 
     public static void encode(CreateMonitoredItemsResponse createMonitoredItemsResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", createMonitoredItemsResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", createMonitoredItemsResponse._responseHeader != null ? createMonitoredItemsResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("Results", createMonitoredItemsResponse._results, encoder::encodeSerializable);
         encoder.encodeArray("DiagnosticInfos", createMonitoredItemsResponse._diagnosticInfos, encoder::encodeDiagnosticInfo);
     }

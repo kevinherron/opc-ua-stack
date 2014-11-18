@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("OpenSecureChannelResponse")
 public class OpenSecureChannelResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.OpenSecureChannelResponse;
@@ -19,6 +21,13 @@ public class OpenSecureChannelResponse implements UaResponseMessage {
     protected final UInteger _serverProtocolVersion;
     protected final ChannelSecurityToken _securityToken;
     protected final ByteString _serverNonce;
+
+    public OpenSecureChannelResponse() {
+        this._responseHeader = null;
+        this._serverProtocolVersion = null;
+        this._securityToken = null;
+        this._serverNonce = null;
+    }
 
     public OpenSecureChannelResponse(ResponseHeader _responseHeader, UInteger _serverProtocolVersion, ChannelSecurityToken _securityToken, ByteString _serverNonce) {
         this._responseHeader = _responseHeader;
@@ -60,9 +69,9 @@ public class OpenSecureChannelResponse implements UaResponseMessage {
 
 
     public static void encode(OpenSecureChannelResponse openSecureChannelResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", openSecureChannelResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", openSecureChannelResponse._responseHeader != null ? openSecureChannelResponse._responseHeader : new ResponseHeader());
         encoder.encodeUInt32("ServerProtocolVersion", openSecureChannelResponse._serverProtocolVersion);
-        encoder.encodeSerializable("SecurityToken", openSecureChannelResponse._securityToken);
+        encoder.encodeSerializable("SecurityToken", openSecureChannelResponse._securityToken != null ? openSecureChannelResponse._securityToken : new ChannelSecurityToken());
         encoder.encodeByteString("ServerNonce", openSecureChannelResponse._serverNonce);
     }
 

@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("TestStackRequest")
 public class TestStackRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.TestStackRequest;
@@ -19,6 +21,13 @@ public class TestStackRequest implements UaRequestMessage {
     protected final UInteger _testId;
     protected final Integer _iteration;
     protected final Variant _input;
+
+    public TestStackRequest() {
+        this._requestHeader = null;
+        this._testId = null;
+        this._iteration = null;
+        this._input = null;
+    }
 
     public TestStackRequest(RequestHeader _requestHeader, UInteger _testId, Integer _iteration, Variant _input) {
         this._requestHeader = _requestHeader;
@@ -60,7 +69,7 @@ public class TestStackRequest implements UaRequestMessage {
 
 
     public static void encode(TestStackRequest testStackRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", testStackRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", testStackRequest._requestHeader != null ? testStackRequest._requestHeader : new RequestHeader());
         encoder.encodeUInt32("TestId", testStackRequest._testId);
         encoder.encodeInt32("Iteration", testStackRequest._iteration);
         encoder.encodeVariant("Input", testStackRequest._input);

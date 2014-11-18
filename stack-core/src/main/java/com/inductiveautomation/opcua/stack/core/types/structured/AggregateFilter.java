@@ -4,9 +4,11 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("AggregateFilter")
 public class AggregateFilter extends MonitoringFilter {
 
     public static final NodeId TypeId = Identifiers.AggregateFilter;
@@ -17,6 +19,14 @@ public class AggregateFilter extends MonitoringFilter {
     protected final NodeId _aggregateType;
     protected final Double _processingInterval;
     protected final AggregateConfiguration _aggregateConfiguration;
+
+    public AggregateFilter() {
+        super();
+        this._startTime = null;
+        this._aggregateType = null;
+        this._processingInterval = null;
+        this._aggregateConfiguration = null;
+    }
 
     public AggregateFilter(DateTime _startTime, NodeId _aggregateType, Double _processingInterval, AggregateConfiguration _aggregateConfiguration) {
         super();
@@ -62,7 +72,7 @@ public class AggregateFilter extends MonitoringFilter {
         encoder.encodeDateTime("StartTime", aggregateFilter._startTime);
         encoder.encodeNodeId("AggregateType", aggregateFilter._aggregateType);
         encoder.encodeDouble("ProcessingInterval", aggregateFilter._processingInterval);
-        encoder.encodeSerializable("AggregateConfiguration", aggregateFilter._aggregateConfiguration);
+        encoder.encodeSerializable("AggregateConfiguration", aggregateFilter._aggregateConfiguration != null ? aggregateFilter._aggregateConfiguration : new AggregateConfiguration());
     }
 
     public static AggregateFilter decode(UaDecoder decoder) {

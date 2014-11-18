@@ -5,6 +5,7 @@ import java.util.function.BiConsumer;
 
 import com.inductiveautomation.opcua.stack.core.UaSerializationException;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.serialization.UaEnumeration;
 import com.inductiveautomation.opcua.stack.core.serialization.UaSerializable;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
@@ -177,6 +178,11 @@ public class XmlEncoder implements UaEncoder {
 
     @Override
     public <T extends UaStructure> void encodeMessage(String field, T message) {
+
+    }
+
+    @Override
+    public <T extends UaEnumeration> void encodeEnumeration(String field, T value) throws UaSerializationException {
 
     }
 

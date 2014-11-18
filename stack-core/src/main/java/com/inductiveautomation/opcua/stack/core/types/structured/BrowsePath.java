@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("BrowsePath")
 public class BrowsePath implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.BrowsePath;
@@ -15,6 +17,11 @@ public class BrowsePath implements UaStructure {
 
     protected final NodeId _startingNode;
     protected final RelativePath _relativePath;
+
+    public BrowsePath() {
+        this._startingNode = null;
+        this._relativePath = null;
+    }
 
     public BrowsePath(NodeId _startingNode, RelativePath _relativePath) {
         this._startingNode = _startingNode;
@@ -47,7 +54,7 @@ public class BrowsePath implements UaStructure {
 
     public static void encode(BrowsePath browsePath, UaEncoder encoder) {
         encoder.encodeNodeId("StartingNode", browsePath._startingNode);
-        encoder.encodeSerializable("RelativePath", browsePath._relativePath);
+        encoder.encodeSerializable("RelativePath", browsePath._relativePath != null ? browsePath._relativePath : new RelativePath());
     }
 
     public static BrowsePath decode(UaDecoder decoder) {

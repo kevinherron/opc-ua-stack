@@ -4,9 +4,11 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("ElementOperand")
 public class ElementOperand extends FilterOperand {
 
     public static final NodeId TypeId = Identifiers.ElementOperand;
@@ -14,6 +16,11 @@ public class ElementOperand extends FilterOperand {
     public static final NodeId XmlEncodingId = Identifiers.ElementOperand_Encoding_DefaultXml;
 
     protected final UInteger _index;
+
+    public ElementOperand() {
+        super();
+        this._index = null;
+    }
 
     public ElementOperand(UInteger _index) {
         super();

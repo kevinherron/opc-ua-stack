@@ -5,11 +5,13 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("MonitoredItemCreateResult")
 public class MonitoredItemCreateResult implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.MonitoredItemCreateResult;
@@ -21,6 +23,14 @@ public class MonitoredItemCreateResult implements UaStructure {
     protected final Double _revisedSamplingInterval;
     protected final UInteger _revisedQueueSize;
     protected final ExtensionObject _filterResult;
+
+    public MonitoredItemCreateResult() {
+        this._statusCode = null;
+        this._monitoredItemId = null;
+        this._revisedSamplingInterval = null;
+        this._revisedQueueSize = null;
+        this._filterResult = null;
+    }
 
     public MonitoredItemCreateResult(StatusCode _statusCode, UInteger _monitoredItemId, Double _revisedSamplingInterval, UInteger _revisedQueueSize, ExtensionObject _filterResult) {
         this._statusCode = _statusCode;

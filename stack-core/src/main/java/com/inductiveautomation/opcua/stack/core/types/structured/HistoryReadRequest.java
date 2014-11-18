@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.TimestampsToReturn;
 
+@UaDataType("HistoryReadRequest")
 public class HistoryReadRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.HistoryReadRequest;
@@ -20,6 +22,14 @@ public class HistoryReadRequest implements UaRequestMessage {
     protected final TimestampsToReturn _timestampsToReturn;
     protected final Boolean _releaseContinuationPoints;
     protected final HistoryReadValueId[] _nodesToRead;
+
+    public HistoryReadRequest() {
+        this._requestHeader = null;
+        this._historyReadDetails = null;
+        this._timestampsToReturn = null;
+        this._releaseContinuationPoints = null;
+        this._nodesToRead = null;
+    }
 
     public HistoryReadRequest(RequestHeader _requestHeader, ExtensionObject _historyReadDetails, TimestampsToReturn _timestampsToReturn, Boolean _releaseContinuationPoints, HistoryReadValueId[] _nodesToRead) {
         this._requestHeader = _requestHeader;
@@ -66,9 +76,9 @@ public class HistoryReadRequest implements UaRequestMessage {
 
 
     public static void encode(HistoryReadRequest historyReadRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", historyReadRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", historyReadRequest._requestHeader != null ? historyReadRequest._requestHeader : new RequestHeader());
         encoder.encodeExtensionObject("HistoryReadDetails", historyReadRequest._historyReadDetails);
-        encoder.encodeSerializable("TimestampsToReturn", historyReadRequest._timestampsToReturn);
+        encoder.encodeEnumeration("TimestampsToReturn", historyReadRequest._timestampsToReturn);
         encoder.encodeBoolean("ReleaseContinuationPoints", historyReadRequest._releaseContinuationPoints);
         encoder.encodeArray("NodesToRead", historyReadRequest._nodesToRead, encoder::encodeSerializable);
     }
@@ -76,7 +86,7 @@ public class HistoryReadRequest implements UaRequestMessage {
     public static HistoryReadRequest decode(UaDecoder decoder) {
         RequestHeader _requestHeader = decoder.decodeSerializable("RequestHeader", RequestHeader.class);
         ExtensionObject _historyReadDetails = decoder.decodeExtensionObject("HistoryReadDetails");
-        TimestampsToReturn _timestampsToReturn = decoder.decodeSerializable("TimestampsToReturn", TimestampsToReturn.class);
+        TimestampsToReturn _timestampsToReturn = decoder.decodeEnumeration("TimestampsToReturn", TimestampsToReturn.class);
         Boolean _releaseContinuationPoints = decoder.decodeBoolean("ReleaseContinuationPoints");
         HistoryReadValueId[] _nodesToRead = decoder.decodeArray("NodesToRead", decoder::decodeSerializable, HistoryReadValueId.class);
 

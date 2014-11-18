@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("HistoryUpdateRequest")
 public class HistoryUpdateRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.HistoryUpdateRequest;
@@ -16,6 +18,11 @@ public class HistoryUpdateRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final ExtensionObject[] _historyUpdateDetails;
+
+    public HistoryUpdateRequest() {
+        this._requestHeader = null;
+        this._historyUpdateDetails = null;
+    }
 
     public HistoryUpdateRequest(RequestHeader _requestHeader, ExtensionObject[] _historyUpdateDetails) {
         this._requestHeader = _requestHeader;
@@ -47,7 +54,7 @@ public class HistoryUpdateRequest implements UaRequestMessage {
 
 
     public static void encode(HistoryUpdateRequest historyUpdateRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", historyUpdateRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", historyUpdateRequest._requestHeader != null ? historyUpdateRequest._requestHeader : new RequestHeader());
         encoder.encodeArray("HistoryUpdateDetails", historyUpdateRequest._historyUpdateDetails, encoder::encodeExtensionObject);
     }
 

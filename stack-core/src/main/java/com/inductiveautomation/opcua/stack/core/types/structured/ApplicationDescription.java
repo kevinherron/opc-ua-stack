@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.ApplicationType;
 
+@UaDataType("ApplicationDescription")
 public class ApplicationDescription implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ApplicationDescription;
@@ -22,6 +24,16 @@ public class ApplicationDescription implements UaStructure {
     protected final String _gatewayServerUri;
     protected final String _discoveryProfileUri;
     protected final String[] _discoveryUrls;
+
+    public ApplicationDescription() {
+        this._applicationUri = null;
+        this._productUri = null;
+        this._applicationName = null;
+        this._applicationType = null;
+        this._gatewayServerUri = null;
+        this._discoveryProfileUri = null;
+        this._discoveryUrls = null;
+    }
 
     public ApplicationDescription(String _applicationUri, String _productUri, LocalizedText _applicationName, ApplicationType _applicationType, String _gatewayServerUri, String _discoveryProfileUri, String[] _discoveryUrls) {
         this._applicationUri = _applicationUri;
@@ -81,7 +93,7 @@ public class ApplicationDescription implements UaStructure {
         encoder.encodeString("ApplicationUri", applicationDescription._applicationUri);
         encoder.encodeString("ProductUri", applicationDescription._productUri);
         encoder.encodeLocalizedText("ApplicationName", applicationDescription._applicationName);
-        encoder.encodeSerializable("ApplicationType", applicationDescription._applicationType);
+        encoder.encodeEnumeration("ApplicationType", applicationDescription._applicationType);
         encoder.encodeString("GatewayServerUri", applicationDescription._gatewayServerUri);
         encoder.encodeString("DiscoveryProfileUri", applicationDescription._discoveryProfileUri);
         encoder.encodeArray("DiscoveryUrls", applicationDescription._discoveryUrls, encoder::encodeString);
@@ -91,7 +103,7 @@ public class ApplicationDescription implements UaStructure {
         String _applicationUri = decoder.decodeString("ApplicationUri");
         String _productUri = decoder.decodeString("ProductUri");
         LocalizedText _applicationName = decoder.decodeLocalizedText("ApplicationName");
-        ApplicationType _applicationType = decoder.decodeSerializable("ApplicationType", ApplicationType.class);
+        ApplicationType _applicationType = decoder.decodeEnumeration("ApplicationType", ApplicationType.class);
         String _gatewayServerUri = decoder.decodeString("GatewayServerUri");
         String _discoveryProfileUri = decoder.decodeString("DiscoveryProfileUri");
         String[] _discoveryUrls = decoder.decodeArray("DiscoveryUrls", decoder::decodeString, String.class);

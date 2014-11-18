@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("GetEndpointsResponse")
 public class GetEndpointsResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.GetEndpointsResponse;
@@ -15,6 +17,11 @@ public class GetEndpointsResponse implements UaResponseMessage {
 
     protected final ResponseHeader _responseHeader;
     protected final EndpointDescription[] _endpoints;
+
+    public GetEndpointsResponse() {
+        this._responseHeader = null;
+        this._endpoints = null;
+    }
 
     public GetEndpointsResponse(ResponseHeader _responseHeader, EndpointDescription[] _endpoints) {
         this._responseHeader = _responseHeader;
@@ -46,7 +53,7 @@ public class GetEndpointsResponse implements UaResponseMessage {
 
 
     public static void encode(GetEndpointsResponse getEndpointsResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", getEndpointsResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", getEndpointsResponse._responseHeader != null ? getEndpointsResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("Endpoints", getEndpointsResponse._endpoints, encoder::encodeSerializable);
     }
 

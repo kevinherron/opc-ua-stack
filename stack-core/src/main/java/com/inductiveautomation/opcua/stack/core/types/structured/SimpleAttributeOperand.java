@@ -4,10 +4,12 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("SimpleAttributeOperand")
 public class SimpleAttributeOperand extends FilterOperand {
 
     public static final NodeId TypeId = Identifiers.SimpleAttributeOperand;
@@ -18,6 +20,14 @@ public class SimpleAttributeOperand extends FilterOperand {
     protected final QualifiedName[] _browsePath;
     protected final UInteger _attributeId;
     protected final String _indexRange;
+
+    public SimpleAttributeOperand() {
+        super();
+        this._typeDefinitionId = null;
+        this._browsePath = null;
+        this._attributeId = null;
+        this._indexRange = null;
+    }
 
     public SimpleAttributeOperand(NodeId _typeDefinitionId, QualifiedName[] _browsePath, UInteger _attributeId, String _indexRange) {
         super();

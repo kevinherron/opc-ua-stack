@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.QualifiedName;
 
+@UaDataType("RelativePathElement")
 public class RelativePathElement implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.RelativePathElement;
@@ -18,6 +20,13 @@ public class RelativePathElement implements UaStructure {
     protected final Boolean _isInverse;
     protected final Boolean _includeSubtypes;
     protected final QualifiedName _targetName;
+
+    public RelativePathElement() {
+        this._referenceTypeId = null;
+        this._isInverse = null;
+        this._includeSubtypes = null;
+        this._targetName = null;
+    }
 
     public RelativePathElement(NodeId _referenceTypeId, Boolean _isInverse, Boolean _includeSubtypes, QualifiedName _targetName) {
         this._referenceTypeId = _referenceTypeId;

@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ExtensionObject;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("ActivateSessionRequest")
 public class ActivateSessionRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.ActivateSessionRequest;
@@ -20,6 +22,15 @@ public class ActivateSessionRequest implements UaRequestMessage {
     protected final String[] _localeIds;
     protected final ExtensionObject _userIdentityToken;
     protected final SignatureData _userTokenSignature;
+
+    public ActivateSessionRequest() {
+        this._requestHeader = null;
+        this._clientSignature = null;
+        this._clientSoftwareCertificates = null;
+        this._localeIds = null;
+        this._userIdentityToken = null;
+        this._userTokenSignature = null;
+    }
 
     public ActivateSessionRequest(RequestHeader _requestHeader, SignatureData _clientSignature, SignedSoftwareCertificate[] _clientSoftwareCertificates, String[] _localeIds, ExtensionObject _userIdentityToken, SignatureData _userTokenSignature) {
         this._requestHeader = _requestHeader;
@@ -71,12 +82,12 @@ public class ActivateSessionRequest implements UaRequestMessage {
 
 
     public static void encode(ActivateSessionRequest activateSessionRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", activateSessionRequest._requestHeader);
-        encoder.encodeSerializable("ClientSignature", activateSessionRequest._clientSignature);
+        encoder.encodeSerializable("RequestHeader", activateSessionRequest._requestHeader != null ? activateSessionRequest._requestHeader : new RequestHeader());
+        encoder.encodeSerializable("ClientSignature", activateSessionRequest._clientSignature != null ? activateSessionRequest._clientSignature : new SignatureData());
         encoder.encodeArray("ClientSoftwareCertificates", activateSessionRequest._clientSoftwareCertificates, encoder::encodeSerializable);
         encoder.encodeArray("LocaleIds", activateSessionRequest._localeIds, encoder::encodeString);
         encoder.encodeExtensionObject("UserIdentityToken", activateSessionRequest._userIdentityToken);
-        encoder.encodeSerializable("UserTokenSignature", activateSessionRequest._userTokenSignature);
+        encoder.encodeSerializable("UserTokenSignature", activateSessionRequest._userTokenSignature != null ? activateSessionRequest._userTokenSignature : new SignatureData());
     }
 
     public static ActivateSessionRequest decode(UaDecoder decoder) {

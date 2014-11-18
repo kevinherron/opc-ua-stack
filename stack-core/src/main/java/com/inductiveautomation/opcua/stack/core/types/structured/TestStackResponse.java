@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.Variant;
 
+@UaDataType("TestStackResponse")
 public class TestStackResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.TestStackResponse;
@@ -16,6 +18,11 @@ public class TestStackResponse implements UaResponseMessage {
 
     protected final ResponseHeader _responseHeader;
     protected final Variant _output;
+
+    public TestStackResponse() {
+        this._responseHeader = null;
+        this._output = null;
+    }
 
     public TestStackResponse(ResponseHeader _responseHeader, Variant _output) {
         this._responseHeader = _responseHeader;
@@ -47,7 +54,7 @@ public class TestStackResponse implements UaResponseMessage {
 
 
     public static void encode(TestStackResponse testStackResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", testStackResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", testStackResponse._responseHeader != null ? testStackResponse._responseHeader : new ResponseHeader());
         encoder.encodeVariant("Output", testStackResponse._output);
     }
 

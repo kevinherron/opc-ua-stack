@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("DeleteReferencesResponse")
 public class DeleteReferencesResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.DeleteReferencesResponse;
@@ -18,6 +20,12 @@ public class DeleteReferencesResponse implements UaResponseMessage {
     protected final ResponseHeader _responseHeader;
     protected final StatusCode[] _results;
     protected final DiagnosticInfo[] _diagnosticInfos;
+
+    public DeleteReferencesResponse() {
+        this._responseHeader = null;
+        this._results = null;
+        this._diagnosticInfos = null;
+    }
 
     public DeleteReferencesResponse(ResponseHeader _responseHeader, StatusCode[] _results, DiagnosticInfo[] _diagnosticInfos) {
         this._responseHeader = _responseHeader;
@@ -54,7 +62,7 @@ public class DeleteReferencesResponse implements UaResponseMessage {
 
 
     public static void encode(DeleteReferencesResponse deleteReferencesResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", deleteReferencesResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", deleteReferencesResponse._responseHeader != null ? deleteReferencesResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("Results", deleteReferencesResponse._results, encoder::encodeStatusCode);
         encoder.encodeArray("DiagnosticInfos", deleteReferencesResponse._diagnosticInfos, encoder::encodeDiagnosticInfo);
     }

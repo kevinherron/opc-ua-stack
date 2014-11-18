@@ -7,6 +7,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DataValue;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
@@ -24,6 +25,7 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.ULong;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.EnumeratedTestType;
 
+@UaDataType("ScalarTestType")
 public class ScalarTestType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ScalarTestType;
@@ -55,6 +57,34 @@ public class ScalarTestType implements UaStructure {
     protected final ExtensionObject _extensionObject;
     protected final DataValue _dataValue;
     protected final EnumeratedTestType _enumeratedValue;
+
+    public ScalarTestType() {
+        this._boolean = null;
+        this._sByte = null;
+        this._byte = null;
+        this._int16 = null;
+        this._uInt16 = null;
+        this._int32 = null;
+        this._uInt32 = null;
+        this._int64 = null;
+        this._uInt64 = null;
+        this._float = null;
+        this._double = null;
+        this._string = null;
+        this._dateTime = null;
+        this._guid = null;
+        this._byteString = null;
+        this._xmlElement = null;
+        this._nodeId = null;
+        this._expandedNodeId = null;
+        this._statusCode = null;
+        this._diagnosticInfo = null;
+        this._qualifiedName = null;
+        this._localizedText = null;
+        this._extensionObject = null;
+        this._dataValue = null;
+        this._enumeratedValue = null;
+    }
 
     public ScalarTestType(Boolean _boolean, Byte _sByte, UByte _byte, Short _int16, UShort _uInt16, Integer _int32, UInteger _uInt32, Long _int64, ULong _uInt64, Float _float, Double _double, String _string, DateTime _dateTime, UUID _guid, ByteString _byteString, XmlElement _xmlElement, NodeId _nodeId, ExpandedNodeId _expandedNodeId, StatusCode _statusCode, DiagnosticInfo _diagnosticInfo, QualifiedName _qualifiedName, LocalizedText _localizedText, ExtensionObject _extensionObject, DataValue _dataValue, EnumeratedTestType _enumeratedValue) {
         this._boolean = _boolean;
@@ -225,7 +255,7 @@ public class ScalarTestType implements UaStructure {
         encoder.encodeLocalizedText("LocalizedText", scalarTestType._localizedText);
         encoder.encodeExtensionObject("ExtensionObject", scalarTestType._extensionObject);
         encoder.encodeDataValue("DataValue", scalarTestType._dataValue);
-        encoder.encodeSerializable("EnumeratedValue", scalarTestType._enumeratedValue);
+        encoder.encodeEnumeration("EnumeratedValue", scalarTestType._enumeratedValue);
     }
 
     public static ScalarTestType decode(UaDecoder decoder) {
@@ -253,7 +283,7 @@ public class ScalarTestType implements UaStructure {
         LocalizedText _localizedText = decoder.decodeLocalizedText("LocalizedText");
         ExtensionObject _extensionObject = decoder.decodeExtensionObject("ExtensionObject");
         DataValue _dataValue = decoder.decodeDataValue("DataValue");
-        EnumeratedTestType _enumeratedValue = decoder.decodeSerializable("EnumeratedValue", EnumeratedTestType.class);
+        EnumeratedTestType _enumeratedValue = decoder.decodeEnumeration("EnumeratedValue", EnumeratedTestType.class);
 
         return new ScalarTestType(_boolean, _sByte, _byte, _int16, _uInt16, _int32, _uInt32, _int64, _uInt64, _float, _double, _string, _dateTime, _guid, _byteString, _xmlElement, _nodeId, _expandedNodeId, _statusCode, _diagnosticInfo, _qualifiedName, _localizedText, _extensionObject, _dataValue, _enumeratedValue);
     }

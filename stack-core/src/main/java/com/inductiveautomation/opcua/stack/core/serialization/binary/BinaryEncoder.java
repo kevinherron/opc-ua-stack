@@ -404,17 +404,25 @@ public class BinaryEncoder implements UaEncoder {
 
     @Override
     public void encodeStatusCode(String field, StatusCode value) {
-        buffer.writeInt(value.getValue());
+        if (value == null) {
+            buffer.writeInt(0);
+        } else {
+            buffer.writeInt(value.getValue());
+        }
     }
 
     @Override
     public void encodeQualifiedName(String field, QualifiedName value) throws UaSerializationException {
+        if (value == null) value = QualifiedName.NullValue;
+
         encodeUInt16(null, value.getNamespaceIndex());
         encodeString(null, value.getName());
     }
 
     @Override
     public void encodeLocalizedText(String field, LocalizedText value) throws UaSerializationException {
+        if (value == null) value = LocalizedText.NullValue;
+
         String locale = value.getLocale();
         String text = value.getText();
 
@@ -515,13 +523,13 @@ public class BinaryEncoder implements UaEncoder {
         if (value == null) {
             buffer.writeByte(0);
         } else {
+            boolean structure = false;
             boolean enumeration = false;
-            boolean extensionObject = false;
             Class<?> valueClass = getClass(value);
 
             if (UaStructure.class.isAssignableFrom(valueClass)) {
                 valueClass = ExtensionObject.class;
-                extensionObject = true;
+                structure = true;
             } else if (UaEnumeration.class.isAssignableFrom(valueClass)) {
                 valueClass = Integer.class;
                 enumeration = true;
@@ -541,7 +549,7 @@ public class BinaryEncoder implements UaEncoder {
                     for (int i = 0; i < length; i++) {
                         Object o = Array.get(value, i);
 
-                        if (extensionObject) encodeBuiltinType(typeId, new ExtensionObject((UaStructure) o));
+                        if (structure) encodeBuiltinType(typeId, new ExtensionObject((UaStructure) o));
                         else if (enumeration) encodeBuiltinType(typeId, ((UaEnumeration) o).getValue());
                         else encodeBuiltinType(typeId, o);
                     }
@@ -555,7 +563,7 @@ public class BinaryEncoder implements UaEncoder {
                     for (int i = 0; i < length; i++) {
                         Object o = Array.get(flattened, i);
 
-                        if (extensionObject) encodeBuiltinType(typeId, new ExtensionObject((UaStructure) o));
+                        if (structure) encodeBuiltinType(typeId, new ExtensionObject((UaStructure) o));
                         else if (enumeration) encodeBuiltinType(typeId, ((UaEnumeration) o).getValue());
                         else encodeBuiltinType(typeId, o);
                     }
@@ -568,7 +576,7 @@ public class BinaryEncoder implements UaEncoder {
             } else {
                 buffer.writeByte(typeId);
 
-                if (extensionObject) encodeBuiltinType(typeId, new ExtensionObject((UaStructure) value));
+                if (structure) encodeBuiltinType(typeId, new ExtensionObject((UaStructure) value));
                 else if (enumeration) encodeBuiltinType(typeId, ((UaEnumeration) value).getValue());
                 else encodeBuiltinType(typeId, value);
             }
@@ -618,6 +626,17 @@ public class BinaryEncoder implements UaEncoder {
         encodeNodeId(null, message.getBinaryEncodingId());
 
         delegate.encode(message, this);
+    }
+
+    @Override
+    public <T extends UaEnumeration> void encodeEnumeration(String field, T value) throws UaSerializationException {
+        if (value == null) {
+            encodeInt32(null, 0);
+        } else {
+            EncoderDelegate<T> delegate = DelegateRegistry.getEncoder(value);
+
+            delegate.encode(value, this);
+        }
     }
 
     @Override

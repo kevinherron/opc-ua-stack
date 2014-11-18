@@ -4,10 +4,12 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("EventFilterResult")
 public class EventFilterResult extends MonitoringFilterResult {
 
     public static final NodeId TypeId = Identifiers.EventFilterResult;
@@ -17,6 +19,13 @@ public class EventFilterResult extends MonitoringFilterResult {
     protected final StatusCode[] _selectClauseResults;
     protected final DiagnosticInfo[] _selectClauseDiagnosticInfos;
     protected final ContentFilterResult _whereClauseResult;
+
+    public EventFilterResult() {
+        super();
+        this._selectClauseResults = null;
+        this._selectClauseDiagnosticInfos = null;
+        this._whereClauseResult = null;
+    }
 
     public EventFilterResult(StatusCode[] _selectClauseResults, DiagnosticInfo[] _selectClauseDiagnosticInfos, ContentFilterResult _whereClauseResult) {
         super();
@@ -56,7 +65,7 @@ public class EventFilterResult extends MonitoringFilterResult {
     public static void encode(EventFilterResult eventFilterResult, UaEncoder encoder) {
         encoder.encodeArray("SelectClauseResults", eventFilterResult._selectClauseResults, encoder::encodeStatusCode);
         encoder.encodeArray("SelectClauseDiagnosticInfos", eventFilterResult._selectClauseDiagnosticInfos, encoder::encodeDiagnosticInfo);
-        encoder.encodeSerializable("WhereClauseResult", eventFilterResult._whereClauseResult);
+        encoder.encodeSerializable("WhereClauseResult", eventFilterResult._whereClauseResult != null ? eventFilterResult._whereClauseResult : new ContentFilterResult());
     }
 
     public static EventFilterResult decode(UaDecoder decoder) {

@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("ServiceFault")
 public class ServiceFault implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.ServiceFault;
@@ -14,6 +16,10 @@ public class ServiceFault implements UaResponseMessage {
     public static final NodeId XmlEncodingId = Identifiers.ServiceFault_Encoding_DefaultXml;
 
     protected final ResponseHeader _responseHeader;
+
+    public ServiceFault() {
+        this._responseHeader = null;
+    }
 
     public ServiceFault(ResponseHeader _responseHeader) {
         this._responseHeader = _responseHeader;
@@ -40,7 +46,7 @@ public class ServiceFault implements UaResponseMessage {
 
 
     public static void encode(ServiceFault serviceFault, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", serviceFault._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", serviceFault._responseHeader != null ? serviceFault._responseHeader : new ResponseHeader());
     }
 
     public static ServiceFault decode(UaDecoder decoder) {

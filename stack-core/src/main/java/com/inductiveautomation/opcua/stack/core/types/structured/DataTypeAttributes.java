@@ -4,10 +4,12 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("DataTypeAttributes")
 public class DataTypeAttributes extends NodeAttributes {
 
     public static final NodeId TypeId = Identifiers.DataTypeAttributes;
@@ -15,6 +17,11 @@ public class DataTypeAttributes extends NodeAttributes {
     public static final NodeId XmlEncodingId = Identifiers.DataTypeAttributes_Encoding_DefaultXml;
 
     protected final Boolean _isAbstract;
+
+    public DataTypeAttributes() {
+        super(null, null, null, null, null);
+        this._isAbstract = null;
+    }
 
     public DataTypeAttributes(UInteger _specifiedAttributes, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, Boolean _isAbstract) {
         super(_specifiedAttributes, _displayName, _description, _writeMask, _userWriteMask);

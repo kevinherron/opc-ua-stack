@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("SetTriggeringResponse")
 public class SetTriggeringResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.SetTriggeringResponse;
@@ -20,6 +22,14 @@ public class SetTriggeringResponse implements UaResponseMessage {
     protected final DiagnosticInfo[] _addDiagnosticInfos;
     protected final StatusCode[] _removeResults;
     protected final DiagnosticInfo[] _removeDiagnosticInfos;
+
+    public SetTriggeringResponse() {
+        this._responseHeader = null;
+        this._addResults = null;
+        this._addDiagnosticInfos = null;
+        this._removeResults = null;
+        this._removeDiagnosticInfos = null;
+    }
 
     public SetTriggeringResponse(ResponseHeader _responseHeader, StatusCode[] _addResults, DiagnosticInfo[] _addDiagnosticInfos, StatusCode[] _removeResults, DiagnosticInfo[] _removeDiagnosticInfos) {
         this._responseHeader = _responseHeader;
@@ -66,7 +76,7 @@ public class SetTriggeringResponse implements UaResponseMessage {
 
 
     public static void encode(SetTriggeringResponse setTriggeringResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", setTriggeringResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", setTriggeringResponse._responseHeader != null ? setTriggeringResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("AddResults", setTriggeringResponse._addResults, encoder::encodeStatusCode);
         encoder.encodeArray("AddDiagnosticInfos", setTriggeringResponse._addDiagnosticInfos, encoder::encodeDiagnosticInfo);
         encoder.encodeArray("RemoveResults", setTriggeringResponse._removeResults, encoder::encodeStatusCode);

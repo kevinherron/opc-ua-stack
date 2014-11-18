@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("EndpointConfiguration")
 public class EndpointConfiguration implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.EndpointConfiguration;
@@ -22,6 +24,18 @@ public class EndpointConfiguration implements UaStructure {
     protected final Integer _maxBufferSize;
     protected final Integer _channelLifetime;
     protected final Integer _securityTokenLifetime;
+
+    public EndpointConfiguration() {
+        this._operationTimeout = null;
+        this._useBinaryEncoding = null;
+        this._maxStringLength = null;
+        this._maxByteStringLength = null;
+        this._maxArrayLength = null;
+        this._maxMessageSize = null;
+        this._maxBufferSize = null;
+        this._channelLifetime = null;
+        this._securityTokenLifetime = null;
+    }
 
     public EndpointConfiguration(Integer _operationTimeout, Boolean _useBinaryEncoding, Integer _maxStringLength, Integer _maxByteStringLength, Integer _maxArrayLength, Integer _maxMessageSize, Integer _maxBufferSize, Integer _channelLifetime, Integer _securityTokenLifetime) {
         this._operationTimeout = _operationTimeout;

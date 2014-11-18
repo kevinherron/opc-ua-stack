@@ -4,9 +4,11 @@ import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("DeleteRawModifiedDetails")
 public class DeleteRawModifiedDetails extends HistoryUpdateDetails {
 
     public static final NodeId TypeId = Identifiers.DeleteRawModifiedDetails;
@@ -16,6 +18,13 @@ public class DeleteRawModifiedDetails extends HistoryUpdateDetails {
     protected final Boolean _isDeleteModified;
     protected final DateTime _startTime;
     protected final DateTime _endTime;
+
+    public DeleteRawModifiedDetails() {
+        super(null);
+        this._isDeleteModified = null;
+        this._startTime = null;
+        this._endTime = null;
+    }
 
     public DeleteRawModifiedDetails(NodeId _nodeId, Boolean _isDeleteModified, DateTime _startTime, DateTime _endTime) {
         super(_nodeId);

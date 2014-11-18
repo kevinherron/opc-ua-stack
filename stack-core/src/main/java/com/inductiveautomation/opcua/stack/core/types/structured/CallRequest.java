@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("CallRequest")
 public class CallRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.CallRequest;
@@ -15,6 +17,11 @@ public class CallRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final CallMethodRequest[] _methodsToCall;
+
+    public CallRequest() {
+        this._requestHeader = null;
+        this._methodsToCall = null;
+    }
 
     public CallRequest(RequestHeader _requestHeader, CallMethodRequest[] _methodsToCall) {
         this._requestHeader = _requestHeader;
@@ -46,7 +53,7 @@ public class CallRequest implements UaRequestMessage {
 
 
     public static void encode(CallRequest callRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", callRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", callRequest._requestHeader != null ? callRequest._requestHeader : new RequestHeader());
         encoder.encodeArray("MethodsToCall", callRequest._methodsToCall, encoder::encodeSerializable);
     }
 

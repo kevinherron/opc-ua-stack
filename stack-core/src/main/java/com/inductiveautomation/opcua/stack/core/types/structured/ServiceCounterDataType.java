@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("ServiceCounterDataType")
 public class ServiceCounterDataType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ServiceCounterDataType;
@@ -16,6 +18,11 @@ public class ServiceCounterDataType implements UaStructure {
 
     protected final UInteger _totalCount;
     protected final UInteger _errorCount;
+
+    public ServiceCounterDataType() {
+        this._totalCount = null;
+        this._errorCount = null;
+    }
 
     public ServiceCounterDataType(UInteger _totalCount, UInteger _errorCount) {
         this._totalCount = _totalCount;

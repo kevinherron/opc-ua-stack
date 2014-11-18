@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("FindServersRequest")
 public class FindServersRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.FindServersRequest;
@@ -17,6 +19,13 @@ public class FindServersRequest implements UaRequestMessage {
     protected final String _endpointUrl;
     protected final String[] _localeIds;
     protected final String[] _serverUris;
+
+    public FindServersRequest() {
+        this._requestHeader = null;
+        this._endpointUrl = null;
+        this._localeIds = null;
+        this._serverUris = null;
+    }
 
     public FindServersRequest(RequestHeader _requestHeader, String _endpointUrl, String[] _localeIds, String[] _serverUris) {
         this._requestHeader = _requestHeader;
@@ -58,7 +67,7 @@ public class FindServersRequest implements UaRequestMessage {
 
 
     public static void encode(FindServersRequest findServersRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", findServersRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", findServersRequest._requestHeader != null ? findServersRequest._requestHeader : new RequestHeader());
         encoder.encodeString("EndpointUrl", findServersRequest._endpointUrl);
         encoder.encodeArray("LocaleIds", findServersRequest._localeIds, encoder::encodeString);
         encoder.encodeArray("ServerUris", findServersRequest._serverUris, encoder::encodeString);

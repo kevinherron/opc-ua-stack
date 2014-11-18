@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("TimeZoneDataType")
 public class TimeZoneDataType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.TimeZoneDataType;
@@ -15,6 +17,11 @@ public class TimeZoneDataType implements UaStructure {
 
     protected final Short _offset;
     protected final Boolean _daylightSavingInOffset;
+
+    public TimeZoneDataType() {
+        this._offset = null;
+        this._daylightSavingInOffset = null;
+    }
 
     public TimeZoneDataType(Short _offset, Boolean _daylightSavingInOffset) {
         this._offset = _offset;

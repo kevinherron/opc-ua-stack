@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("BrowsePathResult")
 public class BrowsePathResult implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.BrowsePathResult;
@@ -16,6 +18,11 @@ public class BrowsePathResult implements UaStructure {
 
     protected final StatusCode _statusCode;
     protected final BrowsePathTarget[] _targets;
+
+    public BrowsePathResult() {
+        this._statusCode = null;
+        this._targets = null;
+    }
 
     public BrowsePathResult(StatusCode _statusCode, BrowsePathTarget[] _targets) {
         this._statusCode = _statusCode;

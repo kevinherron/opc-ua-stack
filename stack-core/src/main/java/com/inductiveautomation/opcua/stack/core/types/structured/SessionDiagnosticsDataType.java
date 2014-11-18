@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("SessionDiagnosticsDataType")
 public class SessionDiagnosticsDataType implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.SessionDiagnosticsDataType;
@@ -58,6 +60,52 @@ public class SessionDiagnosticsDataType implements UaStructure {
     protected final ServiceCounterDataType _queryNextCount;
     protected final ServiceCounterDataType _registerNodesCount;
     protected final ServiceCounterDataType _unregisterNodesCount;
+
+    public SessionDiagnosticsDataType() {
+        this._sessionId = null;
+        this._sessionName = null;
+        this._clientDescription = null;
+        this._serverUri = null;
+        this._endpointUrl = null;
+        this._localeIds = null;
+        this._actualSessionTimeout = null;
+        this._maxResponseMessageSize = null;
+        this._clientConnectionTime = null;
+        this._clientLastContactTime = null;
+        this._currentSubscriptionsCount = null;
+        this._currentMonitoredItemsCount = null;
+        this._currentPublishRequestsInQueue = null;
+        this._totalRequestCount = null;
+        this._unauthorizedRequestCount = null;
+        this._readCount = null;
+        this._historyReadCount = null;
+        this._writeCount = null;
+        this._historyUpdateCount = null;
+        this._callCount = null;
+        this._createMonitoredItemsCount = null;
+        this._modifyMonitoredItemsCount = null;
+        this._setMonitoringModeCount = null;
+        this._setTriggeringCount = null;
+        this._deleteMonitoredItemsCount = null;
+        this._createSubscriptionCount = null;
+        this._modifySubscriptionCount = null;
+        this._setPublishingModeCount = null;
+        this._publishCount = null;
+        this._republishCount = null;
+        this._transferSubscriptionsCount = null;
+        this._deleteSubscriptionsCount = null;
+        this._addNodesCount = null;
+        this._addReferencesCount = null;
+        this._deleteNodesCount = null;
+        this._deleteReferencesCount = null;
+        this._browseCount = null;
+        this._browseNextCount = null;
+        this._translateBrowsePathsToNodeIdsCount = null;
+        this._queryFirstCount = null;
+        this._queryNextCount = null;
+        this._registerNodesCount = null;
+        this._unregisterNodesCount = null;
+    }
 
     public SessionDiagnosticsDataType(NodeId _sessionId, String _sessionName, ApplicationDescription _clientDescription, String _serverUri, String _endpointUrl, String[] _localeIds, Double _actualSessionTimeout, UInteger _maxResponseMessageSize, DateTime _clientConnectionTime, DateTime _clientLastContactTime, UInteger _currentSubscriptionsCount, UInteger _currentMonitoredItemsCount, UInteger _currentPublishRequestsInQueue, ServiceCounterDataType _totalRequestCount, UInteger _unauthorizedRequestCount, ServiceCounterDataType _readCount, ServiceCounterDataType _historyReadCount, ServiceCounterDataType _writeCount, ServiceCounterDataType _historyUpdateCount, ServiceCounterDataType _callCount, ServiceCounterDataType _createMonitoredItemsCount, ServiceCounterDataType _modifyMonitoredItemsCount, ServiceCounterDataType _setMonitoringModeCount, ServiceCounterDataType _setTriggeringCount, ServiceCounterDataType _deleteMonitoredItemsCount, ServiceCounterDataType _createSubscriptionCount, ServiceCounterDataType _modifySubscriptionCount, ServiceCounterDataType _setPublishingModeCount, ServiceCounterDataType _publishCount, ServiceCounterDataType _republishCount, ServiceCounterDataType _transferSubscriptionsCount, ServiceCounterDataType _deleteSubscriptionsCount, ServiceCounterDataType _addNodesCount, ServiceCounterDataType _addReferencesCount, ServiceCounterDataType _deleteNodesCount, ServiceCounterDataType _deleteReferencesCount, ServiceCounterDataType _browseCount, ServiceCounterDataType _browseNextCount, ServiceCounterDataType _translateBrowsePathsToNodeIdsCount, ServiceCounterDataType _queryFirstCount, ServiceCounterDataType _queryNextCount, ServiceCounterDataType _registerNodesCount, ServiceCounterDataType _unregisterNodesCount) {
         this._sessionId = _sessionId;
@@ -296,7 +344,7 @@ public class SessionDiagnosticsDataType implements UaStructure {
     public static void encode(SessionDiagnosticsDataType sessionDiagnosticsDataType, UaEncoder encoder) {
         encoder.encodeNodeId("SessionId", sessionDiagnosticsDataType._sessionId);
         encoder.encodeString("SessionName", sessionDiagnosticsDataType._sessionName);
-        encoder.encodeSerializable("ClientDescription", sessionDiagnosticsDataType._clientDescription);
+        encoder.encodeSerializable("ClientDescription", sessionDiagnosticsDataType._clientDescription != null ? sessionDiagnosticsDataType._clientDescription : new ApplicationDescription());
         encoder.encodeString("ServerUri", sessionDiagnosticsDataType._serverUri);
         encoder.encodeString("EndpointUrl", sessionDiagnosticsDataType._endpointUrl);
         encoder.encodeArray("LocaleIds", sessionDiagnosticsDataType._localeIds, encoder::encodeString);
@@ -307,36 +355,36 @@ public class SessionDiagnosticsDataType implements UaStructure {
         encoder.encodeUInt32("CurrentSubscriptionsCount", sessionDiagnosticsDataType._currentSubscriptionsCount);
         encoder.encodeUInt32("CurrentMonitoredItemsCount", sessionDiagnosticsDataType._currentMonitoredItemsCount);
         encoder.encodeUInt32("CurrentPublishRequestsInQueue", sessionDiagnosticsDataType._currentPublishRequestsInQueue);
-        encoder.encodeSerializable("TotalRequestCount", sessionDiagnosticsDataType._totalRequestCount);
+        encoder.encodeSerializable("TotalRequestCount", sessionDiagnosticsDataType._totalRequestCount != null ? sessionDiagnosticsDataType._totalRequestCount : new ServiceCounterDataType());
         encoder.encodeUInt32("UnauthorizedRequestCount", sessionDiagnosticsDataType._unauthorizedRequestCount);
-        encoder.encodeSerializable("ReadCount", sessionDiagnosticsDataType._readCount);
-        encoder.encodeSerializable("HistoryReadCount", sessionDiagnosticsDataType._historyReadCount);
-        encoder.encodeSerializable("WriteCount", sessionDiagnosticsDataType._writeCount);
-        encoder.encodeSerializable("HistoryUpdateCount", sessionDiagnosticsDataType._historyUpdateCount);
-        encoder.encodeSerializable("CallCount", sessionDiagnosticsDataType._callCount);
-        encoder.encodeSerializable("CreateMonitoredItemsCount", sessionDiagnosticsDataType._createMonitoredItemsCount);
-        encoder.encodeSerializable("ModifyMonitoredItemsCount", sessionDiagnosticsDataType._modifyMonitoredItemsCount);
-        encoder.encodeSerializable("SetMonitoringModeCount", sessionDiagnosticsDataType._setMonitoringModeCount);
-        encoder.encodeSerializable("SetTriggeringCount", sessionDiagnosticsDataType._setTriggeringCount);
-        encoder.encodeSerializable("DeleteMonitoredItemsCount", sessionDiagnosticsDataType._deleteMonitoredItemsCount);
-        encoder.encodeSerializable("CreateSubscriptionCount", sessionDiagnosticsDataType._createSubscriptionCount);
-        encoder.encodeSerializable("ModifySubscriptionCount", sessionDiagnosticsDataType._modifySubscriptionCount);
-        encoder.encodeSerializable("SetPublishingModeCount", sessionDiagnosticsDataType._setPublishingModeCount);
-        encoder.encodeSerializable("PublishCount", sessionDiagnosticsDataType._publishCount);
-        encoder.encodeSerializable("RepublishCount", sessionDiagnosticsDataType._republishCount);
-        encoder.encodeSerializable("TransferSubscriptionsCount", sessionDiagnosticsDataType._transferSubscriptionsCount);
-        encoder.encodeSerializable("DeleteSubscriptionsCount", sessionDiagnosticsDataType._deleteSubscriptionsCount);
-        encoder.encodeSerializable("AddNodesCount", sessionDiagnosticsDataType._addNodesCount);
-        encoder.encodeSerializable("AddReferencesCount", sessionDiagnosticsDataType._addReferencesCount);
-        encoder.encodeSerializable("DeleteNodesCount", sessionDiagnosticsDataType._deleteNodesCount);
-        encoder.encodeSerializable("DeleteReferencesCount", sessionDiagnosticsDataType._deleteReferencesCount);
-        encoder.encodeSerializable("BrowseCount", sessionDiagnosticsDataType._browseCount);
-        encoder.encodeSerializable("BrowseNextCount", sessionDiagnosticsDataType._browseNextCount);
-        encoder.encodeSerializable("TranslateBrowsePathsToNodeIdsCount", sessionDiagnosticsDataType._translateBrowsePathsToNodeIdsCount);
-        encoder.encodeSerializable("QueryFirstCount", sessionDiagnosticsDataType._queryFirstCount);
-        encoder.encodeSerializable("QueryNextCount", sessionDiagnosticsDataType._queryNextCount);
-        encoder.encodeSerializable("RegisterNodesCount", sessionDiagnosticsDataType._registerNodesCount);
-        encoder.encodeSerializable("UnregisterNodesCount", sessionDiagnosticsDataType._unregisterNodesCount);
+        encoder.encodeSerializable("ReadCount", sessionDiagnosticsDataType._readCount != null ? sessionDiagnosticsDataType._readCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("HistoryReadCount", sessionDiagnosticsDataType._historyReadCount != null ? sessionDiagnosticsDataType._historyReadCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("WriteCount", sessionDiagnosticsDataType._writeCount != null ? sessionDiagnosticsDataType._writeCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("HistoryUpdateCount", sessionDiagnosticsDataType._historyUpdateCount != null ? sessionDiagnosticsDataType._historyUpdateCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("CallCount", sessionDiagnosticsDataType._callCount != null ? sessionDiagnosticsDataType._callCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("CreateMonitoredItemsCount", sessionDiagnosticsDataType._createMonitoredItemsCount != null ? sessionDiagnosticsDataType._createMonitoredItemsCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("ModifyMonitoredItemsCount", sessionDiagnosticsDataType._modifyMonitoredItemsCount != null ? sessionDiagnosticsDataType._modifyMonitoredItemsCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("SetMonitoringModeCount", sessionDiagnosticsDataType._setMonitoringModeCount != null ? sessionDiagnosticsDataType._setMonitoringModeCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("SetTriggeringCount", sessionDiagnosticsDataType._setTriggeringCount != null ? sessionDiagnosticsDataType._setTriggeringCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("DeleteMonitoredItemsCount", sessionDiagnosticsDataType._deleteMonitoredItemsCount != null ? sessionDiagnosticsDataType._deleteMonitoredItemsCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("CreateSubscriptionCount", sessionDiagnosticsDataType._createSubscriptionCount != null ? sessionDiagnosticsDataType._createSubscriptionCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("ModifySubscriptionCount", sessionDiagnosticsDataType._modifySubscriptionCount != null ? sessionDiagnosticsDataType._modifySubscriptionCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("SetPublishingModeCount", sessionDiagnosticsDataType._setPublishingModeCount != null ? sessionDiagnosticsDataType._setPublishingModeCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("PublishCount", sessionDiagnosticsDataType._publishCount != null ? sessionDiagnosticsDataType._publishCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("RepublishCount", sessionDiagnosticsDataType._republishCount != null ? sessionDiagnosticsDataType._republishCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("TransferSubscriptionsCount", sessionDiagnosticsDataType._transferSubscriptionsCount != null ? sessionDiagnosticsDataType._transferSubscriptionsCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("DeleteSubscriptionsCount", sessionDiagnosticsDataType._deleteSubscriptionsCount != null ? sessionDiagnosticsDataType._deleteSubscriptionsCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("AddNodesCount", sessionDiagnosticsDataType._addNodesCount != null ? sessionDiagnosticsDataType._addNodesCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("AddReferencesCount", sessionDiagnosticsDataType._addReferencesCount != null ? sessionDiagnosticsDataType._addReferencesCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("DeleteNodesCount", sessionDiagnosticsDataType._deleteNodesCount != null ? sessionDiagnosticsDataType._deleteNodesCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("DeleteReferencesCount", sessionDiagnosticsDataType._deleteReferencesCount != null ? sessionDiagnosticsDataType._deleteReferencesCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("BrowseCount", sessionDiagnosticsDataType._browseCount != null ? sessionDiagnosticsDataType._browseCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("BrowseNextCount", sessionDiagnosticsDataType._browseNextCount != null ? sessionDiagnosticsDataType._browseNextCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("TranslateBrowsePathsToNodeIdsCount", sessionDiagnosticsDataType._translateBrowsePathsToNodeIdsCount != null ? sessionDiagnosticsDataType._translateBrowsePathsToNodeIdsCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("QueryFirstCount", sessionDiagnosticsDataType._queryFirstCount != null ? sessionDiagnosticsDataType._queryFirstCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("QueryNextCount", sessionDiagnosticsDataType._queryNextCount != null ? sessionDiagnosticsDataType._queryNextCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("RegisterNodesCount", sessionDiagnosticsDataType._registerNodesCount != null ? sessionDiagnosticsDataType._registerNodesCount : new ServiceCounterDataType());
+        encoder.encodeSerializable("UnregisterNodesCount", sessionDiagnosticsDataType._unregisterNodesCount != null ? sessionDiagnosticsDataType._unregisterNodesCount : new ServiceCounterDataType());
     }
 
     public static SessionDiagnosticsDataType decode(UaDecoder decoder) {

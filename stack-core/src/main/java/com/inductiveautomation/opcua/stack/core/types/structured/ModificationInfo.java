@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.HistoryUpdateType;
 
+@UaDataType("ModificationInfo")
 public class ModificationInfo implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ModificationInfo;
@@ -18,6 +20,12 @@ public class ModificationInfo implements UaStructure {
     protected final DateTime _modificationTime;
     protected final HistoryUpdateType _updateType;
     protected final String _userName;
+
+    public ModificationInfo() {
+        this._modificationTime = null;
+        this._updateType = null;
+        this._userName = null;
+    }
 
     public ModificationInfo(DateTime _modificationTime, HistoryUpdateType _updateType, String _userName) {
         this._modificationTime = _modificationTime;
@@ -55,13 +63,13 @@ public class ModificationInfo implements UaStructure {
 
     public static void encode(ModificationInfo modificationInfo, UaEncoder encoder) {
         encoder.encodeDateTime("ModificationTime", modificationInfo._modificationTime);
-        encoder.encodeSerializable("UpdateType", modificationInfo._updateType);
+        encoder.encodeEnumeration("UpdateType", modificationInfo._updateType);
         encoder.encodeString("UserName", modificationInfo._userName);
     }
 
     public static ModificationInfo decode(UaDecoder decoder) {
         DateTime _modificationTime = decoder.decodeDateTime("ModificationTime");
-        HistoryUpdateType _updateType = decoder.decodeSerializable("UpdateType", HistoryUpdateType.class);
+        HistoryUpdateType _updateType = decoder.decodeEnumeration("UpdateType", HistoryUpdateType.class);
         String _userName = decoder.decodeString("UserName");
 
         return new ModificationInfo(_modificationTime, _updateType, _userName);

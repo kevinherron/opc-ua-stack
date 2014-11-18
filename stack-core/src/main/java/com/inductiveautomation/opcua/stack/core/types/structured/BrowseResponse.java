@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("BrowseResponse")
 public class BrowseResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.BrowseResponse;
@@ -17,6 +19,12 @@ public class BrowseResponse implements UaResponseMessage {
     protected final ResponseHeader _responseHeader;
     protected final BrowseResult[] _results;
     protected final DiagnosticInfo[] _diagnosticInfos;
+
+    public BrowseResponse() {
+        this._responseHeader = null;
+        this._results = null;
+        this._diagnosticInfos = null;
+    }
 
     public BrowseResponse(ResponseHeader _responseHeader, BrowseResult[] _results, DiagnosticInfo[] _diagnosticInfos) {
         this._responseHeader = _responseHeader;
@@ -53,7 +61,7 @@ public class BrowseResponse implements UaResponseMessage {
 
 
     public static void encode(BrowseResponse browseResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", browseResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", browseResponse._responseHeader != null ? browseResponse._responseHeader : new ResponseHeader());
         encoder.encodeArray("Results", browseResponse._results, encoder::encodeSerializable);
         encoder.encodeArray("DiagnosticInfos", browseResponse._diagnosticInfos, encoder::encodeDiagnosticInfo);
     }

@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 
+@UaDataType("AggregateConfiguration")
 public class AggregateConfiguration implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.AggregateConfiguration;
@@ -19,6 +21,14 @@ public class AggregateConfiguration implements UaStructure {
     protected final UByte _percentDataBad;
     protected final UByte _percentDataGood;
     protected final Boolean _useSlopedExtrapolation;
+
+    public AggregateConfiguration() {
+        this._useServerCapabilitiesDefaults = null;
+        this._treatUncertainAsBad = null;
+        this._percentDataBad = null;
+        this._percentDataGood = null;
+        this._useSlopedExtrapolation = null;
+    }
 
     public AggregateConfiguration(Boolean _useServerCapabilitiesDefaults, Boolean _treatUncertainAsBad, UByte _percentDataBad, UByte _percentDataGood, Boolean _useSlopedExtrapolation) {
         this._useServerCapabilitiesDefaults = _useServerCapabilitiesDefaults;

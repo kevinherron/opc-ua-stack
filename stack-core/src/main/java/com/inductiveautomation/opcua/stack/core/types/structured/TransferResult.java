@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("TransferResult")
 public class TransferResult implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.TransferResult;
@@ -17,6 +19,11 @@ public class TransferResult implements UaStructure {
 
     protected final StatusCode _statusCode;
     protected final UInteger[] _availableSequenceNumbers;
+
+    public TransferResult() {
+        this._statusCode = null;
+        this._availableSequenceNumbers = null;
+    }
 
     public TransferResult(StatusCode _statusCode, UInteger[] _availableSequenceNumbers) {
         this._statusCode = _statusCode;

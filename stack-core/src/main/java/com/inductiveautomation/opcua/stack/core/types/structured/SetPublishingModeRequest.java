@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("SetPublishingModeRequest")
 public class SetPublishingModeRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.SetPublishingModeRequest;
@@ -17,6 +19,12 @@ public class SetPublishingModeRequest implements UaRequestMessage {
     protected final RequestHeader _requestHeader;
     protected final Boolean _publishingEnabled;
     protected final UInteger[] _subscriptionIds;
+
+    public SetPublishingModeRequest() {
+        this._requestHeader = null;
+        this._publishingEnabled = null;
+        this._subscriptionIds = null;
+    }
 
     public SetPublishingModeRequest(RequestHeader _requestHeader, Boolean _publishingEnabled, UInteger[] _subscriptionIds) {
         this._requestHeader = _requestHeader;
@@ -53,7 +61,7 @@ public class SetPublishingModeRequest implements UaRequestMessage {
 
 
     public static void encode(SetPublishingModeRequest setPublishingModeRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", setPublishingModeRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", setPublishingModeRequest._requestHeader != null ? setPublishingModeRequest._requestHeader : new RequestHeader());
         encoder.encodeBoolean("PublishingEnabled", setPublishingModeRequest._publishingEnabled);
         encoder.encodeArray("SubscriptionIds", setPublishingModeRequest._subscriptionIds, encoder::encodeUInt32);
     }

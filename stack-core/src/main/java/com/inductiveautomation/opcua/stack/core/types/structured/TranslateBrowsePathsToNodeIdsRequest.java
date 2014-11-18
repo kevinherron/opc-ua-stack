@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("TranslateBrowsePathsToNodeIdsRequest")
 public class TranslateBrowsePathsToNodeIdsRequest implements UaRequestMessage {
 
     public static final NodeId TypeId = Identifiers.TranslateBrowsePathsToNodeIdsRequest;
@@ -15,6 +17,11 @@ public class TranslateBrowsePathsToNodeIdsRequest implements UaRequestMessage {
 
     protected final RequestHeader _requestHeader;
     protected final BrowsePath[] _browsePaths;
+
+    public TranslateBrowsePathsToNodeIdsRequest() {
+        this._requestHeader = null;
+        this._browsePaths = null;
+    }
 
     public TranslateBrowsePathsToNodeIdsRequest(RequestHeader _requestHeader, BrowsePath[] _browsePaths) {
         this._requestHeader = _requestHeader;
@@ -46,7 +53,7 @@ public class TranslateBrowsePathsToNodeIdsRequest implements UaRequestMessage {
 
 
     public static void encode(TranslateBrowsePathsToNodeIdsRequest translateBrowsePathsToNodeIdsRequest, UaEncoder encoder) {
-        encoder.encodeSerializable("RequestHeader", translateBrowsePathsToNodeIdsRequest._requestHeader);
+        encoder.encodeSerializable("RequestHeader", translateBrowsePathsToNodeIdsRequest._requestHeader != null ? translateBrowsePathsToNodeIdsRequest._requestHeader : new RequestHeader());
         encoder.encodeArray("BrowsePaths", translateBrowsePathsToNodeIdsRequest._browsePaths, encoder::encodeSerializable);
     }
 

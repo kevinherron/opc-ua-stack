@@ -5,9 +5,11 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
+@UaDataType("ModifySubscriptionResponse")
 public class ModifySubscriptionResponse implements UaResponseMessage {
 
     public static final NodeId TypeId = Identifiers.ModifySubscriptionResponse;
@@ -18,6 +20,13 @@ public class ModifySubscriptionResponse implements UaResponseMessage {
     protected final Double _revisedPublishingInterval;
     protected final UInteger _revisedLifetimeCount;
     protected final UInteger _revisedMaxKeepAliveCount;
+
+    public ModifySubscriptionResponse() {
+        this._responseHeader = null;
+        this._revisedPublishingInterval = null;
+        this._revisedLifetimeCount = null;
+        this._revisedMaxKeepAliveCount = null;
+    }
 
     public ModifySubscriptionResponse(ResponseHeader _responseHeader, Double _revisedPublishingInterval, UInteger _revisedLifetimeCount, UInteger _revisedMaxKeepAliveCount) {
         this._responseHeader = _responseHeader;
@@ -59,7 +68,7 @@ public class ModifySubscriptionResponse implements UaResponseMessage {
 
 
     public static void encode(ModifySubscriptionResponse modifySubscriptionResponse, UaEncoder encoder) {
-        encoder.encodeSerializable("ResponseHeader", modifySubscriptionResponse._responseHeader);
+        encoder.encodeSerializable("ResponseHeader", modifySubscriptionResponse._responseHeader != null ? modifySubscriptionResponse._responseHeader : new ResponseHeader());
         encoder.encodeDouble("RevisedPublishingInterval", modifySubscriptionResponse._revisedPublishingInterval);
         encoder.encodeUInt32("RevisedLifetimeCount", modifySubscriptionResponse._revisedLifetimeCount);
         encoder.encodeUInt32("RevisedMaxKeepAliveCount", modifySubscriptionResponse._revisedMaxKeepAliveCount);

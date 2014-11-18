@@ -5,10 +5,12 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 
+@UaDataType("ContentFilterElementResult")
 public class ContentFilterElementResult implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.ContentFilterElementResult;
@@ -18,6 +20,12 @@ public class ContentFilterElementResult implements UaStructure {
     protected final StatusCode _statusCode;
     protected final StatusCode[] _operandStatusCodes;
     protected final DiagnosticInfo[] _operandDiagnosticInfos;
+
+    public ContentFilterElementResult() {
+        this._statusCode = null;
+        this._operandStatusCodes = null;
+        this._operandDiagnosticInfos = null;
+    }
 
     public ContentFilterElementResult(StatusCode _statusCode, StatusCode[] _operandStatusCodes, DiagnosticInfo[] _operandDiagnosticInfos) {
         this._statusCode = _statusCode;

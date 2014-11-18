@@ -5,8 +5,10 @@ import com.inductiveautomation.opcua.stack.core.serialization.DelegateRegistry;
 import com.inductiveautomation.opcua.stack.core.serialization.UaDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
+import com.inductiveautomation.opcua.stack.core.types.UaDataType;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
 
+@UaDataType("NodeReference")
 public class NodeReference implements UaStructure {
 
     public static final NodeId TypeId = Identifiers.NodeReference;
@@ -17,6 +19,13 @@ public class NodeReference implements UaStructure {
     protected final NodeId _referenceTypeId;
     protected final Boolean _isForward;
     protected final NodeId[] _referencedNodeIds;
+
+    public NodeReference() {
+        this._nodeId = null;
+        this._referenceTypeId = null;
+        this._isForward = null;
+        this._referencedNodeIds = null;
+    }
 
     public NodeReference(NodeId _nodeId, NodeId _referenceTypeId, Boolean _isForward, NodeId[] _referencedNodeIds) {
         this._nodeId = _nodeId;
