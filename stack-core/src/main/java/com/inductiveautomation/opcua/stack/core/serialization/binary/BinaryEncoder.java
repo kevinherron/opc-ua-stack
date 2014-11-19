@@ -592,7 +592,7 @@ public class BinaryEncoder implements UaEncoder {
     @Override
     public <T extends UaEnumeration> void encodeEnumeration(String field, T value) throws UaSerializationException {
         if (value == null) {
-            encodeInt32(null, 0);
+            encodeInt32(null, -1);
         } else {
             EncoderDelegate<T> delegate = DelegateRegistry.getEncoder(value);
 
