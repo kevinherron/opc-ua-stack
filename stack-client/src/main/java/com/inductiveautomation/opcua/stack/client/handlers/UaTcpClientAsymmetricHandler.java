@@ -83,7 +83,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
 
         ByteString clientNonce = secureChannel.isSymmetricSigningEnabled() ?
                 NonceUtil.generateNonce(secureChannel.getSecurityPolicy().getSymmetricEncryptionAlgorithm()) :
-                ByteString.NullValue;
+                ByteString.NULL_VALUE;
 
         secureChannel.setLocalNonce(clientNonce);
 
@@ -304,7 +304,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
     private void renewSecureChannel(ChannelHandlerContext ctx) {
         ByteString clientNonce = secureChannel.isSymmetricSigningEnabled() ?
                 NonceUtil.generateNonce(NonceUtil.getNonceLength(secureChannel.getSecurityPolicy().getSymmetricEncryptionAlgorithm())) :
-                ByteString.NullValue;
+                ByteString.NULL_VALUE;
 
         secureChannel.setLocalNonce(clientNonce);
 

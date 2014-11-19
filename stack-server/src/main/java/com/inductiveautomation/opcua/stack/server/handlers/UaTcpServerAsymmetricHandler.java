@@ -282,7 +282,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
         ResponseHeader responseHeader = new ResponseHeader(
                 DateTime.now(),
                 request.getRequestHeader().getRequestHandle(),
-                StatusCode.Good,
+                StatusCode.GOOD,
                 null, null, null
         );
 

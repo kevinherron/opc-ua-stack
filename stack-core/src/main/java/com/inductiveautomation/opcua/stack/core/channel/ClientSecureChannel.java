@@ -13,8 +13,8 @@ public class ClientSecureChannel extends DefaultAttributeMap implements SecureCh
 
     private volatile long channelId = 0;
     private volatile ChannelSecurity channelSecurity;
-    private volatile ByteString localNonce = ByteString.NullValue;
-    private volatile ByteString remoteNonce = ByteString.NullValue;
+    private volatile ByteString localNonce = ByteString.NULL_VALUE;
+    private volatile ByteString remoteNonce = ByteString.NULL_VALUE;
 
     private final KeyPair keyPair;
     private final Certificate localCertificate;

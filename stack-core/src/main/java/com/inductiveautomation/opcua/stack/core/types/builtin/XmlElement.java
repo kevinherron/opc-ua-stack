@@ -2,7 +2,7 @@ package com.inductiveautomation.opcua.stack.core.types.builtin;
 
 import com.google.common.base.Objects;
 
-public class XmlElement {
+public final class XmlElement {
 
     private final String fragment;
 

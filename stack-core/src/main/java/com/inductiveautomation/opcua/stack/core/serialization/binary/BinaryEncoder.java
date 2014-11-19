@@ -336,7 +336,7 @@ public class BinaryEncoder implements UaEncoder {
 
     @Override
     public void encodeExpandedNodeId(String field, ExpandedNodeId value) throws UaSerializationException {
-        if (value == null) value = ExpandedNodeId.NullValue;
+        if (value == null) value = ExpandedNodeId.NULL_VALUE;
 
         int flags = 0;
         String namespaceUri = value.getNamespaceUri();
@@ -413,7 +413,7 @@ public class BinaryEncoder implements UaEncoder {
 
     @Override
     public void encodeQualifiedName(String field, QualifiedName value) throws UaSerializationException {
-        if (value == null) value = QualifiedName.NullValue;
+        if (value == null) value = QualifiedName.NULL_VALUE;
 
         encodeUInt16(null, value.getNamespaceIndex());
         encodeString(null, value.getName());
@@ -421,7 +421,7 @@ public class BinaryEncoder implements UaEncoder {
 
     @Override
     public void encodeLocalizedText(String field, LocalizedText value) throws UaSerializationException {
-        if (value == null) value = LocalizedText.NullValue;
+        if (value == null) value = LocalizedText.NULL_VALUE;
 
         String locale = value.getLocale();
         String text = value.getText();
@@ -504,9 +504,9 @@ public class BinaryEncoder implements UaEncoder {
         int mask = 0x00;
 
         if (value.getValue() != null && value.getValue().isNotNull()) mask |= 0x01;
-        if (!StatusCode.Good.equals(value.getStatusCode())) mask |= 0x02;
-        if (!DateTime.MinValue.equals(value.getSourceTime())) mask |= 0x04;
-        if (!DateTime.MinValue.equals(value.getServerTime())) mask |= 0x08;
+        if (!StatusCode.GOOD.equals(value.getStatusCode())) mask |= 0x02;
+        if (!DateTime.MIN_VALUE.equals(value.getSourceTime())) mask |= 0x04;
+        if (!DateTime.MIN_VALUE.equals(value.getServerTime())) mask |= 0x08;
 
         buffer.writeByte(mask);
 

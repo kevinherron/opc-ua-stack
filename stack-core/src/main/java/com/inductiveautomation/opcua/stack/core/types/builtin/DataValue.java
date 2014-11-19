@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import com.inductiveautomation.opcua.stack.core.types.enumerated.TimestampsToReturn;
 
-public class DataValue {
+public final class DataValue {
 
     private final Variant value;
     private final StatusCode status;
@@ -16,11 +16,11 @@ public class DataValue {
     }
 
     public DataValue(StatusCode statusCode) {
-        this(Variant.NullValue, statusCode, DateTime.MinValue);
+        this(Variant.NULL_VALUE, statusCode, DateTime.MIN_VALUE);
     }
 
     public DataValue(Variant value) {
-        this(value, StatusCode.Good);
+        this(value, StatusCode.GOOD);
     }
 
     public DataValue(Variant value, StatusCode status) {

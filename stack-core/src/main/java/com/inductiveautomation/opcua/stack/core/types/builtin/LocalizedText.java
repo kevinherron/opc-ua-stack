@@ -5,9 +5,9 @@ import java.util.Locale;
 
 import com.google.common.base.Objects;
 
-public class LocalizedText {
+public final class LocalizedText {
 
-    public static final LocalizedText NullValue = new LocalizedText(null, null);
+    public static final LocalizedText NULL_VALUE = new LocalizedText(null, null);
 
 	private final String locale;
 	private final String text;

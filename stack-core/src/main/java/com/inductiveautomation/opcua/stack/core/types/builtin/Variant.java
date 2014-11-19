@@ -14,9 +14,9 @@ import com.inductiveautomation.opcua.stack.core.util.TypeUtil;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public class Variant {
+public final class Variant {
 
-    public static final Variant NullValue = new Variant(null);
+    public static final Variant NULL_VALUE = new Variant(null);
 
     private final Object value;
 

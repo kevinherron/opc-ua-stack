@@ -71,7 +71,7 @@ public class ServiceRequest<ReqT extends UaRequestMessage, ResT extends UaRespon
     }
 
     public ResponseHeader createResponseHeader() {
-        return createResponseHeader(StatusCode.Good);
+        return createResponseHeader(StatusCode.GOOD);
     }
 
     public ResponseHeader createResponseHeader(long statusCode) {

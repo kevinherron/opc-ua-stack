@@ -2,15 +2,15 @@ package com.inductiveautomation.opcua.stack.core.types.builtin;
 
 import com.google.common.base.Objects;
 
-public class StatusCode {
+public final class StatusCode {
 
-    private static final int SeverityMask = 0xC0000000;
-    private static final int SeverityGood = 0x00000000;
-    private static final int SeverityUncertain = 0x40000000;
-    private static final int SeverityBad = 0x80000000;
+    private static final int SEVERITY_MASK = 0xC0000000;
+    private static final int SEVERITY_GOOD = 0x00000000;
+    private static final int SEVERITY_UNCERTAIN = 0x40000000;
+    private static final int SEVERITY_BAD = 0x80000000;
 
-    public static final StatusCode Good = new StatusCode(SeverityGood);
-    public static final StatusCode Bad = new StatusCode(SeverityBad);
+    public static final StatusCode GOOD = new StatusCode(SEVERITY_GOOD);
+    public static final StatusCode BAD = new StatusCode(SEVERITY_BAD);
 
     private final int value;
 
@@ -27,15 +27,15 @@ public class StatusCode {
     }
 
     public boolean isGood() {
-        return (value & SeverityMask) == SeverityGood;
+        return (value & SEVERITY_MASK) == SEVERITY_GOOD;
     }
 
     public boolean isBad() {
-        return (value & SeverityMask) == SeverityBad;
+        return (value & SEVERITY_MASK) == SEVERITY_BAD;
     }
 
     public boolean isUncertain() {
-        return (value & SeverityMask) == SeverityUncertain;
+        return (value & SEVERITY_MASK) == SEVERITY_UNCERTAIN;
     }
 
     /**

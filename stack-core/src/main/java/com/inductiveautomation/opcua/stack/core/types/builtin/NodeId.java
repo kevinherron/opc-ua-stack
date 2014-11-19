@@ -20,7 +20,7 @@ public final class NodeId {
     public static final NodeId NULL_NUMERIC = new NodeId(ushort(0), uint(0));
     public static final NodeId NULL_STRING = new NodeId(ushort(0), "");
     public static final NodeId NULL_GUID = new NodeId(ushort(0), new UUID(0, 0));
-    public static final NodeId NULL_OPAQUE = new NodeId(ushort(0), ByteString.NullValue);
+    public static final NodeId NULL_OPAQUE = new NodeId(ushort(0), ByteString.NULL_VALUE);
 
     public static final NodeId NULL_VALUE = NULL_NUMERIC;
 

@@ -18,9 +18,9 @@ public class DiagnosticInfoSerializationTest extends BinarySerializationFixture 
                 {new DiagnosticInfo(-1, -1, 1, -1, null, null, null)},
                 {new DiagnosticInfo(-1, -1, -1, 1, null, null, null)},
                 {new DiagnosticInfo(-1, -1, -1, -1, "hello, world", null, null)},
-                {new DiagnosticInfo(-1, -1, -1, -1, null, StatusCode.Good, null)},
-                {new DiagnosticInfo(-1, -1, -1, -1, null, null, new DiagnosticInfo(1, 2, 3, 4, "abc", StatusCode.Good, null))},
-                {new DiagnosticInfo(1, 2, 3, 4, "abc", StatusCode.Good, null)},
+                {new DiagnosticInfo(-1, -1, -1, -1, null, StatusCode.GOOD, null)},
+                {new DiagnosticInfo(-1, -1, -1, -1, null, null, new DiagnosticInfo(1, 2, 3, 4, "abc", StatusCode.GOOD, null))},
+                {new DiagnosticInfo(1, 2, 3, 4, "abc", StatusCode.GOOD, null)},
         };
     }
 

@@ -162,7 +162,7 @@ public class XmlDecoder implements UaDecoder {
 
                 return ByteString.of(bs);
             } else {
-                return ByteString.NullValue;
+                return ByteString.NULL_VALUE;
             }
         });
     }

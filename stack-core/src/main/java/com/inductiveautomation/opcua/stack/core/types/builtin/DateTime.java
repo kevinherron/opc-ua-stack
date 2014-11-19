@@ -4,12 +4,12 @@ import java.util.Date;
 
 import com.google.common.base.Objects;
 
-public class DateTime {
+public final class DateTime {
 
-    public static final DateTime MinValue = new DateTime(0L);
+    public static final DateTime MIN_VALUE = new DateTime(0L);
 
 	/** The delta in 100 nanosecond intervals between Java epoch (January 1, 1970) and UTC epoch (Jan 1, 1601). */
-	private static final long EpochDelta = 116444736000000000L;
+	private static final long EPOCH_DELTA = 116444736000000000L;
 
 	private final long utcTime;
 
@@ -73,11 +73,11 @@ public class DateTime {
 	}
 
 	private static long javaToUtc(long javaTime) {
-		return (javaTime * 10000L) + EpochDelta;
+		return (javaTime * 10000L) + EPOCH_DELTA;
 	}
 
 	private static long utcToJava(long utcTime) {
-		return (utcTime - EpochDelta) / 10000L;
+		return (utcTime - EPOCH_DELTA) / 10000L;
 	}
 
 }

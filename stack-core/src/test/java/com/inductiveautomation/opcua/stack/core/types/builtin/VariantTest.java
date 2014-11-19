@@ -11,12 +11,12 @@ public class VariantTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void variantCannotContainDataValue() {
-        new Variant(new DataValue(Variant.NullValue));
+        new Variant(new DataValue(Variant.NULL_VALUE));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void variantCannotContainDiagnosticInfo() {
-        new Variant(DiagnosticInfo.NullValue);
+        new Variant(DiagnosticInfo.NULL_VALUE);
     }
 
 }

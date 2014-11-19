@@ -42,7 +42,7 @@ public interface SecureChannel {
         try {
             return getLocalCertificate() != null ?
                     ByteString.of(getLocalCertificate().getEncoded()) :
-                    ByteString.NullValue;
+                    ByteString.NULL_VALUE;
         } catch (CertificateEncodingException e) {
             throw new UaException(StatusCodes.Bad_CertificateInvalid, e);
         }
@@ -52,7 +52,7 @@ public interface SecureChannel {
         try {
             return getLocalCertificate() != null ?
                     ByteString.of(DigestUtil.sha1(getLocalCertificate().getEncoded())) :
-                    ByteString.NullValue;
+                    ByteString.NULL_VALUE;
         } catch (CertificateEncodingException e) {
             throw new UaException(StatusCodes.Bad_CertificateInvalid, e);
         }
@@ -63,7 +63,7 @@ public interface SecureChannel {
         try {
             return getRemoteCertificate() != null ?
                     ByteString.of(getRemoteCertificate().getEncoded()) :
-                    ByteString.NullValue;
+                    ByteString.NULL_VALUE;
         } catch (CertificateEncodingException e) {
             throw new UaException(StatusCodes.Bad_CertificateInvalid, e);
         }
@@ -73,7 +73,7 @@ public interface SecureChannel {
         try {
             return getRemoteCertificate() != null ?
                     ByteString.of(DigestUtil.sha1(getRemoteCertificate().getEncoded())) :
-                    ByteString.NullValue;
+                    ByteString.NULL_VALUE;
         } catch (CertificateEncodingException e) {
             throw new UaException(StatusCodes.Bad_CertificateInvalid, e);
         }

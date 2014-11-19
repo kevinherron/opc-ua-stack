@@ -158,7 +158,7 @@ public class BinaryDecoder implements UaDecoder {
         int length = decodeInt32(null);
 
         if (length == -1) {
-            return ByteString.NullValue;
+            return ByteString.NULL_VALUE;
         } else {
             byte[] bs = new byte[length];
             buffer.readBytes(bs);
@@ -296,10 +296,10 @@ public class BinaryDecoder implements UaDecoder {
     public DataValue decodeDataValue(String field) throws UaSerializationException {
         int mask = buffer.readByte() & 0x0F;
 
-        Variant value = ((mask & 0x01) == 0x01) ? decodeVariant(null) : Variant.NullValue;
-        StatusCode status = ((mask & 0x02) == 0x02) ? decodeStatusCode(null) : StatusCode.Good;
-        DateTime sourceTime = ((mask & 0x04) == 0x04) ? decodeDateTime(null) : DateTime.MinValue;
-        DateTime serverTime = ((mask & 0x08) == 0x08) ? decodeDateTime(null) : DateTime.MinValue;
+        Variant value = ((mask & 0x01) == 0x01) ? decodeVariant(null) : Variant.NULL_VALUE;
+        StatusCode status = ((mask & 0x02) == 0x02) ? decodeStatusCode(null) : StatusCode.GOOD;
+        DateTime sourceTime = ((mask & 0x04) == 0x04) ? decodeDateTime(null) : DateTime.MIN_VALUE;
+        DateTime serverTime = ((mask & 0x08) == 0x08) ? decodeDateTime(null) : DateTime.MIN_VALUE;
 
         return new DataValue(value, status, sourceTime, serverTime);
     }

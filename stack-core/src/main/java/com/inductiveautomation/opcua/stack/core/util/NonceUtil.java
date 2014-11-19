@@ -49,7 +49,7 @@ public class NonceUtil {
      * @return a nonce of the given length.
      */
     public static ByteString generateNonce(int length) {
-        if (length == 0) return ByteString.NullValue;
+        if (length == 0) return ByteString.NULL_VALUE;
 
         byte[] bs = new byte[length];
 

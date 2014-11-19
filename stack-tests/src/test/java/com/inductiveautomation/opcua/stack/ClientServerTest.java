@@ -68,7 +68,7 @@ public class ClientServerTest extends SecurityFixture {
                 {new Variant(new XmlElement("<tag>hello</tag>"))},
                 {new Variant(new NodeId(0, 42))},
                 {new Variant(new ExpandedNodeId(1, 42, "uri", 1))},
-                {new Variant(StatusCode.Good)},
+                {new Variant(StatusCode.GOOD)},
                 {new Variant(new QualifiedName(0, "QualifiedName"))},
                 {new Variant(LocalizedText.english("LocalizedText"))},
                 {new Variant(new ExtensionObject(new ReadValueId(NodeId.NULL_VALUE, uint(1), null, new QualifiedName(0, "DataEncoding"))))},
@@ -108,7 +108,7 @@ public class ClientServerTest extends SecurityFixture {
             ResponseHeader header = new ResponseHeader(
                     DateTime.now(),
                     request.getRequestHeader().getRequestHandle(),
-                    StatusCode.Good,
+                    StatusCode.GOOD,
                     null, null, null
             );
 

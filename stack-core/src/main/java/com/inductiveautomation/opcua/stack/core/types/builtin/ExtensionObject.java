@@ -6,7 +6,7 @@ import com.google.common.base.Objects;
 import com.inductiveautomation.opcua.stack.core.serialization.UaSerializable;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
 
-public class ExtensionObject {
+public final class ExtensionObject {
 
     private final Object object;
     private final NodeId dataTypeEncodingId;

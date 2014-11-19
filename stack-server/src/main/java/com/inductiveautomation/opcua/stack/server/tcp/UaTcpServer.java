@@ -291,7 +291,7 @@ public class UaTcpServer implements UaServer {
         try {
             ByteString actualThumbprint = certificate != null ?
                     ByteString.of(DigestUtil.sha1(certificate.getEncoded())) :
-                    ByteString.NullValue;
+                    ByteString.NULL_VALUE;
 
             return Optional.ofNullable(actualThumbprint.equals(thumbprint) ? certificate : null);
         } catch (CertificateEncodingException e) {
@@ -304,7 +304,7 @@ public class UaTcpServer implements UaServer {
         try {
             ByteString actualThumbprint = certificate != null ?
                     ByteString.of(DigestUtil.sha1(certificate.getEncoded())) :
-                    ByteString.NullValue;
+                    ByteString.NULL_VALUE;
 
             return Optional.ofNullable(actualThumbprint.equals(thumbprint) ? keyPair : null);
         } catch (CertificateEncodingException e) {
@@ -436,10 +436,10 @@ public class UaTcpServer implements UaServer {
                 return ByteString.of(certificate.getEncoded());
             } catch (CertificateEncodingException e) {
                 logger.error("Error decoding certificate.", e);
-                return ByteString.NullValue;
+                return ByteString.NULL_VALUE;
             }
         } else {
-            return ByteString.NullValue;
+            return ByteString.NULL_VALUE;
         }
     }
 

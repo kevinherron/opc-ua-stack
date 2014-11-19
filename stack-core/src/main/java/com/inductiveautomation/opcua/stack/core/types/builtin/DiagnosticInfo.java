@@ -5,9 +5,9 @@ import java.util.Objects;
 /**
  * Vendor-specific diagnostic information
  */
-public class DiagnosticInfo {
+public final class DiagnosticInfo {
 
-    public static final DiagnosticInfo NullValue = new DiagnosticInfo(-1, -1, -1, -1, null, null, null);
+    public static final DiagnosticInfo NULL_VALUE = new DiagnosticInfo(-1, -1, -1, -1, null, null, null);
 
     /**
      * The symbolicId is defined within the context of a namespace. This namespace is represented as a string and is

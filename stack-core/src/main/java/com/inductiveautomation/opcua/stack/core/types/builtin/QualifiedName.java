@@ -14,7 +14,7 @@ import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Un
  */
 public final class QualifiedName {
 
-    public static final QualifiedName NullValue = new QualifiedName(ushort(0), null);
+    public static final QualifiedName NULL_VALUE = new QualifiedName(ushort(0), null);
 
     private final UShort namespaceIndex;
     private final String name;

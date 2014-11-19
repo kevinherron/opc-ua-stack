@@ -8,9 +8,9 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 
 import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
 
-public class ByteString {
+public final class ByteString {
 
-    public static final ByteString NullValue = new ByteString(null);
+    public static final ByteString NULL_VALUE = new ByteString(null);
 
     private final byte[] bytes;
 

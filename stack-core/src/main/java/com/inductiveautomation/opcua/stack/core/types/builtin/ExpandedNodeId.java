@@ -14,9 +14,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
 
-public class ExpandedNodeId {
+public final class ExpandedNodeId {
 
-    public static final ExpandedNodeId NullValue = new ExpandedNodeId(NodeId.NULL_VALUE, null, 0);
+    public static final ExpandedNodeId NULL_VALUE = new ExpandedNodeId(NodeId.NULL_VALUE, null, 0);
 
     private final NodeId nodeId;
     private final String namespaceUri;
