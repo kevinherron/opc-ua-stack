@@ -24,10 +24,6 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.ULong;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UBytePrimitive;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16Primitive;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt64Primitive;
 
 public class XmlEncoder implements UaEncoder {
 
@@ -53,26 +49,6 @@ public class XmlEncoder implements UaEncoder {
 
     @Override
     public void encodeInt64(String field, Long value) {
-
-    }
-
-    @Override
-    public void encodeByte(String field, @UBytePrimitive Short value) {
-
-    }
-
-    @Override
-    public void encodeUInt16(String field, @UInt16Primitive Integer value) {
-
-    }
-
-    @Override
-    public void encodeUInt32(String field, @UInt32Primitive Long value) {
-
-    }
-
-    @Override
-    public void encodeUInt64(String field, @UInt64Primitive Long value) {
 
     }
 

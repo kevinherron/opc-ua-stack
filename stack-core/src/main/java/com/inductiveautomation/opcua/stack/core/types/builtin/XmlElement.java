@@ -18,6 +18,14 @@ public final class XmlElement {
         return new XmlElement(fragment);
     }
 
+    public boolean isNull() {
+        return fragment == null;
+    }
+
+    public boolean isNotNull() {
+        return !isNull();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

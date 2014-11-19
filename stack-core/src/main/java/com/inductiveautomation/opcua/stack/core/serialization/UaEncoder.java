@@ -37,16 +37,12 @@ public interface UaEncoder {
 
     void encodeInt64(String field, Long value) throws UaSerializationException;
 
-    void encodeByte(String field, @UBytePrimitive Short value) throws UaSerializationException;
     void encodeByte(String field, UByte value) throws UaSerializationException;
 
-    void encodeUInt16(String field, @UInt16Primitive Integer value) throws UaSerializationException;
     void encodeUInt16(String field, UShort value) throws UaSerializationException;
 
-    void encodeUInt32(String field, @UInt32Primitive Long value) throws UaSerializationException;
     void encodeUInt32(String field, UInteger value) throws UaSerializationException;
 
-    void encodeUInt64(String field, @UInt64Primitive Long value) throws UaSerializationException;
     void encodeUInt64(String field, ULong value) throws UaSerializationException;
 
     void encodeFloat(String field, Float value) throws UaSerializationException;
