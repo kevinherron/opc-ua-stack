@@ -20,10 +20,6 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.ULong;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UBytePrimitive;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt16Primitive;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt64Primitive;
 
 public interface UaEncoder {
 
