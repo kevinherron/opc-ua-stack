@@ -1,5 +1,6 @@
 package com.inductiveautomation.opcua.stack.server.handlers;
 
+import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import com.inductiveautomation.opcua.stack.core.channel.SerializationQueue;
 import com.inductiveautomation.opcua.stack.core.channel.ServerSecureChannel;
 import com.inductiveautomation.opcua.stack.core.channel.headers.HeaderDecoder;
 import com.inductiveautomation.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
+import com.inductiveautomation.opcua.stack.core.channel.messages.ErrorMessage;
 import com.inductiveautomation.opcua.stack.core.channel.messages.MessageType;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
@@ -204,12 +206,18 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.error("exceptionCaught()", cause);
-
         chunkBuffers.forEach(ByteBuf::release);
         chunkBuffers.clear();
 
-        ExceptionHandler.exceptionCaught(ctx, cause);
+        if (cause instanceof IOException) {
+            ctx.close();
+            logger.debug("[remote={}] IOException caught; channel closed");
+        } else {
+            ErrorMessage errorMessage = ExceptionHandler.sendErrorMessage(ctx, cause);
+
+            logger.error("[remote={}] Exception caught; sent {}",
+                    ctx.channel().remoteAddress(), errorMessage, cause);
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.inductiveautomation.opcua.stack.server.handlers;
 
+import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import com.inductiveautomation.opcua.stack.core.channel.ExceptionHandler;
 import com.inductiveautomation.opcua.stack.core.channel.SerializationQueue;
 import com.inductiveautomation.opcua.stack.core.channel.headers.HeaderDecoder;
 import com.inductiveautomation.opcua.stack.core.channel.messages.AcknowledgeMessage;
+import com.inductiveautomation.opcua.stack.core.channel.messages.ErrorMessage;
 import com.inductiveautomation.opcua.stack.core.channel.messages.HelloMessage;
 import com.inductiveautomation.opcua.stack.core.channel.messages.MessageType;
 import com.inductiveautomation.opcua.stack.core.channel.messages.TcpMessageDecoder;
@@ -135,9 +137,15 @@ public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements Hea
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        ExceptionHandler.exceptionCaught(ctx, cause);
+        if (cause instanceof IOException) {
+            ctx.close();
+            logger.debug("[remote={}] IOException caught; channel closed");
+        } else {
+            ErrorMessage errorMessage = ExceptionHandler.sendErrorMessage(ctx, cause);
 
-        logger.error("[remote={}] Sent ErrorMessage.", ctx.channel().remoteAddress(), cause.getCause());
+            logger.error("[remote={}] Exception caught; sent {}",
+                    ctx.channel().remoteAddress(), errorMessage, cause);
+        }
     }
 
 }

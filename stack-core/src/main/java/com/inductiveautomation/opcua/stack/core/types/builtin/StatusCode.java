@@ -86,7 +86,7 @@ public final class StatusCode {
     @Override
     public String toString() {
         return Objects.toStringHelper(this)
-                .add("value", value)
+                .add("value", String.format("0x%08X", value))
                 .toString();
     }
 }

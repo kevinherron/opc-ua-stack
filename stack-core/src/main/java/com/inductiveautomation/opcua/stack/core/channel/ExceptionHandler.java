@@ -10,7 +10,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 public class ExceptionHandler {
 
-    public static void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public static ErrorMessage sendErrorMessage(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         String message = cause.toString();
         long statusCode = StatusCodes.Bad_UnexpectedError;
 
@@ -30,6 +30,8 @@ public class ExceptionHandler {
         ByteBuf messageBuffer = TcpMessageEncoder.encode(error);
 
         ctx.writeAndFlush(messageBuffer).addListener(future -> ctx.close());
+
+        return error;
     }
 
 }
