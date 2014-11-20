@@ -2,6 +2,7 @@ package com.inductiveautomation.opcua.stack.core.types.builtin;
 
 import javax.annotation.Nullable;
 
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.TimestampsToReturn;
 
 public final class DataValue {
@@ -9,7 +10,9 @@ public final class DataValue {
     private final Variant value;
     private final StatusCode status;
     private final DateTime sourceTime;
+    private final UShort sourcePicoseconds;
     private final DateTime serverTime;
+    private final UShort serverPicoseconds;
 
     public DataValue(long statusCode) {
         this(new StatusCode(statusCode));
@@ -32,10 +35,22 @@ public final class DataValue {
     }
 
     public DataValue(Variant value, StatusCode status, @Nullable DateTime sourceTime, @Nullable DateTime serverTime) {
+        this(value, status, sourceTime, null, serverTime, null);
+    }
+
+    public DataValue(Variant value,
+                     StatusCode status,
+                     @Nullable DateTime sourceTime,
+                     @Nullable UShort sourcePicoseconds,
+                     @Nullable DateTime serverTime,
+                     @Nullable UShort serverPicoseconds) {
+
         this.value = value;
         this.status = status;
         this.sourceTime = sourceTime;
+        this.sourcePicoseconds = sourcePicoseconds;
         this.serverTime = serverTime;
+        this.serverPicoseconds = serverPicoseconds;
     }
 
     public Variant getValue() {
@@ -52,8 +67,18 @@ public final class DataValue {
     }
 
     @Nullable
+    public UShort getSourcePicoseconds() {
+        return sourcePicoseconds;
+    }
+
+    @Nullable
     public DateTime getServerTime() {
         return serverTime;
+    }
+
+    @Nullable
+    public UShort getServerPicoseconds() {
+        return serverPicoseconds;
     }
 
     public DataValue withStatus(StatusCode status) {
