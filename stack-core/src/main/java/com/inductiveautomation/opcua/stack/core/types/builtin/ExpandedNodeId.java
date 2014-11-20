@@ -1,5 +1,6 @@
 package com.inductiveautomation.opcua.stack.core.types.builtin;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -140,6 +141,10 @@ public final class ExpandedNodeId {
         return nodeId.isNull();
     }
 
+    public boolean isNotNull() {
+        return !isNull();
+    }
+
     /**
      * If this {@link ExpandedNodeId} resides on the local server ({@code serverIndex == 0}), return its representation
      * as a local {@link NodeId}.
@@ -184,6 +189,40 @@ public final class ExpandedNodeId {
         helper.add("serverIndex", getServerIndex());
 
         return helper.toString();
+    }
+
+    public String toParseableString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("svr=").append(serverIndex).append(";");
+
+        if (namespaceUri != null) {
+            sb.append("nsu=").append(namespaceUri).append(";");
+        } else {
+            int namespaceIndex = getNamespaceIndex().intValue();
+            if (namespaceIndex > 0) {
+                sb.append("ns=").append(getNamespaceIndex().intValue()).append(";");
+            }
+        }
+
+        switch (getType()) {
+            case Numeric:
+                sb.append("i=").append(getIdentifier());
+                break;
+            case String:
+                sb.append("s=").append(getIdentifier());
+                break;
+            case Guid:
+                sb.append("g=").append(getIdentifier());
+                break;
+            case Opaque:
+                ByteString bs = (ByteString) getIdentifier();
+                if (bs.isNull()) sb.append("b=");
+                else sb.append("b=").append(DatatypeConverter.printBase64Binary(bs.bytes()));
+                break;
+        }
+
+        return sb.toString();
     }
 
 }

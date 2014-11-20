@@ -138,6 +138,10 @@ public final class NodeId {
                         NULL_GUID.equals(this) || NULL_OPAQUE.equals(this));
     }
 
+    public boolean isNotNull() {
+        return !isNull();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -162,6 +166,33 @@ public final class NodeId {
                 .add("ns", namespaceIndex)
                 .add("id", identifier)
                 .toString();
+    }
+
+    public String toParseableString() {
+        StringBuilder sb = new StringBuilder();
+
+        if (namespaceIndex.intValue() > 0) {
+            sb.append("ns=").append(namespaceIndex).append(";");
+        }
+
+        switch (getType()) {
+            case Numeric:
+                sb.append("i=").append(identifier);
+                break;
+            case String:
+                sb.append("s=").append(identifier);
+                break;
+            case Guid:
+                sb.append("g=").append(identifier);
+                break;
+            case Opaque:
+                ByteString bs = (ByteString) identifier;
+                if (bs.isNull()) sb.append("b=");
+                else sb.append("b=").append(DatatypeConverter.printBase64Binary(bs.bytes()));
+                break;
+        }
+
+        return sb.toString();
     }
 
     // TODO Re-write this crap... or at the very least write some good unit tests.
