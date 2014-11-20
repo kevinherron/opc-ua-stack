@@ -1,6 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.types.builtin;
 
 import com.google.common.base.Objects;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public final class StatusCode {
 
@@ -13,6 +14,10 @@ public final class StatusCode {
     public static final StatusCode BAD = new StatusCode(SEVERITY_BAD);
 
     private final int value;
+
+    public StatusCode(UInteger value) {
+        this(value.intValue());
+    }
 
     public StatusCode(long value) {
         this((int) value);
