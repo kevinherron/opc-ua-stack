@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import com.google.common.base.Objects;
 import com.google.common.primitives.UnsignedInteger;
+import com.inductiveautomation.opcua.stack.core.StatusCodes;
+import com.inductiveautomation.opcua.stack.core.UaRuntimeException;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.IdType;
@@ -223,6 +225,45 @@ public final class ExpandedNodeId {
         }
 
         return sb.toString();
+    }
+
+    public static ExpandedNodeId parse(String s) {
+        try {
+            String[] parts = s.split(";");
+
+            NodeId nodeId = NodeId.parse(parts[parts.length - 1]);
+
+            int serverIndex = 0;
+            int namespaceIndex = 0;
+            String namespaceUri = null;
+            Object identifier = nodeId.getIdentifier();
+
+            for (String part : parts) {
+                String[] ss = part.split("=");
+                if ("svr".equals(ss[0])) {
+                    serverIndex = Integer.parseInt(ss[1]);
+                } else if ("ns".equals(ss[0])) {
+                    namespaceIndex = Integer.parseInt(ss[1]);
+                } else if ("nsu".equals(ss[0])) {
+                    namespaceUri = ss[1];
+                }
+            }
+
+            switch (nodeId.getType()) {
+                case Guid:
+                    return new ExpandedNodeId(namespaceIndex, (UUID) identifier, namespaceUri, serverIndex);
+                case Numeric:
+                    return new ExpandedNodeId(namespaceIndex, ((UInteger) identifier).intValue(), namespaceUri, serverIndex);
+                case Opaque:
+                    return new ExpandedNodeId(namespaceIndex, (ByteString) identifier, namespaceUri, serverIndex);
+                case String:
+                    return new ExpandedNodeId(namespaceIndex, (String) identifier, namespaceUri, serverIndex);
+                default:
+                    throw new IllegalStateException("IdType " + nodeId.getType());
+            }
+        } catch (Throwable t) {
+            throw new UaRuntimeException(StatusCodes.Bad_NodeIdInvalid, t);
+        }
     }
 
 }

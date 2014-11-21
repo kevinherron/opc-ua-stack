@@ -7,6 +7,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Objects;
+import com.inductiveautomation.opcua.stack.core.StatusCodes;
+import com.inductiveautomation.opcua.stack.core.UaRuntimeException;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.IdType;
@@ -264,7 +266,7 @@ public final class NodeId {
             return new NodeId(ushort(nsi), ByteString.of(obj));
         }
 
-        throw new IllegalArgumentException("invalid string representation of a nodeId: " + s);
+        throw new UaRuntimeException(StatusCodes.Bad_NodeIdInvalid);
     }
 
 }
