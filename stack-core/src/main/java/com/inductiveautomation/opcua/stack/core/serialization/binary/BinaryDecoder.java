@@ -233,7 +233,7 @@ public class BinaryDecoder implements UaDecoder {
 
     @Override
     public StatusCode decodeStatusCode(String field) {
-        return new StatusCode(decodeUInt32(null).longValue());
+        return new StatusCode(decodeUInt32(null));
     }
 
     @Override

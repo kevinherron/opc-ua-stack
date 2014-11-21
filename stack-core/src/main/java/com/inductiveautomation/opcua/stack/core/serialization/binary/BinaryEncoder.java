@@ -369,7 +369,7 @@ public class BinaryEncoder implements UaEncoder {
         if (value == null) {
             buffer.writeInt(0);
         } else {
-            buffer.writeInt(value.getValue());
+            encodeUInt32(null, uint(value.getValue()));
         }
     }
 
