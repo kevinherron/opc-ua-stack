@@ -58,7 +58,7 @@ public final class StatusCode {
      * @return a new {@link StatusCode} with DataValue and Overflow bits cleared.
      */
     public StatusCode withoutOverflow() {
-        return new StatusCode(value | ~0x480);
+        return new StatusCode(value & ~0x480);
     }
 
     /**
