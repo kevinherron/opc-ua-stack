@@ -58,6 +58,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
     private final AtomicReference<AsymmetricSecurityHeader> headerRef = new AtomicReference<>();
 
     private final int maxChunkCount;
+    private final int maxChunkSize;
 
     private final UaTcpServer server;
     private final SerializationQueue serializationQueue;
@@ -67,6 +68,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
         this.serializationQueue = serializationQueue;
 
         maxChunkCount = serializationQueue.getParameters().getLocalMaxChunkCount();
+        maxChunkSize = serializationQueue.getParameters().getLocalReceiveBufferSize();
     }
 
     @Override
@@ -180,7 +182,14 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                 }
             }
 
-            chunkBuffers.add(buffer.readerIndex(0).retain());
+            int chunkSize = buffer.readerIndex(0).readableBytes();
+
+            if (chunkSize > maxChunkSize) {
+                throw new UaException(StatusCodes.Bad_TcpMessageTooLarge,
+                        String.format("max chunk size exceeded (%s)", maxChunkSize));
+            }
+
+            chunkBuffers.add(buffer.retain());
 
             if (chunkBuffers.size() > maxChunkCount) {
                 throw new UaException(StatusCodes.Bad_TcpMessageTooLarge,

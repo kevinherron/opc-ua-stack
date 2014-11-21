@@ -49,9 +49,10 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
 
     private final AtomicReference<AsymmetricSecurityHeader> headerRef = new AtomicReference<>();
 
-    private final int maxChunkCount;
     private final ClientSecureChannel secureChannel;
 
+    private final int maxChunkCount;
+    private final int maxChunkSize;
 
     private final UaTcpClient client;
     private final SerializationQueue serializationQueue;
@@ -66,6 +67,8 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
         this.handshakeFuture = handshakeFuture;
 
         maxChunkCount = serializationQueue.getParameters().getLocalMaxChunkCount();
+        maxChunkSize = serializationQueue.getParameters().getLocalReceiveBufferSize();
+
         secureChannel = client.getSecureChannel();
     }
 
@@ -155,7 +158,14 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 }
             }
 
-            chunkBuffers.add(buffer.readerIndex(0).retain());
+            int chunkSize = buffer.readerIndex(0).readableBytes();
+
+            if (chunkSize > maxChunkSize) {
+                throw new UaException(StatusCodes.Bad_TcpMessageTooLarge,
+                        String.format("max chunk size exceeded (%s)", maxChunkSize));
+            }
+
+            chunkBuffers.add(buffer.retain());
 
             if (chunkBuffers.size() > maxChunkCount) {
                 throw new UaException(StatusCodes.Bad_TcpMessageTooLarge,

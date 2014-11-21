@@ -34,6 +34,7 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
     private List<ByteBuf> chunkBuffers;
 
     private final int maxChunkCount;
+    private final int maxChunkSize;
 
     private final UaTcpServer server;
     private final SerializationQueue serializationQueue;
@@ -48,6 +49,8 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
         this.secureChannel = secureChannel;
 
         maxChunkCount = serializationQueue.getParameters().getLocalMaxChunkCount();
+        maxChunkSize = serializationQueue.getParameters().getLocalReceiveBufferSize();
+
         chunkBuffers = Lists.newArrayListWithCapacity(maxChunkCount);
     }
 
@@ -162,7 +165,14 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
                         receivedTokenId, previousTokenId);
             }
 
-            chunkBuffers.add(buffer.readerIndex(0).retain());
+            int chunkSize = buffer.readerIndex(0).readableBytes();
+
+            if (chunkSize > maxChunkSize) {
+                throw new UaException(StatusCodes.Bad_TcpMessageTooLarge,
+                        String.format("max chunk size exceeded (%s)", maxChunkSize));
+            }
+
+            chunkBuffers.add(buffer.retain());
 
             if (chunkBuffers.size() > maxChunkCount) {
                 throw new UaException(StatusCodes.Bad_TcpMessageTooLarge,
