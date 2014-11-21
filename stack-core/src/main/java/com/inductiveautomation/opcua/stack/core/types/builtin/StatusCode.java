@@ -13,21 +13,21 @@ public final class StatusCode {
     public static final StatusCode GOOD = new StatusCode(SEVERITY_GOOD);
     public static final StatusCode BAD = new StatusCode(SEVERITY_BAD);
 
-    private final int value;
-
-    public StatusCode(UInteger value) {
-        this(value.intValue());
-    }
+    private final long value;
 
     public StatusCode(long value) {
-        this((int) value);
+        this.value = value;
     }
 
     public StatusCode(int value) {
         this.value = value;
     }
 
-    public int getValue() {
+    public StatusCode(UInteger value) {
+        this.value = value.longValue();
+    }
+
+    public long getValue() {
         return value;
     }
 
@@ -80,7 +80,7 @@ public final class StatusCode {
 
     @Override
     public int hashCode() {
-        return value;
+        return (int) (value ^ (value >>> 32));
     }
 
     @Override
@@ -89,4 +89,5 @@ public final class StatusCode {
                 .add("value", String.format("0x%08X", value))
                 .toString();
     }
+
 }

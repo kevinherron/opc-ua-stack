@@ -10,6 +10,10 @@ public class UaRuntimeException extends RuntimeException {
         this.statusCode = StatusCodes.Bad_InternalError;
     }
 
+    public UaRuntimeException(long statusCode) {
+        this.statusCode = statusCode;
+    }
+
     public UaRuntimeException(long statusCode, String message) {
         super(message);
 
