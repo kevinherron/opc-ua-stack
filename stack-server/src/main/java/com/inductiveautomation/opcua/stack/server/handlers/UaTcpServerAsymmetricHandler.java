@@ -179,9 +179,16 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                             secureChannel.getRemoteCertificate(),
                             secureChannel.getRemoteCertificateChain());
                 } catch (UaException e) {
-                    logger.debug("Certificate untrusted.", e);
-                    server.getCertificateManager().certificateRejected(secureChannel.getRemoteCertificate());
-                    throw new UaException(e.getStatusCode(), "security checks failed");
+                    try {
+                        server.getCertificateManager().certificateRejected(secureChannel.getRemoteCertificate());
+
+                        UaException cause = new UaException(e.getStatusCode(), "security checks failed");
+                        ErrorMessage errorMessage = ExceptionHandler.sendErrorMessage(ctx, cause);
+
+                        logger.debug("[remote={}] {}.",
+                                ctx.channel().remoteAddress(), errorMessage.getReason(), cause);
+                    } catch (Exception ignored) {
+                    }
                 }
             }
 
