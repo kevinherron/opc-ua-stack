@@ -48,8 +48,8 @@ import static com.inductiveautomation.opcua.stack.core.util.NonceUtil.getNonceLe
 
 public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implements HeaderDecoder {
 
-    private static final long SecureChannelLifetimeMin = 30000L;
-    private static final long SecureChannelLifetimeMax = 60000L * 5L;
+    private static final long SecureChannelLifetimeMin = 60000L * 60;
+    private static final long SecureChannelLifetimeMax = 60000L * 60 * 24;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
