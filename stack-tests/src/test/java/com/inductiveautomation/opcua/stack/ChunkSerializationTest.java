@@ -1,10 +1,7 @@
 package com.inductiveautomation.opcua.stack;
 
-import static org.testng.Assert.assertEquals;
-
 import java.util.List;
 
-import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelConfig;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelParameters;
 import com.inductiveautomation.opcua.stack.core.channel.ChunkDecoder;
@@ -21,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertEquals;
 
 public class ChunkSerializationTest extends SecureChannelFixture {
 
@@ -67,7 +66,7 @@ public class ChunkSerializationTest extends SecureChannelFixture {
     @Test(dataProvider = "getAsymmetricSecurityParameters")
     public void testAsymmetricMessage(SecurityPolicy securityPolicy,
                                       MessageSecurityMode messageSecurity,
-                                      int messageSize) throws UaException {
+                                      int messageSize) throws Exception {
 
         logger.info("Asymmetric chunk serialization, securityPolicy={}, messageSecurityMode={}, messageSize={}",
                 securityPolicy, messageSecurity, messageSize);
@@ -138,7 +137,7 @@ public class ChunkSerializationTest extends SecureChannelFixture {
     @Test(dataProvider = "getSymmetricSecurityParameters")
     public void testSymmetricMessage(SecurityPolicy securityPolicy,
                                      MessageSecurityMode messageSecurity,
-                                     int messageSize) throws UaException {
+                                     int messageSize) throws Exception {
 
         logger.info("Symmetric chunk serialization, securityPolicy={}, messageSecurityMode={}, messageSize={}",
                 securityPolicy, messageSecurity, messageSize);

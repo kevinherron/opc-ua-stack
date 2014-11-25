@@ -7,6 +7,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
+import com.google.common.collect.Sets;
+import com.inductiveautomation.opcua.stack.core.application.CertificateManager;
 import org.testng.annotations.BeforeTest;
 
 public abstract class SecurityFixture {
@@ -15,13 +17,15 @@ public abstract class SecurityFixture {
     private static final String SERVER_ALIAS = "server-test-certificate";
     private static final char[] PASSWORD = "test".toCharArray();
 
-    protected X509Certificate clientCertificate;
-    protected byte[] clientCertificateBytes;
-    protected KeyPair clientKeyPair;
+    protected volatile X509Certificate clientCertificate;
+    protected volatile byte[] clientCertificateBytes;
+    protected volatile KeyPair clientKeyPair;
 
-    protected X509Certificate serverCertificate;
-    protected byte[] serverCertificateBytes;
-    protected KeyPair serverKeyPair;
+    protected volatile X509Certificate serverCertificate;
+    protected volatile byte[] serverCertificateBytes;
+    protected volatile KeyPair serverKeyPair;
+
+    protected volatile CertificateManager serverCertificateManager;
 
     @BeforeTest
     public void setUp() throws Exception {
@@ -46,6 +50,12 @@ public abstract class SecurityFixture {
             PublicKey serverPublicKey = serverCertificate.getPublicKey();
             serverKeyPair = new KeyPair(serverPublicKey, (PrivateKey) serverPrivateKey);
         }
+
+        serverCertificateManager = new InMemoryCertificateManager(
+                serverKeyPair,
+                serverCertificate,
+                Sets.newHashSet(clientCertificate)
+        );
     }
 
 }

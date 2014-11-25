@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import com.google.common.collect.Lists;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
+import com.inductiveautomation.opcua.stack.core.application.CertificateManager;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelSecurity;
 import com.inductiveautomation.opcua.stack.core.channel.ExceptionHandler;
 import com.inductiveautomation.opcua.stack.core.channel.SerializationQueue;
@@ -30,6 +31,7 @@ import com.inductiveautomation.opcua.stack.core.types.structured.OpenSecureChann
 import com.inductiveautomation.opcua.stack.core.types.structured.OpenSecureChannelResponse;
 import com.inductiveautomation.opcua.stack.core.types.structured.ResponseHeader;
 import com.inductiveautomation.opcua.stack.core.util.BufferUtil;
+import com.inductiveautomation.opcua.stack.core.util.CertificateValidator;
 import com.inductiveautomation.opcua.stack.server.tcp.UaTcpServer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -164,11 +166,29 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
 
             if (!securityHeader.getSenderCertificate().isNull() && securityPolicy != SecurityPolicy.None) {
                 secureChannel.setRemoteCertificate(securityHeader.getSenderCertificate().bytes());
+
+                CertificateValidator validator = new CertificateValidator(
+                        server.getCertificateManager().getTrustList(),
+                        server.getCertificateManager().getAuthorityList());
+
+                try {
+                    validator.validateTrustChain(
+                            secureChannel.getRemoteCertificate(),
+                            secureChannel.getRemoteCertificateChain());
+                } catch (UaException e) {
+                    logger.debug("Certificate untrusted.", e);
+                    server.getCertificateManager().certificateRejected(secureChannel.getRemoteCertificate());
+                }
             }
 
             if (!securityHeader.getReceiverThumbprint().isNull()) {
-                Optional<X509Certificate> localCertificate = server.getCertificate(securityHeader.getReceiverThumbprint());
-                Optional<KeyPair> keyPair = server.getKeyPair(securityHeader.getReceiverThumbprint());
+                CertificateManager certificateManager = server.getCertificateManager();
+
+                Optional<X509Certificate> localCertificate = certificateManager
+                        .getCertificate(securityHeader.getReceiverThumbprint());
+
+                Optional<KeyPair> keyPair = certificateManager
+                        .getKeyPair(securityHeader.getReceiverThumbprint());
 
                 if (localCertificate.isPresent() && keyPair.isPresent()) {
                     secureChannel.setLocalCertificate(localCertificate.get());

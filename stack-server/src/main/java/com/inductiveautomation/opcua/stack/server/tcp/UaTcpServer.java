@@ -2,10 +2,8 @@ package com.inductiveautomation.opcua.stack.server.tcp;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.security.KeyPair;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,6 +22,7 @@ import com.google.common.collect.Sets;
 import com.inductiveautomation.opcua.stack.core.Stack;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
+import com.inductiveautomation.opcua.stack.core.application.CertificateManager;
 import com.inductiveautomation.opcua.stack.core.application.UaServer;
 import com.inductiveautomation.opcua.stack.core.application.services.AttributeServiceSet;
 import com.inductiveautomation.opcua.stack.core.application.services.DiscoveryServiceSet;
@@ -55,7 +54,6 @@ import com.inductiveautomation.opcua.stack.core.types.structured.GetEndpointsReq
 import com.inductiveautomation.opcua.stack.core.types.structured.GetEndpointsResponse;
 import com.inductiveautomation.opcua.stack.core.types.structured.SignedSoftwareCertificate;
 import com.inductiveautomation.opcua.stack.core.types.structured.UserTokenPolicy;
-import com.inductiveautomation.opcua.stack.core.util.DigestUtil;
 import com.inductiveautomation.opcua.stack.server.Endpoint;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
@@ -96,8 +94,7 @@ public class UaTcpServer implements UaServer {
     private final LocalizedText applicationName;
     private final String applicationUri;
     private final String productUri;
-    private final X509Certificate certificate;
-    private final KeyPair keyPair;
+    private final CertificateManager certificateManager;
     private final ExecutorService executor;
     private final List<UserTokenPolicy> userTokenPolicies;
     private final List<SignedSoftwareCertificate> softwareCertificates;
@@ -107,8 +104,7 @@ public class UaTcpServer implements UaServer {
                        LocalizedText applicationName,
                        String applicationUri,
                        String productUri,
-                       X509Certificate certificate,
-                       KeyPair keyPair,
+                        CertificateManager certificateManager,
                        ExecutorService executor,
                        List<UserTokenPolicy> userTokenPolicies,
                        List<SignedSoftwareCertificate> softwareCertificates,
@@ -118,8 +114,7 @@ public class UaTcpServer implements UaServer {
         this.applicationName = applicationName;
         this.applicationUri = applicationUri;
         this.productUri = productUri;
-        this.certificate = certificate;
-        this.keyPair = keyPair;
+        this.certificateManager = certificateManager;
         this.executor = executor;
         this.userTokenPolicies = userTokenPolicies;
         this.softwareCertificates = softwareCertificates;
@@ -140,11 +135,7 @@ public class UaTcpServer implements UaServer {
 
     @Override
     public void startup() {
-        List<Endpoint> validEndpoints = endpoints.stream()
-                .filter(e -> e.getSecurityPolicy() == SecurityPolicy.None || certificate != null)
-                .collect(Collectors.toList());
-
-        for (Endpoint endpoint : validEndpoints) {
+        for (Endpoint endpoint : endpoints) {
             try {
                 URI endpointUri = endpoint.getEndpointUri();
                 String bindAddress = endpoint.getBindAddress().orElse(endpointUri.getHost());
@@ -177,11 +168,7 @@ public class UaTcpServer implements UaServer {
 
     @Override
     public void shutdown() {
-        List<Endpoint> validEndpoints = endpoints.stream()
-                .filter(e -> e.getSecurityPolicy() == SecurityPolicy.None || certificate != null)
-                .collect(Collectors.toList());
-
-        for (Endpoint endpoint : validEndpoints) {
+        for (Endpoint endpoint : endpoints) {
             URI endpointUri = endpoint.getEndpointUri();
             String address = endpoint.getBindAddress().orElse(endpointUri.getHost());
 
@@ -282,34 +269,8 @@ public class UaTcpServer implements UaServer {
     }
 
     @Override
-    public X509Certificate getCertificate() {
-        return certificate;
-    }
-
-    @Override
-    public Optional<X509Certificate> getCertificate(ByteString thumbprint) {
-        try {
-            ByteString actualThumbprint = certificate != null ?
-                    ByteString.of(DigestUtil.sha1(certificate.getEncoded())) :
-                    ByteString.NULL_VALUE;
-
-            return Optional.ofNullable(actualThumbprint.equals(thumbprint) ? certificate : null);
-        } catch (CertificateEncodingException e) {
-            return Optional.empty();
-        }
-    }
-
-    @Override
-    public Optional<KeyPair> getKeyPair(ByteString thumbprint) {
-        try {
-            ByteString actualThumbprint = certificate != null ?
-                    ByteString.of(DigestUtil.sha1(certificate.getEncoded())) :
-                    ByteString.NULL_VALUE;
-
-            return Optional.ofNullable(actualThumbprint.equals(thumbprint) ? keyPair : null);
-        } catch (CertificateEncodingException e) {
-            return Optional.empty();
-        }
+    public CertificateManager getCertificateManager() {
+        return certificateManager;
     }
 
     @Override
@@ -391,26 +352,23 @@ public class UaTcpServer implements UaServer {
     @Override
     public UaTcpServer addEndpoint(String endpointUri,
                                    String bindAddress,
-                                   EnumSet<SecurityPolicy> securityPolicies,
-                                   EnumSet<MessageSecurityMode> messageSecurityModes) {
+                                   X509Certificate certificate,
+                                   SecurityPolicy securityPolicy,
+                                   MessageSecurityMode messageSecurity) {
 
-        for (SecurityPolicy securityPolicy : securityPolicies) {
-            for (MessageSecurityMode messageSecurity : messageSecurityModes) {
-                boolean invalidConfiguration = messageSecurity == MessageSecurityMode.Invalid ||
-                        (securityPolicy == SecurityPolicy.None && messageSecurity != MessageSecurityMode.None) ||
-                        (securityPolicy != SecurityPolicy.None && messageSecurity == MessageSecurityMode.None);
+        boolean invalidConfiguration = messageSecurity == MessageSecurityMode.Invalid ||
+                (securityPolicy == SecurityPolicy.None && messageSecurity != MessageSecurityMode.None) ||
+                (securityPolicy != SecurityPolicy.None && messageSecurity == MessageSecurityMode.None);
 
-                if (invalidConfiguration) {
-                    logger.warn("Invalid configuration, ignoring: {} + {}", securityPolicy, messageSecurity);
-                } else {
-                    try {
-                        URI uri = new URI(endpointUri);
+        if (invalidConfiguration) {
+            logger.warn("Invalid configuration, ignoring: {} + {}", securityPolicy, messageSecurity);
+        } else {
+            try {
+                URI uri = new URI(endpointUri);
 
-                        endpoints.add(new Endpoint(uri, securityPolicy, messageSecurity, bindAddress));
-                    } catch (URISyntaxException e) {
-                        logger.warn("Invalid endpoint URI, ignoring: {}", endpointUri);
-                    }
-                }
+                endpoints.add(new Endpoint(uri, bindAddress, certificate, securityPolicy, messageSecurity));
+            } catch (URISyntaxException e) {
+                logger.warn("Invalid endpoint URI, ignoring: {}", endpointUri);
             }
         }
 
@@ -421,7 +379,7 @@ public class UaTcpServer implements UaServer {
         return new EndpointDescription(
                 endpoint.getEndpointUri().toString(),
                 getApplicationDescription(),
-                certificateByteString(),
+                certificateByteString(endpoint.getCertificate()),
                 endpoint.getMessageSecurity(),
                 endpoint.getSecurityPolicy().getSecurityPolicyUri(),
                 userTokenPolicies.toArray(new UserTokenPolicy[userTokenPolicies.size()]),
@@ -430,10 +388,10 @@ public class UaTcpServer implements UaServer {
         );
     }
 
-    private ByteString certificateByteString() {
-        if (certificate != null) {
+    private ByteString certificateByteString(Optional<X509Certificate> certificate) {
+        if (certificate.isPresent()) {
             try {
-                return ByteString.of(certificate.getEncoded());
+                return ByteString.of(certificate.get().getEncoded());
             } catch (CertificateEncodingException e) {
                 logger.error("Error decoding certificate.", e);
                 return ByteString.NULL_VALUE;

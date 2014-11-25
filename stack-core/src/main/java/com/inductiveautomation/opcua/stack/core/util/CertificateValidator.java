@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import com.google.common.collect.Lists;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import org.slf4j.Logger;
@@ -51,10 +50,14 @@ public class CertificateValidator {
     private static final int SUBJECT_ALT_NAME_DNS_NAME = 2;
     private static final int SUBJECT_ALT_NAME_IP_ADDRESS = 7;
 
-    private final List<X509Certificate> trustList = Lists.newCopyOnWriteArrayList();
-    private final List<X509Certificate> authorityList = Lists.newCopyOnWriteArrayList();
+    private final Set<X509Certificate> trustList;
+    private final Set<X509Certificate> authorityList;
 
-    public CertificateValidator() {
+    public CertificateValidator(Set<X509Certificate> trustList,
+                                Set<X509Certificate> authorityList) {
+
+        this.trustList = trustList;
+        this.authorityList = authorityList;
     }
 
     public void validate(X509Certificate certificate,
@@ -66,18 +69,17 @@ public class CertificateValidator {
         validateHostnameOrIpAddress(certificate, hostname);
         validateApplicationUri(certificate, applicationUri);
         validateApplicationCertificateUsage(certificate);
+        validateTrustChain(certificate, chain);
+    }
+
+
+    public void validateTrustChain(X509Certificate certificate,
+                                   List<X509Certificate> chain) throws UaException {
 
         boolean certificateTrusted = trustList.stream()
                 .anyMatch(c -> Arrays.equals(certificate.getSubjectUniqueID(), c.getSubjectUniqueID()));
 
-        if (!certificateTrusted) {
-            validateChain(certificate, chain);
-        }
-    }
-
-
-    public void validateChain(X509Certificate certificate,
-                              List<X509Certificate> chain) throws UaException {
+        if (certificateTrusted) return;
 
         try {
             Set<TrustAnchor> trustAnchors = new HashSet<>();

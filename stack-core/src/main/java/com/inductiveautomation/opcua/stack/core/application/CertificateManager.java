@@ -29,6 +29,10 @@ public interface CertificateManager {
 
     Optional<X509Certificate> getCertificate(ByteString thumbprint);
 
+    Set<KeyPair> getKeyPairs();
+
+    Set<X509Certificate> getCertificates();
+
     Set<X509Certificate> getTrustList();
 
     Set<X509Certificate> getAuthorityList();

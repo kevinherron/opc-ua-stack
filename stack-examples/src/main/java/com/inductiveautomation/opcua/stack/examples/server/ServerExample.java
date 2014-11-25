@@ -1,9 +1,13 @@
 package com.inductiveautomation.opcua.stack.examples.server;
 
+import java.io.File;
+import java.net.URL;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.UUID;
 
+import com.inductiveautomation.opcua.stack.core.application.CertificateManager;
+import com.inductiveautomation.opcua.stack.core.application.DirectoryCertificateManager;
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
@@ -18,16 +22,22 @@ public class ServerExample {
     private final UaTcpServer server;
 
     public ServerExample(X509Certificate certificate, KeyPair keyPair) throws Exception {
+
+        URL securityDirUrl = ServerExample.class.getResource("resources/security/");
+        File securityDir = new File(securityDirUrl.toURI());
+
+        CertificateManager certificateManager = new DirectoryCertificateManager(
+                keyPair, certificate, securityDir);
+
         server = new UaTcpServerBuilder()
                 .setServerName("example")
                 .setApplicationName(LocalizedText.english("Stack Example Server"))
                 .setApplicationUri(String.format("urn:example-server:%s", UUID.randomUUID()))
-                .setCertificate(certificate)
-                .setKeyPair(keyPair)
+                .setCertificateManager(certificateManager)
                 .build();
 
-        server.addEndpoint("opc.tcp://localhost:12685/example", SecurityPolicy.None, MessageSecurityMode.None);
-        server.addEndpoint("opc.tcp://localhost:12685/example", SecurityPolicy.Basic128Rsa15, MessageSecurityMode.SignAndEncrypt);
+        server.addEndpoint("opc.tcp://localhost:12685/example", null, certificate, SecurityPolicy.None, MessageSecurityMode.None);
+        server.addEndpoint("opc.tcp://localhost:12685/example", null, certificate, SecurityPolicy.Basic128Rsa15, MessageSecurityMode.SignAndEncrypt);
 
         server.addRequestHandler(TestStackRequest.class, service -> {
             TestStackRequest request = service.getRequest();

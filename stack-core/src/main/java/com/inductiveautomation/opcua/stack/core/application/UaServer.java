@@ -1,11 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.application;
 
-import javax.annotation.Nullable;
-import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
 import com.inductiveautomation.opcua.stack.core.application.services.AttributeServiceSet;
@@ -24,7 +20,6 @@ import com.inductiveautomation.opcua.stack.core.channel.ServerSecureChannel;
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
-import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.inductiveautomation.opcua.stack.core.types.structured.ActivateSessionRequest;
 import com.inductiveautomation.opcua.stack.core.types.structured.AddNodesRequest;
@@ -74,12 +69,7 @@ public interface UaServer {
 
     void shutdown();
 
-    Optional<KeyPair> getKeyPair(ByteString thumbprint);
-
-    @Nullable
-    X509Certificate getCertificate();
-
-    Optional<X509Certificate> getCertificate(ByteString thumbprint);
+    CertificateManager getCertificateManager();
 
     ChannelConfig getChannelConfig();
 
@@ -97,34 +87,36 @@ public interface UaServer {
 
     void closeSecureChannel(ServerSecureChannel secureChannel);
 
-    UaServer addEndpoint(String endpointUri,
-                         String bindAddress,
-                         EnumSet<SecurityPolicy> securityPolicies,
-                         EnumSet<MessageSecurityMode> messageSecurityModes);
-
     <T extends UaRequestMessage, U extends UaResponseMessage>
     void addRequestHandler(Class<T> requestClass, ServiceRequestHandler<T, U> requestHandler);
 
-    default UaServer addEndpoint(String endpointUri,
-                                 SecurityPolicy securityPolicy,
-                                 MessageSecurityMode messageSecurity) {
+    /**
+     * Add an endpoint with the given security configuration. A certificate must be provided for secure endpoints.
+     *
+     * @param endpointUri     the endpoint URL.
+     * @param bindAddress     the address to bind to.
+     * @param certificate     the {@link X509Certificate} for this endpoint.
+     * @param securityPolicy  the {@link SecurityPolicy} for this endpoint.
+     * @param messageSecurity the {@link MessageSecurityMode} for this endpoint.
+     * @return
+     */
+    UaServer addEndpoint(String endpointUri,
+                         String bindAddress,
+                         X509Certificate certificate,
+                         SecurityPolicy securityPolicy,
+                         MessageSecurityMode messageSecurity);
 
-        return addEndpoint(endpointUri, EnumSet.of(securityPolicy), EnumSet.of(messageSecurity));
-    }
-
-    default UaServer addEndpoint(String endpointUri,
-                                 String bindAddress,
-                                 SecurityPolicy securityPolicy,
-                                 MessageSecurityMode messageSecurity) {
-
-        return addEndpoint(endpointUri, bindAddress, EnumSet.of(securityPolicy), EnumSet.of(messageSecurity));
-    }
-
-    default UaServer addEndpoint(String endpointUri,
-                                 EnumSet<SecurityPolicy> securityPolicies,
-                                 EnumSet<MessageSecurityMode> messageSecurityModes) {
-
-        return addEndpoint(endpointUri, null, securityPolicies, messageSecurityModes);
+    /**
+     * Add an endpoint with no certificate or security.
+     *
+     * @param endpointUri the endpoint URL.
+     * @param bindAddress the address to bind to.
+     * @return
+     */
+    default UaServer addEndpoint(String endpointUri, String bindAddress) {
+        return addEndpoint(
+                endpointUri, bindAddress, null,
+                SecurityPolicy.None, MessageSecurityMode.None);
     }
 
     default void addServiceSet(AttributeServiceSet serviceSet) {

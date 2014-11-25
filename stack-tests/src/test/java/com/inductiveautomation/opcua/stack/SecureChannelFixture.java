@@ -1,5 +1,6 @@
 package com.inductiveautomation.opcua.stack;
 
+import com.google.common.collect.Lists;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelSecurity;
 import com.inductiveautomation.opcua.stack.core.channel.ClientSecureChannel;
@@ -18,7 +19,9 @@ import static com.inductiveautomation.opcua.stack.core.util.NonceUtil.getNonceLe
 
 public abstract class SecureChannelFixture extends SecurityFixture {
 
-    protected SecureChannel[] generateChannels(SecurityPolicy securityPolicy, MessageSecurityMode messageSecurity) throws UaException {
+    protected SecureChannel[] generateChannels(SecurityPolicy securityPolicy, MessageSecurityMode messageSecurity) throws Exception {
+        super.setUp();
+
         ByteString clientNonce = generateNonce(getNonceLength(securityPolicy.getSymmetricEncryptionAlgorithm()));
         ByteString serverNonce = generateNonce(getNonceLength(securityPolicy.getSymmetricEncryptionAlgorithm()));
 
@@ -26,7 +29,7 @@ public abstract class SecureChannelFixture extends SecurityFixture {
                 securityPolicy == SecurityPolicy.None ? null : clientKeyPair,
                 securityPolicy == SecurityPolicy.None ? null : clientCertificate,
                 securityPolicy == SecurityPolicy.None ? null : serverCertificate,
-                securityPolicy == SecurityPolicy.None ? null : CertificateUtil.decodeCertificates(serverCertificateBytes),
+                securityPolicy == SecurityPolicy.None ? null : Lists.newArrayList(serverCertificate),
                 securityPolicy,
                 messageSecurity
         );

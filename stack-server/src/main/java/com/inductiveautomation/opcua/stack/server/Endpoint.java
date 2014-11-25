@@ -3,11 +3,11 @@ package com.inductiveautomation.opcua.stack.server;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.net.URI;
+import java.security.cert.X509Certificate;
 import java.util.Optional;
 
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
-import com.google.common.base.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -16,12 +16,14 @@ public class Endpoint {
     private final URI endpointUri;
     private final SecurityPolicy securityPolicy;
     private final MessageSecurityMode messageSecurity;
-    private final Optional<String> bindAddress;
+    private final X509Certificate certificate;
+    private final String bindAddress;
 
     public Endpoint(@Nonnull URI endpointUri,
+                    @Nullable String bindAddress,
+                    @Nullable X509Certificate certificate,
                     @Nonnull SecurityPolicy securityPolicy,
-                    @Nonnull MessageSecurityMode messageSecurity,
-                    @Nullable String bindAddress) {
+                    @Nonnull MessageSecurityMode messageSecurity) {
 
         checkNotNull(endpointUri);
         checkNotNull(securityPolicy);
@@ -30,7 +32,8 @@ public class Endpoint {
         this.endpointUri = endpointUri;
         this.securityPolicy = securityPolicy;
         this.messageSecurity = messageSecurity;
-        this.bindAddress = Optional.ofNullable(bindAddress);
+        this.certificate = certificate;
+        this.bindAddress = bindAddress;
     }
 
     public URI getEndpointUri() {
@@ -45,8 +48,12 @@ public class Endpoint {
         return messageSecurity;
     }
 
+    public Optional<X509Certificate> getCertificate() {
+        return Optional.ofNullable(certificate);
+    }
+
     public Optional<String> getBindAddress() {
-        return bindAddress;
+        return Optional.ofNullable(bindAddress);
     }
 
     public short getSecurityLevel() {
@@ -88,25 +95,32 @@ public class Endpoint {
 
         Endpoint endpoint = (Endpoint) o;
 
-        return Objects.equal(endpointUri, endpoint.endpointUri) &&
-                Objects.equal(securityPolicy, endpoint.securityPolicy) &&
-                Objects.equal(messageSecurity, endpoint.messageSecurity) &&
-                Objects.equal(bindAddress, endpoint.bindAddress);
+        return !(bindAddress != null ? !bindAddress.equals(endpoint.bindAddress) : endpoint.bindAddress != null) &&
+                !(certificate != null ? !certificate.equals(endpoint.certificate) : endpoint.certificate != null) &&
+                endpointUri.equals(endpoint.endpointUri) &&
+                messageSecurity == endpoint.messageSecurity &&
+                securityPolicy == endpoint.securityPolicy;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(endpointUri, securityPolicy, messageSecurity, bindAddress);
+        int result = endpointUri.hashCode();
+        result = 31 * result + securityPolicy.hashCode();
+        result = 31 * result + messageSecurity.hashCode();
+        result = 31 * result + (certificate != null ? certificate.hashCode() : 0);
+        result = 31 * result + (bindAddress != null ? bindAddress.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
-                .add("uri", endpointUri)
-                .add("securityPolicy", securityPolicy)
-                .add("messageSecurity", messageSecurity)
-                .add("bindAddress", bindAddress)
-                .toString();
+        return "Endpoint{" +
+                "endpointUri=" + endpointUri +
+                ", securityPolicy=" + securityPolicy +
+                ", messageSecurity=" + messageSecurity +
+                ", certificate=" + certificate +
+                ", bindAddress='" + bindAddress + '\'' +
+                '}';
     }
 
 }

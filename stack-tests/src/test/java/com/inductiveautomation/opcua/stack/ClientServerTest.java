@@ -90,17 +90,16 @@ public class ClientServerTest extends SecurityFixture {
 
         server = new UaTcpServerBuilder()
                 .setServerName("test")
-                .setCertificate(serverCertificate)
-                .setKeyPair(serverKeyPair)
+                .setCertificateManager(serverCertificateManager)
                 .build();
 
-        server.addEndpoint("opc.tcp://localhost:12685/test", SecurityPolicy.None, MessageSecurityMode.None)
-                .addEndpoint("opc.tcp://localhost:12685/test", SecurityPolicy.Basic128Rsa15, MessageSecurityMode.Sign)
-                .addEndpoint("opc.tcp://localhost:12685/test", SecurityPolicy.Basic256, MessageSecurityMode.Sign)
-                .addEndpoint("opc.tcp://localhost:12685/test", SecurityPolicy.Basic256Sha256, MessageSecurityMode.Sign)
-                .addEndpoint("opc.tcp://localhost:12685/test", SecurityPolicy.Basic128Rsa15, MessageSecurityMode.SignAndEncrypt)
-                .addEndpoint("opc.tcp://localhost:12685/test", SecurityPolicy.Basic256, MessageSecurityMode.SignAndEncrypt)
-                .addEndpoint("opc.tcp://localhost:12685/test", SecurityPolicy.Basic256Sha256, MessageSecurityMode.SignAndEncrypt);
+        server.addEndpoint("opc.tcp://localhost:12685/test", null)
+                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.Basic128Rsa15, MessageSecurityMode.Sign)
+                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.Basic256, MessageSecurityMode.Sign)
+                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.Basic256Sha256, MessageSecurityMode.Sign)
+                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.Basic128Rsa15, MessageSecurityMode.SignAndEncrypt)
+                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.Basic256, MessageSecurityMode.SignAndEncrypt)
+                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.Basic256Sha256, MessageSecurityMode.SignAndEncrypt);
 
         server.addRequestHandler(TestStackRequest.class, (service) -> {
             TestStackRequest request = service.getRequest();
