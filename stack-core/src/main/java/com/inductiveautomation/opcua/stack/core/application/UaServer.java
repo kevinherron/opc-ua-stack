@@ -2,7 +2,7 @@ package com.inductiveautomation.opcua.stack.core.application;
 
 import javax.annotation.Nullable;
 import java.security.KeyPair;
-import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
@@ -77,9 +77,9 @@ public interface UaServer {
     Optional<KeyPair> getKeyPair(ByteString thumbprint);
 
     @Nullable
-    Certificate getCertificate();
+    X509Certificate getCertificate();
 
-    Optional<Certificate> getCertificate(ByteString thumbprint);
+    Optional<X509Certificate> getCertificate(ByteString thumbprint);
 
     ChannelConfig getChannelConfig();
 

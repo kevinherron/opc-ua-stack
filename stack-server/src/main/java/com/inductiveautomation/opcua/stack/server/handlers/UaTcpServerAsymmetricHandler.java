@@ -3,7 +3,7 @@ package com.inductiveautomation.opcua.stack.server.handlers;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.security.KeyPair;
-import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -30,7 +30,6 @@ import com.inductiveautomation.opcua.stack.core.types.structured.OpenSecureChann
 import com.inductiveautomation.opcua.stack.core.types.structured.OpenSecureChannelResponse;
 import com.inductiveautomation.opcua.stack.core.types.structured.ResponseHeader;
 import com.inductiveautomation.opcua.stack.core.util.BufferUtil;
-import com.inductiveautomation.opcua.stack.core.util.CertificateUtil;
 import com.inductiveautomation.opcua.stack.server.tcp.UaTcpServer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -163,14 +162,12 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
             SecurityPolicy securityPolicy = SecurityPolicy.fromUri(securityHeader.getSecurityPolicyUri());
             secureChannel.setSecurityPolicy(securityPolicy);
 
-            if (!securityHeader.getSenderCertificate().isNull()) {
-                Certificate remoteCertificate = CertificateUtil.decode(securityHeader.getSenderCertificate().bytes());
-
-                secureChannel.setRemoteCertificate(remoteCertificate);
+            if (!securityHeader.getSenderCertificate().isNull() && securityPolicy != SecurityPolicy.None) {
+                secureChannel.setRemoteCertificate(securityHeader.getSenderCertificate().bytes());
             }
 
             if (!securityHeader.getReceiverThumbprint().isNull()) {
-                Optional<Certificate> localCertificate = server.getCertificate(securityHeader.getReceiverThumbprint());
+                Optional<X509Certificate> localCertificate = server.getCertificate(securityHeader.getReceiverThumbprint());
                 Optional<KeyPair> keyPair = server.getKeyPair(securityHeader.getReceiverThumbprint());
 
                 if (localCertificate.isPresent() && keyPair.isPresent()) {

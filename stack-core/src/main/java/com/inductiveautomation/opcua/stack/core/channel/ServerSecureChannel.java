@@ -2,11 +2,15 @@ package com.inductiveautomation.opcua.stack.core.channel;
 
 import java.security.KeyPair;
 import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.List;
 
 import com.google.common.base.Objects;
+import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
+import com.inductiveautomation.opcua.stack.core.util.CertificateUtil;
 import io.netty.util.DefaultAttributeMap;
 
 public class ServerSecureChannel extends DefaultAttributeMap implements SecureChannel {
@@ -17,8 +21,11 @@ public class ServerSecureChannel extends DefaultAttributeMap implements SecureCh
     private volatile ByteString remoteNonce = ByteString.NULL_VALUE;
 
     private volatile KeyPair keyPair;
-    private volatile Certificate localCertificate;
-    private volatile Certificate remoteCertificate;
+    private volatile X509Certificate localCertificate;
+
+    private volatile X509Certificate remoteCertificate;
+    private volatile List<X509Certificate> remoteCertificateChain;
+
     private volatile SecurityPolicy securityPolicy;
     private volatile MessageSecurityMode messageSecurityMode;
 
@@ -42,12 +49,13 @@ public class ServerSecureChannel extends DefaultAttributeMap implements SecureCh
         this.keyPair = keyPair;
     }
 
-    public void setLocalCertificate(Certificate localCertificate) {
+    public void setLocalCertificate(X509Certificate localCertificate) {
         this.localCertificate = localCertificate;
     }
 
-    public void setRemoteCertificate(Certificate remoteCertificate) {
-        this.remoteCertificate = remoteCertificate;
+    public void setRemoteCertificate(byte[] certificateBytes) throws UaException {
+        remoteCertificate = CertificateUtil.decodeCertificate(certificateBytes);
+        remoteCertificateChain = CertificateUtil.decodeCertificates(certificateBytes);
     }
 
     public void setSecurityPolicy(SecurityPolicy securityPolicy) {
@@ -64,13 +72,18 @@ public class ServerSecureChannel extends DefaultAttributeMap implements SecureCh
     }
 
     @Override
-    public Certificate getLocalCertificate() {
+    public X509Certificate getLocalCertificate() {
         return localCertificate;
     }
 
     @Override
-    public Certificate getRemoteCertificate() {
+    public X509Certificate getRemoteCertificate() {
         return remoteCertificate;
+    }
+
+    @Override
+    public List<X509Certificate> getRemoteCertificateChain() {
+        return remoteCertificateChain;
     }
 
     @Override

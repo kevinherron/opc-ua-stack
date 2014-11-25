@@ -1,5 +1,6 @@
 package com.inductiveautomation.opcua.stack;
 
+import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelSecurity;
 import com.inductiveautomation.opcua.stack.core.channel.ClientSecureChannel;
 import com.inductiveautomation.opcua.stack.core.channel.SecureChannel;
@@ -9,6 +10,7 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.inductiveautomation.opcua.stack.core.types.structured.ChannelSecurityToken;
+import com.inductiveautomation.opcua.stack.core.util.CertificateUtil;
 
 import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 import static com.inductiveautomation.opcua.stack.core.util.NonceUtil.generateNonce;
@@ -16,7 +18,7 @@ import static com.inductiveautomation.opcua.stack.core.util.NonceUtil.getNonceLe
 
 public abstract class SecureChannelFixture extends SecurityFixture {
 
-    protected SecureChannel[] generateChannels(SecurityPolicy securityPolicy, MessageSecurityMode messageSecurity) {
+    protected SecureChannel[] generateChannels(SecurityPolicy securityPolicy, MessageSecurityMode messageSecurity) throws UaException {
         ByteString clientNonce = generateNonce(getNonceLength(securityPolicy.getSymmetricEncryptionAlgorithm()));
         ByteString serverNonce = generateNonce(getNonceLength(securityPolicy.getSymmetricEncryptionAlgorithm()));
 
@@ -24,6 +26,7 @@ public abstract class SecureChannelFixture extends SecurityFixture {
                 securityPolicy == SecurityPolicy.None ? null : clientKeyPair,
                 securityPolicy == SecurityPolicy.None ? null : clientCertificate,
                 securityPolicy == SecurityPolicy.None ? null : serverCertificate,
+                securityPolicy == SecurityPolicy.None ? null : CertificateUtil.decodeCertificates(serverCertificateBytes),
                 securityPolicy,
                 messageSecurity
         );
@@ -61,7 +64,7 @@ public abstract class SecureChannelFixture extends SecurityFixture {
 
                 serverChannel.setKeyPair(serverKeyPair);
                 serverChannel.setLocalCertificate(serverCertificate);
-                serverChannel.setRemoteCertificate(clientCertificate);
+                serverChannel.setRemoteCertificate(clientCertificateBytes);
 
                 if (messageSecurity != MessageSecurityMode.None) {
                     ChannelSecurity.SecuritySecrets serverSecrets = ChannelSecurity.generateKeyPair(

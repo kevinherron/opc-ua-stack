@@ -3,8 +3,8 @@ package com.inductiveautomation.opcua.stack.server.tcp;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.KeyPair;
-import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.X509Certificate;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
@@ -96,7 +96,7 @@ public class UaTcpServer implements UaServer {
     private final LocalizedText applicationName;
     private final String applicationUri;
     private final String productUri;
-    private final Certificate certificate;
+    private final X509Certificate certificate;
     private final KeyPair keyPair;
     private final ExecutorService executor;
     private final List<UserTokenPolicy> userTokenPolicies;
@@ -107,7 +107,7 @@ public class UaTcpServer implements UaServer {
                        LocalizedText applicationName,
                        String applicationUri,
                        String productUri,
-                       Certificate certificate,
+                       X509Certificate certificate,
                        KeyPair keyPair,
                        ExecutorService executor,
                        List<UserTokenPolicy> userTokenPolicies,
@@ -282,12 +282,12 @@ public class UaTcpServer implements UaServer {
     }
 
     @Override
-    public Certificate getCertificate() {
+    public X509Certificate getCertificate() {
         return certificate;
     }
 
     @Override
-    public Optional<Certificate> getCertificate(ByteString thumbprint) {
+    public Optional<X509Certificate> getCertificate(ByteString thumbprint) {
         try {
             ByteString actualThumbprint = certificate != null ?
                     ByteString.of(DigestUtil.sha1(certificate.getEncoded())) :

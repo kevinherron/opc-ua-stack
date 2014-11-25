@@ -1,16 +1,16 @@
 package com.inductiveautomation.opcua.stack.server.tcp;
 
 import java.security.KeyPair;
-import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import com.google.common.collect.Lists;
 import com.inductiveautomation.opcua.stack.core.Stack;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelConfig;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.structured.SignedSoftwareCertificate;
 import com.inductiveautomation.opcua.stack.core.types.structured.UserTokenPolicy;
-import com.google.common.collect.Lists;
 
 public class UaTcpServerBuilder {
 
@@ -22,7 +22,7 @@ public class UaTcpServerBuilder {
     private ChannelConfig channelConfig = ChannelConfig.DEFAULT;
 
     private KeyPair keyPair;
-    private Certificate certificate;
+    private X509Certificate certificate;
     private ExecutorService executor = Stack.sharedExecutor();
     private List<UserTokenPolicy> userTokenPolicies = Lists.newArrayList();
     private List<SignedSoftwareCertificate> softwareCertificates = Lists.newArrayList();
@@ -57,7 +57,7 @@ public class UaTcpServerBuilder {
         return this;
     }
 
-    public UaTcpServerBuilder setCertificate(Certificate certificate) {
+    public UaTcpServerBuilder setCertificate(X509Certificate certificate) {
         this.certificate = certificate;
         return this;
     }

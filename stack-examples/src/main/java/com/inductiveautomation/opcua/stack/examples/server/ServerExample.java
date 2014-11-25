@@ -1,7 +1,7 @@
 package com.inductiveautomation.opcua.stack.examples.server;
 
 import java.security.KeyPair;
-import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
@@ -17,7 +17,7 @@ public class ServerExample {
 
     private final UaTcpServer server;
 
-    public ServerExample(Certificate certificate, KeyPair keyPair) throws Exception {
+    public ServerExample(X509Certificate certificate, KeyPair keyPair) throws Exception {
         server = new UaTcpServerBuilder()
                 .setServerName("example")
                 .setApplicationName(LocalizedText.english("Stack Example Server"))

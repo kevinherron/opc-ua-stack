@@ -1,7 +1,7 @@
 package com.inductiveautomation.opcua.stack.examples.client;
 
 import java.security.KeyPair;
-import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -27,7 +27,7 @@ public class ClientExample {
 
     private final UaTcpClient client;
 
-    public ClientExample(Certificate certificate, KeyPair keyPair) throws Exception {
+    public ClientExample(X509Certificate certificate, KeyPair keyPair) throws Exception {
         // Query endpoints and select highest security level.
         EndpointDescription[] endpoints = UaTcpClient.getEndpoints("opc.tcp://localhost:12685/example").get();
 

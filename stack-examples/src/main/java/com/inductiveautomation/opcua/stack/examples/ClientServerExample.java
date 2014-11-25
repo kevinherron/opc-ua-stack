@@ -5,7 +5,7 @@ import java.security.KeyPair;
 import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -73,9 +73,9 @@ public class ClientServerExample {
 
     private static class KeyStoreLoader {
 
-        private Certificate serverCertificate;
+        private X509Certificate serverCertificate;
         private KeyPair serverKeyPair;
-        private Certificate clientCertificate;
+        private X509Certificate clientCertificate;
         private KeyPair clientKeyPair;
 
         public KeyStoreLoader load() throws Exception {
@@ -84,14 +84,14 @@ public class ClientServerExample {
 
             Key serverPrivateKey = keyStore.getKey(SERVER_ALIAS, PASSWORD);
             if (serverPrivateKey instanceof PrivateKey) {
-                serverCertificate = keyStore.getCertificate(SERVER_ALIAS);
+                serverCertificate = (X509Certificate) keyStore.getCertificate(SERVER_ALIAS);
                 PublicKey serverPublicKey = serverCertificate.getPublicKey();
                 serverKeyPair = new KeyPair(serverPublicKey, (PrivateKey) serverPrivateKey);
             }
 
             Key clientPrivateKey = keyStore.getKey(CLIENT_ALIAS, PASSWORD);
             if (clientPrivateKey instanceof PrivateKey) {
-                clientCertificate = keyStore.getCertificate(CLIENT_ALIAS);
+                clientCertificate = (X509Certificate) keyStore.getCertificate(CLIENT_ALIAS);
                 PublicKey clientPublicKey = clientCertificate.getPublicKey();
                 clientKeyPair = new KeyPair(clientPublicKey, (PrivateKey) clientPrivateKey);
             }
@@ -99,7 +99,7 @@ public class ClientServerExample {
             return this;
         }
 
-        public Certificate getServerCertificate() {
+        public X509Certificate getServerCertificate() {
             return serverCertificate;
         }
 
@@ -107,7 +107,7 @@ public class ClientServerExample {
             return serverKeyPair;
         }
 
-        public Certificate getClientCertificate() {
+        public X509Certificate getClientCertificate() {
             return clientCertificate;
         }
 

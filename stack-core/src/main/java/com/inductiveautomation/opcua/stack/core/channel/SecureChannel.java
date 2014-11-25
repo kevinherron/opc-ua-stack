@@ -2,9 +2,12 @@ package com.inductiveautomation.opcua.stack.core.channel;
 
 import java.security.KeyPair;
 import java.security.PublicKey;
+import java.security.cert.CertPath;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
+import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
+import java.util.List;
 
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
@@ -18,9 +21,11 @@ public interface SecureChannel {
 
     KeyPair getKeyPair();
 
-    Certificate getLocalCertificate();
+    X509Certificate getLocalCertificate();
 
-    Certificate getRemoteCertificate();
+    X509Certificate getRemoteCertificate();
+
+    List<X509Certificate> getRemoteCertificateChain();
 
     SecurityPolicy getSecurityPolicy();
 

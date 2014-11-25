@@ -3,6 +3,7 @@ package com.inductiveautomation.opcua.stack.client;
 import java.net.URI;
 import java.security.KeyPair;
 import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +96,7 @@ public class UaTcpClient implements UaClient {
     public UaTcpClient(ApplicationDescription application,
                        EndpointDescription endpoint,
                        KeyPair keyPair,
-                       Certificate certificate,
+                       X509Certificate certificate,
                        long requestTimeout,
                        ChannelConfig channelConfig,
                        ExecutorService executor) throws UaException {
@@ -109,16 +110,19 @@ public class UaTcpClient implements UaClient {
         this.certificate = Optional.ofNullable(certificate);
         this.keyPair = Optional.ofNullable(keyPair);
 
-        Certificate remoteCertificate = null;
+        X509Certificate remoteCertificate = null;
+        List<X509Certificate> remoteCertificateChain = null;
         if (!endpoint.getServerCertificate().isNull()) {
             byte[] bs = endpoint.getServerCertificate().bytes();
-            remoteCertificate = CertificateUtil.decode(bs);
+            remoteCertificate = CertificateUtil.decodeCertificate(bs);
+            remoteCertificateChain = CertificateUtil.decodeCertificates(bs);
         }
 
         secureChannel = new ClientSecureChannel(
                 keyPair,
                 certificate,
                 remoteCertificate,
+                remoteCertificateChain,
                 SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()),
                 endpoint.getSecurityMode()
         );

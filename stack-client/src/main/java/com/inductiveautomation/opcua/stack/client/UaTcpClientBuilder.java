@@ -1,7 +1,7 @@
 package com.inductiveautomation.opcua.stack.client;
 
 import java.security.KeyPair;
-import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.concurrent.ExecutorService;
 
 import com.inductiveautomation.opcua.stack.core.Stack;
@@ -26,7 +26,7 @@ public class UaTcpClientBuilder {
     private ExecutorService executor = Stack.sharedExecutor();
 
     private KeyPair keyPair;
-    private Certificate certificate;
+    private X509Certificate certificate;
 
     public UaTcpClientBuilder setApplicationName(LocalizedText applicationName) {
         this.applicationName = applicationName;
@@ -63,7 +63,7 @@ public class UaTcpClientBuilder {
         return this;
     }
 
-    public UaTcpClientBuilder setCertificate(Certificate certificate) {
+    public UaTcpClientBuilder setCertificate(X509Certificate certificate) {
         this.certificate = certificate;
         return this;
     }

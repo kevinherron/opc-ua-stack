@@ -1,7 +1,8 @@
 package com.inductiveautomation.opcua.stack.core.channel;
 
 import java.security.KeyPair;
-import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.List;
 
 import com.google.common.base.Objects;
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
@@ -17,24 +18,27 @@ public class ClientSecureChannel extends DefaultAttributeMap implements SecureCh
     private volatile ByteString remoteNonce = ByteString.NULL_VALUE;
 
     private final KeyPair keyPair;
-    private final Certificate localCertificate;
-    private final Certificate remoteCertificate;
+    private final X509Certificate localCertificate;
+    private final X509Certificate remoteCertificate;
+    private final List<X509Certificate> remoteCertificateChain;
     private final SecurityPolicy securityPolicy;
     private final MessageSecurityMode messageSecurityMode;
 
     public ClientSecureChannel(SecurityPolicy securityPolicy, MessageSecurityMode messageSecurityMode) {
-        this(null, null, null, securityPolicy, messageSecurityMode);
+        this(null, null, null, null, securityPolicy, messageSecurityMode);
     }
 
     public ClientSecureChannel(KeyPair keyPair,
-                               Certificate localCertificate,
-                               Certificate remoteCertificate,
+                               X509Certificate localCertificate,
+                               X509Certificate remoteCertificate,
+                               List<X509Certificate> remoteCertificateChain,
                                SecurityPolicy securityPolicy,
                                MessageSecurityMode messageSecurityMode) {
 
         this.keyPair = keyPair;
         this.localCertificate = localCertificate;
         this.remoteCertificate = remoteCertificate;
+        this.remoteCertificateChain = remoteCertificateChain;
         this.securityPolicy = securityPolicy;
         this.messageSecurityMode = messageSecurityMode;
     }
@@ -86,13 +90,18 @@ public class ClientSecureChannel extends DefaultAttributeMap implements SecureCh
     }
 
     @Override
-    public Certificate getLocalCertificate() {
+    public X509Certificate getLocalCertificate() {
         return localCertificate;
     }
 
     @Override
-    public Certificate getRemoteCertificate() {
+    public X509Certificate getRemoteCertificate() {
         return remoteCertificate;
+    }
+
+    @Override
+    public List<X509Certificate> getRemoteCertificateChain() {
+        return remoteCertificateChain;
     }
 
     @Override
