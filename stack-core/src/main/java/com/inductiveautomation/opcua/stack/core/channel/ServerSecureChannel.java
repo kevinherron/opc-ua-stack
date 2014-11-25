@@ -1,7 +1,6 @@
 package com.inductiveautomation.opcua.stack.core.channel;
 
 import java.security.KeyPair;
-import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
@@ -10,6 +9,7 @@ import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
+import com.inductiveautomation.opcua.stack.core.types.structured.EndpointDescription;
 import com.inductiveautomation.opcua.stack.core.util.CertificateUtil;
 import io.netty.util.DefaultAttributeMap;
 
@@ -28,6 +28,7 @@ public class ServerSecureChannel extends DefaultAttributeMap implements SecureCh
 
     private volatile SecurityPolicy securityPolicy;
     private volatile MessageSecurityMode messageSecurityMode;
+    private volatile EndpointDescription endpointDescription;
 
     public void setChannelId(long channelId) {
         this.channelId = channelId;
@@ -64,6 +65,14 @@ public class ServerSecureChannel extends DefaultAttributeMap implements SecureCh
 
     public void setMessageSecurityMode(MessageSecurityMode messageSecurityMode) {
         this.messageSecurityMode = messageSecurityMode;
+    }
+
+    public void setEndpointDescription(EndpointDescription endpointDescription) {
+        this.endpointDescription = endpointDescription;
+    }
+
+    public EndpointDescription getEndpointDescription() {
+        return endpointDescription;
     }
 
     @Override

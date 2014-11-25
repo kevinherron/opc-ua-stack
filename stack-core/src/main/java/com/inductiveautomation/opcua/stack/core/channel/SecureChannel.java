@@ -2,7 +2,6 @@ package com.inductiveautomation.opcua.stack.core.channel;
 
 import java.security.KeyPair;
 import java.security.PublicKey;
-import java.security.cert.CertPath;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;

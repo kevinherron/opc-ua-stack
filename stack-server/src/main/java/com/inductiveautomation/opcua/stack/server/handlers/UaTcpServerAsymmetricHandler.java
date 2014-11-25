@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -27,6 +28,7 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.SecurityTokenRequestType;
 import com.inductiveautomation.opcua.stack.core.types.structured.ChannelSecurityToken;
+import com.inductiveautomation.opcua.stack.core.types.structured.EndpointDescription;
 import com.inductiveautomation.opcua.stack.core.types.structured.OpenSecureChannelRequest;
 import com.inductiveautomation.opcua.stack.core.types.structured.OpenSecureChannelResponse;
 import com.inductiveautomation.opcua.stack.core.types.structured.ResponseHeader;
@@ -122,18 +124,19 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                 String endpointUrl = ctx.channel().attr(UaTcpServerHelloHandler.ENDPOINT_URL_KEY).get();
                 String securityPolicyUri = securityHeader.getSecurityPolicyUri();
 
-                boolean validPolicyForEndpoint = server.getEndpoints().stream()
-                        .anyMatch(e -> {
-                            boolean uriMatch = e.getEndpointUri().toString().equals(endpointUrl);
-                            boolean policyMatch = e.getSecurityPolicy().getSecurityPolicyUri().equals(securityPolicyUri);
+                EndpointDescription endpointDescription = Arrays.stream(server.getEndpointDescriptions())
+                        .filter(e -> {
+                            boolean uriMatch = e.getEndpointUrl().equals(endpointUrl);
+                            boolean policyMatch = e.getSecurityPolicyUri().equals(securityPolicyUri);
                             return uriMatch && policyMatch;
-                        });
+                        }).findFirst().orElse(null);
 
-                if (!validPolicyForEndpoint) {
+                if (endpointDescription == null) {
                     throw new UaException(StatusCodes.Bad_SecurityChecksFailed, "SecurityPolicy URI did not match");
                 }
 
                 secureChannel = server.openSecureChannel();
+                secureChannel.setEndpointDescription(endpointDescription);
             } else {
                 secureChannel = server.getSecureChannel(secureChannelId);
 
@@ -178,6 +181,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                 } catch (UaException e) {
                     logger.debug("Certificate untrusted.", e);
                     server.getCertificateManager().certificateRejected(secureChannel.getRemoteCertificate());
+                    throw new UaException(e.getStatusCode(), "security checks failed");
                 }
             }
 
