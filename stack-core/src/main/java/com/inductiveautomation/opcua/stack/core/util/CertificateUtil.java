@@ -1,6 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.util;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.security.cert.CertPath;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -19,12 +20,25 @@ public class CertificateUtil {
     /**
      * Decode a DER-encoded X.509 certificate.
      *
-     * @param certificateBytes DER-encoded certificate bytes
+     * @param certificateBytes DER-encoded certificate bytes.
      * @return an {@link X509Certificate}
      * @throws UaException if decoding the certificate fails.
      */
     public static X509Certificate decodeCertificate(byte[] certificateBytes) throws UaException {
         Preconditions.checkNotNull(certificateBytes, "certificateBytes cannot be null");
+
+        return decodeCertificate(new ByteArrayInputStream(certificateBytes));
+    }
+
+    /**
+     * Decode a DER-encoded X.509 certificate.
+     *
+     * @param inputStream {@link InputStream} containing DER-encoded certificate bytes.
+     * @return an {@link X509Certificate}
+     * @throws UaException if decoding the certificate fails.
+     */
+    public static X509Certificate decodeCertificate(InputStream inputStream) throws UaException {
+        Preconditions.checkNotNull(inputStream, "inputStream cannot be null");
 
         CertificateFactory factory;
 
@@ -35,7 +49,7 @@ public class CertificateUtil {
         }
 
         try {
-            return (X509Certificate) factory.generateCertificate(new ByteArrayInputStream(certificateBytes));
+            return (X509Certificate) factory.generateCertificate(inputStream);
         } catch (CertificateException | ClassCastException e) {
             throw new UaException(StatusCodes.Bad_CertificateInvalid, e);
         }

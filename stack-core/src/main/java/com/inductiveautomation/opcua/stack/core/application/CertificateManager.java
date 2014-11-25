@@ -18,8 +18,8 @@ package com.inductiveautomation.opcua.stack.core.application;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 
@@ -29,9 +29,9 @@ public interface CertificateManager {
 
     Optional<X509Certificate> getCertificate(ByteString thumbprint);
 
-    List<X509Certificate> getTrustList();
+    Set<X509Certificate> getTrustList();
 
-    List<X509Certificate> getAuthorityList();
+    Set<X509Certificate> getAuthorityList();
 
     void certificateRejected(X509Certificate certificate);
 
