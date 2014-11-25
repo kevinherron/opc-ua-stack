@@ -382,8 +382,13 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
         } else {
             ErrorMessage errorMessage = ExceptionHandler.sendErrorMessage(ctx, cause);
 
-            logger.error("[remote={}] Exception caught; sent {}",
-                    ctx.channel().remoteAddress(), errorMessage, cause);
+            if (cause instanceof UaException) {
+                logger.debug("[remote={}] UaException caught; sent {}",
+                        ctx.channel().remoteAddress(), errorMessage, cause);
+            } else {
+                logger.error("[remote={}] Exception caught; sent {}",
+                        ctx.channel().remoteAddress(), errorMessage, cause);
+            }
         }
     }
 
