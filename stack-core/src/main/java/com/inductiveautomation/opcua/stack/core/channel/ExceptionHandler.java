@@ -11,19 +11,25 @@ import io.netty.channel.ChannelHandlerContext;
 public class ExceptionHandler {
 
     public static ErrorMessage sendErrorMessage(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        String message = cause.toString();
+        String message = cause.getMessage();
         long statusCode = StatusCodes.Bad_UnexpectedError;
 
-        Throwable innerCause = cause.getCause();
-
-        if (innerCause instanceof UaException) {
-            UaException ex = (UaException) innerCause;
+        if (cause instanceof UaException) {
+            UaException ex = (UaException) cause;
             message = ex.getMessage();
             statusCode = ex.getStatusCode().getValue();
-        } else if (innerCause instanceof UaRuntimeException) {
-            UaRuntimeException ex = (UaRuntimeException) innerCause;
-            message = ex.getMessage();
-            statusCode = ex.getStatusCode();
+        } else {
+            Throwable innerCause = cause.getCause();
+
+            if (innerCause instanceof UaException) {
+                UaException ex = (UaException) innerCause;
+                message = ex.getMessage();
+                statusCode = ex.getStatusCode().getValue();
+            } else if (innerCause instanceof UaRuntimeException) {
+                UaRuntimeException ex = (UaRuntimeException) innerCause;
+                message = ex.getMessage();
+                statusCode = ex.getStatusCode();
+            }
         }
 
         ErrorMessage error = new ErrorMessage(statusCode, message);
