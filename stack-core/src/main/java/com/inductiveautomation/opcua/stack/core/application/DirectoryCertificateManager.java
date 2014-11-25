@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.security.KeyPair;
@@ -120,6 +122,8 @@ public class DirectoryCertificateManager implements CertificateManager {
     }
 
     private synchronized void synchronizeTrustedCertificates() {
+        logger.debug("Synchronizing trusted certificates...");
+
         trustedCertificates.clear();
         authorityCertificates.clear();
 
@@ -132,6 +136,9 @@ public class DirectoryCertificateManager implements CertificateManager {
         certificates.stream()
                 .filter(c -> c.getBasicConstraints() != -1)
                 .forEach(authorityCertificates::add);
+
+        logger.debug("trustedCertificates.size()={}, authorityCertificates.size()={}",
+                trustedCertificates.size(), authorityCertificates.size());
     }
 
     @Override
@@ -166,11 +173,12 @@ public class DirectoryCertificateManager implements CertificateManager {
 
     @Override
     public void certificateRejected(X509Certificate certificate) {
-
         try {
+            String[] ss = certificate.getSubjectX500Principal().getName().split(",");
+            String name = ss.length > 0 ? ss[0] : certificate.getSubjectX500Principal().getName();
             String thumbprint = ByteBufUtil.hexDump(Unpooled.wrappedBuffer(DigestUtil.sha1(certificate.getEncoded())));
 
-            File f = new File(rejectedDir.getAbsolutePath() + File.separator + thumbprint + ".der");
+            File f = new File(rejectedDir.getAbsolutePath() + File.separator + String.format("%s [%s].der", name, thumbprint));
 
             FileOutputStream fos = new FileOutputStream(f);
             fos.write(certificate.getEncoded());
@@ -216,7 +224,13 @@ public class DirectoryCertificateManager implements CertificateManager {
                     WatchKey key = watchService.take();
 
                     if (key == trustedKey) {
-                        synchronizeTrustedCertificates();
+                        for (WatchEvent<?> watchEvent : key.pollEvents()) {
+                            Kind<?> kind = watchEvent.kind();
+
+                            if (kind != StandardWatchEventKinds.OVERFLOW) {
+                                synchronizeTrustedCertificates();
+                            }
+                        }
                     }
 
                     if (!key.reset()) {
