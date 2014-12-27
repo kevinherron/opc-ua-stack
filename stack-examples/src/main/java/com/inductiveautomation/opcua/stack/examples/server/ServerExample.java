@@ -1,7 +1,6 @@
 package com.inductiveautomation.opcua.stack.examples.server;
 
 import java.io.File;
-import java.net.URL;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.UUID;
@@ -22,9 +21,11 @@ public class ServerExample {
     private final UaTcpServer server;
 
     public ServerExample(X509Certificate certificate, KeyPair keyPair) throws Exception {
+        File securityDir = new File("./security/");
 
-        URL securityDirUrl = ServerExample.class.getResource("resources/security/");
-        File securityDir = new File(securityDirUrl.toURI());
+        if (!securityDir.exists() && !securityDir.mkdirs()) {
+            throw new Exception("unable to create security directory");
+        }
 
         CertificateManager certificateManager = new DirectoryCertificateManager(
                 keyPair, certificate, securityDir);
