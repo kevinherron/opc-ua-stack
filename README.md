@@ -60,7 +60,7 @@ Supported Features
 Get Help
 --------
 
-Contact kevin@inductiveautomation.com for more information.
+Contact kevinherron@gmail.com for more information.
 
 
 License
