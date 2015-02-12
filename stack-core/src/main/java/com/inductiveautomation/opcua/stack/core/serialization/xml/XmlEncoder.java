@@ -281,12 +281,47 @@ public class XmlEncoder implements UaEncoder {
 
     @Override
     public void encodeLocalizedText(String field, LocalizedText value) {
-
+        if (value != null) {
+            write(field, Unchecked.consumer(w -> {
+                encodeString("Locale", value.getLocale());
+                encodeString("Text", value.getText());
+            }));
+        } else {
+            if (field != null) {
+                try {
+                    streamWriter.writeEmptyElement(field);
+                } catch (XMLStreamException e) {
+                    throw new UaSerializationException(StatusCodes.Bad_EncodingError, e);
+                }
+            }
+        }
     }
 
     @Override
     public void encodeExtensionObject(String field, ExtensionObject value) {
+        if (value != null) {
+            write(field, Unchecked.consumer(w -> {
+                encodeNodeId("TypeId", value.getDataTypeEncodingId());
 
+                Object object = value.getObject();
+
+                if (object instanceof UaSerializable) {
+                    UaSerializable serializable = (UaSerializable) object;
+
+                    encodeSerializable("Body", serializable);
+                } else if (object instanceof ByteString) {
+                    ByteString byteString = (ByteString) object;
+
+                    streamWriter.writeStartElement("Body");
+                    encodeByteString("ByteString", byteString);
+                    streamWriter.writeEndElement();
+                } else if (object instanceof XmlElement) {
+                    XmlElement xmlElement = (XmlElement) object;
+
+                    encodeXmlElement("Body", xmlElement);
+                }
+            }));
+        }
     }
 
     @Override
