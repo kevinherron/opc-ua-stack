@@ -28,7 +28,7 @@ Snapshots are available from the Sonatype repository:
 </repository>
 ```
 
-Release versions will be available from Maven Central and won't require an explicity repository definition.
+Release versions will be available from Maven Central and won't require an explicit repository definition.
 
 #### Stack Server
 ```xml
