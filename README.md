@@ -19,7 +19,7 @@ You'll now find a "security" folder in whatever you've configured your working d
 Maven
 --------
 
-#### Repository
+Snapshots are available from the Sonatype repository:
 ```xml
 <repository>
     <id>oss-sonatype</id>
@@ -27,6 +27,8 @@ Maven
     <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 </repository>
 ```
+
+Release versions will be available from Maven Central and won't require an explicity repository definition.
 
 #### Stack Server
 ```xml
