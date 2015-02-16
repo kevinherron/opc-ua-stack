@@ -19,6 +19,15 @@ You'll now find a "security" folder in whatever you've configured your working d
 Maven
 --------
 
+#### Repository
+```xml
+<repository>
+    <id>oss-sonatype</id>
+    <name>oss-sonatype</name>
+    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+</repository>
+```
+
 #### Stack Server
 ```xml
 <dependency>
