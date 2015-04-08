@@ -1,6 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.types.builtin;
 
 import com.google.common.base.Objects;
+import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
 public final class StatusCode {
@@ -85,8 +86,12 @@ public final class StatusCode {
 
     @Override
     public String toString() {
+        String[] nameAndDesc = StatusCodes.lookup(value);
+
         return Objects.toStringHelper(this)
                 .add("value", String.format("0x%08X", value))
+                .add("name", nameAndDesc[0])
+                .add("desc", nameAndDesc[1])
                 .toString();
     }
 
