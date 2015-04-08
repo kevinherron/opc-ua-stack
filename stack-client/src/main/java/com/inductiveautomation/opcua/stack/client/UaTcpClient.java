@@ -262,8 +262,10 @@ public class UaTcpClient implements UaClient {
 
         if (future != null) {
             StatusCode serviceResult = serviceFault.getResponseHeader().getServiceResult();
+            UaException serviceException = new UaException(
+                    serviceResult.getValue(), "service fault: " + serviceResult);
 
-            future.completeExceptionally(new UaException(serviceResult.getValue(), "service fault"));
+            future.completeExceptionally(serviceException);
         }
 
         Timeout timeout = timeouts.remove(requestHandle);
