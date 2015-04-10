@@ -380,8 +380,6 @@ public class UaTcpClient implements UaClient {
      * @return the {@link EndpointDescription}s returned by the GetEndpoints service.
      */
     public static CompletableFuture<EndpointDescription[]> getEndpoints(String endpointUrl) {
-        CompletableFuture<EndpointDescription[]> endpointsFuture = new CompletableFuture<>();
-
         UaTcpClient client = new UaTcpClientBuilder().build(endpointUrl);
 
         GetEndpointsRequest request = new GetEndpointsRequest(
@@ -389,16 +387,8 @@ public class UaTcpClient implements UaClient {
                 endpointUrl, null, new String[]{Stack.UA_TCP_BINARY_TRANSPORT_URI}
         );
 
-        client.sendRequest(request).whenComplete((r, ex) -> {
-            GetEndpointsResponse response = (GetEndpointsResponse) r;
-
-            if (response != null) endpointsFuture.complete(response.getEndpoints());
-            else endpointsFuture.completeExceptionally(ex);
-
-            client.disconnect();
-        });
-
-        return endpointsFuture;
+        return client.<GetEndpointsResponse>sendRequest(request)
+                .thenApply(GetEndpointsResponse::getEndpoints);
     }
 
 }
