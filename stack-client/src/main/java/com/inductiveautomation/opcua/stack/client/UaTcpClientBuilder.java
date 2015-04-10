@@ -68,7 +68,11 @@ public class UaTcpClientBuilder {
         return this;
     }
 
-    public UaTcpClient build(String endpointUrl) {
+    /**
+     * Build a {@link UaTcpClient} using only a URL; this is only used for no security connections to gather
+     * {@link EndpointDescription}s.
+     */
+    UaTcpClient build(String endpointUrl) {
         ApplicationDescription application = new ApplicationDescription(
                 applicationUri,
                 productUri,
@@ -77,7 +81,7 @@ public class UaTcpClientBuilder {
                 null, null, null
         );
 
-        return new UaTcpClient(application, endpointUrl, requestTimeout, channelConfig, executor);
+        return new UaTcpClient(endpointUrl, application, requestTimeout, channelConfig, executor);
     }
 
     public UaTcpClient build(EndpointDescription endpoint) throws UaException {
@@ -89,7 +93,7 @@ public class UaTcpClientBuilder {
                 null, null, null
         );
 
-        return new UaTcpClient(application, endpoint, keyPair, certificate, requestTimeout, channelConfig, executor);
+        return new UaTcpClient(endpoint, application, keyPair, certificate, requestTimeout, channelConfig, executor);
     }
 
 }

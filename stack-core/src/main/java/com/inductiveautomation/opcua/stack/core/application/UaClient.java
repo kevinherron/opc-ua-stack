@@ -12,6 +12,7 @@ import com.inductiveautomation.opcua.stack.core.channel.ClientSecureChannel;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
 import com.inductiveautomation.opcua.stack.core.types.structured.ApplicationDescription;
+import com.inductiveautomation.opcua.stack.core.types.structured.EndpointDescription;
 
 public interface UaClient {
 
@@ -31,6 +32,8 @@ public interface UaClient {
     Optional<Certificate> getCertificate();
 
     ClientSecureChannel getSecureChannel();
+
+    EndpointDescription getEndpoint();
 
     String getEndpointUrl();
 

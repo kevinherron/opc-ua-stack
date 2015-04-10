@@ -69,20 +69,22 @@ public class UaTcpClient implements UaClient {
     private final Optional<Certificate> certificate;
     private final Optional<KeyPair> keyPair;
 
-    private final ApplicationDescription application;
+    private final EndpointDescription endpoint;
     private final String endpointUrl;
+    private final ApplicationDescription application;
     private final long requestTimeout;
     private final ChannelConfig channelConfig;
     private final ExecutorService executor;
 
-    public UaTcpClient(ApplicationDescription application,
-                       String endpointUrl,
-                       long requestTimeout,
-                       ChannelConfig channelConfig,
-                       ExecutorService executor) {
+    UaTcpClient(String endpointUrl,
+                ApplicationDescription application,
+                long requestTimeout,
+                ChannelConfig channelConfig,
+                ExecutorService executor) {
 
-        this.application = application;
+        this.endpoint = null;
         this.endpointUrl = endpointUrl;
+        this.application = application;
         this.requestTimeout = requestTimeout;
         this.channelConfig = channelConfig;
         this.executor = executor;
@@ -93,16 +95,17 @@ public class UaTcpClient implements UaClient {
         secureChannel = new ClientSecureChannel(SecurityPolicy.None, MessageSecurityMode.None);
     }
 
-    public UaTcpClient(ApplicationDescription application,
-                       EndpointDescription endpoint,
+    public UaTcpClient(EndpointDescription endpoint,
+                       ApplicationDescription application,
                        KeyPair keyPair,
                        X509Certificate certificate,
                        long requestTimeout,
                        ChannelConfig channelConfig,
                        ExecutorService executor) throws UaException {
 
-        this.application = application;
+        this.endpoint = endpoint;
         this.endpointUrl = endpoint.getEndpointUrl();
+        this.application = application;
         this.requestTimeout = requestTimeout;
         this.channelConfig = channelConfig;
         this.executor = executor;
@@ -295,6 +298,12 @@ public class UaTcpClient implements UaClient {
     @Override
     public ApplicationDescription getApplication() {
         return application;
+    }
+
+
+    @Override
+    public EndpointDescription getEndpoint() {
+        return endpoint;
     }
 
     @Override
