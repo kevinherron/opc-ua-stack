@@ -96,7 +96,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 requestType,
                 secureChannel.getMessageSecurityMode(),
                 secureChannel.getLocalNonce(),
-                uint(60 * 1000L)
+                uint(60 * 1000L) // TODO Configurable lifetime
         );
 
         sendOpenSecureChannelRequest(ctx, request);
@@ -288,7 +288,8 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 binaryEncoder.setBuffer(messageBuffer);
                 binaryEncoder.encodeMessage(null, request);
 
-                List<ByteBuf> chunks = chunkEncoder.encodeAsymmetric(
+                // TODO Find out whether this should be sent symmetric or asymmetric
+                List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
                         secureChannel,
                         MessageType.CloseSecureChannel,
                         messageBuffer,
