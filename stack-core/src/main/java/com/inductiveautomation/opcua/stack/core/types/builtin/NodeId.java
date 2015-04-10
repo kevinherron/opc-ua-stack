@@ -1,10 +1,11 @@
 package com.inductiveautomation.opcua.stack.core.types.builtin;
 
-import javax.annotation.Nonnull;
-import javax.xml.bind.DatatypeConverter;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.Nonnull;
+import javax.xml.bind.DatatypeConverter;
 
 import com.google.common.base.Objects;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
@@ -267,6 +268,14 @@ public final class NodeId {
         }
 
         throw new UaRuntimeException(StatusCodes.Bad_NodeIdInvalid);
+    }
+
+    public static Optional<NodeId> parseSafe(String s) {
+        try {
+            return Optional.of(parse(s));
+        } catch (UaRuntimeException e) {
+            return Optional.empty();
+        }
     }
 
 }
