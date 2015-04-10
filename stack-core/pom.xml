@@ -15,7 +15,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <guava.version>17.0</guava.version>
+        <guava.version>18.0</guava.version>
         <javassist.version>3.18.2-GA</javassist.version>
         <jsr305.version>2.0.3</jsr305.version>
         <netty.version>4.0.23.Final</netty.version>
