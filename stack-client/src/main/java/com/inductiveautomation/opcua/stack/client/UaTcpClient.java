@@ -338,13 +338,21 @@ public class UaTcpClient implements UaClient {
                     }
                 });
 
-        URI uri = URI.create(client.getEndpointUrl());
+        try {
+            URI uri = URI.create(client.getEndpointUrl());
 
-        bootstrap.connect(uri.getHost(), uri.getPort()).addListener(f -> {
-            if (!f.isSuccess()) {
-                handshake.completeExceptionally(f.cause());
-            }
-        });
+            bootstrap.connect(uri.getHost(), uri.getPort()).addListener(f -> {
+                if (!f.isSuccess()) {
+                    handshake.completeExceptionally(f.cause());
+                }
+            });
+        } catch (Throwable t) {
+            UaException failure = new UaException(
+                    StatusCodes.Bad_TcpEndpointUrlInvalid,
+                    "endpoint URL invalid: " + client.getEndpointUrl());
+
+            handshake.completeExceptionally(failure);
+        }
 
         return handshake;
     }
