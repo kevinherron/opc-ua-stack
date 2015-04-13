@@ -1,6 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.types.builtin;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 
@@ -86,13 +87,23 @@ public final class StatusCode {
 
     @Override
     public String toString() {
-        String[] nameAndDesc = StatusCodes.lookup(value);
-
-        return Objects.toStringHelper(this)
+        ToStringHelper helper = MoreObjects.toStringHelper(this)
                 .add("value", String.format("0x%08X", value))
-                .add("name", nameAndDesc[0])
-                .add("desc", nameAndDesc[1])
-                .toString();
+                .add("quality", quality(this));
+
+        StatusCodes.lookup(value).ifPresent(nameAndDesc -> {
+            helper.add("name", nameAndDesc[0]);
+            helper.add("desc", nameAndDesc[1]);
+        });
+
+        return helper.toString();
+    }
+
+    private static String quality(StatusCode statusCode) {
+        if (statusCode.isGood()) return "good";
+        else if (statusCode.isBad()) return "bad";
+        else if (statusCode.isUncertain()) return "uncertain";
+        else return "unknown";
     }
 
 }

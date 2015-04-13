@@ -1,7 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.channel.headers;
 
+import com.google.common.base.MoreObjects;
 import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
-import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -57,7 +57,7 @@ public class SequenceHeader {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("sequenceNumber", sequenceNumber)
                 .add("requestId", requestId)
                 .toString();

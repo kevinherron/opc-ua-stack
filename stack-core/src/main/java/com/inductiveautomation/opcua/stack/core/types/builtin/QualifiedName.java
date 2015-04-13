@@ -3,7 +3,7 @@ package com.inductiveautomation.opcua.stack.core.types.builtin;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
 
@@ -82,7 +82,7 @@ public final class QualifiedName {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("name", name)
                 .add("namespaceIndex", namespaceIndex)
                 .toString();

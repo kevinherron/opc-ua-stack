@@ -1,6 +1,6 @@
 package com.inductiveautomation.opcua.stack.core.types.builtin;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 public final class XmlElement {
 
@@ -44,7 +44,7 @@ public final class XmlElement {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("fragment", fragment).toString();
+        return MoreObjects.toStringHelper(this).add("fragment", fragment).toString();
     }
 
 }

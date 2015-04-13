@@ -1,9 +1,9 @@
 package com.inductiveautomation.opcua.stack.core.types.builtin;
 
-import javax.annotation.Nullable;
 import java.util.Locale;
+import javax.annotation.Nullable;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 public final class LocalizedText {
 
@@ -55,7 +55,7 @@ public final class LocalizedText {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("text", text)
                 .add("locale", locale)
                 .toString();

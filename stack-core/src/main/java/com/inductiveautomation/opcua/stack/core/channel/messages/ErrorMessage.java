@@ -1,6 +1,6 @@
 package com.inductiveautomation.opcua.stack.core.channel.messages;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.inductiveautomation.opcua.stack.core.serialization.binary.BinaryDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.binary.BinaryEncoder;
 import io.netty.buffer.ByteBuf;
@@ -25,7 +25,7 @@ public class ErrorMessage {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("error", String.format("0x%08X", error))
                 .add("reason", reason)
                 .toString();

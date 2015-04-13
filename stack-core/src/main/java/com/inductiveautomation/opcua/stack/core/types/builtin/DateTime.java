@@ -2,7 +2,7 @@ package com.inductiveautomation.opcua.stack.core.types.builtin;
 
 import java.util.Date;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 public final class DateTime {
 
@@ -61,7 +61,7 @@ public final class DateTime {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("utcTime", utcTime)
                 .add("javaDate", getJavaDate())
                 .toString();

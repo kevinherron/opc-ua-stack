@@ -1,9 +1,11 @@
 package com.inductiveautomation.opcua.stack.core.types.builtin;
 
-import javax.xml.bind.DatatypeConverter;
 import java.util.Optional;
 import java.util.UUID;
+import javax.xml.bind.DatatypeConverter;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 import com.google.common.primitives.UnsignedInteger;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
@@ -179,7 +181,7 @@ public final class ExpandedNodeId {
 
     @Override
     public String toString() {
-        Objects.ToStringHelper helper = Objects.toStringHelper(this);
+        ToStringHelper helper = MoreObjects.toStringHelper(this);
 
         if (namespaceUri != null && namespaceUri.length() > 0) {
             helper.add("ns", namespaceUri);

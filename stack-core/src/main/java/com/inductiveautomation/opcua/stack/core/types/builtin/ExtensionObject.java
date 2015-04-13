@@ -2,6 +2,7 @@ package com.inductiveautomation.opcua.stack.core.types.builtin;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.inductiveautomation.opcua.stack.core.serialization.UaSerializable;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
@@ -57,7 +58,7 @@ public final class ExtensionObject {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("object", object)
                 .add("dataTypeEncodingId", dataTypeEncodingId)
                 .toString();

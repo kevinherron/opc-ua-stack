@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.xml.bind.DatatypeConverter;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaRuntimeException;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
@@ -165,7 +165,7 @@ public final class NodeId {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("ns", namespaceIndex)
                 .add("id", identifier)
                 .toString();

@@ -2,6 +2,7 @@ package com.inductiveautomation.opcua.stack.core;
 
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 
 import com.google.common.collect.ImmutableMap;
 import com.inductiveautomation.opcua.stack.core.util.annotations.Description;
@@ -35,10 +36,10 @@ public class StatusCodes {
      * @param code the code to lookup.
      * @return a String[] where String[0] contains the name and String[1] contains the description.
      */
-    public static String[] lookup(long code) {
+    public static Optional<String[]> lookup(long code) {
         String[] desc = DESCRIPTIONS.get(code & 0xFFFF0000);
 
-        return desc != null ? desc : new String[]{"unknown", "unknown"};
+        return Optional.ofNullable(desc);
     }
 
     @Description("An unexpected error occurred.")

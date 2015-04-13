@@ -1,11 +1,11 @@
 package com.inductiveautomation.opcua.stack.core.channel.headers;
 
-import javax.annotation.Nonnull;
 import java.nio.charset.Charset;
+import javax.annotation.Nonnull;
 
-import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
+import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import io.netty.buffer.ByteBuf;
 
 public class AsymmetricSecurityHeader {
@@ -76,7 +76,7 @@ public class AsymmetricSecurityHeader {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("securityPolicyUri", securityPolicyUri)
                 .add("senderCertificate", senderCertificate)
                 .add("receiverThumbprint", receiverThumbprint)

@@ -1,8 +1,8 @@
 package com.inductiveautomation.opcua.stack.core.channel.messages;
 
-import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
+import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
 import io.netty.buffer.ByteBuf;
 
 public class AcknowledgeMessage {
@@ -107,7 +107,7 @@ public class AcknowledgeMessage {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("protocolVersion", protocolVersion)
                 .add("receiverBufferSize", receiveBufferSize)
                 .add("sendBufferSize", sendBufferSize)

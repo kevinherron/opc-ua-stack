@@ -1,11 +1,12 @@
 package com.inductiveautomation.opcua.stack.core.types.builtin;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+import javax.annotation.Nullable;
 
-import com.google.common.base.Objects.ToStringHelper;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.inductiveautomation.opcua.stack.core.Identifiers;
 import com.inductiveautomation.opcua.stack.core.serialization.UaEnumeration;
 import com.inductiveautomation.opcua.stack.core.serialization.UaStructure;
@@ -106,7 +107,7 @@ public final class Variant {
 
     @Override
     public String toString() {
-        ToStringHelper helper = com.google.common.base.Objects.toStringHelper(this);
+        ToStringHelper helper = MoreObjects.toStringHelper(this);
 
         helper.add("value", value);
 

@@ -4,7 +4,7 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
 import com.inductiveautomation.opcua.stack.core.types.builtin.ByteString;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
@@ -121,7 +121,7 @@ public class ClientSecureChannel extends DefaultAttributeMap implements SecureCh
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("channelId", channelId)
                 .add("securityPolicy", securityPolicy)
                 .toString();

@@ -2,6 +2,7 @@ package com.inductiveautomation.opcua.stack.core.application.services;
 
 import java.util.concurrent.CompletableFuture;
 
+import com.google.common.base.MoreObjects;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.application.UaServer;
 import com.inductiveautomation.opcua.stack.core.channel.ServerSecureChannel;
@@ -11,7 +12,6 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.structured.ResponseHeader;
 import com.inductiveautomation.opcua.stack.core.types.structured.ServiceFault;
-import com.google.common.base.Objects;
 import io.netty.util.DefaultAttributeMap;
 
 public class ServiceRequest<ReqT extends UaRequestMessage, ResT extends UaResponseMessage> extends DefaultAttributeMap {
@@ -114,7 +114,7 @@ public class ServiceRequest<ReqT extends UaRequestMessage, ResT extends UaRespon
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("requestId", requestId)
                 .add("request", request.getClass().getSimpleName())
                 .toString();

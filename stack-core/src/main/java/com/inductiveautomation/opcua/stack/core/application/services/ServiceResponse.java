@@ -1,7 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.application.services;
 
+import com.google.common.base.MoreObjects;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
-import com.google.common.base.Objects;
 
 public class ServiceResponse {
 
@@ -23,7 +23,7 @@ public class ServiceResponse {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("requestId", requestId)
                 .add("response", response.getClass().getSimpleName())
                 .toString();

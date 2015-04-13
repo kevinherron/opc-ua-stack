@@ -2,10 +2,10 @@ package com.inductiveautomation.opcua.stack.core.channel.messages;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.base.MoreObjects;
 import com.inductiveautomation.opcua.stack.core.serialization.binary.BinaryDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.binary.BinaryEncoder;
 import com.inductiveautomation.opcua.stack.core.util.annotations.UInt32Primitive;
-import com.google.common.base.Objects;
 import io.netty.buffer.ByteBuf;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -120,7 +120,7 @@ public class HelloMessage {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("protocolVersion", protocolVersion)
                 .add("receiverBufferSize", receiveBufferSize)
                 .add("sendBufferSize", sendBufferSize)
