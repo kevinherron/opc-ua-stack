@@ -2,6 +2,8 @@ package com.inductiveautomation.opcua.stack.core.types.builtin;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.TimestampsToReturn;
 
@@ -91,6 +93,21 @@ public final class DataValue {
 
     public DataValue withServerTime(@Nullable DateTime serverTime) {
         return new DataValue(value, status, sourceTime, serverTime);
+    }
+
+    @Override
+    public String toString() {
+        ToStringHelper helper = MoreObjects.toStringHelper(this);
+        helper.add("value", value);
+        helper.add("status", status);
+        if (sourceTime != null) {
+            helper.add("sourceTime", sourceTime);
+        }
+        if (serverTime != null) {
+            helper.add("serverTime", serverTime);
+        }
+
+        return helper.toString();
     }
 
     /**
