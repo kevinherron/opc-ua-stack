@@ -5,10 +5,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.BiConsumer;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.inductiveautomation.opcua.stack.core.serialization.binary.BinaryDecoder;
 import com.inductiveautomation.opcua.stack.core.serialization.binary.BinaryEncoder;
 import com.inductiveautomation.opcua.stack.core.util.ExecutionQueue;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.slf4j.LoggerFactory;
 
 public class SerializationQueue {
@@ -33,8 +33,8 @@ public class SerializationQueue {
     private final ChunkEncoder chunkEncoder;
     private final ChunkDecoder chunkDecoder;
 
-    private final ExecutionQueue<Runnable> encodingQueue;
-    private final ExecutionQueue<Runnable> decodingQueue;
+    private final ExecutionQueue encodingQueue;
+    private final ExecutionQueue decodingQueue;
 
     private final ChannelParameters parameters;
 
@@ -47,8 +47,8 @@ public class SerializationQueue {
         chunkEncoder = new ChunkEncoder(parameters);
         chunkDecoder = new ChunkDecoder(parameters);
 
-        encodingQueue = new ExecutionQueue<>(ExecutionQueue.RUNNABLE_EXECUTOR, SerializationExecutor);
-        decodingQueue = new ExecutionQueue<>(ExecutionQueue.RUNNABLE_EXECUTOR, SerializationExecutor);
+        encodingQueue = new ExecutionQueue(SerializationExecutor);
+        decodingQueue = new ExecutionQueue(SerializationExecutor);
     }
 
     public void encode(BiConsumer<BinaryEncoder, ChunkEncoder> consumer) {

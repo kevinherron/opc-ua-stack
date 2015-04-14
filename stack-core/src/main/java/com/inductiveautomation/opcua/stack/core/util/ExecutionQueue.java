@@ -25,41 +25,77 @@ import java.util.concurrent.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * Queues up submitted items and executes them in serial on an ExecutorService.
- *
- * @param <T> Submitted item type.
+ * Queues up submitted {@link java.lang.Runnable}s and executes them in serial on an
+ * {@link java.util.concurrent.ExecutorService}.
  */
-public class ExecutionQueue<T> {
+public class ExecutionQueue {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    private volatile boolean submitted = false;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final Object queueLock = new Object();
-    private final LinkedList<T> queue = new LinkedList<>();
+    private final LinkedList<Runnable> queue = new LinkedList<>();
 
-    private final ExecutionCallback<T> callback;
+    private volatile boolean pollSubmitted = false;
+    private volatile boolean paused = false;
+
     private final ExecutorService service;
 
-    public ExecutionQueue(ExecutionCallback<T> callback, ExecutorService service) {
-        this.callback = callback;
+    public ExecutionQueue(ExecutorService service) {
         this.service = service;
     }
 
     /**
-     * Submit an item to be delivered to the callback when it's time to execute.
+     * Submit a {@link Runnable} to be executed.
      *
-     * @param item Item to be delivered.
+     * @param runnable the {@link Runnable} to be executed.
      */
-    public void submit(T item) {
+    public void submit(Runnable runnable) {
         synchronized (queueLock) {
-            queue.add(item);
+            queue.add(runnable);
 
-            if (!submitted) {
+            maybeSubmitPoll();
+        }
+    }
+
+    /**
+     * Submit a {@link Runnable} to be executed at the head of the queue.
+     *
+     * @param runnable the {@link Runnable} to be executed.
+     */
+    public void submitToHead(Runnable runnable) {
+        synchronized (queueLock) {
+            queue.addFirst(runnable);
+
+            maybeSubmitPoll();
+        }
+    }
+
+    /**
+     * Pause execution of queued {@link java.lang.Runnable}s.
+     */
+    public void pause() {
+        synchronized (queueLock) {
+            paused = true;
+        }
+    }
+
+    /**
+     * Resume execution of queued {@link java.lang.Runnable}s.
+     */
+    public void resume() {
+        synchronized (queueLock) {
+            paused = false;
+
+            maybeSubmitPoll();
+        }
+    }
+
+    private void maybeSubmitPoll() {
+        synchronized (queueLock) {
+            if (!pollSubmitted && !paused && !queue.isEmpty()) {
                 service.submit(new PollAndExecute());
-                submitted = true;
+                pollSubmitted = true;
             }
         }
     }
@@ -67,42 +103,27 @@ public class ExecutionQueue<T> {
     private class PollAndExecute implements Runnable {
         @Override
         public void run() {
-            final T t;
+            Runnable runnable;
 
             synchronized (queueLock) {
-                t = queue.poll();
+                runnable = queue.poll();
             }
 
             try {
-                callback.execute(t);
+                runnable.run();
             } catch (Throwable throwable) {
-                logger.warn("Uncaught Throwable during execution.", throwable);
+                log.warn("Uncaught Throwable during execution.", throwable);
             }
 
             synchronized (queueLock) {
-                if (!queue.isEmpty()) {
-                    service.submit(new PollAndExecute());
+                if (queue.isEmpty() || paused) {
+                    pollSubmitted = false;
                 } else {
-                    submitted = false;
+                    // polling remains true
+                    service.submit(new PollAndExecute());
                 }
             }
         }
     }
-
-    public static interface ExecutionCallback<T> {
-        public void execute(T item);
-    }
-
-    /**
-     * An {@link ExecutionCallback} that executes {@link Runnable}s.
-     */
-    public static class RunnableExecutor implements ExecutionCallback<Runnable> {
-        @Override
-        public void execute(Runnable item) {
-            item.run();
-        }
-    }
-
-    public static final RunnableExecutor RUNNABLE_EXECUTOR = new RunnableExecutor();
 
 }
