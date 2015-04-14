@@ -5,12 +5,14 @@ import java.lang.reflect.Field;
 import java.util.Optional;
 
 import com.google.common.collect.ImmutableMap;
+import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.util.annotations.Description;
 
 @SuppressWarnings("unused")
 public class StatusCodes {
 
     private static final ImmutableMap<Long, String[]> DESCRIPTIONS;
+
     static {
         ImmutableMap.Builder<Long, String[]> builder = ImmutableMap.builder();
 
@@ -26,6 +28,9 @@ public class StatusCodes {
                 }
             }
         }
+
+        builder.put(StatusCode.GOOD.getValue(), new String[]{"Good", "Good; unspecified."});
+        builder.put(StatusCode.BAD.getValue(), new String[]{"Bad", "Bad; unspecified."});
 
         DESCRIPTIONS = builder.build();
     }
