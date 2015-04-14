@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -29,6 +28,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.inductiveautomation.opcua.stack.core.types.structured.ApplicationDescription;
 import com.inductiveautomation.opcua.stack.core.types.structured.EndpointDescription;
@@ -47,8 +47,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.HashedWheelTimer;
-import io.netty.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,10 +57,10 @@ public class UaTcpClient implements UaClient {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final ClientSecureChannel secureChannel;
-    private final HashedWheelTimer wheelTimer = Stack.sharedWheelTimer();
+//    private final HashedWheelTimer wheelTimer = Stack.sharedWheelTimer();
 
     private final Map<Long, CompletableFuture<UaResponseMessage>> pending = Maps.newConcurrentMap();
-    private final Map<Long, Timeout> timeouts = Maps.newConcurrentMap();
+//    private final Map<Long, Timeout> timeouts = Maps.newConcurrentMap();
 
     private final ConnectionStateContext stateContext = new ConnectionStateContext(this);
 
@@ -74,12 +72,14 @@ public class UaTcpClient implements UaClient {
     private final ApplicationDescription application;
     private final long requestTimeout;
     private final ChannelConfig channelConfig;
+    private final UInteger channelLifetime;
     private final ExecutorService executor;
 
     UaTcpClient(String endpointUrl,
                 ApplicationDescription application,
                 long requestTimeout,
                 ChannelConfig channelConfig,
+                UInteger channelLifetime,
                 ExecutorService executor) {
 
         this.endpoint = null;
@@ -87,6 +87,7 @@ public class UaTcpClient implements UaClient {
         this.application = application;
         this.requestTimeout = requestTimeout;
         this.channelConfig = channelConfig;
+        this.channelLifetime = channelLifetime;
         this.executor = executor;
 
         certificate = Optional.empty();
@@ -101,6 +102,7 @@ public class UaTcpClient implements UaClient {
                        X509Certificate certificate,
                        long requestTimeout,
                        ChannelConfig channelConfig,
+                       UInteger channelLifetime,
                        ExecutorService executor) throws UaException {
 
         this.endpoint = endpoint;
@@ -108,6 +110,7 @@ public class UaTcpClient implements UaClient {
         this.application = application;
         this.requestTimeout = requestTimeout;
         this.channelConfig = channelConfig;
+        this.channelLifetime = channelLifetime;
         this.executor = executor;
 
         this.certificate = Optional.ofNullable(certificate);
@@ -163,13 +166,13 @@ public class UaTcpClient implements UaClient {
             if (ch != null) {
                 long requestHandle = request.getRequestHeader().getRequestHandle().longValue();
 
-                Timeout timeout = wheelTimer.newTimeout(t -> {
-                    timeouts.remove(requestHandle);
-                    CompletableFuture<UaResponseMessage> f = pending.remove(requestHandle);
-                    if (f != null) f.completeExceptionally(new UaException(StatusCodes.Bad_Timeout, "timeout"));
-                }, requestTimeout, TimeUnit.MILLISECONDS);
-
-                timeouts.put(requestHandle, timeout);
+//                Timeout timeout = wheelTimer.newTimeout(t -> {
+//                    timeouts.remove(requestHandle);
+//                    CompletableFuture<UaResponseMessage> f = pending.remove(requestHandle);
+//                    if (f != null) f.completeExceptionally(new UaException(StatusCodes.Bad_Timeout, "timeout"));
+//                }, requestTimeout, TimeUnit.MILLISECONDS);
+//
+//                timeouts.put(requestHandle, timeout);
 
                 pending.put(requestHandle, (CompletableFuture<UaResponseMessage>) future);
 
@@ -203,13 +206,13 @@ public class UaTcpClient implements UaClient {
 
                     long requestHandle = request.getRequestHeader().getRequestHandle().longValue();
 
-                    Timeout timeout = wheelTimer.newTimeout(t -> {
-                        timeouts.remove(requestHandle);
-                        CompletableFuture<UaResponseMessage> f = pending.remove(requestHandle);
-                        if (f != null) f.completeExceptionally(new UaException(StatusCodes.Bad_Timeout, "timeout"));
-                    }, requestTimeout, TimeUnit.MILLISECONDS);
-
-                    timeouts.put(requestHandle, timeout);
+//                    Timeout timeout = wheelTimer.newTimeout(t -> {
+//                        timeouts.remove(requestHandle);
+//                        CompletableFuture<UaResponseMessage> f = pending.remove(requestHandle);
+//                        if (f != null) f.completeExceptionally(new UaException(StatusCodes.Bad_Timeout, "timeout"));
+//                    }, requestTimeout, TimeUnit.MILLISECONDS);
+//
+//                    timeouts.put(requestHandle, timeout);
 
                     pending.put(requestHandle, future);
                 }
@@ -253,8 +256,8 @@ public class UaTcpClient implements UaClient {
             future.complete(response);
         }
 
-        Timeout timeout = timeouts.remove(requestHandle);
-        if (timeout != null) timeout.cancel();
+//        Timeout timeout = timeouts.remove(requestHandle);
+//        if (timeout != null) timeout.cancel();
     }
 
     public void receiveServiceFault(ServiceFault serviceFault) {
@@ -271,8 +274,8 @@ public class UaTcpClient implements UaClient {
             future.completeExceptionally(serviceException);
         }
 
-        Timeout timeout = timeouts.remove(requestHandle);
-        if (timeout != null) timeout.cancel();
+//        Timeout timeout = timeouts.remove(requestHandle);
+//        if (timeout != null) timeout.cancel();
     }
 
     @Override
@@ -291,6 +294,11 @@ public class UaTcpClient implements UaClient {
     }
 
     @Override
+    public UInteger getChannelLifetime() {
+        return channelLifetime;
+    }
+
+    @Override
     public ClientSecureChannel getSecureChannel() {
         return secureChannel;
     }
@@ -299,7 +307,6 @@ public class UaTcpClient implements UaClient {
     public ApplicationDescription getApplication() {
         return application;
     }
-
 
     @Override
     public EndpointDescription getEndpoint() {

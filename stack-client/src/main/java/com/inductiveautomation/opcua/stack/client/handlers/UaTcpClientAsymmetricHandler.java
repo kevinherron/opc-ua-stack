@@ -96,8 +96,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 requestType,
                 secureChannel.getMessageSecurityMode(),
                 secureChannel.getLocalNonce(),
-                uint(60 * 1000L) // TODO Configurable lifetime
-        );
+                client.getChannelLifetime());
 
         sendOpenSecureChannelRequest(ctx, request);
     }
@@ -208,10 +207,11 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
         }
     }
 
-    private void installSecurityToken(ChannelHandlerContext ctx, OpenSecureChannelResponse response) {ChannelSecurity.SecuritySecrets newKeys = null;
+    private void installSecurityToken(ChannelHandlerContext ctx, OpenSecureChannelResponse response) {
+        ChannelSecurity.SecuritySecrets newKeys = null;
         if (response.getServerProtocolVersion().longValue() < PROTOCOL_VERSION) {
             throw new UaRuntimeException(StatusCodes.Bad_ProtocolVersionUnsupported,
-                                         "server protocol version unsupported: " + response.getServerProtocolVersion());
+                    "server protocol version unsupported: " + response.getServerProtocolVersion());
         }
 
         ChannelSecurityToken newToken = response.getSecurityToken();
@@ -246,7 +246,8 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
             }
         });
 
-        logger.debug("SecureChannel id={} createdAt={}", secureChannel.getChannelId(), createdAt);
+        logger.debug("SecureChannel id={}, lifetime={}ms, createdAt={}",
+                secureChannel.getChannelId(), revisedLifetime, createdAt);
     }
 
     private void sendOpenSecureChannelRequest(ChannelHandlerContext ctx, OpenSecureChannelRequest request) {
@@ -270,7 +271,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 });
 
                 logger.debug("Sent OpenSecureChannelRequest ({}, id={}).",
-                             request.getRequestType(), secureChannel.getChannelId());
+                        request.getRequestType(), secureChannel.getChannelId());
             } catch (UaException e) {
                 logger.error("Error encoding OpenSecureChannelRequest: {}", e.getMessage(), e);
                 ctx.close();
@@ -325,8 +326,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 SecurityTokenRequestType.Renew,
                 secureChannel.getMessageSecurityMode(),
                 secureChannel.getLocalNonce(),
-                uint(60 * 1000L)
-        );
+                client.getChannelLifetime());
 
         sendOpenSecureChannelRequest(ctx, request);
     }

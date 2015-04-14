@@ -8,13 +8,17 @@ import com.inductiveautomation.opcua.stack.core.Stack;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelConfig;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.ApplicationType;
 import com.inductiveautomation.opcua.stack.core.types.structured.ApplicationDescription;
 import com.inductiveautomation.opcua.stack.core.types.structured.EndpointDescription;
 
+import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
+
 public class UaTcpClientBuilder {
 
-    public static final long DEFAULT_REQUEST_TIMEOUT = 10000L;
+    public static final long DEFAULT_REQUEST_TIMEOUT_MS = 10000L;
+    public static final UInteger DEFAULT_CHANNEL_LIFETIME_MS = uint(60 * 60 * 1000);
 
     private LocalizedText applicationName = LocalizedText.english("client application name not configured");
     private String applicationUri = "client application uri not configured";
@@ -22,7 +26,8 @@ public class UaTcpClientBuilder {
 
     private ChannelConfig channelConfig = ChannelConfig.DEFAULT;
 
-    private long requestTimeout = DEFAULT_REQUEST_TIMEOUT;
+    private long requestTimeout = DEFAULT_REQUEST_TIMEOUT_MS;
+    private UInteger channelLifetime = DEFAULT_CHANNEL_LIFETIME_MS;
     private ExecutorService executor = Stack.sharedExecutor();
 
     private KeyPair keyPair;
@@ -45,6 +50,11 @@ public class UaTcpClientBuilder {
 
     public UaTcpClientBuilder setChannelConfig(ChannelConfig channelConfig) {
         this.channelConfig = channelConfig;
+        return this;
+    }
+
+    public UaTcpClientBuilder setChannelLifetime(UInteger channelLifetime) {
+        this.channelLifetime = channelLifetime;
         return this;
     }
 
@@ -78,10 +88,9 @@ public class UaTcpClientBuilder {
                 productUri,
                 applicationName,
                 ApplicationType.Client,
-                null, null, null
-        );
+                null, null, null);
 
-        return new UaTcpClient(endpointUrl, application, requestTimeout, channelConfig, executor);
+        return new UaTcpClient(endpointUrl, application, requestTimeout, channelConfig, channelLifetime, executor);
     }
 
     public UaTcpClient build(EndpointDescription endpoint) throws UaException {
@@ -90,10 +99,17 @@ public class UaTcpClientBuilder {
                 productUri,
                 applicationName,
                 ApplicationType.Client,
-                null, null, null
-        );
+                null, null, null);
 
-        return new UaTcpClient(endpoint, application, keyPair, certificate, requestTimeout, channelConfig, executor);
+        return new UaTcpClient(
+                endpoint,
+                application,
+                keyPair,
+                certificate,
+                requestTimeout,
+                channelConfig,
+                channelLifetime,
+                executor);
     }
 
 }

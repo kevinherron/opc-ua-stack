@@ -11,6 +11,7 @@ import com.inductiveautomation.opcua.stack.core.channel.ChannelConfig;
 import com.inductiveautomation.opcua.stack.core.channel.ClientSecureChannel;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
+import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.structured.ApplicationDescription;
 import com.inductiveautomation.opcua.stack.core.types.structured.EndpointDescription;
 
@@ -40,6 +41,8 @@ public interface UaClient {
     long getRequestTimeout();
 
     ChannelConfig getChannelConfig();
+
+    UInteger getChannelLifetime();
 
     ExecutorService getExecutorService();
 
