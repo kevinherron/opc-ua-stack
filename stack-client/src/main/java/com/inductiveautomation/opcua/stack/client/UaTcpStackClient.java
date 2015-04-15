@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -47,6 +48,8 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.HashedWheelTimer;
+import io.netty.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,15 +57,19 @@ import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Un
 
 public class UaTcpStackClient implements UaStackClient {
 
+    private static final long DEFAULT_TIMEOUT_MS = 60000;
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final ClientSecureChannel secureChannel;
-
-    private final Map<Long, CompletableFuture<UaResponseMessage>> pending = Maps.newConcurrentMap();
+    private final Map<UInteger, CompletableFuture<UaResponseMessage>> pending = Maps.newConcurrentMap();
+    private final Map<UInteger, Timeout> timeouts = Maps.newConcurrentMap();
+    private final HashedWheelTimer wheelTimer = Stack.sharedWheelTimer();
 
     private final ConnectionStateContext stateContext = new ConnectionStateContext(this);
 
     private final ApplicationDescription application;
+    private final ClientSecureChannel secureChannel;
+
     private final UaTcpClientConfig config;
 
     public UaTcpStackClient(UaTcpClientConfig config) {
@@ -97,8 +104,7 @@ public class UaTcpStackClient implements UaStackClient {
                             securityPolicy,
                             endpoint.getSecurityMode());
                 } catch (UaException e) {
-                    logger.warn("Unable to create ClientSecureChannel: {}",
-                            e.getMessage(), e);
+                    logger.warn("Unable to create ClientSecureChannel: {}", e.getMessage(), e);
                 }
             }
 
@@ -136,9 +142,11 @@ public class UaTcpStackClient implements UaStackClient {
 
         channelFuture.whenComplete((ch, ex) -> {
             if (ch != null) {
-                long requestHandle = request.getRequestHeader().getRequestHandle().longValue();
+                RequestHeader requestHeader = request.getRequestHeader();
 
-                pending.put(requestHandle, (CompletableFuture<UaResponseMessage>) future);
+                scheduleRequestTimeout(requestHeader);
+
+                pending.put(requestHeader.getRequestHandle(), (CompletableFuture<UaResponseMessage>) future);
 
                 ch.writeAndFlush(request, ch.voidPromise());
             } else {
@@ -153,7 +161,8 @@ public class UaTcpStackClient implements UaStackClient {
     public void sendRequests(List<? extends UaRequestMessage> requests,
                              List<CompletableFuture<? extends UaResponseMessage>> futures) {
 
-        Preconditions.checkArgument(requests.size() == futures.size(), "requests and futures parameters must be same size");
+        Preconditions.checkArgument(requests.size() == futures.size(),
+                "requests and futures parameters must be same size");
 
         CompletableFuture<Channel> channelFuture =
                 stateContext.handleEvent(ConnectionStateEvent.ConnectRequested).getChannelFuture();
@@ -168,17 +177,11 @@ public class UaTcpStackClient implements UaStackClient {
                     CompletableFuture<UaResponseMessage> future =
                             (CompletableFuture<UaResponseMessage>) futureIterator.next();
 
-                    long requestHandle = request.getRequestHeader().getRequestHandle().longValue();
+                    RequestHeader requestHeader = request.getRequestHeader();
 
-//                    Timeout timeout = wheelTimer.newTimeout(t -> {
-//                        timeouts.remove(requestHandle);
-//                        CompletableFuture<UaResponseMessage> f = pending.remove(requestHandle);
-//                        if (f != null) f.completeExceptionally(new UaException(StatusCodes.Bad_Timeout, "timeout"));
-//                    }, requestTimeout, TimeUnit.MILLISECONDS);
-//
-//                    timeouts.put(requestHandle, timeout);
+                    scheduleRequestTimeout(requestHeader);
 
-                    pending.put(requestHandle, future);
+                    pending.put(requestHeader.getRequestHandle(), future);
                 }
 
                 ch.eventLoop().execute(() -> {
@@ -189,6 +192,26 @@ public class UaTcpStackClient implements UaStackClient {
                 futures.forEach(f -> f.completeExceptionally(ex));
             }
         });
+    }
+
+    private void scheduleRequestTimeout(RequestHeader requestHeader) {
+        UInteger requestHandle = requestHeader.getRequestHandle();
+
+        long timeoutHint = requestHeader.getTimeoutHint() != null ?
+                requestHeader.getTimeoutHint().longValue() : DEFAULT_TIMEOUT_MS;
+
+        Timeout timeout = wheelTimer.newTimeout(t -> {
+            timeouts.remove(requestHandle);
+            if (!t.isCancelled()) {
+                CompletableFuture<UaResponseMessage> f = pending.remove(requestHandle);
+                if (f != null) {
+                    String message = "request timed out after " + timeoutHint + "ms";
+                    f.completeExceptionally(new UaException(StatusCodes.Bad_Timeout, message));
+                }
+            }
+        }, timeoutHint, TimeUnit.MILLISECONDS);
+
+        timeouts.put(requestHandle, timeout);
     }
 
     private void onChannelRead(ChannelHandlerContext ctx, UaResponseMessage msg) throws Exception {
@@ -212,7 +235,7 @@ public class UaTcpStackClient implements UaStackClient {
 
     public void receiveServiceResponse(UaResponseMessage response) {
         ResponseHeader header = response.getResponseHeader();
-        long requestHandle = header.getRequestHandle().longValue();
+        UInteger requestHandle = header.getRequestHandle();
 
         CompletableFuture<UaResponseMessage> future = pending.remove(requestHandle);
 
@@ -220,13 +243,13 @@ public class UaTcpStackClient implements UaStackClient {
             future.complete(response);
         }
 
-//        Timeout timeout = timeouts.remove(requestHandle);
-//        if (timeout != null) timeout.cancel();
+        Timeout timeout = timeouts.remove(requestHandle);
+        if (timeout != null) timeout.cancel();
     }
 
     public void receiveServiceFault(ServiceFault serviceFault) {
         ResponseHeader header = serviceFault.getResponseHeader();
-        long requestHandle = header.getRequestHandle().longValue();
+        UInteger requestHandle = header.getRequestHandle();
 
         CompletableFuture<UaResponseMessage> future = pending.remove(requestHandle);
 
@@ -238,8 +261,8 @@ public class UaTcpStackClient implements UaStackClient {
             future.completeExceptionally(serviceException);
         }
 
-//        Timeout timeout = timeouts.remove(requestHandle);
-//        if (timeout != null) timeout.cancel();
+        Timeout timeout = timeouts.remove(requestHandle);
+        if (timeout != null) timeout.cancel();
     }
 
     @Override
