@@ -27,6 +27,13 @@ public class ReconnectingState implements ConnectionState {
             case CONNECT_SUCCESS:
                 return new ConnectedState(channelFuture);
 
+            case CONNECTION_LOST:
+                // If we are able to get a TCP connection and then it is subsequently lost during reconnect, the
+                // server may be rejecting our attempt to resume the previous secure channel but not sending us a
+                // Bad_TcpSecureChannelUnknown Error message.
+                context.getClient().getSecureChannel().setChannelId(0);
+
+                // Intentional fall through.
             case CONNECT_FAILURE:
                 CompletableFuture<Channel> reconnectFuture = UaTcpStackClient.bootstrap(context.getClient());
 
