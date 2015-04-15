@@ -2,7 +2,6 @@ package com.inductiveautomation.opcua.stack.client;
 
 import java.net.URI;
 import java.security.KeyPair;
-import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +19,7 @@ import com.inductiveautomation.opcua.stack.client.handlers.UaTcpClientAcknowledg
 import com.inductiveautomation.opcua.stack.core.Stack;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
-import com.inductiveautomation.opcua.stack.core.application.UaClient;
+import com.inductiveautomation.opcua.stack.core.application.UaStackClient;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelConfig;
 import com.inductiveautomation.opcua.stack.core.channel.ClientSecureChannel;
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
@@ -29,6 +28,7 @@ import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.StatusCode;
 import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
+import com.inductiveautomation.opcua.stack.core.types.enumerated.ApplicationType;
 import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.inductiveautomation.opcua.stack.core.types.structured.ApplicationDescription;
 import com.inductiveautomation.opcua.stack.core.types.structured.EndpointDescription;
@@ -52,91 +52,63 @@ import org.slf4j.LoggerFactory;
 
 import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 
-public class UaTcpClient implements UaClient {
+public class UaTcpStackClient implements UaStackClient {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final ClientSecureChannel secureChannel;
-//    private final HashedWheelTimer wheelTimer = Stack.sharedWheelTimer();
 
     private final Map<Long, CompletableFuture<UaResponseMessage>> pending = Maps.newConcurrentMap();
-//    private final Map<Long, Timeout> timeouts = Maps.newConcurrentMap();
 
     private final ConnectionStateContext stateContext = new ConnectionStateContext(this);
 
-    private final Optional<Certificate> certificate;
-    private final Optional<KeyPair> keyPair;
-
-    private final EndpointDescription endpoint;
-    private final String endpointUrl;
     private final ApplicationDescription application;
-    private final long requestTimeout;
-    private final ChannelConfig channelConfig;
-    private final UInteger channelLifetime;
-    private final ExecutorService executor;
+    private final UaTcpClientConfig config;
 
-    UaTcpClient(String endpointUrl,
-                ApplicationDescription application,
-                long requestTimeout,
-                ChannelConfig channelConfig,
-                UInteger channelLifetime,
-                ExecutorService executor) {
+    public UaTcpStackClient(UaTcpClientConfig config) {
+        this.config = config;
 
-        this.endpoint = null;
-        this.endpointUrl = endpointUrl;
-        this.application = application;
-        this.requestTimeout = requestTimeout;
-        this.channelConfig = channelConfig;
-        this.channelLifetime = channelLifetime;
-        this.executor = executor;
+        application = new ApplicationDescription(
+                config.getApplicationUri(),
+                config.getProductUri(),
+                config.getApplicationName(),
+                ApplicationType.Client,
+                null, null, null);
 
-        certificate = Optional.empty();
-        keyPair = Optional.empty();
+        secureChannel = config.getEndpoint().map(endpoint -> {
+            ClientSecureChannel secureChannel = new ClientSecureChannel(
+                    SecurityPolicy.None, MessageSecurityMode.None);
 
-        secureChannel = new ClientSecureChannel(SecurityPolicy.None, MessageSecurityMode.None);
-    }
+            X509Certificate remoteCertificate = null;
+            List<X509Certificate> remoteCertificateChain = null;
 
-    public UaTcpClient(EndpointDescription endpoint,
-                       ApplicationDescription application,
-                       KeyPair keyPair,
-                       X509Certificate certificate,
-                       long requestTimeout,
-                       ChannelConfig channelConfig,
-                       UInteger channelLifetime,
-                       ExecutorService executor) throws UaException {
+            if (!endpoint.getServerCertificate().isNull()) {
+                try {
+                    byte[] bs = endpoint.getServerCertificate().bytes();
+                    remoteCertificate = CertificateUtil.decodeCertificate(bs);
+                    remoteCertificateChain = CertificateUtil.decodeCertificates(bs);
+                    SecurityPolicy securityPolicy = SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri());
 
-        this.endpoint = endpoint;
-        this.endpointUrl = endpoint.getEndpointUrl();
-        this.application = application;
-        this.requestTimeout = requestTimeout;
-        this.channelConfig = channelConfig;
-        this.channelLifetime = channelLifetime;
-        this.executor = executor;
+                    secureChannel = new ClientSecureChannel(
+                            config.getKeyPair().orElse(null),
+                            config.getCertificate().orElse(null),
+                            remoteCertificate,
+                            remoteCertificateChain,
+                            securityPolicy,
+                            endpoint.getSecurityMode());
+                } catch (UaException e) {
+                    logger.warn("Unable to create ClientSecureChannel: {}",
+                            e.getMessage(), e);
+                }
+            }
 
-        this.certificate = Optional.ofNullable(certificate);
-        this.keyPair = Optional.ofNullable(keyPair);
-
-        X509Certificate remoteCertificate = null;
-        List<X509Certificate> remoteCertificateChain = null;
-        if (!endpoint.getServerCertificate().isNull()) {
-            byte[] bs = endpoint.getServerCertificate().bytes();
-            remoteCertificate = CertificateUtil.decodeCertificate(bs);
-            remoteCertificateChain = CertificateUtil.decodeCertificates(bs);
-        }
-
-        secureChannel = new ClientSecureChannel(
-                keyPair,
-                certificate,
-                remoteCertificate,
-                remoteCertificateChain,
-                SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()),
-                endpoint.getSecurityMode()
-        );
+            return secureChannel;
+        }).orElse(new ClientSecureChannel(SecurityPolicy.None, MessageSecurityMode.None));
     }
 
     @Override
-    public CompletableFuture<UaClient> connect() {
-        CompletableFuture<UaClient> future = new CompletableFuture<>();
+    public CompletableFuture<UaStackClient> connect() {
+        CompletableFuture<UaStackClient> future = new CompletableFuture<>();
 
         ConnectionState state = stateContext.handleEvent(ConnectionStateEvent.ConnectRequested);
 
@@ -149,7 +121,7 @@ public class UaTcpClient implements UaClient {
     }
 
     @Override
-    public CompletableFuture<UaClient> disconnect() {
+    public CompletableFuture<UaStackClient> disconnect() {
         stateContext.handleEvent(ConnectionStateEvent.DisconnectRequested);
 
         return CompletableFuture.completedFuture(this);
@@ -165,14 +137,6 @@ public class UaTcpClient implements UaClient {
         channelFuture.whenComplete((ch, ex) -> {
             if (ch != null) {
                 long requestHandle = request.getRequestHeader().getRequestHandle().longValue();
-
-//                Timeout timeout = wheelTimer.newTimeout(t -> {
-//                    timeouts.remove(requestHandle);
-//                    CompletableFuture<UaResponseMessage> f = pending.remove(requestHandle);
-//                    if (f != null) f.completeExceptionally(new UaException(StatusCodes.Bad_Timeout, "timeout"));
-//                }, requestTimeout, TimeUnit.MILLISECONDS);
-//
-//                timeouts.put(requestHandle, timeout);
 
                 pending.put(requestHandle, (CompletableFuture<UaResponseMessage>) future);
 
@@ -279,23 +243,23 @@ public class UaTcpClient implements UaClient {
     }
 
     @Override
-    public Optional<Certificate> getCertificate() {
-        return certificate;
+    public Optional<X509Certificate> getCertificate() {
+        return config.getCertificate();
     }
 
     @Override
     public Optional<KeyPair> getKeyPair() {
-        return keyPair;
+        return config.getKeyPair();
     }
 
     @Override
     public ChannelConfig getChannelConfig() {
-        return channelConfig;
+        return config.getChannelConfig();
     }
 
     @Override
     public UInteger getChannelLifetime() {
-        return channelLifetime;
+        return config.getChannelLifetime();
     }
 
     @Override
@@ -309,26 +273,23 @@ public class UaTcpClient implements UaClient {
     }
 
     @Override
-    public EndpointDescription getEndpoint() {
-        return endpoint;
+    public Optional<EndpointDescription> getEndpoint() {
+        return config.getEndpoint();
     }
 
     @Override
     public String getEndpointUrl() {
-        return endpointUrl;
-    }
-
-    @Override
-    public long getRequestTimeout() {
-        return requestTimeout;
+        return config.getEndpoint()
+                .map(EndpointDescription::getEndpointUrl)
+                .orElse(config.getEndpointUrl().orElse(""));
     }
 
     @Override
     public ExecutorService getExecutorService() {
-        return executor;
+        return config.getExecutor();
     }
 
-    public static CompletableFuture<Channel> bootstrap(UaTcpClient client) {
+    public static CompletableFuture<Channel> bootstrap(UaTcpStackClient client) {
         CompletableFuture<Channel> handshake = new CompletableFuture<>();
 
         Bootstrap bootstrap = new Bootstrap();
@@ -366,9 +327,9 @@ public class UaTcpClient implements UaClient {
 
     private static class UaTcpClientHandler extends SimpleChannelInboundHandler<UaResponseMessage> {
 
-        private final UaTcpClient client;
+        private final UaTcpStackClient client;
 
-        private UaTcpClientHandler(UaTcpClient client) {
+        private UaTcpClientHandler(UaTcpStackClient client) {
             this.client = client;
         }
 
@@ -395,12 +356,15 @@ public class UaTcpClient implements UaClient {
      * @return the {@link EndpointDescription}s returned by the GetEndpoints service.
      */
     public static CompletableFuture<EndpointDescription[]> getEndpoints(String endpointUrl) {
-        UaTcpClient client = new UaTcpClientBuilder().build(endpointUrl);
+        UaTcpClientConfig config = UaTcpClientConfig.builder()
+                .setEndpointUrl(endpointUrl)
+                .build();
+
+        UaTcpStackClient client = new UaTcpStackClient(config);
 
         GetEndpointsRequest request = new GetEndpointsRequest(
                 new RequestHeader(null, DateTime.now(), uint(1), uint(0), null, uint(5000), null),
-                endpointUrl, null, new String[]{Stack.UA_TCP_BINARY_TRANSPORT_URI}
-        );
+                endpointUrl, null, new String[]{Stack.UA_TCP_BINARY_TRANSPORT_URI});
 
         return client.<GetEndpointsResponse>sendRequest(request)
                 .thenApply(GetEndpointsResponse::getEndpoints);

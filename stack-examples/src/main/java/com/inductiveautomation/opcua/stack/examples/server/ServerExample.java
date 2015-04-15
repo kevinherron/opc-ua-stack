@@ -13,12 +13,12 @@ import com.inductiveautomation.opcua.stack.core.types.enumerated.MessageSecurity
 import com.inductiveautomation.opcua.stack.core.types.structured.ResponseHeader;
 import com.inductiveautomation.opcua.stack.core.types.structured.TestStackRequest;
 import com.inductiveautomation.opcua.stack.core.types.structured.TestStackResponse;
-import com.inductiveautomation.opcua.stack.server.tcp.UaTcpServer;
+import com.inductiveautomation.opcua.stack.server.tcp.UaTcpStackServer;
 import com.inductiveautomation.opcua.stack.server.tcp.UaTcpServerBuilder;
 
 public class ServerExample {
 
-    private final UaTcpServer server;
+    private final UaTcpStackServer server;
 
     public ServerExample(X509Certificate certificate, KeyPair keyPair) throws Exception {
         File securityDir = new File("./security/");

@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.google.common.collect.Lists;
-import com.inductiveautomation.opcua.stack.client.UaTcpClient;
+import com.inductiveautomation.opcua.stack.client.UaTcpStackClient;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.UaRuntimeException;
@@ -54,11 +54,11 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
     private final int maxChunkCount;
     private final int maxChunkSize;
 
-    private final UaTcpClient client;
+    private final UaTcpStackClient client;
     private final SerializationQueue serializationQueue;
     private final CompletableFuture<Channel> handshakeFuture;
 
-    public UaTcpClientAsymmetricHandler(UaTcpClient client,
+    public UaTcpClientAsymmetricHandler(UaTcpStackClient client,
                                         SerializationQueue serializationQueue,
                                         CompletableFuture<Channel> handshakeFuture) {
 

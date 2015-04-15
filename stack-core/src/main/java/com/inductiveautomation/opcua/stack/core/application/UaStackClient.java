@@ -1,7 +1,7 @@
 package com.inductiveautomation.opcua.stack.core.application;
 
 import java.security.KeyPair;
-import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -15,11 +15,11 @@ import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.inductiveautomation.opcua.stack.core.types.structured.ApplicationDescription;
 import com.inductiveautomation.opcua.stack.core.types.structured.EndpointDescription;
 
-public interface UaClient {
+public interface UaStackClient {
 
-    CompletableFuture<UaClient> connect();
+    CompletableFuture<UaStackClient> connect();
 
-    CompletableFuture<UaClient> disconnect();
+    CompletableFuture<UaStackClient> disconnect();
 
     <T extends UaResponseMessage> CompletableFuture<T> sendRequest(UaRequestMessage request);
 
@@ -30,15 +30,13 @@ public interface UaClient {
 
     Optional<KeyPair> getKeyPair();
 
-    Optional<Certificate> getCertificate();
+    Optional<X509Certificate> getCertificate();
 
     ClientSecureChannel getSecureChannel();
 
-    EndpointDescription getEndpoint();
-
     String getEndpointUrl();
 
-    long getRequestTimeout();
+    Optional<EndpointDescription> getEndpoint();
 
     ChannelConfig getChannelConfig();
 

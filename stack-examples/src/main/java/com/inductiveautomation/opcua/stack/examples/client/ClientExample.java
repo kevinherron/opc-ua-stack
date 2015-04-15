@@ -7,9 +7,9 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.inductiveautomation.opcua.stack.client.UaTcpClient;
-import com.inductiveautomation.opcua.stack.client.UaTcpClientBuilder;
-import com.inductiveautomation.opcua.stack.core.application.UaClient;
+import com.inductiveautomation.opcua.stack.client.UaTcpStackClient;
+import com.inductiveautomation.opcua.stack.client.UaTcpClientConfig;
+import com.inductiveautomation.opcua.stack.core.application.UaStackClient;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
 import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
@@ -25,23 +25,26 @@ public class ClientExample {
 
     private final AtomicLong requestHandle = new AtomicLong(1L);
 
-    private final UaTcpClient client;
+    private final UaTcpStackClient client;
 
     public ClientExample(X509Certificate certificate, KeyPair keyPair) throws Exception {
         // Query endpoints and select highest security level.
-        EndpointDescription[] endpoints = UaTcpClient.getEndpoints("opc.tcp://localhost:12685/example").get();
+        EndpointDescription[] endpoints = UaTcpStackClient.getEndpoints("opc.tcp://localhost:12685/example").get();
 
         EndpointDescription endpoint = Arrays.stream(endpoints)
                 .sorted((e1, e2) -> e2.getSecurityLevel().intValue() - e1.getSecurityLevel().intValue())
                 .findFirst()
                 .orElseThrow(() -> new Exception("no endpoints returned"));
 
-        client = new UaTcpClientBuilder()
+        UaTcpClientConfig config = UaTcpClientConfig.builder()
                 .setApplicationName(LocalizedText.english("Stack Example Client"))
                 .setApplicationUri(String.format("urn:example-client:%s", UUID.randomUUID()))
                 .setCertificate(certificate)
                 .setKeyPair(keyPair)
-                .build(endpoint);
+                .setEndpoint(endpoint)
+                .build();
+
+        client = new UaTcpStackClient(config);
     }
 
     public CompletableFuture<TestStackResponse> testStack(int input) {
@@ -57,7 +60,7 @@ public class ClientExample {
         return client.sendRequest(request);
     }
 
-    public CompletableFuture<UaClient> disconnect() {
+    public CompletableFuture<UaStackClient> disconnect() {
         return client.disconnect();
     }
 

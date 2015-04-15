@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.google.common.collect.Lists;
-import com.inductiveautomation.opcua.stack.client.UaTcpClient;
+import com.inductiveautomation.opcua.stack.client.UaTcpStackClient;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelSecurity;
@@ -39,11 +39,11 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
     private final int maxChunkCount;
     private final int maxChunkSize;
 
-    private final UaTcpClient client;
+    private final UaTcpStackClient client;
     private final SerializationQueue serializationQueue;
     private final CompletableFuture<Channel> handshakeFuture;
 
-    public UaTcpClientSymmetricHandler(UaTcpClient client,
+    public UaTcpClientSymmetricHandler(UaTcpStackClient client,
                                        SerializationQueue serializationQueue,
                                        CompletableFuture<Channel> handshakeFuture) {
         this.client = client;

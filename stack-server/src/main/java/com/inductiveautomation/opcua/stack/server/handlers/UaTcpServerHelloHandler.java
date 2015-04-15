@@ -19,7 +19,7 @@ import com.inductiveautomation.opcua.stack.core.channel.messages.MessageType;
 import com.inductiveautomation.opcua.stack.core.channel.messages.TcpMessageDecoder;
 import com.inductiveautomation.opcua.stack.core.channel.messages.TcpMessageEncoder;
 import com.inductiveautomation.opcua.stack.server.tcp.SocketServer;
-import com.inductiveautomation.opcua.stack.server.tcp.UaTcpServer;
+import com.inductiveautomation.opcua.stack.server.tcp.UaTcpStackServer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -66,7 +66,7 @@ public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements Hea
 
         HelloMessage hello = TcpMessageDecoder.decodeHello(buffer);
 
-        UaTcpServer server = socketServer.getServer(hello.getEndpointUrl());
+        UaTcpStackServer server = socketServer.getServer(hello.getEndpointUrl());
 
         if (server == null) {
             throw new UaException(StatusCodes.Bad_TcpEndpointUrlInvalid,

@@ -23,7 +23,7 @@ import com.inductiveautomation.opcua.stack.core.Stack;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.application.CertificateManager;
-import com.inductiveautomation.opcua.stack.core.application.UaServer;
+import com.inductiveautomation.opcua.stack.core.application.UaStackServer;
 import com.inductiveautomation.opcua.stack.core.application.services.AttributeServiceSet;
 import com.inductiveautomation.opcua.stack.core.application.services.DiscoveryServiceSet;
 import com.inductiveautomation.opcua.stack.core.application.services.MethodServiceSet;
@@ -64,7 +64,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
 
-public class UaTcpServer implements UaServer {
+public class UaTcpStackServer implements UaStackServer {
 
     /**
      * The {@link AttributeKey} that maps to the {@link Channel} bound to a {@link ServerSecureChannel}.
@@ -100,15 +100,15 @@ public class UaTcpServer implements UaServer {
     private final List<SignedSoftwareCertificate> softwareCertificates;
     private final ChannelConfig channelConfig;
 
-    public UaTcpServer(String serverName,
-                       LocalizedText applicationName,
-                       String applicationUri,
-                       String productUri,
-                        CertificateManager certificateManager,
-                       ExecutorService executor,
-                       List<UserTokenPolicy> userTokenPolicies,
-                       List<SignedSoftwareCertificate> softwareCertificates,
-                       ChannelConfig channelConfig) {
+    public UaTcpStackServer(String serverName,
+                            LocalizedText applicationName,
+                            String applicationUri,
+                            String productUri,
+                            CertificateManager certificateManager,
+                            ExecutorService executor,
+                            List<UserTokenPolicy> userTokenPolicies,
+                            List<SignedSoftwareCertificate> softwareCertificates,
+                            ChannelConfig channelConfig) {
 
         this.serverName = serverName;
         this.applicationName = applicationName;
@@ -350,7 +350,7 @@ public class UaTcpServer implements UaServer {
     }
 
     @Override
-    public UaTcpServer addEndpoint(String endpointUri,
+    public UaTcpStackServer addEndpoint(String endpointUri,
                                    String bindAddress,
                                    X509Certificate certificate,
                                    SecurityPolicy securityPolicy,
@@ -411,7 +411,7 @@ public class UaTcpServer implements UaServer {
                     Lists.newArrayList();
 
             List<EndpointDescription> eds = endpoints.stream()
-                    .map(UaTcpServer.this::mapEndpoint)
+                    .map(UaTcpStackServer.this::mapEndpoint)
                     .filter(ed -> filterProfileUris(ed, profileUris))
                     .filter(this::filterEndpointUrls)
                     .collect(Collectors.toList());

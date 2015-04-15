@@ -2,7 +2,7 @@ package com.inductiveautomation.opcua.stack.client.fsm.states;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.inductiveautomation.opcua.stack.client.UaTcpClient;
+import com.inductiveautomation.opcua.stack.client.UaTcpStackClient;
 import com.inductiveautomation.opcua.stack.client.fsm.ConnectionStateContext;
 import com.inductiveautomation.opcua.stack.client.fsm.ConnectionStateEvent;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
@@ -28,7 +28,7 @@ public class ReconnectingState implements ConnectionState {
                 return new ConnectedState(channelFuture);
 
             case ConnectFailure:
-                CompletableFuture<Channel> reconnectFuture = UaTcpClient.bootstrap(context.getClient());
+                CompletableFuture<Channel> reconnectFuture = UaTcpStackClient.bootstrap(context.getClient());
 
                 reconnectFuture.whenCompleteAsync((ch, ex) -> {
                     if (ch != null) {

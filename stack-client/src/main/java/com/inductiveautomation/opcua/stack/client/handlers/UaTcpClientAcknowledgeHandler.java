@@ -4,7 +4,7 @@ import java.nio.ByteOrder;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import com.inductiveautomation.opcua.stack.client.UaTcpClient;
+import com.inductiveautomation.opcua.stack.client.UaTcpStackClient;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelConfig;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelParameters;
@@ -38,9 +38,9 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
 
     private final CompletableFuture<Channel> handshakeFuture;
 
-    private final UaTcpClient client;
+    private final UaTcpStackClient client;
 
-    public UaTcpClientAcknowledgeHandler(UaTcpClient client, CompletableFuture<Channel> handshakeFuture) {
+    public UaTcpClientAcknowledgeHandler(UaTcpStackClient client, CompletableFuture<Channel> handshakeFuture) {
         this.client = client;
         this.handshakeFuture = handshakeFuture;
     }

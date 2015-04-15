@@ -63,7 +63,7 @@ import com.inductiveautomation.opcua.stack.core.types.structured.UnregisterNodes
 import com.inductiveautomation.opcua.stack.core.types.structured.UserTokenPolicy;
 import com.inductiveautomation.opcua.stack.core.types.structured.WriteRequest;
 
-public interface UaServer {
+public interface UaStackServer {
 
     void startup();
 
@@ -100,11 +100,11 @@ public interface UaServer {
      * @param messageSecurity the {@link MessageSecurityMode} for this endpoint.
      * @return
      */
-    UaServer addEndpoint(String endpointUri,
-                         String bindAddress,
-                         X509Certificate certificate,
-                         SecurityPolicy securityPolicy,
-                         MessageSecurityMode messageSecurity);
+    UaStackServer addEndpoint(String endpointUri,
+                              String bindAddress,
+                              X509Certificate certificate,
+                              SecurityPolicy securityPolicy,
+                              MessageSecurityMode messageSecurity);
 
     /**
      * Add an endpoint with no certificate or security.
@@ -113,7 +113,7 @@ public interface UaServer {
      * @param bindAddress the address to bind to.
      * @return
      */
-    default UaServer addEndpoint(String endpointUri, String bindAddress) {
+    default UaStackServer addEndpoint(String endpointUri, String bindAddress) {
         return addEndpoint(
                 endpointUri, bindAddress, null,
                 SecurityPolicy.None, MessageSecurityMode.None);

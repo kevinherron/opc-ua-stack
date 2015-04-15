@@ -41,10 +41,10 @@ import com.inductiveautomation.opcua.stack.core.types.structured.ResponseHeader;
  */
 public class FallbackServer {
 
-    private final Set<UaTcpServer> registered = Sets.newConcurrentHashSet();
-    private final Map<String, UaTcpServer> servers = Maps.newConcurrentMap();
+    private final Set<UaTcpStackServer> registered = Sets.newConcurrentHashSet();
+    private final Map<String, UaTcpStackServer> servers = Maps.newConcurrentMap();
 
-    private final UaTcpServer server;
+    private final UaTcpStackServer server;
 
     public FallbackServer() {
         server = new UaTcpServerBuilder()
@@ -57,19 +57,19 @@ public class FallbackServer {
         server.addRequestHandler(GetEndpointsRequest.class, new GetEndpointsHandler());
     }
 
-    public void registerServer(UaTcpServer server) {
+    public void registerServer(UaTcpStackServer server) {
         if (registered.add(server)) {
             server.getDiscoveryUrls().forEach(url -> servers.put(url, server));
         }
     }
 
-    public void unregisterServer(UaTcpServer server) {
+    public void unregisterServer(UaTcpStackServer server) {
         if (registered.remove(server)) {
             server.getDiscoveryUrls().forEach(servers::remove);
         }
     }
 
-    public UaTcpServer getServer() {
+    public UaTcpStackServer getServer() {
         return server;
     }
 
@@ -82,7 +82,7 @@ public class FallbackServer {
             String endpointUrl = request.getEndpointUrl();
             if (endpointUrl == null) endpointUrl = "";
 
-            UaTcpServer server = servers.get(endpointUrl);
+            UaTcpStackServer server = servers.get(endpointUrl);
 
             EndpointDescription[] endpoints = (server != null) ?
                     server.getEndpointDescriptions() :
@@ -122,7 +122,7 @@ public class FallbackServer {
             List<ApplicationDescription> servers = Lists.newArrayList();
             List<String> serverUris = Lists.newArrayList(request.getServerUris());
 
-            for (UaTcpServer server : registered) {
+            for (UaTcpStackServer server : registered) {
                 ApplicationDescription description = server.getApplicationDescription();
 
                 if (serverUris.isEmpty()) {

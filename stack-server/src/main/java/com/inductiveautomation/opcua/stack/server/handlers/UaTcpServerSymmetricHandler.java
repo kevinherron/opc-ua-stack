@@ -20,7 +20,7 @@ import com.inductiveautomation.opcua.stack.core.channel.messages.MessageType;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
 import com.inductiveautomation.opcua.stack.core.util.BufferUtil;
-import com.inductiveautomation.opcua.stack.server.tcp.UaTcpServer;
+import com.inductiveautomation.opcua.stack.server.tcp.UaTcpStackServer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
@@ -36,11 +36,11 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
     private final int maxChunkCount;
     private final int maxChunkSize;
 
-    private final UaTcpServer server;
+    private final UaTcpStackServer server;
     private final SerializationQueue serializationQueue;
     private final ServerSecureChannel secureChannel;
 
-    public UaTcpServerSymmetricHandler(UaTcpServer server,
+    public UaTcpServerSymmetricHandler(UaTcpStackServer server,
                                        SerializationQueue serializationQueue,
                                        ServerSecureChannel secureChannel) {
 
@@ -57,7 +57,7 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
         if (secureChannel != null) {
-            secureChannel.attr(UaTcpServer.BoundChannelKey).set(ctx.channel());
+            secureChannel.attr(UaTcpStackServer.BoundChannelKey).set(ctx.channel());
         }
 
         super.channelActive(ctx);
@@ -66,7 +66,7 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (secureChannel != null) {
-            secureChannel.attr(UaTcpServer.BoundChannelKey).remove();
+            secureChannel.attr(UaTcpStackServer.BoundChannelKey).remove();
         }
 
         super.channelInactive(ctx);

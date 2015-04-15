@@ -27,7 +27,7 @@ public class SocketServer {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final Map<String, UaTcpServer> servers = Maps.newConcurrentMap();
+    private final Map<String, UaTcpStackServer> servers = Maps.newConcurrentMap();
 
     private volatile Channel channel;
 
@@ -71,7 +71,7 @@ public class SocketServer {
         bindFuture.get();
     }
 
-    public void addServer(UaTcpServer server) {
+    public void addServer(UaTcpStackServer server) {
         server.getEndpointUrls().forEach(url -> {
             if (!servers.containsKey(url)) {
                 servers.put(url, server);
@@ -86,7 +86,7 @@ public class SocketServer {
         });
     }
 
-    public void removeServer(UaTcpServer server) {
+    public void removeServer(UaTcpStackServer server) {
         server.getEndpointUrls().forEach(url -> {
             if (servers.remove(url) != null) {
                 logger.debug("Removed server at {}", url);
@@ -99,7 +99,7 @@ public class SocketServer {
         });
     }
 
-    public UaTcpServer getServer(String endpointUrl) {
+    public UaTcpStackServer getServer(String endpointUrl) {
         return servers.get(endpointUrl);
     }
 

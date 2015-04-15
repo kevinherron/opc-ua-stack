@@ -70,8 +70,8 @@ public class UaTcpServerBuilder {
         return this;
     }
 
-    public UaTcpServer build() {
-        return new UaTcpServer(
+    public UaTcpStackServer build() {
+        return new UaTcpStackServer(
                 serverName,
                 applicationName,
                 applicationUri,

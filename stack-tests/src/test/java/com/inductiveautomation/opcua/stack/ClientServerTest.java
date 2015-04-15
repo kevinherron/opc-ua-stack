@@ -5,8 +5,8 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import com.beust.jcommander.internal.Lists;
-import com.inductiveautomation.opcua.stack.client.UaTcpClient;
-import com.inductiveautomation.opcua.stack.client.UaTcpClientBuilder;
+import com.inductiveautomation.opcua.stack.client.UaTcpStackClient;
+import com.inductiveautomation.opcua.stack.client.UaTcpClientConfig;
 import com.inductiveautomation.opcua.stack.core.Stack;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
@@ -30,7 +30,7 @@ import com.inductiveautomation.opcua.stack.core.types.structured.TestStackReques
 import com.inductiveautomation.opcua.stack.core.types.structured.TestStackResponse;
 import com.inductiveautomation.opcua.stack.core.util.CryptoRestrictions;
 import com.inductiveautomation.opcua.stack.server.tcp.SocketServer;
-import com.inductiveautomation.opcua.stack.server.tcp.UaTcpServer;
+import com.inductiveautomation.opcua.stack.server.tcp.UaTcpStackServer;
 import com.inductiveautomation.opcua.stack.server.tcp.UaTcpServerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,7 +79,7 @@ public class ClientServerTest extends SecurityFixture {
 
     private EndpointDescription[] endpoints;
 
-    UaTcpServer server;
+    UaTcpStackServer server;
 
     @BeforeTest
     public void setUpClientServer() throws Exception {
@@ -116,7 +116,7 @@ public class ClientServerTest extends SecurityFixture {
 
         server.startup();
 
-        endpoints = UaTcpClient.getEndpoints("opc.tcp://localhost:12685/test").get();
+        endpoints = UaTcpStackClient.getEndpoints("opc.tcp://localhost:12685/test").get();
     }
 
     @AfterTest
@@ -132,7 +132,7 @@ public class ClientServerTest extends SecurityFixture {
         logger.info("SecurityPolicy={}, MessageSecurityMode={}, input={}",
                 SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()), endpoint.getSecurityMode(), input);
 
-        UaTcpClient client = createClient(endpoint);
+        UaTcpStackClient client = createClient(endpoint);
 
         connectAndTest(input, client);
     }
@@ -145,7 +145,7 @@ public class ClientServerTest extends SecurityFixture {
         logger.info("SecurityPolicy={}, MessageSecurityMode={}, input={}",
                 SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()), endpoint.getSecurityMode(), input);
 
-        UaTcpClient client = createClient(endpoint);
+        UaTcpStackClient client = createClient(endpoint);
 
         connectAndTest(input, client);
     }
@@ -157,7 +157,7 @@ public class ClientServerTest extends SecurityFixture {
         logger.info("SecurityPolicy={}, MessageSecurityMode={}, input={}",
                 SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()), endpoint.getSecurityMode(), input);
 
-        UaTcpClient client = createClient(endpoint);
+        UaTcpStackClient client = createClient(endpoint);
 
         connectAndTest(input, client);
     }
@@ -169,7 +169,7 @@ public class ClientServerTest extends SecurityFixture {
         logger.info("SecurityPolicy={}, MessageSecurityMode={}, input={}",
                 SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()), endpoint.getSecurityMode(), input);
 
-        UaTcpClient client = createClient(endpoint);
+        UaTcpStackClient client = createClient(endpoint);
 
         connectAndTest(input, client);
     }
@@ -181,7 +181,7 @@ public class ClientServerTest extends SecurityFixture {
         logger.info("SecurityPolicy={}, MessageSecurityMode={}, input={}",
                 SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()), endpoint.getSecurityMode(), input);
 
-        UaTcpClient client = createClient(endpoint);
+        UaTcpStackClient client = createClient(endpoint);
 
         connectAndTest(input, client);
     }
@@ -193,7 +193,7 @@ public class ClientServerTest extends SecurityFixture {
         logger.info("SecurityPolicy={}, MessageSecurityMode={}, input={}",
                 SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()), endpoint.getSecurityMode(), input);
 
-        UaTcpClient client = createClient(endpoint);
+        UaTcpStackClient client = createClient(endpoint);
 
         connectAndTest(input, client);
     }
@@ -205,19 +205,22 @@ public class ClientServerTest extends SecurityFixture {
         logger.info("SecurityPolicy={}, MessageSecurityMode={}, input={}",
                 SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()), endpoint.getSecurityMode(), input);
 
-        UaTcpClient client = createClient(endpoint);
+        UaTcpStackClient client = createClient(endpoint);
 
         connectAndTest(input, client);
     }
 
-    private UaTcpClient createClient(EndpointDescription endpoint) throws UaException {
-        return new UaTcpClientBuilder()
+    private UaTcpStackClient createClient(EndpointDescription endpoint) throws UaException {
+        UaTcpClientConfig config = UaTcpClientConfig.builder()
+                .setEndpoint(endpoint)
                 .setKeyPair(clientKeyPair)
                 .setCertificate(clientCertificate)
-                .build(endpoint);
+                .build();
+
+        return new UaTcpStackClient(config);
     }
 
-    private void connectAndTest(Variant input, UaTcpClient client) throws InterruptedException, java.util.concurrent.ExecutionException {
+    private void connectAndTest(Variant input, UaTcpStackClient client) throws InterruptedException, java.util.concurrent.ExecutionException {
         client.connect().get();
 
         List<TestStackRequest> requests = Lists.newArrayList();

@@ -34,7 +34,7 @@ import com.inductiveautomation.opcua.stack.core.types.structured.OpenSecureChann
 import com.inductiveautomation.opcua.stack.core.types.structured.ResponseHeader;
 import com.inductiveautomation.opcua.stack.core.util.BufferUtil;
 import com.inductiveautomation.opcua.stack.core.util.CertificateValidator;
-import com.inductiveautomation.opcua.stack.server.tcp.UaTcpServer;
+import com.inductiveautomation.opcua.stack.server.tcp.UaTcpStackServer;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -63,10 +63,10 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
     private final int maxChunkCount;
     private final int maxChunkSize;
 
-    private final UaTcpServer server;
+    private final UaTcpStackServer server;
     private final SerializationQueue serializationQueue;
 
-    public UaTcpServerAsymmetricHandler(UaTcpServer server, SerializationQueue serializationQueue) {
+    public UaTcpServerAsymmetricHandler(UaTcpStackServer server, SerializationQueue serializationQueue) {
         this.server = server;
         this.serializationQueue = serializationQueue;
 
@@ -150,7 +150,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                             "certificate requesting renewal did not match existing certificate.");
                 }
 
-                Channel boundChannel = secureChannel.attr(UaTcpServer.BoundChannelKey).get();
+                Channel boundChannel = secureChannel.attr(UaTcpStackServer.BoundChannelKey).get();
                 if (boundChannel != null && boundChannel != ctx.channel()) {
                     throw new UaException(StatusCodes.Bad_SecurityChecksFailed,
                             "received a renewal request from channel other than the bound channel.");

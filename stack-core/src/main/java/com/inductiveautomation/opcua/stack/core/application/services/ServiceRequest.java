@@ -4,7 +4,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.common.base.MoreObjects;
 import com.inductiveautomation.opcua.stack.core.UaException;
-import com.inductiveautomation.opcua.stack.core.application.UaServer;
+import com.inductiveautomation.opcua.stack.core.application.UaStackServer;
 import com.inductiveautomation.opcua.stack.core.channel.ServerSecureChannel;
 import com.inductiveautomation.opcua.stack.core.serialization.UaRequestMessage;
 import com.inductiveautomation.opcua.stack.core.serialization.UaResponseMessage;
@@ -20,12 +20,12 @@ public class ServiceRequest<ReqT extends UaRequestMessage, ResT extends UaRespon
 
     private final ReqT request;
     private final long requestId;
-    private final UaServer server;
+    private final UaStackServer server;
     private final ServerSecureChannel secureChannel;
 
     public ServiceRequest(ReqT request,
                           long requestId,
-                          UaServer server,
+                          UaStackServer server,
                           ServerSecureChannel secureChannel) {
 
         this.request = request;
@@ -46,7 +46,7 @@ public class ServiceRequest<ReqT extends UaRequestMessage, ResT extends UaRespon
         return requestId;
     }
 
-    public UaServer getServer() {
+    public UaStackServer getServer() {
         return server;
     }
 
