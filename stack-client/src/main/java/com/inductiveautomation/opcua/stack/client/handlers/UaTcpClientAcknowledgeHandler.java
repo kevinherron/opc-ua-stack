@@ -4,6 +4,8 @@ import java.nio.ByteOrder;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import com.google.common.collect.Lists;
+import com.google.common.primitives.Ints;
 import com.inductiveautomation.opcua.stack.client.UaTcpStackClient;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.channel.ChannelConfig;
@@ -17,8 +19,6 @@ import com.inductiveautomation.opcua.stack.core.channel.messages.MessageType;
 import com.inductiveautomation.opcua.stack.core.channel.messages.TcpMessageDecoder;
 import com.inductiveautomation.opcua.stack.core.channel.messages.TcpMessageEncoder;
 import com.inductiveautomation.opcua.stack.core.serialization.UaMessage;
-import com.google.common.collect.Lists;
-import com.google.common.primitives.Ints;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -159,7 +159,7 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
             ErrorMessage error = TcpMessageDecoder.decodeError(buffer);
 
             logger.error("Received error message: " + error);
-            handshakeFuture.completeExceptionally(new UaException(error.getError(), error.getReason()));
+            handshakeFuture.completeExceptionally(new UaException(error.getError(), "error=" + error.getReason()));
         } catch (UaException e) {
             logger.error("An exception occurred while decoding an error message: {}", e.getMessage(), e);
             handshakeFuture.completeExceptionally(e);
