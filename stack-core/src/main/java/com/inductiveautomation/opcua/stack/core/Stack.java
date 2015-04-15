@@ -2,6 +2,7 @@ package com.inductiveautomation.opcua.stack.core;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -27,6 +28,13 @@ public final class Stack {
      */
     public static ExecutorService sharedExecutor() {
         return ExecutorHolder.EXECUTOR_SERVICE;
+    }
+
+    /**
+     * @return a shared {@link ScheduledExecutorService}.
+     */
+    public static ScheduledExecutorService sharedScheduledExecutor() {
+        return ScheduledExecutorHolder.SCHEDULED_EXECUTOR_SERVICE;
     }
 
     /**
@@ -68,6 +76,21 @@ public final class Stack {
                         return thread;
                     }
                 });
+    }
+
+    private static class ScheduledExecutorHolder {
+        private static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE =
+                Executors.newSingleThreadScheduledExecutor(
+                        new ThreadFactory() {
+                            private final AtomicLong threadNumber = new AtomicLong(0L);
+
+                            @Override
+                            public Thread newThread(Runnable r) {
+                                Thread thread = new Thread(r, "ua-shared-scheduled-executor-" + threadNumber.getAndIncrement());
+                                thread.setDaemon(true);
+                                return thread;
+                            }
+                        });
     }
 
     private static class WheelTimerHolder {
