@@ -1,31 +1,53 @@
 package com.inductiveautomation.opcua.stack.client.fsm.states;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import com.inductiveautomation.opcua.stack.client.UaTcpStackClient;
 import com.inductiveautomation.opcua.stack.client.fsm.ConnectionStateContext;
 import com.inductiveautomation.opcua.stack.client.fsm.ConnectionStateEvent;
-import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
-import com.inductiveautomation.opcua.stack.core.types.builtin.NodeId;
-import com.inductiveautomation.opcua.stack.core.types.structured.CloseSecureChannelRequest;
-import com.inductiveautomation.opcua.stack.core.types.structured.RequestHeader;
+import com.inductiveautomation.opcua.stack.core.Stack;
 import io.netty.channel.Channel;
-
-import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReconnectingState implements ConnectionState {
 
-    private final CompletableFuture<Channel> channelFuture;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public ReconnectingState(CompletableFuture<Channel> channelFuture) {
-        this.channelFuture = channelFuture;
+    private final CompletableFuture<Channel> channelFuture = new CompletableFuture<>();
+    private volatile Channel channel;
+
+    private final long connectDelay;
+
+    public ReconnectingState(long connectDelay) {
+        this.connectDelay = connectDelay;
+    }
+
+    @Override
+    public void activate(ConnectionStateEvent event, ConnectionStateContext context) {
+        logger.debug("Reconnecting in {} seconds...", connectDelay);
+
+        Stack.sharedScheduledExecutor().schedule(() -> {
+            CompletableFuture<Channel> future = UaTcpStackClient.bootstrap(context.getClient());
+
+            future.whenComplete((channel, ex) -> {
+                if (channel != null) {
+                    this.channel = channel;
+                    context.handleEvent(ConnectionStateEvent.CONNECT_SUCCESS);
+                } else {
+                    this.channelFuture.completeExceptionally(ex);
+                    context.handleEvent(ConnectionStateEvent.CONNECT_FAILURE);
+                }
+            });
+        }, connectDelay, TimeUnit.SECONDS);
     }
 
     @Override
     public ConnectionState transition(ConnectionStateEvent event, ConnectionStateContext context) {
         switch (event) {
             case CONNECT_SUCCESS:
-                return new ConnectedState(channelFuture);
+                return new ConnectedState(channel, channelFuture);
 
             case CONNECTION_LOST:
                 // If we are able to get a TCP connection and then it is subsequently lost during reconnect, the
@@ -33,40 +55,30 @@ public class ReconnectingState implements ConnectionState {
                 // Bad_TcpSecureChannelUnknown Error message.
                 context.getClient().getSecureChannel().setChannelId(0);
 
+                return this; // returning 'this' prevents activate() from being called.
+
                 // Intentional fall through.
             case CONNECT_FAILURE:
-                CompletableFuture<Channel> reconnectFuture = UaTcpStackClient.bootstrap(context.getClient());
-
-                reconnectFuture.whenCompleteAsync((ch, ex) -> {
-                    if (ch != null) {
-                        context.handleEvent(ConnectionStateEvent.CONNECT_SUCCESS);
-                    } else {
-                        context.handleEvent(ConnectionStateEvent.CONNECT_FAILURE);
-                    }
-                }, context.getClient().getExecutorService());
-
-                return new ReconnectingState(reconnectFuture);
+                return new ReconnectingState(nextConnectDelay());
 
             case DISCONNECT_REQUESTED:
-                channelFuture.thenAccept(ch -> {
-                    RequestHeader requestHeader = new RequestHeader(
-                            NodeId.NULL_VALUE, DateTime.now(), uint(0), uint(0), null, uint(0), null);
-
-                    CloseSecureChannelRequest request = new CloseSecureChannelRequest(requestHeader);
-
-                    ch.pipeline().fireUserEventTriggered(request);
-                });
-
-                return new DisconnectedState();
-
-            default:
-                return context.getState();
+                return new DisconnectingState(channelFuture);
         }
+
+        return this;
     }
 
     @Override
     public CompletableFuture<Channel> getChannelFuture() {
         return channelFuture;
+    }
+
+    private long nextConnectDelay() {
+        if (connectDelay == 0) {
+            return 1;
+        } else {
+            return Math.min(connectDelay << 1, 16);
+        }
     }
 
 }

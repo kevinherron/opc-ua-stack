@@ -9,6 +9,14 @@ import io.netty.channel.Channel;
 public interface ConnectionState {
 
     /**
+     * Activate this state.
+     *
+     * @param event   the {@link ConnectionStateEvent} that caused this state to be activated.
+     * @param context the {@link ConnectionStateContext}.
+     */
+    void activate(ConnectionStateEvent event, ConnectionStateContext context);
+
+    /**
      * Given {@code event}, return the next {@link ConnectionState}.
      *
      * @param event   the {@link ConnectionStateEvent}.
@@ -18,7 +26,7 @@ public interface ConnectionState {
     ConnectionState transition(ConnectionStateEvent event, ConnectionStateContext context);
 
     /**
-     * @return the {@link CompletableFuture} holding the eventual {@link Channel}.
+     * @return the {@link CompletableFuture} holding the {@link Channel} for this client connection.
      */
     CompletableFuture<Channel> getChannelFuture();
 
