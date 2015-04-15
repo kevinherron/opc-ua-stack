@@ -102,7 +102,7 @@ public class CertificateValidator {
             PKIXCertPathBuilderResult result = (PKIXCertPathBuilderResult) builder.build(params);
 
             logger.debug("Validated certificate chain: {}", result.getCertPath());
-        } catch (Exception e) {
+        } catch (Throwable t) {
             throw new UaException(StatusCodes.Bad_SecurityChecksFailed);
         }
     }
