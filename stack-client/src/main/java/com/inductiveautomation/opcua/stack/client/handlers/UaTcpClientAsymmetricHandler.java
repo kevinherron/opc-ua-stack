@@ -76,6 +76,9 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (renewFuture != null) renewFuture.cancel(false);
 
+        handshakeFuture.completeExceptionally(
+                new UaException(StatusCodes.Bad_ConnectionClosed, "connection closed"));
+
         super.channelInactive(ctx);
     }
 
@@ -335,7 +338,8 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
         try {
             ErrorMessage error = TcpMessageDecoder.decodeError(buffer);
 
-            if (error.getError() == StatusCodes.Bad_TcpSecureChannelUnknown) {
+            if (error.getError() == StatusCodes.Bad_TcpSecureChannelUnknown ||
+                    error.getError() == StatusCodes.Bad_SecureChannelIdInvalid) {
                 secureChannel.setChannelId(0);
             }
 
