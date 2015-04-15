@@ -59,6 +59,11 @@ public class SerializationQueue {
         decodingQueue.submit(() -> consumer.accept(binaryDecoder, chunkDecoder));
     }
 
+    public void pause() {
+        encodingQueue.pause();
+        decodingQueue.pause();
+    }
+
     public ChannelParameters getParameters() {
         return parameters;
     }
