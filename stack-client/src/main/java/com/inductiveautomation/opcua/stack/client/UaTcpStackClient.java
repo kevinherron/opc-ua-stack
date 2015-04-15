@@ -15,7 +15,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.inductiveautomation.opcua.stack.client.fsm.ConnectionStateContext;
 import com.inductiveautomation.opcua.stack.client.fsm.ConnectionStateEvent;
-import com.inductiveautomation.opcua.stack.client.fsm.states.ConnectionState;
 import com.inductiveautomation.opcua.stack.client.handlers.UaTcpClientAcknowledgeHandler;
 import com.inductiveautomation.opcua.stack.core.Stack;
 import com.inductiveautomation.opcua.stack.core.StatusCodes;
@@ -65,10 +64,9 @@ public class UaTcpStackClient implements UaStackClient {
     private final Map<UInteger, Timeout> timeouts = Maps.newConcurrentMap();
     private final HashedWheelTimer wheelTimer = Stack.sharedWheelTimer();
 
-    private final ConnectionStateContext stateContext = new ConnectionStateContext(this);
-
     private final ApplicationDescription application;
     private final ClientSecureChannel secureChannel;
+    private final ConnectionStateContext stateContext;
 
     private final UaTcpStackClientConfig config;
 
@@ -96,13 +94,15 @@ public class UaTcpStackClient implements UaStackClient {
                     remoteCertificateChain = CertificateUtil.decodeCertificates(bs);
                     SecurityPolicy securityPolicy = SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri());
 
-                    secureChannel = new ClientSecureChannel(
-                            config.getKeyPair().orElse(null),
-                            config.getCertificate().orElse(null),
-                            remoteCertificate,
-                            remoteCertificateChain,
-                            securityPolicy,
-                            endpoint.getSecurityMode());
+                    if (securityPolicy != SecurityPolicy.None) {
+                        secureChannel = new ClientSecureChannel(
+                                config.getKeyPair().orElse(null),
+                                config.getCertificate().orElse(null),
+                                remoteCertificate,
+                                remoteCertificateChain,
+                                securityPolicy,
+                                endpoint.getSecurityMode());
+                    }
                 } catch (UaException e) {
                     logger.warn("Unable to create ClientSecureChannel: {}", e.getMessage(), e);
                 }
@@ -110,15 +110,17 @@ public class UaTcpStackClient implements UaStackClient {
 
             return secureChannel;
         }).orElse(new ClientSecureChannel(SecurityPolicy.None, MessageSecurityMode.None));
+
+        stateContext = new ConnectionStateContext(this, config.getExecutor());
     }
 
     @Override
     public CompletableFuture<UaStackClient> connect() {
         CompletableFuture<UaStackClient> future = new CompletableFuture<>();
 
-        ConnectionState state = stateContext.handleEvent(ConnectionStateEvent.CONNECT_REQUESTED);
+        stateContext.handleEvent(ConnectionStateEvent.CONNECT_REQUESTED);
 
-        state.getChannelFuture().whenComplete((ch, ex) -> {
+        stateContext.getChannel().whenComplete((ch, ex) -> {
             if (ch != null) future.complete(this);
             else future.completeExceptionally(ex);
         });
@@ -219,7 +221,6 @@ public class UaTcpStackClient implements UaStackClient {
 
     private void onExceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error("Exception caught: {}", cause.getMessage(), cause);
-        stateContext.handleEvent(ConnectionStateEvent.CONNECTION_LOST);
         ctx.close();
     }
 
@@ -354,6 +355,9 @@ public class UaTcpStackClient implements UaStackClient {
         @Override
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
             client.onChannelInactive(ctx);
+
+            // Let the lower layers know the channel is inactive.
+            super.channelInactive(ctx);
         }
 
         @Override
@@ -380,6 +384,7 @@ public class UaTcpStackClient implements UaStackClient {
                 endpointUrl, null, new String[]{Stack.UA_TCP_BINARY_TRANSPORT_URI});
 
         return client.<GetEndpointsResponse>sendRequest(request)
+                .whenComplete((r, ex) -> client.disconnect())
                 .thenApply(GetEndpointsResponse::getEndpoints);
     }
 
