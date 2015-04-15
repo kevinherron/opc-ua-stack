@@ -24,7 +24,7 @@ public class ConnectedState implements ConnectionState {
     @Override
     public ConnectionState transition(ConnectionStateEvent event, ConnectionStateContext context) {
         switch(event) {
-            case DisconnectRequested:
+            case DISCONNECT_REQUESTED:
                 channelFuture.thenAccept(ch -> {
                     RequestHeader requestHeader = new RequestHeader(
                             NodeId.NULL_VALUE, DateTime.now(), uint(0), uint(0), null, uint(0), null);
@@ -36,14 +36,14 @@ public class ConnectedState implements ConnectionState {
 
                 return new DisconnectedState();
 
-            case ConnectionLost:
+            case CONNECTION_LOST:
                 CompletableFuture<Channel> channelFuture = UaTcpStackClient.bootstrap(context.getClient());
 
                 channelFuture.whenCompleteAsync((ch, ex) -> {
                     if (ch != null) {
-                        context.handleEvent(ConnectionStateEvent.ConnectSuccess);
+                        context.handleEvent(ConnectionStateEvent.CONNECT_SUCCESS);
                     } else {
-                        context.handleEvent(ConnectionStateEvent.ConnectFailure);
+                        context.handleEvent(ConnectionStateEvent.CONNECT_FAILURE);
                     }
                 }, context.getClient().getExecutorService());
 

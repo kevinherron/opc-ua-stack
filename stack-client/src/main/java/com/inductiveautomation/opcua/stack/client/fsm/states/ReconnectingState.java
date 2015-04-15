@@ -24,23 +24,23 @@ public class ReconnectingState implements ConnectionState {
     @Override
     public ConnectionState transition(ConnectionStateEvent event, ConnectionStateContext context) {
         switch (event) {
-            case ConnectSuccess:
+            case CONNECT_SUCCESS:
                 return new ConnectedState(channelFuture);
 
-            case ConnectFailure:
+            case CONNECT_FAILURE:
                 CompletableFuture<Channel> reconnectFuture = UaTcpStackClient.bootstrap(context.getClient());
 
                 reconnectFuture.whenCompleteAsync((ch, ex) -> {
                     if (ch != null) {
-                        context.handleEvent(ConnectionStateEvent.ConnectSuccess);
+                        context.handleEvent(ConnectionStateEvent.CONNECT_SUCCESS);
                     } else {
-                        context.handleEvent(ConnectionStateEvent.ConnectFailure);
+                        context.handleEvent(ConnectionStateEvent.CONNECT_FAILURE);
                     }
                 }, context.getClient().getExecutorService());
 
                 return new ReconnectingState(reconnectFuture);
 
-            case DisconnectRequested:
+            case DISCONNECT_REQUESTED:
                 channelFuture.thenAccept(ch -> {
                     RequestHeader requestHeader = new RequestHeader(
                             NodeId.NULL_VALUE, DateTime.now(), uint(0), uint(0), null, uint(0), null);

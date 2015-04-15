@@ -2,10 +2,10 @@ package com.inductiveautomation.opcua.stack.client.fsm;
 
 public enum ConnectionStateEvent {
 
-    ConnectRequested,
-    ConnectSuccess,
-    ConnectFailure,
-    DisconnectRequested,
-    ConnectionLost
+    CONNECT_REQUESTED,
+    CONNECT_SUCCESS,
+    CONNECT_FAILURE,
+    DISCONNECT_REQUESTED,
+    CONNECTION_LOST
 
 }

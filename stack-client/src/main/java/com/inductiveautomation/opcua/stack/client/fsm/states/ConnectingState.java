@@ -23,13 +23,13 @@ public class ConnectingState implements ConnectionState {
     @Override
     public ConnectionState transition(ConnectionStateEvent event, ConnectionStateContext context) {
         switch (event) {
-            case ConnectSuccess:
+            case CONNECT_SUCCESS:
                 return new ConnectedState(channelFuture);
 
-            case ConnectFailure:
+            case CONNECT_FAILURE:
                 return new DisconnectedState();
 
-            case DisconnectRequested:
+            case DISCONNECT_REQUESTED:
                 channelFuture.thenAccept(ch -> {
                     RequestHeader requestHeader = new RequestHeader(
                             NodeId.NULL_VALUE, DateTime.now(), uint(0), uint(0), null, uint(0), null);

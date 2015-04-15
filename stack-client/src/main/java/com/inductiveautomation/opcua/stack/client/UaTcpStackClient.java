@@ -116,7 +116,7 @@ public class UaTcpStackClient implements UaStackClient {
     public CompletableFuture<UaStackClient> connect() {
         CompletableFuture<UaStackClient> future = new CompletableFuture<>();
 
-        ConnectionState state = stateContext.handleEvent(ConnectionStateEvent.ConnectRequested);
+        ConnectionState state = stateContext.handleEvent(ConnectionStateEvent.CONNECT_REQUESTED);
 
         state.getChannelFuture().whenComplete((ch, ex) -> {
             if (ch != null) future.complete(this);
@@ -128,33 +128,26 @@ public class UaTcpStackClient implements UaStackClient {
 
     @Override
     public CompletableFuture<UaStackClient> disconnect() {
-        stateContext.handleEvent(ConnectionStateEvent.DisconnectRequested);
+        stateContext.handleEvent(ConnectionStateEvent.DISCONNECT_REQUESTED);
 
         return CompletableFuture.completedFuture(this);
     }
 
     @SuppressWarnings("unchecked")
     public <T extends UaResponseMessage> CompletableFuture<T> sendRequest(UaRequestMessage request) {
-        CompletableFuture<T> future = new CompletableFuture<>();
+        return stateContext.getChannel().thenCompose(ch -> {
+            CompletableFuture<T> future = new CompletableFuture<>();
 
-        CompletableFuture<Channel> channelFuture =
-                stateContext.handleEvent(ConnectionStateEvent.ConnectRequested).getChannelFuture();
+            RequestHeader requestHeader = request.getRequestHeader();
 
-        channelFuture.whenComplete((ch, ex) -> {
-            if (ch != null) {
-                RequestHeader requestHeader = request.getRequestHeader();
+            pending.put(requestHeader.getRequestHandle(), (CompletableFuture<UaResponseMessage>) future);
 
-                scheduleRequestTimeout(requestHeader);
+            scheduleRequestTimeout(requestHeader);
 
-                pending.put(requestHeader.getRequestHandle(), (CompletableFuture<UaResponseMessage>) future);
+            ch.writeAndFlush(request, ch.voidPromise());
 
-                ch.writeAndFlush(request, ch.voidPromise());
-            } else {
-                future.completeExceptionally(ex);
-            }
+            return future;
         });
-
-        return future;
     }
 
     @SuppressWarnings("unchecked")
@@ -164,10 +157,7 @@ public class UaTcpStackClient implements UaStackClient {
         Preconditions.checkArgument(requests.size() == futures.size(),
                 "requests and futures parameters must be same size");
 
-        CompletableFuture<Channel> channelFuture =
-                stateContext.handleEvent(ConnectionStateEvent.ConnectRequested).getChannelFuture();
-
-        channelFuture.whenComplete((ch, ex) -> {
+        stateContext.getChannel().whenComplete((ch, ex) -> {
             if (ch != null) {
                 Iterator<? extends UaRequestMessage> requestIterator = requests.iterator();
                 Iterator<CompletableFuture<? extends UaResponseMessage>> futureIterator = futures.iterator();
@@ -179,9 +169,9 @@ public class UaTcpStackClient implements UaStackClient {
 
                     RequestHeader requestHeader = request.getRequestHeader();
 
-                    scheduleRequestTimeout(requestHeader);
-
                     pending.put(requestHeader.getRequestHandle(), future);
+
+                    scheduleRequestTimeout(requestHeader);
                 }
 
                 ch.eventLoop().execute(() -> {
@@ -224,12 +214,12 @@ public class UaTcpStackClient implements UaStackClient {
 
     private void onChannelInactive(ChannelHandlerContext ctx) {
         logger.debug("Channel inactive: {}", ctx.channel());
-        stateContext.handleEvent(ConnectionStateEvent.ConnectionLost);
+        stateContext.handleEvent(ConnectionStateEvent.CONNECTION_LOST);
     }
 
     private void onExceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         logger.error("Exception caught: {}", cause.getMessage(), cause);
-        stateContext.handleEvent(ConnectionStateEvent.ConnectionLost);
+        stateContext.handleEvent(ConnectionStateEvent.CONNECTION_LOST);
         ctx.close();
     }
 

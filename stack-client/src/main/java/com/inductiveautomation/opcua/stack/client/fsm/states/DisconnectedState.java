@@ -14,14 +14,14 @@ public class DisconnectedState implements ConnectionState {
     @Override
     public ConnectionState transition(ConnectionStateEvent event, ConnectionStateContext context) {
         switch (event) {
-            case ConnectRequested:
+            case CONNECT_REQUESTED:
                 CompletableFuture<Channel> channelFuture = UaTcpStackClient.bootstrap(context.getClient());
 
                 channelFuture.whenCompleteAsync((ch, ex) -> {
                     if (ch != null) {
-                        context.handleEvent(ConnectionStateEvent.ConnectSuccess);
+                        context.handleEvent(ConnectionStateEvent.CONNECT_SUCCESS);
                     } else {
-                        context.handleEvent(ConnectionStateEvent.ConnectFailure);
+                        context.handleEvent(ConnectionStateEvent.CONNECT_FAILURE);
                     }
                 }, context.getClient().getExecutorService());
 
