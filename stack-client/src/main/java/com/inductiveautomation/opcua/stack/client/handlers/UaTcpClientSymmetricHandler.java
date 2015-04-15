@@ -220,6 +220,14 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
     }
 
     @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        handshakeFuture.completeExceptionally(
+                new UaException(StatusCodes.Bad_ConnectionClosed, "connection closed"));
+
+        super.channelInactive(ctx);
+    }
+
+    @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         logger.error("Exception caught: {}", cause.getMessage(), cause);
         ctx.close();
