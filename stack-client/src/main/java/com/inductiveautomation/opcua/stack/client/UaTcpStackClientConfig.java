@@ -14,7 +14,7 @@ import com.inductiveautomation.opcua.stack.core.types.structured.EndpointDescrip
 
 import static com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 
-public class UaTcpClientConfig {
+public class UaTcpStackClientConfig {
 
     private final String endpointUrl;
     private final EndpointDescription endpoint;
@@ -29,16 +29,16 @@ public class UaTcpClientConfig {
     private final UInteger channelLifetime;
     private final ExecutorService executor;
 
-    public UaTcpClientConfig(@Nullable String endpointUrl,
-                             @Nullable EndpointDescription endpoint,
-                             @Nullable KeyPair keyPair,
-                             @Nullable X509Certificate certificate,
-                             LocalizedText applicationName,
-                             String applicationUri,
-                             String productUri,
-                             ChannelConfig channelConfig,
-                             UInteger channelLifetime,
-                             ExecutorService executor) {
+    public UaTcpStackClientConfig(@Nullable String endpointUrl,
+                                  @Nullable EndpointDescription endpoint,
+                                  @Nullable KeyPair keyPair,
+                                  @Nullable X509Certificate certificate,
+                                  LocalizedText applicationName,
+                                  String applicationUri,
+                                  String productUri,
+                                  ChannelConfig channelConfig,
+                                  UInteger channelLifetime,
+                                  ExecutorService executor) {
 
         this.endpointUrl = endpointUrl;
         this.endpoint = endpoint;
@@ -92,11 +92,11 @@ public class UaTcpClientConfig {
         return executor;
     }
 
-    public static UaTcpClientConfigBuilder builder() {
-        return new UaTcpClientConfigBuilder();
+    public static UaTcpStackClientConfigBuilder builder() {
+        return new UaTcpStackClientConfigBuilder();
     }
 
-    public static class UaTcpClientConfigBuilder {
+    public static class UaTcpStackClientConfigBuilder {
 
         private String endpointUrl;
         private EndpointDescription endpoint;
@@ -112,58 +112,58 @@ public class UaTcpClientConfig {
         private ExecutorService executor = Stack.sharedExecutor();
 
 
-        public UaTcpClientConfigBuilder setEndpointUrl(String endpointUrl) {
+        public UaTcpStackClientConfigBuilder setEndpointUrl(String endpointUrl) {
             this.endpointUrl = endpointUrl;
             return this;
         }
 
-        public UaTcpClientConfigBuilder setEndpoint(EndpointDescription endpoint) {
+        public UaTcpStackClientConfigBuilder setEndpoint(EndpointDescription endpoint) {
             this.endpoint = endpoint;
             return this;
         }
 
-        public UaTcpClientConfigBuilder setKeyPair(KeyPair keyPair) {
+        public UaTcpStackClientConfigBuilder setKeyPair(KeyPair keyPair) {
             this.keyPair = keyPair;
             return this;
         }
 
-        public UaTcpClientConfigBuilder setCertificate(X509Certificate certificate) {
+        public UaTcpStackClientConfigBuilder setCertificate(X509Certificate certificate) {
             this.certificate = certificate;
             return this;
         }
 
-        public UaTcpClientConfigBuilder setApplicationName(LocalizedText applicationName) {
+        public UaTcpStackClientConfigBuilder setApplicationName(LocalizedText applicationName) {
             this.applicationName = applicationName;
             return this;
         }
 
-        public UaTcpClientConfigBuilder setApplicationUri(String applicationUri) {
+        public UaTcpStackClientConfigBuilder setApplicationUri(String applicationUri) {
             this.applicationUri = applicationUri;
             return this;
         }
 
-        public UaTcpClientConfigBuilder setProductUri(String productUri) {
+        public UaTcpStackClientConfigBuilder setProductUri(String productUri) {
             this.productUri = productUri;
             return this;
         }
 
-        public UaTcpClientConfigBuilder setChannelConfig(ChannelConfig channelConfig) {
+        public UaTcpStackClientConfigBuilder setChannelConfig(ChannelConfig channelConfig) {
             this.channelConfig = channelConfig;
             return this;
         }
 
-        public UaTcpClientConfigBuilder setChannelLifetime(UInteger channelLifetime) {
+        public UaTcpStackClientConfigBuilder setChannelLifetime(UInteger channelLifetime) {
             this.channelLifetime = channelLifetime;
             return this;
         }
 
-        public UaTcpClientConfigBuilder setExecutor(ExecutorService executor) {
+        public UaTcpStackClientConfigBuilder setExecutor(ExecutorService executor) {
             this.executor = executor;
             return this;
         }
 
-        public UaTcpClientConfig build() {
-            return new UaTcpClientConfig(
+        public UaTcpStackClientConfig build() {
+            return new UaTcpStackClientConfig(
                     endpointUrl,
                     endpoint,
                     keyPair,

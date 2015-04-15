@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.inductiveautomation.opcua.stack.client.UaTcpStackClient;
-import com.inductiveautomation.opcua.stack.client.UaTcpClientConfig;
+import com.inductiveautomation.opcua.stack.client.UaTcpStackClientConfig;
 import com.inductiveautomation.opcua.stack.core.application.UaStackClient;
 import com.inductiveautomation.opcua.stack.core.types.builtin.DateTime;
 import com.inductiveautomation.opcua.stack.core.types.builtin.LocalizedText;
@@ -36,7 +36,7 @@ public class ClientExample {
                 .findFirst()
                 .orElseThrow(() -> new Exception("no endpoints returned"));
 
-        UaTcpClientConfig config = UaTcpClientConfig.builder()
+        UaTcpStackClientConfig config = UaTcpStackClientConfig.builder()
                 .setApplicationName(LocalizedText.english("Stack Example Client"))
                 .setApplicationUri(String.format("urn:example-client:%s", UUID.randomUUID()))
                 .setCertificate(certificate)

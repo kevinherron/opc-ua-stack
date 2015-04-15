@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.beust.jcommander.internal.Lists;
 import com.inductiveautomation.opcua.stack.client.UaTcpStackClient;
-import com.inductiveautomation.opcua.stack.client.UaTcpClientConfig;
+import com.inductiveautomation.opcua.stack.client.UaTcpStackClientConfig;
 import com.inductiveautomation.opcua.stack.core.Stack;
 import com.inductiveautomation.opcua.stack.core.UaException;
 import com.inductiveautomation.opcua.stack.core.security.SecurityPolicy;
@@ -211,7 +211,7 @@ public class ClientServerTest extends SecurityFixture {
     }
 
     private UaTcpStackClient createClient(EndpointDescription endpoint) throws UaException {
-        UaTcpClientConfig config = UaTcpClientConfig.builder()
+        UaTcpStackClientConfig config = UaTcpStackClientConfig.builder()
                 .setEndpoint(endpoint)
                 .setKeyPair(clientKeyPair)
                 .setCertificate(clientCertificate)

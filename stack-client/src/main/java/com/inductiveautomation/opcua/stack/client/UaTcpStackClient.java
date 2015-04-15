@@ -70,9 +70,9 @@ public class UaTcpStackClient implements UaStackClient {
     private final ApplicationDescription application;
     private final ClientSecureChannel secureChannel;
 
-    private final UaTcpClientConfig config;
+    private final UaTcpStackClientConfig config;
 
-    public UaTcpStackClient(UaTcpClientConfig config) {
+    public UaTcpStackClient(UaTcpStackClientConfig config) {
         this.config = config;
 
         application = new ApplicationDescription(
@@ -369,7 +369,7 @@ public class UaTcpStackClient implements UaStackClient {
      * @return the {@link EndpointDescription}s returned by the GetEndpoints service.
      */
     public static CompletableFuture<EndpointDescription[]> getEndpoints(String endpointUrl) {
-        UaTcpClientConfig config = UaTcpClientConfig.builder()
+        UaTcpStackClientConfig config = UaTcpStackClientConfig.builder()
                 .setEndpointUrl(endpointUrl)
                 .build();
 
