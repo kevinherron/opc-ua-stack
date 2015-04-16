@@ -1,14 +1,14 @@
-#* @vtlvariable name="structuredType" type="com.inductiveautomation.opcua.stack.codegen.StructuredType" *#
-package com.inductiveautomation.opcua.stack.core.types.structured;
+#* @vtlvariable name="structuredType" type="com.digitalpetri.opcua.stack.codegen.StructuredType" *#
+package com.digitalpetri.opcua.stack.core.types.structured;
 
 import java.util.UUID;
 
-import com.inductiveautomation.opcua.stack.core.Identifiers;
-import com.inductiveautomation.opcua.stack.core.serialization.*;
-import com.inductiveautomation.opcua.stack.core.types.builtin.*;
-import com.inductiveautomation.opcua.stack.core.types.builtin.unsigned.*;
-import com.inductiveautomation.opcua.stack.core.types.enumerated.*;
-import com.inductiveautomation.opcua.stack.core.types.UaDataType;
+import com.digitalpetri.opcua.stack.core.Identifiers;
+import com.digitalpetri.opcua.stack.core.serialization.*;
+import com.digitalpetri.opcua.stack.core.types.builtin.*;
+import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.*;
+import com.digitalpetri.opcua.stack.core.types.enumerated.*;
+import com.digitalpetri.opcua.stack.core.types.UaDataType;
 import com.google.common.base.Objects;
 
 @UaDataType("${structuredType.name}")

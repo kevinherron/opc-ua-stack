@@ -2,16 +2,16 @@
 
 A high-performance and open-source OPC-UA stack implementation.
 
-Note: this is just a *stack* implementation (channels, serialization, structures, security). If you're looking to build a client or server, try the [OPC-UA SDK](https://github.com/inductiveautomation/opc-ua-sdk).
+Note: this is just a *stack* implementation (channels, serialization, structures, security). If you're looking to build a client or server, try the [OPC-UA SDK](https://github.com/digitalpetri/opc-ua-sdk).
 
 Running the Example
 --------
 Certificate validation is implemented in the server stack and so upon running the ClientServerExample for the first time you'll probably see a stack trace containing this exception:
 
 ```java
-Caused by: com.inductiveautomation.opcua.stack.core.UaException: security checks failed
-	at com.inductiveautomation.opcua.stack.client.handlers.UaTcpClientAcknowledgeHandler.onError(UaTcpClientAcknowledgeHandler.java:162)
-	at com.inductiveautomation.opcua.stack.client.handlers.UaTcpClientAcknowledgeHandler.decode(UaTcpClientAcknowledgeHandler.java:89)
+Caused by: com.digitalpetri.opcua.stack.core.UaException: security checks failed
+	at UaTcpClientAcknowledgeHandler.onError(UaTcpClientAcknowledgeHandler.java:162)
+	at UaTcpClientAcknowledgeHandler.decode(UaTcpClientAcknowledgeHandler.java:89)
 ```
 
 You'll now find a "security" folder in whatever you've configured your working directory as when running the example. Inside that folder, you should find "rejected", "revocation", and "trusted" folders. Move the client certificate in the "rejected" folder to the "trusted" folder and run the example again.
@@ -33,7 +33,7 @@ Release versions will be available from Maven Central and won't require an expli
 #### Stack Server
 ```xml
 <dependency>
-    <groupId>com.inductiveautomation.opcua</groupId>
+    <groupId>com.digitalpetri.opcua</groupId>
     <artifactId>stack-server</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 </dependency>
@@ -42,7 +42,7 @@ Release versions will be available from Maven Central and won't require an expli
 #### Stack Client
 ```xml
 <dependency>
-    <groupId>com.inductiveautomation.opcua</groupId>
+    <groupId>com.digitalpetri.opcua</groupId>
     <artifactId>stack-client</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 </dependency>

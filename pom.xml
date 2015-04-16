@@ -4,18 +4,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.inductiveautomation.opcua</groupId>
+    <groupId>com.digitalpetri.opcua</groupId>
     <artifactId>opc-ua-stack</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>OPC-UA Stack</name>
     <description>High-performance OPC-UA stack for Java.</description>
-    <url>https://github.com/inductiveautomation/opc-ua-stack</url>
+    <url>https://github.com/digitalpetri/opc-ua-stack</url>
 
     <scm>
-        <url>https://github.com/inductiveautomation/opc-ua-stack</url>
-        <connection>scm:git:git@github.com/inductiveautomation/opc-ua-stack.git</connection>
+        <url>https://github.com/digitalpetri/opc-ua-stack</url>
+        <connection>scm:git:git@github.com/digitalpetri/opc-ua-stack.git</connection>
         <tag>HEAD</tag>
     </scm>
 

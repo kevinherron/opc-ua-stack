@@ -1,12 +1,12 @@
-#* @vtlvariable name="enumeratedType" type="com.inductiveautomation.opcua.stack.codegen.EnumeratedType" *#
+#* @vtlvariable name="enumeratedType" type="com.digitalpetri.opcua.stack.codegen.EnumeratedType" *#
 
-package com.inductiveautomation.opcua.stack.core.types.enumerated;
+package com.digitalpetri.opcua.stack.core.types.enumerated;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
-import com.inductiveautomation.opcua.stack.core.Identifiers;
-import com.inductiveautomation.opcua.stack.core.serialization.*;
-import com.inductiveautomation.opcua.stack.core.types.builtin.*;
+import com.digitalpetri.opcua.stack.core.Identifiers;
+import com.digitalpetri.opcua.stack.core.serialization.*;
+import com.digitalpetri.opcua.stack.core.types.builtin.*;
 
 public enum ${enumeratedType.name} implements UaEnumeration {
 
