@@ -247,7 +247,7 @@ public class UaTcpStackClient implements UaStackClient {
         if (future != null) {
             StatusCode serviceResult = serviceFault.getResponseHeader().getServiceResult();
             UaException serviceException = new UaException(
-                    serviceResult.getValue(), "service fault: " + serviceResult);
+                    serviceResult.getValue(), "service fault, serviceResult=" + serviceResult);
 
             future.completeExceptionally(serviceException);
         }
