@@ -3,23 +3,24 @@ package com.digitalpetri.opcua.stack.core.util;
 import java.util.UUID;
 
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
+import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
+import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.digitalpetri.opcua.stack.core.types.builtin.ExpandedNodeId;
+import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
+import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
 import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 import com.digitalpetri.opcua.stack.core.types.builtin.QualifiedName;
+import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import com.digitalpetri.opcua.stack.core.types.builtin.Variant;
 import com.digitalpetri.opcua.stack.core.types.builtin.XmlElement;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
+import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.ULong;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UShort;
+import com.digitalpetri.opcua.stack.core.types.enumerated.IdType;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
-import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
-import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
-import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
-import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
-import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
-import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.ULong;
 
 public class TypeUtil {
 
@@ -81,6 +82,15 @@ public class TypeUtil {
      */
     public static Class<?> getBackingClass(int typeId) {
         return BackingClasses.get(typeId);
+    }
+
+    public static Class<?> getBackingClass(ExpandedNodeId typeId) {
+        if (typeId.getNamespaceIndex().intValue() == 0 && typeId.getType() == IdType.Numeric) {
+            Number id = (Number) typeId.getIdentifier();
+            return getBackingClass(id.intValue());
+        }
+
+        return null;
     }
 
 }
