@@ -7,10 +7,10 @@ import com.google.common.base.MoreObjects.ToStringHelper;
 
 public final class StatusCode {
 
-    private static final int SEVERITY_MASK = 0xC0000000;
-    private static final int SEVERITY_GOOD = 0x00000000;
-    private static final int SEVERITY_UNCERTAIN = 0x40000000;
-    private static final int SEVERITY_BAD = 0x80000000;
+    private static final long SEVERITY_MASK = 0xC0000000L;
+    private static final long SEVERITY_GOOD = 0x00000000L;
+    private static final long SEVERITY_UNCERTAIN = 0x40000000L;
+    private static final long SEVERITY_BAD = 0x80000000L;
 
     public static final StatusCode GOOD = new StatusCode(SEVERITY_GOOD);
     public static final StatusCode BAD = new StatusCode(SEVERITY_BAD);
