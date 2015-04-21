@@ -1,6 +1,7 @@
 package com.digitalpetri.opcua.stack.server.handlers;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.ByteOrder;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
@@ -126,7 +127,9 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
 
                 EndpointDescription endpointDescription = Arrays.stream(server.getEndpointDescriptions())
                         .filter(e -> {
-                            boolean uriMatch = e.getEndpointUrl().equals(endpointUrl);
+                            String s1 = pathOrUrl(endpointUrl);
+                            String s2 = pathOrUrl(e.getEndpointUrl());
+                            boolean uriMatch = s1.equals(s2);
                             boolean policyMatch = e.getSecurityPolicyUri().equals(securityPolicyUri);
                             return uriMatch && policyMatch;
                         }).findFirst().orElse(null);
@@ -260,6 +263,16 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                     }
                 });
             }
+        }
+    }
+
+    private String pathOrUrl(String endpointUrl) {
+        try {
+            URI uri = URI.create(endpointUrl);
+            return uri.getPath();
+        } catch (Throwable t) {
+            logger.warn("Endpoint URL '{}' is not a valid URI: {}", t.getMessage(), t);
+            return endpointUrl;
         }
     }
 

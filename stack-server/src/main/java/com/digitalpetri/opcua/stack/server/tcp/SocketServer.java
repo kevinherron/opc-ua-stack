@@ -3,13 +3,14 @@ package com.digitalpetri.opcua.stack.server.tcp;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import com.google.common.collect.Maps;
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.server.handlers.UaTcpServerHelloHandler;
+import com.google.common.collect.Maps;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -73,14 +74,19 @@ public class SocketServer {
 
     public void addServer(UaTcpStackServer server) {
         server.getEndpointUrls().forEach(url -> {
-            if (!servers.containsKey(url)) {
-                servers.put(url, server);
+            String key = pathOrUrl(url);
+
+            if (!servers.containsKey(key)) {
+                servers.put(key, server);
                 logger.debug("Added server at {}", url);
             }
         });
+
         server.getDiscoveryUrls().forEach(url -> {
-            if (!servers.containsKey(url)) {
-                servers.put(url, server);
+            String key = pathOrUrl(url);
+
+            if (!servers.containsKey(key)) {
+                servers.put(key, server);
                 logger.debug("Added server at {}", url);
             }
         });
@@ -88,19 +94,33 @@ public class SocketServer {
 
     public void removeServer(UaTcpStackServer server) {
         server.getEndpointUrls().forEach(url -> {
-            if (servers.remove(url) != null) {
+            String key = pathOrUrl(url);
+
+            if (servers.remove(key) != null) {
                 logger.debug("Removed server at {}", url);
             }
         });
         server.getDiscoveryUrls().forEach(url -> {
-            if (servers.remove(url) != null) {
+            String key = pathOrUrl(url);
+
+            if (servers.remove(key) != null) {
                 logger.debug("Removed server at {}", url);
             }
         });
     }
 
     public UaTcpStackServer getServer(String endpointUrl) {
-        return servers.get(endpointUrl);
+        return servers.get(pathOrUrl(endpointUrl));
+    }
+
+    private String pathOrUrl(String endpointUrl) {
+        try {
+            URI uri = URI.create(endpointUrl);
+            return uri.getPath();
+        } catch (Throwable t) {
+            logger.warn("Endpoint URL '{}' is not a valid URI: {}", t.getMessage(), t);
+            return endpointUrl;
+        }
     }
 
     public SocketAddress getLocalAddress() {
