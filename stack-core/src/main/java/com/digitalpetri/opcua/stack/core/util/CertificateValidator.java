@@ -77,7 +77,7 @@ public class CertificateValidator {
                                    List<X509Certificate> chain) throws UaException {
 
         boolean certificateTrusted = trustList.stream()
-                .anyMatch(c -> Arrays.equals(certificate.getSubjectUniqueID(), c.getSubjectUniqueID()));
+                .anyMatch(c -> Arrays.equals(certificate.getSignature(), c.getSignature()));
 
         if (certificateTrusted) return;
 
