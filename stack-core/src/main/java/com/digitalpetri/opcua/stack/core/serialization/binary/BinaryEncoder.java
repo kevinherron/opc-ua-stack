@@ -1,22 +1,27 @@
 package com.digitalpetri.opcua.stack.core.serialization.binary;
 
-import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.nio.ByteOrder;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import javax.annotation.Nonnull;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaSerializationException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
+import com.digitalpetri.opcua.stack.core.serialization.EncoderDelegate;
 import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
+import com.digitalpetri.opcua.stack.core.serialization.UaEnumeration;
 import com.digitalpetri.opcua.stack.core.serialization.UaSerializable;
 import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
+import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
+import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.digitalpetri.opcua.stack.core.types.builtin.ExpandedNodeId;
+import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
 import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
 import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 import com.digitalpetri.opcua.stack.core.types.builtin.QualifiedName;
@@ -25,20 +30,13 @@ import com.digitalpetri.opcua.stack.core.types.builtin.Variant;
 import com.digitalpetri.opcua.stack.core.types.builtin.XmlElement;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
+import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.ULong;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned;
 import com.digitalpetri.opcua.stack.core.types.enumerated.IdType;
 import com.digitalpetri.opcua.stack.core.util.ArrayUtil;
 import com.digitalpetri.opcua.stack.core.util.TypeUtil;
-import com.digitalpetri.opcua.stack.core.serialization.EncoderDelegate;
-import com.digitalpetri.opcua.stack.core.serialization.UaEnumeration;
-import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
-import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
-import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
-import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.ULong;
 import io.netty.buffer.ByteBuf;
-
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 
 public class BinaryEncoder implements UaEncoder {
 
@@ -61,11 +59,11 @@ public class BinaryEncoder implements UaEncoder {
         return this;
     }
 
-	public ByteBuf getBuffer() {
-		return buffer;
-	}
+    public ByteBuf getBuffer() {
+        return buffer;
+    }
 
-	@Override
+    @Override
     public void encodeBoolean(String field, Boolean value) {
         if (value == null) {
             buffer.writeBoolean(false);
@@ -251,7 +249,7 @@ public class BinaryEncoder implements UaEncoder {
 
     @Override
     public void encodeNodeId(String field, NodeId value) throws UaSerializationException {
-		if (value == null) value = NodeId.NULL_VALUE;
+        if (value == null) value = NodeId.NULL_VALUE;
 
         int namespaceIndex = value.getNamespaceIndex().intValue();
 
@@ -627,32 +625,83 @@ public class BinaryEncoder implements UaEncoder {
 
     private void encodeBuiltinType(int typeId, Object value) throws UaSerializationException {
         switch (typeId) {
-            case 1: encodeBoolean(null, (Boolean) value); break;
-            case 2: encodeSByte(null, (Byte) value); break;
-            case 3: encodeByte(null, (UByte) value); break;
-            case 4: encodeInt16(null, (Short) value); break;
-            case 5: encodeUInt16(null, (UShort) value); break;
-            case 6: encodeInt32(null, (Integer) value); break;
-            case 7: encodeUInt32(null, (UInteger) value); break;
-            case 8: encodeInt64(null, (Long) value); break;
-            case 9: encodeUInt64(null, (ULong) value); break;
-            case 10: encodeFloat(null, (Float) value); break;
-            case 11: encodeDouble(null, (Double) value); break;
-            case 12: encodeString(null, (String) value); break;
-            case 13: encodeDateTime(null, (DateTime) value); break;
-            case 14: encodeGuid(null, (UUID) value); break;
-            case 15: encodeByteString(null, (ByteString) value); break;
-            case 16: encodeXmlElement(null, (XmlElement) value); break;
-            case 17: encodeNodeId(null, (NodeId) value); break;
-            case 18: encodeExpandedNodeId(null, (ExpandedNodeId) value); break;
-            case 19: encodeStatusCode(null, (StatusCode) value); break;
-            case 20: encodeQualifiedName(null, (QualifiedName) value); break;
-            case 21: encodeLocalizedText(null, (LocalizedText) value); break;
-            case 22: encodeExtensionObject(null, (ExtensionObject) value); break;
-            case 23: encodeDataValue(null, (DataValue) value); break;
-            case 24: encodeVariant(null, (Variant) value); break;
-            case 25: encodeDiagnosticInfo(null, (DiagnosticInfo) value); break;
-            default: throw new UaSerializationException(StatusCodes.Bad_DecodingError, "unknown builtin type: " + typeId);
+            case 1:
+                encodeBoolean(null, (Boolean) value);
+                break;
+            case 2:
+                encodeSByte(null, (Byte) value);
+                break;
+            case 3:
+                encodeByte(null, (UByte) value);
+                break;
+            case 4:
+                encodeInt16(null, (Short) value);
+                break;
+            case 5:
+                encodeUInt16(null, (UShort) value);
+                break;
+            case 6:
+                encodeInt32(null, (Integer) value);
+                break;
+            case 7:
+                encodeUInt32(null, (UInteger) value);
+                break;
+            case 8:
+                encodeInt64(null, (Long) value);
+                break;
+            case 9:
+                encodeUInt64(null, (ULong) value);
+                break;
+            case 10:
+                encodeFloat(null, (Float) value);
+                break;
+            case 11:
+                encodeDouble(null, (Double) value);
+                break;
+            case 12:
+                encodeString(null, (String) value);
+                break;
+            case 13:
+                encodeDateTime(null, (DateTime) value);
+                break;
+            case 14:
+                encodeGuid(null, (UUID) value);
+                break;
+            case 15:
+                encodeByteString(null, (ByteString) value);
+                break;
+            case 16:
+                encodeXmlElement(null, (XmlElement) value);
+                break;
+            case 17:
+                encodeNodeId(null, (NodeId) value);
+                break;
+            case 18:
+                encodeExpandedNodeId(null, (ExpandedNodeId) value);
+                break;
+            case 19:
+                encodeStatusCode(null, (StatusCode) value);
+                break;
+            case 20:
+                encodeQualifiedName(null, (QualifiedName) value);
+                break;
+            case 21:
+                encodeLocalizedText(null, (LocalizedText) value);
+                break;
+            case 22:
+                encodeExtensionObject(null, (ExtensionObject) value);
+                break;
+            case 23:
+                encodeDataValue(null, (DataValue) value);
+                break;
+            case 24:
+                encodeVariant(null, (Variant) value);
+                break;
+            case 25:
+                encodeDiagnosticInfo(null, (DiagnosticInfo) value);
+                break;
+            default:
+                throw new UaSerializationException(StatusCodes.Bad_DecodingError, "unknown builtin type: " + typeId);
         }
     }
 
