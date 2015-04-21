@@ -1,18 +1,19 @@
 package com.digitalpetri.opcua.stack.core.serialization.xml;
 
-import javax.xml.bind.DatatypeConverter;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.lang.reflect.Array;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import javax.xml.bind.DatatypeConverter;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaSerializationException;
@@ -43,10 +44,6 @@ import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned;
 import com.digitalpetri.opcua.stack.core.util.Namespaces;
 import com.google.common.collect.Lists;
 
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 
 public class XmlDecoder implements UaDecoder {
@@ -485,7 +482,16 @@ public class XmlDecoder implements UaDecoder {
                 }
             }
 
-            return values.toArray();
+            if (values.size() > 0) {
+                Class<?> c = values.get(0).getClass();
+                Object a = Array.newInstance(c, values.size());
+                for (int i = 0; i < values.size(); i++) {
+                    Array.set(a, i, values.get(i));
+                }
+                return a;
+            } else {
+                return null;
+            }
         } else {
             Object value = decodeBuiltinType(valueStartElement);
 
