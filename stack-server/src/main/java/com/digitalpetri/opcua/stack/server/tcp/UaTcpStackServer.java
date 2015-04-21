@@ -13,12 +13,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.Sets;
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
@@ -55,6 +49,12 @@ import com.digitalpetri.opcua.stack.core.types.structured.GetEndpointsResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.SignedSoftwareCertificate;
 import com.digitalpetri.opcua.stack.core.types.structured.UserTokenPolicy;
 import com.digitalpetri.opcua.stack.server.Endpoint;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.Sets;
 import io.netty.channel.Channel;
 import io.netty.util.AttributeKey;
 import io.netty.util.HashedWheelTimer;
@@ -122,15 +122,24 @@ public class UaTcpStackServer implements UaStackServer {
 
         addServiceSet(new DefaultDiscoveryServiceSet());
 
-        addServiceSet(new AttributeServiceSet() {});
-        addServiceSet(new MethodServiceSet() {});
-        addServiceSet(new MonitoredItemServiceSet() {});
-        addServiceSet(new NodeManagementServiceSet() {});
-        addServiceSet(new QueryServiceSet() {});
-        addServiceSet(new SessionServiceSet() {});
-        addServiceSet(new SubscriptionServiceSet() {});
-        addServiceSet(new TestServiceSet() {});
-        addServiceSet(new ViewServiceSet() {});
+        addServiceSet(new AttributeServiceSet() {
+        });
+        addServiceSet(new MethodServiceSet() {
+        });
+        addServiceSet(new MonitoredItemServiceSet() {
+        });
+        addServiceSet(new NodeManagementServiceSet() {
+        });
+        addServiceSet(new QueryServiceSet() {
+        });
+        addServiceSet(new SessionServiceSet() {
+        });
+        addServiceSet(new SubscriptionServiceSet() {
+        });
+        addServiceSet(new TestServiceSet() {
+        });
+        addServiceSet(new ViewServiceSet() {
+        });
     }
 
     @Override
@@ -351,10 +360,10 @@ public class UaTcpStackServer implements UaStackServer {
 
     @Override
     public UaTcpStackServer addEndpoint(String endpointUri,
-                                   String bindAddress,
-                                   X509Certificate certificate,
-                                   SecurityPolicy securityPolicy,
-                                   MessageSecurityMode messageSecurity) {
+                                        String bindAddress,
+                                        X509Certificate certificate,
+                                        SecurityPolicy securityPolicy,
+                                        MessageSecurityMode messageSecurity) {
 
         boolean invalidConfiguration = messageSecurity == MessageSecurityMode.Invalid ||
                 (securityPolicy == SecurityPolicy.None && messageSecurity != MessageSecurityMode.None) ||
