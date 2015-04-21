@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.file.FileSystems;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
@@ -178,12 +179,16 @@ public class DirectoryCertificateManager implements CertificateManager {
             String name = ss.length > 0 ? ss[0] : certificate.getSubjectX500Principal().getName();
             String thumbprint = ByteBufUtil.hexDump(Unpooled.wrappedBuffer(DigestUtil.sha1(certificate.getEncoded())));
 
-            File f = new File(rejectedDir.getAbsolutePath() + File.separator + String.format("%s [%s].der", name, thumbprint));
+            String filename = String.format("%s [%s].der", URLEncoder.encode(name, "UTF-8"), thumbprint);
+
+            File f = new File(rejectedDir.getAbsolutePath() + File.separator + filename);
 
             FileOutputStream fos = new FileOutputStream(f);
             fos.write(certificate.getEncoded());
             fos.flush();
             fos.close();
+
+            logger.debug("Added rejected certificate entry: {}", filename);
         } catch (CertificateEncodingException | IOException e) {
             logger.error("Error adding rejected certificate entry.", e);
         }
