@@ -194,7 +194,7 @@ public class UaTcpStackServer implements UaStackServer {
     }
 
     public void receiveRequest(ServiceRequest<UaRequestMessage, UaResponseMessage> serviceRequest) {
-        logger.debug("Received {} on {}.", serviceRequest, serviceRequest.getSecureChannel());
+        logger.trace("Received {} on {}.", serviceRequest, serviceRequest.getSecureChannel());
 
         serviceRequest.getFuture().whenComplete((response, throwable) -> {
             long requestId = serviceRequest.getRequestId();
@@ -210,7 +210,11 @@ public class UaTcpStackServer implements UaStackServer {
                 Channel channel = secureChannel.attr(BoundChannelKey).get();
 
                 if (channel != null) {
-                    logger.debug("Sending {} on {}.", serviceResponse, secureChannel);
+                    if (serviceResponse.isServiceFault()) {
+                        logger.debug("Sending {} on {}.", serviceResponse, secureChannel);
+                    } else {
+                        logger.trace("Sending {} on {}.", serviceResponse, secureChannel);
+                    }
                     channel.writeAndFlush(serviceResponse, channel.voidPromise());
                 } else {
                     logger.trace("Queueing {} for unbound {}.", serviceResponse, secureChannel);
