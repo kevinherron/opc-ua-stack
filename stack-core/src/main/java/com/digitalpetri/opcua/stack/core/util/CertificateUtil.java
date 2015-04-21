@@ -6,9 +6,12 @@ import java.security.cert.CertPath;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
@@ -16,6 +19,10 @@ import com.digitalpetri.opcua.stack.core.UaException;
 import com.google.common.base.Preconditions;
 
 public class CertificateUtil {
+
+    public static final int SUBJECT_ALT_NAME_URI = 6;
+    public static final int SUBJECT_ALT_NAME_DNS_NAME = 2;
+    public static final int SUBJECT_ALT_NAME_IP_ADDRESS = 7;
 
     /**
      * Decode a DER-encoded X.509 certificate.
@@ -82,6 +89,35 @@ public class CertificateUtil {
                     .collect(Collectors.toList());
         } catch (CertificateException e) {
             throw new UaException(StatusCodes.Bad_CertificateInvalid, e);
+        }
+    }
+
+    /**
+     * Extract the value of a given SubjectAltName field from a {@link X509Certificate}.
+     *
+     * @param certificate the certificate.
+     * @param field       the field number.
+     * @return an {@link Optional} containing the value in the field.
+     * @see #SUBJECT_ALT_NAME_IP_ADDRESS
+     * @see #SUBJECT_ALT_NAME_DNS_NAME
+     * @see #SUBJECT_ALT_NAME_URI
+     */
+    public static Optional<Object> getSubjectAltNameField(X509Certificate certificate, int field) {
+        try {
+            Collection<List<?>> subjectAltNames = certificate.getSubjectAlternativeNames();
+            if (subjectAltNames == null) subjectAltNames = Collections.emptyList();
+
+            for (List<?> idAndValue : subjectAltNames) {
+                if (idAndValue != null && idAndValue.size() == 2) {
+                    if (idAndValue.get(0).equals(field)) {
+                        return Optional.ofNullable(idAndValue.get(1));
+                    }
+                }
+            }
+
+            return Optional.empty();
+        } catch (CertificateParsingException e) {
+            return Optional.empty();
         }
     }
 
