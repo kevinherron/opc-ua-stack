@@ -14,8 +14,6 @@ import java.util.concurrent.TimeUnit;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateContext;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateEvent;
 import com.digitalpetri.opcua.stack.client.handlers.UaTcpClientAcknowledgeHandler;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
@@ -38,6 +36,8 @@ import com.digitalpetri.opcua.stack.core.types.structured.RequestHeader;
 import com.digitalpetri.opcua.stack.core.types.structured.ResponseHeader;
 import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
 import com.digitalpetri.opcua.stack.core.util.CertificateUtil;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -226,16 +226,22 @@ public class UaTcpStackClient implements UaStackClient {
 
     public void receiveServiceResponse(UaResponseMessage response) {
         ResponseHeader header = response.getResponseHeader();
-        UInteger requestHandle = header.getRequestHandle();
 
-        CompletableFuture<UaResponseMessage> future = pending.remove(requestHandle);
+        if (header.getServiceResult().isGood()) {
+            UInteger requestHandle = header.getRequestHandle();
 
-        if (future != null) {
-            future.complete(response);
+            CompletableFuture<UaResponseMessage> future = pending.remove(requestHandle);
+
+            if (future != null) {
+                future.complete(response);
+            }
+
+            Timeout timeout = timeouts.remove(requestHandle);
+            if (timeout != null) timeout.cancel();
+        } else {
+            ServiceFault serviceFault = new ServiceFault(response.getResponseHeader());
+            receiveServiceFault(serviceFault);
         }
-
-        Timeout timeout = timeouts.remove(requestHandle);
-        if (timeout != null) timeout.cancel();
     }
 
     public void receiveServiceFault(ServiceFault serviceFault) {
