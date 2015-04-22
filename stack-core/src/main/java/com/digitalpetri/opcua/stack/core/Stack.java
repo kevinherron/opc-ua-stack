@@ -6,10 +6,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.digitalpetri.opcua.stack.core.util.ManifestUtil;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
 
 public final class Stack {
+
+    public static final String VERSION =
+            ManifestUtil.read("X-Stack-Version").orElse("dev");
 
     public static final String UA_TCP_BINARY_TRANSPORT_URI =
             "http://opcfoundation.org/UA-Profile/Transport/uatcp-uasc-uabinary";
