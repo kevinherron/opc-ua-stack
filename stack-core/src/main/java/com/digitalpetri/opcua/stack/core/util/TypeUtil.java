@@ -1,7 +1,9 @@
 package com.digitalpetri.opcua.stack.core.util;
 
+import java.util.Map;
 import java.util.UUID;
 
+import com.digitalpetri.opcua.stack.core.Identifiers;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
@@ -21,10 +23,11 @@ import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.digitalpetri.opcua.stack.core.types.enumerated.IdType;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableMap;
 
 public class TypeUtil {
 
-    private static final BiMap<Class<?>, Integer> PrimitiveBuiltinTypeIds =
+    private static final BiMap<Class<?>, Integer> PRIMITIVE_BUILTIN_TYPES =
             ImmutableBiMap.<Class<?>, Integer>builder()
                     .put(boolean.class, 1)
                     .put(byte.class, 2)
@@ -35,7 +38,7 @@ public class TypeUtil {
                     .put(double.class, 11)
                     .build();
 
-    private static final BiMap<Integer, Class<?>> BackingClasses =
+    private static final BiMap<Integer, Class<?>> BUILTIN_TYPES =
             ImmutableBiMap.<Integer, Class<?>>builder()
                     .put(1, Boolean.class)      // Boolean
                     .put(2, Byte.class)         // SByte
@@ -64,15 +67,32 @@ public class TypeUtil {
                     .put(25, DiagnosticInfo.class)
                     .build();
 
+    private static final Map<Integer, Class<?>> SIMPLE_TYPES =
+            ImmutableMap.<Integer, Class<?>>builder()
+                    .put(id(Identifiers.LocaleId), String.class)
+                    .put(id(Identifiers.Duration), Double.class)
+                    .put(id(Identifiers.ImageBMP), ByteString.class)
+                    .put(id(Identifiers.ImageGIF), ByteString.class)
+                    .put(id(Identifiers.ImageJPG), ByteString.class)
+                    .put(id(Identifiers.ImagePNG), ByteString.class)
+                    .put(id(Identifiers.Integer), Number.class)
+                    .put(id(Identifiers.Number), Number.class)
+                    .put(id(Identifiers.UtcTime), DateTime.class)
+                    .build();
+
+    private static int id(NodeId nodeId) {
+        return ((UInteger) nodeId.getIdentifier()).intValue();
+    }
+
     /**
      * @param backingType the backing {@link Class} of the builtin type.
      * @return the id of the builtin type backed by {@code backingType}, or -1 if backingType is not builtin.
      */
     public static int getBuiltinTypeId(Class<?> backingType) {
         if (backingType.isPrimitive()) {
-            return PrimitiveBuiltinTypeIds.getOrDefault(backingType, -1);
+            return PRIMITIVE_BUILTIN_TYPES.getOrDefault(backingType, -1);
         } else {
-            return BackingClasses.inverse().getOrDefault(backingType, -1);
+            return BUILTIN_TYPES.inverse().getOrDefault(backingType, -1);
         }
     }
 
@@ -81,13 +101,15 @@ public class TypeUtil {
      * @return the {@link Class} backing the builtin type.
      */
     public static Class<?> getBackingClass(int typeId) {
-        return BackingClasses.get(typeId);
+        return BUILTIN_TYPES.get(typeId);
     }
 
     public static Class<?> getBackingClass(ExpandedNodeId typeId) {
         if (typeId.getNamespaceIndex().intValue() == 0 && typeId.getType() == IdType.Numeric) {
-            Number id = (Number) typeId.getIdentifier();
-            return getBackingClass(id.intValue());
+            int id = ((Number) typeId.getIdentifier()).intValue();
+            Class<?> c = getBackingClass(id);
+
+            return c != null ? c : SIMPLE_TYPES.get(id);
         }
 
         return null;
