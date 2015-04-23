@@ -338,8 +338,8 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
         try {
             ErrorMessage error = TcpMessageDecoder.decodeError(buffer);
 
-            if (error.getError() == StatusCodes.Bad_TcpSecureChannelUnknown ||
-                    error.getError() == StatusCodes.Bad_SecureChannelIdInvalid) {
+            if (error.getError().getValue() == StatusCodes.Bad_TcpSecureChannelUnknown ||
+                    error.getError().getValue() == StatusCodes.Bad_SecureChannelIdInvalid) {
                 secureChannel.setChannelId(0);
             }
 
