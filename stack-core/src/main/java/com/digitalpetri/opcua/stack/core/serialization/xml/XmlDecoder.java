@@ -307,7 +307,9 @@ public class XmlDecoder implements UaDecoder {
 
             requireNextEndElement(field);
 
-            if (body instanceof UaSerializable) {
+            if (body instanceof UaStructure) {
+                return new ExtensionObject((UaStructure) body);
+            } else if (body instanceof UaSerializable) {
                 return new ExtensionObject((UaSerializable) body, typeId);
             } else if (body instanceof XmlElement) {
                 return new ExtensionObject((XmlElement) body, typeId);
