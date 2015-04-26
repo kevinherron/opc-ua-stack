@@ -17,6 +17,7 @@ import com.digitalpetri.opcua.stack.client.handlers.UaTcpClientAcknowledgeHandle
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.UaServiceFaultException;
 import com.digitalpetri.opcua.stack.core.application.UaStackClient;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
@@ -252,10 +253,10 @@ public class UaTcpStackClient implements UaStackClient {
 
         if (future != null) {
             StatusCode serviceResult = serviceFault.getResponseHeader().getServiceResult();
-            UaException serviceException = new UaException(
-                    serviceResult.getValue(), "service fault, serviceResult=" + serviceResult);
+            UaServiceFaultException exception = new UaServiceFaultException(
+                    serviceFault, "service fault, serviceResult=" + serviceResult);
 
-            future.completeExceptionally(serviceException);
+            future.completeExceptionally(exception);
         }
 
         Timeout timeout = timeouts.remove(requestHandle);
