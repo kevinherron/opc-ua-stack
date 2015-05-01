@@ -4,9 +4,9 @@ import java.nio.ByteOrder;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import com.google.common.collect.Lists;
-import com.google.common.primitives.Ints;
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
+import com.digitalpetri.opcua.stack.client.UaTcpStackClient.UaTcpClientHandler;
+import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.channel.ChannelParameters;
@@ -19,6 +19,9 @@ import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageDecoder;
 import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageEncoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaMessage;
+import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
+import com.google.common.collect.Lists;
+import com.google.common.primitives.Ints;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -29,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage> implements HeaderDecoder {
 
-    public static final AttributeKey<List<UaMessage>> AWAITING_HANDSHAKE_KEY =
+    public static final AttributeKey<List<UaMessage>> KEY_AWAITING_HANDSHAKE =
             AttributeKey.valueOf("awaiting-handshake");
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -53,14 +56,13 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
                 client.getChannelConfig().getMaxChunkSize(),
                 client.getChannelConfig().getMaxMessageSize(),
                 client.getChannelConfig().getMaxChunkCount(),
-                client.getEndpointUrl()
-        );
+                client.getEndpointUrl());
 
         ByteBuf messageBuffer = TcpMessageEncoder.encode(hello);
 
         ctx.writeAndFlush(messageBuffer);
 
-        logger.debug("Sent Hello message.");
+        logger.debug("Sent Hello message on channel={}.", ctx.channel());
 
         super.channelActive(ctx);
     }
@@ -96,7 +98,7 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
     }
 
     private void onAcknowledge(ChannelHandlerContext ctx, ByteBuf buffer) {
-        logger.debug("Received Acknowledge message.");
+        logger.debug("Received Acknowledge message on channel={}.", ctx.channel());
 
         buffer.skipBytes(3 + 1 + 4); // Skip messageType, chunkType, and messageSize
 
@@ -138,7 +140,7 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
                 Ints.saturatedCast(remoteMaxChunkCount)
         );
 
-        ctx.channel().attr(AWAITING_HANDSHAKE_KEY).set(awaitingHandshake);
+        ctx.channel().attr(KEY_AWAITING_HANDSHAKE).set(awaitingHandshake);
 
         ctx.executor().execute(() -> {
             int maxArrayLength = client.getChannelConfig().getMaxArrayLength();
@@ -147,8 +149,7 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
             UaTcpClientAsymmetricHandler handler = new UaTcpClientAsymmetricHandler(
                     client,
                     new SerializationQueue(parameters, maxArrayLength, maxStringLength),
-                    handshakeFuture
-            );
+                    handshakeFuture);
 
             ctx.pipeline().addLast(handler);
         });
@@ -156,12 +157,32 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
 
     private void onError(ChannelHandlerContext ctx, ByteBuf buffer) {
         try {
-            ErrorMessage error = TcpMessageDecoder.decodeError(buffer);
+            ErrorMessage errorMessage = TcpMessageDecoder.decodeError(buffer);
+            StatusCode errorCode = errorMessage.getError();
 
-            logger.error("Received error message: " + error);
-            handshakeFuture.completeExceptionally(new UaException(error.getError(), "error=" + error.getReason()));
+            boolean secureChannelError =
+                    errorCode.getValue() == StatusCodes.Bad_TcpSecureChannelUnknown ||
+                            errorCode.getValue() == StatusCodes.Bad_SecureChannelIdInvalid;
+
+            if (secureChannelError) {
+                client.getSecureChannel().setChannelId(0);
+            }
+
+            logger.error("Received error message: " + errorMessage);
+
+            if (ctx.pipeline().context(UaTcpClientHandler.class) != null) {
+                UaTcpClientHandler handler = ctx.pipeline().remove(UaTcpClientHandler.class);
+                if (secureChannelError) {
+                    handler.secureChannelError(ctx, errorCode);
+                }
+            }
+
+            handshakeFuture.completeExceptionally(new UaException(errorCode, "error=" + errorMessage.getReason()));
         } catch (UaException e) {
             logger.error("An exception occurred while decoding an error message: {}", e.getMessage(), e);
+            if (ctx.pipeline().context(UaTcpClientHandler.class) != null) {
+                ctx.pipeline().remove(UaTcpClientHandler.class);
+            }
             handshakeFuture.completeExceptionally(e);
         } finally {
             ctx.close();

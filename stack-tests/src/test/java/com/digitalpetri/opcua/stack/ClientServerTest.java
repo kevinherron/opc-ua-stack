@@ -30,8 +30,8 @@ import com.digitalpetri.opcua.stack.core.types.structured.TestStackRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.TestStackResponse;
 import com.digitalpetri.opcua.stack.core.util.CryptoRestrictions;
 import com.digitalpetri.opcua.stack.server.tcp.SocketServer;
-import com.digitalpetri.opcua.stack.server.tcp.UaTcpStackServer;
 import com.digitalpetri.opcua.stack.server.tcp.UaTcpServerBuilder;
+import com.digitalpetri.opcua.stack.server.tcp.UaTcpStackServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterTest;
@@ -208,6 +208,50 @@ public class ClientServerTest extends SecurityFixture {
         UaTcpStackClient client = createClient(endpoint);
 
         connectAndTest(input, client);
+    }
+
+    @Test
+    public void testClientStateMachine() throws Exception {
+        EndpointDescription endpoint = endpoints[0];
+        Variant input = new Variant(42);
+
+        logger.info("SecurityPolicy={}, MessageSecurityMode={}, input={}",
+                SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()), endpoint.getSecurityMode(), input);
+
+        UaTcpStackClient client = createClient(endpoint);
+
+        // Test some where we don't wait for disconnect to finish...
+        for (int i = 0; i < 10; i++) {
+            RequestHeader header = new RequestHeader(
+                    NodeId.NULL_VALUE,
+                    DateTime.now(),
+                    uint(i), uint(0), null, uint(60), null);
+
+            TestStackRequest request = new TestStackRequest(header, uint(i), i, input);
+
+            UaResponseMessage response = client.sendRequest(request).get();
+
+            logger.info("get response: {}", response);
+
+            client.disconnect();
+        }
+
+        // and test some where we DO wait...
+        for (int i = 0; i < 10; i++) {
+            RequestHeader header = new RequestHeader(
+                    NodeId.NULL_VALUE,
+                    DateTime.now(),
+                    uint(i), uint(0), null, uint(60), null);
+
+            TestStackRequest request = new TestStackRequest(header, uint(i), i, input);
+
+            logger.info("sending request: {}", request);
+            UaResponseMessage response = client.sendRequest(request).get();
+            logger.info("get response: {}", response);
+
+            client.disconnect();
+            Thread.sleep(100);
+        }
     }
 
     private UaTcpStackClient createClient(EndpointDescription endpoint) throws UaException {

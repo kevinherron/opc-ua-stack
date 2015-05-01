@@ -6,8 +6,8 @@ import java.util.List;
 
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
-import com.google.common.base.MoreObjects;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
+import com.google.common.base.MoreObjects;
 import io.netty.util.DefaultAttributeMap;
 
 public class ClientSecureChannel extends DefaultAttributeMap implements SecureChannel {

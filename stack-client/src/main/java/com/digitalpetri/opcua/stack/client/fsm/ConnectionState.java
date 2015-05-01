@@ -1,9 +1,7 @@
-package com.digitalpetri.opcua.stack.client.fsm.states;
+package com.digitalpetri.opcua.stack.client.fsm;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateContext;
-import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateEvent;
 import io.netty.channel.Channel;
 
 public interface ConnectionState {
@@ -11,10 +9,10 @@ public interface ConnectionState {
     /**
      * Activate this state.
      *
-     * @param event   the {@link ConnectionStateEvent} that caused this state to be activated.
-     * @param context the {@link ConnectionStateContext}.
+     * @param fromEvent the {@link ConnectionStateEvent} that caused this state to be activated.
+     * @param context   the {@link ConnectionStateContext}.
      */
-    void activate(ConnectionStateEvent event, ConnectionStateContext context);
+    void activate(ConnectionStateEvent fromEvent, ConnectionStateContext context);
 
     /**
      * Given {@code event}, return the next {@link ConnectionState}.
@@ -26,7 +24,7 @@ public interface ConnectionState {
     ConnectionState transition(ConnectionStateEvent event, ConnectionStateContext context);
 
     /**
-     * @return the {@link CompletableFuture} holding the {@link Channel} for this client connection.
+     * @return the {@link CompletableFuture} for the {@link Channel}.
      */
     CompletableFuture<Channel> getChannelFuture();
 

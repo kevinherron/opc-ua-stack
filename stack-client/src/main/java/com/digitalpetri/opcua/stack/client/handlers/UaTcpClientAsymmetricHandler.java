@@ -7,8 +7,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.google.common.collect.Lists;
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
+import com.digitalpetri.opcua.stack.client.UaTcpStackClient.UaTcpClientHandler;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.UaRuntimeException;
@@ -22,6 +22,7 @@ import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageDecoder;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
+import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import com.digitalpetri.opcua.stack.core.types.enumerated.SecurityTokenRequestType;
 import com.digitalpetri.opcua.stack.core.types.structured.ChannelSecurityToken;
 import com.digitalpetri.opcua.stack.core.types.structured.CloseSecureChannelRequest;
@@ -30,6 +31,7 @@ import com.digitalpetri.opcua.stack.core.types.structured.OpenSecureChannelRespo
 import com.digitalpetri.opcua.stack.core.types.structured.RequestHeader;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.digitalpetri.opcua.stack.core.util.NonceUtil;
+import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -76,6 +78,10 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (renewFuture != null) renewFuture.cancel(false);
 
+        if (ctx.pipeline().context(UaTcpClientHandler.class) != null) {
+            ctx.pipeline().remove(UaTcpClientHandler.class);
+        }
+
         handshakeFuture.completeExceptionally(
                 new UaException(StatusCodes.Bad_ConnectionClosed, "connection closed"));
 
@@ -106,7 +112,9 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof CloseSecureChannelRequest) {
+        if (evt instanceof OpenSecureChannelRequest) {
+            sendOpenSecureChannelRequest(ctx, (OpenSecureChannelRequest) evt);
+        } else if (evt instanceof CloseSecureChannelRequest) {
             sendCloseSecureChannelRequest(ctx, (CloseSecureChannelRequest) evt);
         }
     }
@@ -336,14 +344,27 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
 
     private void onError(ChannelHandlerContext ctx, ByteBuf buffer) {
         try {
-            ErrorMessage error = TcpMessageDecoder.decodeError(buffer);
+            ErrorMessage errorMessage = TcpMessageDecoder.decodeError(buffer);
+            StatusCode errorCode = errorMessage.getError();
 
-            if (error.getError().getValue() == StatusCodes.Bad_TcpSecureChannelUnknown ||
-                    error.getError().getValue() == StatusCodes.Bad_SecureChannelIdInvalid) {
+            boolean secureChannelError =
+                    errorCode.getValue() == StatusCodes.Bad_TcpSecureChannelUnknown ||
+                            errorCode.getValue() == StatusCodes.Bad_SecureChannelIdInvalid;
+
+            if (secureChannelError) {
                 secureChannel.setChannelId(0);
             }
 
-            logger.error("Received error message: " + error);
+            logger.error("Received error message: " + errorMessage);
+
+            if (ctx.pipeline().context(UaTcpClientHandler.class) != null) {
+                UaTcpClientHandler handler = ctx.pipeline().remove(UaTcpClientHandler.class);
+                if (secureChannelError) {
+                    handler.secureChannelError(ctx, errorCode);
+                }
+            }
+
+            handshakeFuture.completeExceptionally(new UaException(errorCode, "error=" + errorMessage.getReason()));
         } catch (UaException e) {
             logger.error("An exception occurred while decoding an error message: {}", e.getMessage(), e);
         } finally {
