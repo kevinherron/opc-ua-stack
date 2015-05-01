@@ -315,9 +315,17 @@ public class UaTcpStackServer implements UaStackServer {
 
     @Override
     public void closeSecureChannel(ServerSecureChannel secureChannel) {
-        secureChannels.remove(secureChannel.getChannelId());
+        long channelId = secureChannel.getChannelId();
+
+        if (secureChannels.remove(channelId) != null) {
+            logger.debug("Removed secure channel id={}", channelId);
+        }
+
         Channel channel = secureChannel.attr(BoundChannelKey).get();
-        if (channel != null) channel.close();
+        if (channel != null) {
+            logger.debug("Closing secure channel id={}, bound channel: {}", channelId, channel);
+            channel.close();
+        }
     }
 
     public void secureChannelIssuedOrRenewed(ServerSecureChannel secureChannel, long lifetimeMillis) {

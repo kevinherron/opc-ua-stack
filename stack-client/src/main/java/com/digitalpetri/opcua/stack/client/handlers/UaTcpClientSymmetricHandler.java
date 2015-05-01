@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
-import com.google.common.collect.Lists;
+import com.digitalpetri.opcua.stack.client.UaTcpStackClient.UaTcpClientHandler;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
@@ -21,6 +21,7 @@ import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
+import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -60,14 +61,15 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        List<UaMessage> awaitingHandshake = ctx.channel().attr(UaTcpClientAcknowledgeHandler.AWAITING_HANDSHAKE_KEY).get();
+        List<UaMessage> awaitingHandshake =
+                ctx.channel().attr(UaTcpClientAcknowledgeHandler.KEY_AWAITING_HANDSHAKE).get();
 
         if (awaitingHandshake != null) {
             logger.debug("{} message(s) queued before handshake completed; sending now.", awaitingHandshake.size());
             awaitingHandshake.forEach(m -> ctx.pipeline().write(m));
             ctx.flush();
 
-            ctx.channel().attr(UaTcpClientAcknowledgeHandler.AWAITING_HANDSHAKE_KEY).set(null);
+            ctx.channel().attr(UaTcpClientAcknowledgeHandler.KEY_AWAITING_HANDSHAKE).remove();
         }
 
         client.getExecutorService().execute(() -> handshakeFuture.complete(ctx.channel()));

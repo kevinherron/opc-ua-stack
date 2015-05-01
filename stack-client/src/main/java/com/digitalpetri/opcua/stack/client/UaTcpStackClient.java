@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateContext;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateEvent;
+import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateObserver;
 import com.digitalpetri.opcua.stack.client.handlers.UaTcpClientAcknowledgeHandler;
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
@@ -36,12 +37,12 @@ import com.digitalpetri.opcua.stack.core.types.structured.GetEndpointsResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.RequestHeader;
 import com.digitalpetri.opcua.stack.core.types.structured.ResponseHeader;
 import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
-import com.digitalpetri.opcua.stack.core.util.CertificateUtil;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -54,6 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
+import static com.google.common.collect.Lists.newArrayList;
 
 public class UaTcpStackClient implements UaStackClient {
 
@@ -65,8 +67,9 @@ public class UaTcpStackClient implements UaStackClient {
     private final Map<UInteger, Timeout> timeouts = Maps.newConcurrentMap();
     private final HashedWheelTimer wheelTimer = Stack.sharedWheelTimer();
 
+    private volatile ClientSecureChannel secureChannel;
+
     private final ApplicationDescription application;
-    private final ClientSecureChannel secureChannel;
     private final ConnectionStateContext stateContext;
 
     private final UaTcpStackClientConfig config;
@@ -81,47 +84,21 @@ public class UaTcpStackClient implements UaStackClient {
                 ApplicationType.Client,
                 null, null, null);
 
-        secureChannel = config.getEndpoint().map(endpoint -> {
-            ClientSecureChannel secureChannel = new ClientSecureChannel(
-                    SecurityPolicy.None, MessageSecurityMode.None);
+        secureChannel = new ClientSecureChannel(
+                SecurityPolicy.None, MessageSecurityMode.None);
 
-            X509Certificate remoteCertificate = null;
-            List<X509Certificate> remoteCertificateChain = null;
-
-            if (!endpoint.getServerCertificate().isNull()) {
-                try {
-                    byte[] bs = endpoint.getServerCertificate().bytes();
-                    remoteCertificate = CertificateUtil.decodeCertificate(bs);
-                    remoteCertificateChain = CertificateUtil.decodeCertificates(bs);
-                    SecurityPolicy securityPolicy = SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri());
-
-                    if (securityPolicy != SecurityPolicy.None) {
-                        secureChannel = new ClientSecureChannel(
-                                config.getKeyPair().orElse(null),
-                                config.getCertificate().orElse(null),
-                                remoteCertificate,
-                                remoteCertificateChain,
-                                securityPolicy,
-                                endpoint.getSecurityMode());
-                    }
-                } catch (UaException e) {
-                    logger.warn("Unable to create ClientSecureChannel: {}", e.getMessage(), e);
-                }
-            }
-
-            return secureChannel;
-        }).orElse(new ClientSecureChannel(SecurityPolicy.None, MessageSecurityMode.None));
-
-        stateContext = new ConnectionStateContext(this, config.getExecutor());
+        stateContext = new ConnectionStateContext(this);
     }
 
     @Override
     public CompletableFuture<UaStackClient> connect() {
         CompletableFuture<UaStackClient> future = new CompletableFuture<>();
 
-        stateContext.handleEvent(ConnectionStateEvent.CONNECT_REQUESTED);
+        if (!stateContext.isConnected()) {
+            stateContext.handleEvent(ConnectionStateEvent.CONNECT_REQUESTED);
+        }
 
-        stateContext.getChannel().whenComplete((ch, ex) -> {
+        stateContext.getChannelFuture().whenComplete((ch, ex) -> {
             if (ch != null) future.complete(this);
             else future.completeExceptionally(ex);
         });
@@ -138,7 +115,11 @@ public class UaTcpStackClient implements UaStackClient {
 
     @SuppressWarnings("unchecked")
     public <T extends UaResponseMessage> CompletableFuture<T> sendRequest(UaRequestMessage request) {
-        return stateContext.getChannel().thenCompose(ch -> {
+        if (!stateContext.isConnected()) {
+            stateContext.handleEvent(ConnectionStateEvent.CONNECT_REQUESTED);
+        }
+
+        return stateContext.getChannelFuture().thenCompose(ch -> {
             CompletableFuture<T> future = new CompletableFuture<>();
 
             RequestHeader requestHeader = request.getRequestHeader();
@@ -147,7 +128,16 @@ public class UaTcpStackClient implements UaStackClient {
 
             scheduleRequestTimeout(requestHeader);
 
-            ch.writeAndFlush(request, ch.voidPromise());
+            ch.writeAndFlush(request).addListener(f -> {
+                if (!f.isSuccess()) {
+                    UInteger requestHandle = request.getRequestHeader().getRequestHandle();
+
+                    pending.remove(requestHandle);
+                    future.completeExceptionally(f.cause());
+
+                    logger.debug("Write failed, requestHandle={}", requestHandle, f.cause());
+                }
+            });
 
             return future;
         });
@@ -160,7 +150,11 @@ public class UaTcpStackClient implements UaStackClient {
         Preconditions.checkArgument(requests.size() == futures.size(),
                 "requests and futures parameters must be same size");
 
-        stateContext.getChannel().whenComplete((ch, ex) -> {
+        if (!stateContext.isConnected()) {
+            stateContext.handleEvent(ConnectionStateEvent.CONNECT_REQUESTED);
+        }
+
+        stateContext.getChannelFuture().whenComplete((ch, ex) -> {
             if (ch != null) {
                 Iterator<? extends UaRequestMessage> requestIterator = requests.iterator();
                 Iterator<CompletableFuture<? extends UaResponseMessage>> futureIterator = futures.iterator();
@@ -178,13 +172,37 @@ public class UaTcpStackClient implements UaStackClient {
                 }
 
                 ch.eventLoop().execute(() -> {
-                    requests.forEach(r -> ch.write(r, ch.voidPromise()));
+                    for (UaRequestMessage request : requests) {
+                        ch.write(request).addListener(f -> {
+                            if (!f.isSuccess()) {
+                                UInteger requestHandle = request.getRequestHeader().getRequestHandle();
+
+                                CompletableFuture<?> future = pending.remove(requestHandle);
+                                if (future != null) future.completeExceptionally(f.cause());
+
+                                logger.debug("Write failed, requestHandle={}", requestHandle, f.cause());
+                            }
+                        });
+                    }
+
                     ch.flush();
                 });
             } else {
                 futures.forEach(f -> f.completeExceptionally(ex));
             }
         });
+    }
+
+    CompletableFuture<Channel> getChannelFuture() {
+        return stateContext.getChannelFuture();
+    }
+
+    public void addStateObserver(ConnectionStateObserver observer) {
+        stateContext.addStateObserver(observer);
+    }
+
+    public void removeStateObserver(ConnectionStateObserver observer) {
+        stateContext.removeStateObserver(observer);
     }
 
     private void scheduleRequestTimeout(RequestHeader requestHeader) {
@@ -217,7 +235,7 @@ public class UaTcpStackClient implements UaStackClient {
 
     private void onChannelInactive(ChannelHandlerContext ctx) {
         logger.debug("Channel inactive: {}", ctx.channel());
-        stateContext.handleEvent(ConnectionStateEvent.CONNECTION_LOST);
+        stateContext.handleEvent(ConnectionStateEvent.ERR_CONNECTION_LOST);
     }
 
     private void onExceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
@@ -310,6 +328,10 @@ public class UaTcpStackClient implements UaStackClient {
         return config.getExecutor();
     }
 
+    public void setSecureChannel(ClientSecureChannel secureChannel) {
+        this.secureChannel = secureChannel;
+    }
+
     public static CompletableFuture<Channel> bootstrap(UaTcpStackClient client) {
         CompletableFuture<Channel> handshake = new CompletableFuture<>();
 
@@ -330,7 +352,7 @@ public class UaTcpStackClient implements UaStackClient {
         try {
             URI uri = URI.create(client.getEndpointUrl());
 
-            bootstrap.connect(uri.getHost(), uri.getPort()).addListener(f -> {
+            bootstrap.connect(uri.getHost(), uri.getPort()).addListener((ChannelFuture f) -> {
                 if (!f.isSuccess()) {
                     handshake.completeExceptionally(f.cause());
                 }
@@ -346,7 +368,7 @@ public class UaTcpStackClient implements UaStackClient {
         return handshake;
     }
 
-    private static class UaTcpClientHandler extends SimpleChannelInboundHandler<UaResponseMessage> {
+    public static class UaTcpClientHandler extends SimpleChannelInboundHandler<UaResponseMessage> {
 
         private final UaTcpStackClient client;
 
@@ -361,9 +383,12 @@ public class UaTcpStackClient implements UaStackClient {
 
         @Override
         public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+            if (ctx.pipeline().context(UaTcpClientHandler.class) != null) {
+                ctx.pipeline().remove(UaTcpClientHandler.class);
+            }
+
             client.onChannelInactive(ctx);
 
-            // Let the lower layers know the channel is inactive.
             super.channelInactive(ctx);
         }
 
@@ -371,6 +396,13 @@ public class UaTcpStackClient implements UaStackClient {
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
             client.onExceptionCaught(ctx, cause);
         }
+
+        public void secureChannelError(ChannelHandlerContext ctx, StatusCode errorCode) {
+            List<CompletableFuture<UaResponseMessage>> futures = newArrayList(client.pending.values());
+            futures.forEach(f -> f.completeExceptionally(new UaException(errorCode)));
+            client.pending.clear();
+        }
+
     }
 
     /**
