@@ -94,11 +94,11 @@ public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements Hea
         /* Our send buffer size is determined by the remote receive buffer size. */
         long localSendBufferSize = Math.min(remoteReceiveBufferSize, config.getMaxChunkSize());
 
-        /* Max message size the remote can send us; not influenced by remote configuration. */
-        long localMaxMessageSize = config.getMaxMessageSize();
-
         /* Max chunk count the remote can send us; not influenced by remote configuration. */
         long localMaxChunkCount = config.getMaxChunkCount();
+
+        /* Max message size the remote can send us. Determined by our max chunk count and receive buffer size. */
+        long localMaxMessageSize = Math.min(localReceiveBufferSize * localMaxChunkCount, config.getMaxMessageSize());
 
         ChannelParameters parameters = new ChannelParameters(
                 Ints.saturatedCast(localMaxMessageSize),
