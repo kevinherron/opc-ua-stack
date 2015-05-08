@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
-import com.digitalpetri.opcua.stack.client.UaTcpStackClientConfig;
+import com.digitalpetri.opcua.stack.client.config.UaTcpStackClientConfig;
 import com.digitalpetri.opcua.stack.core.application.UaStackClient;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
@@ -52,8 +52,7 @@ public class ClientExample {
                 NodeId.NULL_VALUE,
                 DateTime.now(),
                 uint(requestHandle.getAndIncrement()),
-                uint(0), null, uint(60), null
-        );
+                uint(0), null, uint(60), null);
 
         TestStackRequest request = new TestStackRequest(header, uint(0), 1, new Variant(input));
 

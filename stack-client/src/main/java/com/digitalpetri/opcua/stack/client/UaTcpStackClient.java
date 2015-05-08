@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.digitalpetri.opcua.stack.client.config.UaTcpStackClientConfig;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateContext;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateEvent;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateObserver;

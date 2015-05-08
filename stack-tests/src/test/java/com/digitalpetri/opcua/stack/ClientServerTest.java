@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.beust.jcommander.internal.Lists;
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
-import com.digitalpetri.opcua.stack.client.UaTcpStackClientConfig;
+import com.digitalpetri.opcua.stack.client.config.UaTcpStackClientConfig;
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
@@ -274,8 +274,7 @@ public class ClientServerTest extends SecurityFixture {
             RequestHeader header = new RequestHeader(
                     NodeId.NULL_VALUE,
                     DateTime.now(),
-                    uint(i), uint(0), null, uint(60), null
-            );
+                    uint(i), uint(0), null, uint(60), null);
 
             requests.add(new TestStackRequest(header, uint(i), i, input));
 
