@@ -33,6 +33,8 @@ import com.digitalpetri.opcua.stack.core.types.enumerated.ApplicationType;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.digitalpetri.opcua.stack.core.types.structured.ApplicationDescription;
 import com.digitalpetri.opcua.stack.core.types.structured.EndpointDescription;
+import com.digitalpetri.opcua.stack.core.types.structured.FindServersRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.FindServersResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.GetEndpointsRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.GetEndpointsResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.RequestHeader;
@@ -404,6 +406,31 @@ public class UaTcpStackClient implements UaStackClient {
             client.pending.clear();
         }
 
+    }
+
+    /**
+     * Query the FindServers service at the given endpoint URL.
+     * <p>
+     * The endpoint URL(s) for each server {@link ApplicationDescription} returned can then be used in a
+     * {@link #getEndpoints(String)} call to discover the endpoints for that server.
+     *
+     * @param endpointUrl the endpoint URL to find servers at.
+     * @return the {@link ApplicationDescription}s returned by the FindServers service.
+     */
+    public static CompletableFuture<ApplicationDescription[]> findServers(String endpointUrl) {
+        UaTcpStackClientConfig config = UaTcpStackClientConfig.builder()
+                .setEndpointUrl(endpointUrl)
+                .build();
+
+        UaTcpStackClient client = new UaTcpStackClient(config);
+
+        FindServersRequest request = new FindServersRequest(
+                new RequestHeader(null, DateTime.now(), uint(1), uint(0), null, uint(5000), null),
+                endpointUrl, null, null);
+
+        return client.<FindServersResponse>sendRequest(request)
+                .whenComplete((r, ex) -> client.disconnect())
+                .thenApply(FindServersResponse::getServers);
     }
 
     /**
