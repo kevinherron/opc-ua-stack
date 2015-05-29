@@ -67,14 +67,14 @@ public final class ExtensionObject {
     }
 
     public static ExtensionObject encode(UaStructure structure) throws UaSerializationException {
-        return encodeOpcUaBinary(structure, structure.getBinaryEncodingId());
+        return encodeAsByteString(structure, structure.getBinaryEncodingId());
     }
 
-    public static ExtensionObject encodeOpcUaBinary(Object object, NodeId encodingTypeId) throws UaSerializationException {
+    public static ExtensionObject encodeAsByteString(Object object, NodeId encodingTypeId) throws UaSerializationException {
         return encodeAsByteString(object, encodingTypeId, DataTypeEncoding.OPC_UA);
     }
 
-    public static ExtensionObject encodeOpcUaXml(Object object, NodeId encodingTypeId) throws UaSerializationException {
+    public static ExtensionObject encodeAsXmlElement(Object object, NodeId encodingTypeId) throws UaSerializationException {
         return encodeAsXmlElement(object, encodingTypeId, DataTypeEncoding.OPC_UA);
     }
 
