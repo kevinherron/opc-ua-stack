@@ -4,31 +4,27 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaSerializationException;
+import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.reflect.ClassPath;
-import com.digitalpetri.opcua.stack.core.StatusCodes;
-import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DelegateRegistry {
 
-    private static final Map<Class<? extends UaSerializable>, EncoderDelegate<? extends UaSerializable>>
-            encodersByClass = Maps.newConcurrentMap();
+    private static final Map<Class<?>, EncoderDelegate<?>> encodersByClass = Maps.newConcurrentMap();
 
-    private static final Map<NodeId, EncoderDelegate<? extends UaSerializable>>
-            encodersById = Maps.newConcurrentMap();
+    private static final Map<NodeId, EncoderDelegate<?>> encodersById = Maps.newConcurrentMap();
 
-    private static final Map<Class<? extends UaSerializable>, DecoderDelegate<? extends UaSerializable>>
-            decodersByClass = Maps.newConcurrentMap();
+    private static final Map<Class<?>, DecoderDelegate<?>> decodersByClass = Maps.newConcurrentMap();
 
-    private static final Map<NodeId, DecoderDelegate<? extends UaSerializable>>
-            decodersById = Maps.newConcurrentMap();
+    private static final Map<NodeId, DecoderDelegate<?>> decodersById = Maps.newConcurrentMap();
 
-    public static <T extends UaSerializable> void registerEncoder(EncoderDelegate<T> delegate, Class<T> clazz, NodeId... ids) {
+    public static <T> void registerEncoder(EncoderDelegate<T> delegate, Class<T> clazz, NodeId... ids) {
         encodersByClass.put(clazz, delegate);
 
         if (ids != null) {
@@ -36,7 +32,7 @@ public class DelegateRegistry {
         }
     }
 
-    public static <T extends UaSerializable> void registerDecoder(DecoderDelegate<T> delegate, Class<T> clazz, NodeId... ids) {
+    public static <T> void registerDecoder(DecoderDelegate<T> delegate, Class<T> clazz, NodeId... ids) {
         decodersByClass.put(clazz, delegate);
 
         if (ids != null) {
@@ -45,7 +41,7 @@ public class DelegateRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends UaSerializable> EncoderDelegate<T> getEncoder(T t) throws UaSerializationException {
+    public static <T> EncoderDelegate<T> getEncoder(Object t) throws UaSerializationException {
         try {
             return (EncoderDelegate<T>) encodersByClass.get(t.getClass());
         } catch (NullPointerException e) {
@@ -55,7 +51,7 @@ public class DelegateRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends UaSerializable> EncoderDelegate<T> getEncoder(Class<T> clazz) throws UaSerializationException {
+    public static <T> EncoderDelegate<T> getEncoder(Class<?> clazz) throws UaSerializationException {
         try {
             return (EncoderDelegate<T>) encodersByClass.get(clazz);
         } catch (NullPointerException e) {
@@ -65,7 +61,7 @@ public class DelegateRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends UaSerializable> EncoderDelegate<T> getEncoder(NodeId encodingId) throws UaSerializationException {
+    public static <T> EncoderDelegate<T> getEncoder(NodeId encodingId) throws UaSerializationException {
         try {
             return (EncoderDelegate<T>) encodersById.get(encodingId);
         } catch (NullPointerException e) {
@@ -75,7 +71,7 @@ public class DelegateRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends UaSerializable> DecoderDelegate<T> getDecoder(T t) throws UaSerializationException {
+    public static <T> DecoderDelegate<T> getDecoder(T t) throws UaSerializationException {
         try {
             return (DecoderDelegate<T>) decodersByClass.get(t.getClass());
         } catch (NullPointerException e) {
@@ -85,7 +81,7 @@ public class DelegateRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends UaSerializable> DecoderDelegate<T> getDecoder(Class<T> clazz) throws UaSerializationException {
+    public static <T> DecoderDelegate<T> getDecoder(Class<T> clazz) throws UaSerializationException {
         try {
             return (DecoderDelegate<T>) decodersByClass.get(clazz);
         } catch (NullPointerException e) {
@@ -94,8 +90,9 @@ public class DelegateRegistry {
         }
     }
 
-    public static DecoderDelegate<? extends UaSerializable> getDecoder(NodeId encodingId) {
-        DecoderDelegate<? extends UaSerializable> decoder = decodersById.get(encodingId);
+    @SuppressWarnings("unchecked")
+    public static <T> DecoderDelegate<T> getDecoder(NodeId encodingId) {
+        DecoderDelegate<T> decoder = (DecoderDelegate<T>) decodersById.get(encodingId);
 
         if (decoder == null) {
             throw new UaSerializationException(StatusCodes.Bad_DecodingError,

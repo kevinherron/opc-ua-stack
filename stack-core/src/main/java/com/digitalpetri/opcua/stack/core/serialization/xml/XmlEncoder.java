@@ -302,9 +302,9 @@ public class XmlEncoder implements UaEncoder {
     public void encodeExtensionObject(String field, ExtensionObject value) {
         if (value != null) {
             write(field, Unchecked.consumer(w -> {
-                encodeNodeId("TypeId", value.getDataTypeEncodingId());
+                encodeNodeId("TypeId", value.getEncodingTypeId());
 
-                Object object = value.getObject();
+                Object object = value.getEncoded();
 
                 if (object instanceof UaSerializable) {
                     UaSerializable serializable = (UaSerializable) object;

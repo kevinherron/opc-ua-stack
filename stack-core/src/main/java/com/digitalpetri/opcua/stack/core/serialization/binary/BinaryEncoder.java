@@ -1,11 +1,11 @@
 package com.digitalpetri.opcua.stack.core.serialization.binary;
 
+import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.nio.ByteOrder;
 import java.util.UUID;
 import java.util.function.BiConsumer;
-import javax.annotation.Nonnull;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaSerializationException;
@@ -407,51 +407,71 @@ public class BinaryEncoder implements UaEncoder {
 
     @Override
     public void encodeExtensionObject(String field, ExtensionObject value) throws UaSerializationException {
-        if (value == null || value.getObject() == null) {
+        if (value == null || value.getEncoded() == null) {
             encodeNodeId(null, NodeId.NULL_VALUE);
             buffer.writeByte(0); // No body is encoded
         } else {
-            Object object = value.getObject();
+            Object object = value.getEncoded();
 
-            if (object instanceof UaSerializable) {
-                UaSerializable serializable = (UaSerializable) object;
+            switch (value.getBodyType()) {
+                case BYTE_STRING:
+                    ByteString byteString = (ByteString) object;
 
-                encodeNodeId(null, value.getDataTypeEncodingId());
-                buffer.writeByte(1); // Body is binary encoded
+                    encodeNodeId(null, value.getEncodingTypeId());
+                    buffer.writeByte(1); // Body is binary encoded
 
-                // Record the current index and write a placeholder for the length.
-                int lengthIndex = buffer.writerIndex();
-                buffer.writeInt(0);
+                    encodeByteString(null, byteString);
+                    break;
 
-                // Write the body.
-                int indexBefore = buffer.writerIndex();
-                encodeSerializable(null, serializable);
-                int indexAfter = buffer.writerIndex();
-                int bytesWritten = indexAfter - indexBefore;
+                case XML_ELEMENT:
+                    XmlElement xmlElement = (XmlElement) object;
 
-                // Go back and update the length.
-                buffer.writerIndex(lengthIndex);
-                buffer.writeInt(bytesWritten);
+                    encodeNodeId(null, value.getEncodingTypeId());
+                    buffer.writeByte(2);
 
-                // Return to where we were after writing the body.
-                buffer.writerIndex(indexAfter);
-            } else if (object instanceof ByteString) {
-                ByteString byteString = (ByteString) object;
-
-                encodeNodeId(null, value.getDataTypeEncodingId());
-                buffer.writeByte(1); // Body is binary encoded
-
-                encodeByteString(null, byteString);
-            } else if (object instanceof XmlElement) {
-                XmlElement xmlElement = (XmlElement) object;
-
-                encodeNodeId(null, value.getDataTypeEncodingId());
-                buffer.writeByte(2);
-
-                encodeXmlElement(null, xmlElement);
-            } else {
-                throw new UaSerializationException(StatusCodes.Bad_EncodingError, "unexpected object in ExtensionObject: " + object);
+                    encodeXmlElement(null, xmlElement);
+                    break;
             }
+
+//            if (object instanceof UaSerializable) {
+//                UaSerializable serializable = (UaSerializable) object;
+//
+//                encodeNodeId(null, value.getEncodingTypeId());
+//                buffer.writeByte(1); // Body is binary encoded
+//
+//                // Record the current index and write a placeholder for the length.
+//                int lengthIndex = buffer.writerIndex();
+//                buffer.writeInt(0);
+//
+//                // Write the body.
+//                int indexBefore = buffer.writerIndex();
+//                encodeSerializable(null, serializable);
+//                int indexAfter = buffer.writerIndex();
+//                int bytesWritten = indexAfter - indexBefore;
+//
+//                // Go back and update the length.
+//                buffer.writerIndex(lengthIndex);
+//                buffer.writeInt(bytesWritten);
+//
+//                // Return to where we were after writing the body.
+//                buffer.writerIndex(indexAfter);
+//            } else if (object instanceof ByteString) {
+//                ByteString byteString = (ByteString) object;
+//
+//                encodeNodeId(null, value.getEncodingTypeId());
+//                buffer.writeByte(1); // Body is binary encoded
+//
+//                encodeByteString(null, byteString);
+//            } else if (object instanceof XmlElement) {
+//                XmlElement xmlElement = (XmlElement) object;
+//
+//                encodeNodeId(null, value.getEncodingTypeId());
+//                buffer.writeByte(2);
+//
+//                encodeXmlElement(null, xmlElement);
+//            } else {
+//                throw new UaSerializationException(StatusCodes.Bad_EncodingError, "unexpected object in ExtensionObject: " + object);
+//            }
         }
     }
 
@@ -509,9 +529,15 @@ public class BinaryEncoder implements UaEncoder {
                     for (int i = 0; i < length; i++) {
                         Object o = Array.get(value, i);
 
-                        if (structure) encodeBuiltinType(typeId, new ExtensionObject((UaStructure) o));
-                        else if (enumeration) encodeBuiltinType(typeId, ((UaEnumeration) o).getValue());
-                        else encodeBuiltinType(typeId, o);
+                        if (structure) {
+                            ExtensionObject extensionObject = ExtensionObject.encode((UaStructure) o);
+
+                            encodeBuiltinType(typeId, extensionObject);
+                        } else if (enumeration) {
+                            encodeBuiltinType(typeId, ((UaEnumeration) o).getValue());
+                        } else {
+                            encodeBuiltinType(typeId, o);
+                        }
                     }
                 } else {
                     buffer.writeByte(typeId | 0xC0);
@@ -523,9 +549,15 @@ public class BinaryEncoder implements UaEncoder {
                     for (int i = 0; i < length; i++) {
                         Object o = Array.get(flattened, i);
 
-                        if (structure) encodeBuiltinType(typeId, new ExtensionObject((UaStructure) o));
-                        else if (enumeration) encodeBuiltinType(typeId, ((UaEnumeration) o).getValue());
-                        else encodeBuiltinType(typeId, o);
+                        if (structure) {
+                            ExtensionObject extensionObject = ExtensionObject.encode((UaStructure) o);
+
+                            encodeBuiltinType(typeId, extensionObject);
+                        } else if (enumeration) {
+                            encodeBuiltinType(typeId, ((UaEnumeration) o).getValue());
+                        } else {
+                            encodeBuiltinType(typeId, o);
+                        }
                     }
 
                     encodeInt32(null, dimensions.length);
@@ -536,9 +568,15 @@ public class BinaryEncoder implements UaEncoder {
             } else {
                 buffer.writeByte(typeId);
 
-                if (structure) encodeBuiltinType(typeId, new ExtensionObject((UaStructure) value));
-                else if (enumeration) encodeBuiltinType(typeId, ((UaEnumeration) value).getValue());
-                else encodeBuiltinType(typeId, value);
+                if (structure) {
+                    ExtensionObject extensionObject = ExtensionObject.encode((UaStructure) value);
+
+                    encodeBuiltinType(typeId, extensionObject);
+                } else if (enumeration) {
+                    encodeBuiltinType(typeId, ((UaEnumeration) value).getValue());
+                } else {
+                    encodeBuiltinType(typeId, value);
+                }
             }
         }
     }

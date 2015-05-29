@@ -1,5 +1,6 @@
 package com.digitalpetri.opcua.stack.core.serialization.binary;
 
+import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
 import com.digitalpetri.opcua.stack.core.types.builtin.Variant;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned;
@@ -44,7 +45,8 @@ public class VariantSerializationTest extends BinarySerializationFixture {
         encoder.encodeVariant(null, v);
         Variant decoded = decoder.decodeVariant(null);
 
-        ServiceCounterDataType sc2 = (ServiceCounterDataType) decoded.getValue();
+        ExtensionObject extensionObject = (ExtensionObject) decoded.getValue();
+        ServiceCounterDataType sc2 = extensionObject.decode();
 
         Assert.assertEquals(sc1.getTotalCount(), sc2.getTotalCount());
         Assert.assertEquals(sc1.getErrorCount(), sc2.getErrorCount());

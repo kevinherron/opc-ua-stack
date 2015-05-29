@@ -14,11 +14,15 @@ import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.serialization.DecoderDelegate;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
+import com.digitalpetri.opcua.stack.core.serialization.UaEnumeration;
 import com.digitalpetri.opcua.stack.core.serialization.UaSerializable;
 import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
+import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
+import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.digitalpetri.opcua.stack.core.types.builtin.ExpandedNodeId;
+import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
 import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
 import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 import com.digitalpetri.opcua.stack.core.types.builtin.QualifiedName;
@@ -32,16 +36,7 @@ import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned;
 import com.digitalpetri.opcua.stack.core.util.ArrayUtil;
 import com.digitalpetri.opcua.stack.core.util.TypeUtil;
-import com.digitalpetri.opcua.stack.core.serialization.UaEnumeration;
-import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
-import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
-import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
 import io.netty.buffer.ByteBuf;
-
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
 
 public class BinaryDecoder implements UaDecoder {
 
@@ -265,29 +260,19 @@ public class BinaryDecoder implements UaDecoder {
 
     @Override
     public ExtensionObject decodeExtensionObject(String field) throws UaSerializationException {
-        NodeId dataTypeEncodingId = decodeNodeId(null);
+        NodeId encodingTypeId = decodeNodeId(null);
         int encoding = buffer.readByte();
 
         if (encoding == 0) {
-            return new ExtensionObject((UaSerializable) null, dataTypeEncodingId);
+            return new ExtensionObject((ByteString) null, encodingTypeId);
         } else if (encoding == 1) {
-            try {
-                DecoderDelegate<?> delegate = DelegateRegistry.getDecoder(dataTypeEncodingId);
+            ByteString byteString = decodeByteString(null);
 
-                buffer.skipBytes(4); // Length; not needed since we know what's coming.
-
-                UaSerializable serializable = delegate.decode(this);
-
-                return new ExtensionObject(serializable, dataTypeEncodingId);
-            } catch (UaSerializationException e) {
-                ByteString byteString = decodeByteString(null);
-
-                return new ExtensionObject(byteString, dataTypeEncodingId);
-            }
+            return new ExtensionObject(byteString, encodingTypeId);
         } else if (encoding == 2) {
             XmlElement xmlElement = decodeXmlElement(null);
 
-            return new ExtensionObject(xmlElement, dataTypeEncodingId);
+            return new ExtensionObject(xmlElement, encodingTypeId);
         } else {
             throw new UaSerializationException(StatusCodes.Bad_DecodingError, "unknown ExtensionObject encoding: " + encoding);
         }
@@ -324,10 +309,6 @@ public class BinaryDecoder implements UaDecoder {
                 for (int i = 0; i < length; i++) {
                     Object element = decodeBuiltinType(typeId);
 
-                    if (element instanceof ExtensionObject) {
-                        element = ((ExtensionObject) element).getObject();
-                    }
-
                     Array.set(flatArray, i, element);
                 }
 
@@ -337,10 +318,6 @@ public class BinaryDecoder implements UaDecoder {
                 return new Variant(array);
             } else {
                 Object value = decodeBuiltinType(typeId);
-
-                if (value instanceof ExtensionObject) {
-                    value = ((ExtensionObject) value).getObject();
-                }
 
                 return new Variant(value);
             }

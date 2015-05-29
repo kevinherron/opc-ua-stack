@@ -1,43 +1,99 @@
 package com.digitalpetri.opcua.stack.core.types.builtin;
 
-import javax.annotation.Nonnull;
-
-import com.digitalpetri.opcua.stack.core.serialization.UaSerializable;
+import com.digitalpetri.opcua.stack.core.UaSerializationException;
+import com.digitalpetri.opcua.stack.core.serialization.DataTypeEncoding;
 import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 
 public final class ExtensionObject {
 
-    private final Object object;
-    private final NodeId dataTypeEncodingId;
-
-    public ExtensionObject(@Nonnull UaStructure structure) {
-        this.object = structure;
-        this.dataTypeEncodingId = structure.getBinaryEncodingId();
+    public static enum BodyType {
+        BYTE_STRING,
+        XML_ELEMENT
     }
 
-    public ExtensionObject(UaSerializable serializable, NodeId dataTypeEncodingId) {
-        this.object = serializable;
-        this.dataTypeEncodingId = dataTypeEncodingId;
+    private volatile Object decoded;
+
+    private final BodyType bodyType;
+
+    private final Object encoded;
+    private final NodeId encodingTypeId;
+
+    public ExtensionObject(ByteString encoded, NodeId encodingTypeId) {
+        this.encoded = encoded;
+        this.encodingTypeId = encodingTypeId;
+
+        bodyType = BodyType.BYTE_STRING;
     }
 
-    public ExtensionObject(ByteString byteString, NodeId dataTypeEncodingId) {
-        this.object = byteString;
-        this.dataTypeEncodingId = dataTypeEncodingId;
+    public ExtensionObject(XmlElement encoded, NodeId encodingTypeId) {
+        this.encoded = encoded;
+        this.encodingTypeId = encodingTypeId;
+
+        bodyType = BodyType.XML_ELEMENT;
     }
 
-    public ExtensionObject(XmlElement xmlElement, NodeId dataTypeEncodingId) {
-        this.object = xmlElement;
-        this.dataTypeEncodingId = dataTypeEncodingId;
+    public Object getEncoded() {
+        return encoded;
     }
 
-    public Object getObject() {
-        return object;
+    public NodeId getEncodingTypeId() {
+        return encodingTypeId;
     }
 
-    public NodeId getDataTypeEncodingId() {
-        return dataTypeEncodingId;
+    public BodyType getBodyType() {
+        return bodyType;
+    }
+
+    public <T> T decode() throws UaSerializationException {
+        return decode(DataTypeEncoding.OPC_UA);
+    }
+
+    public <T> T decode(DataTypeEncoding context) throws UaSerializationException {
+        if (decoded != null) return (T) decoded;
+
+        switch (bodyType) {
+            case BYTE_STRING:
+                decoded = context.decodeFromByteString((ByteString) encoded, encodingTypeId);
+                return (T) decoded;
+
+            case XML_ELEMENT:
+                decoded = context.decodeFromXmlElement((XmlElement) encoded, encodingTypeId);
+                return (T) decoded;
+        }
+
+        throw new RuntimeException("encodingType=" + bodyType);
+    }
+
+    public static ExtensionObject encode(UaStructure structure) throws UaSerializationException {
+        return encodeOpcUaBinary(structure, structure.getBinaryEncodingId());
+    }
+
+    public static ExtensionObject encodeOpcUaBinary(Object object, NodeId encodingTypeId) throws UaSerializationException {
+        return encodeAsByteString(object, encodingTypeId, DataTypeEncoding.OPC_UA);
+    }
+
+    public static ExtensionObject encodeOpcUaXml(Object object, NodeId encodingTypeId) throws UaSerializationException {
+        return encodeAsXmlElement(object, encodingTypeId, DataTypeEncoding.OPC_UA);
+    }
+
+    public static ExtensionObject encodeAsByteString(Object object,
+                                                     NodeId encodingTypeId,
+                                                     DataTypeEncoding context) throws UaSerializationException {
+
+        ByteString encoded = context.encodeToByteString(object, encodingTypeId);
+
+        return new ExtensionObject(encoded, encodingTypeId);
+    }
+
+    public static ExtensionObject encodeAsXmlElement(Object object,
+                                                     NodeId encodingTypeId,
+                                                     DataTypeEncoding context) throws UaSerializationException {
+
+        XmlElement encoded = context.encodeToXmlElement(object, encodingTypeId);
+
+        return new ExtensionObject(encoded, encodingTypeId);
     }
 
     @Override
@@ -47,20 +103,20 @@ public final class ExtensionObject {
 
         ExtensionObject that = (ExtensionObject) o;
 
-        return Objects.equal(object, that.object) &&
-                Objects.equal(dataTypeEncodingId, that.dataTypeEncodingId);
+        return Objects.equal(encoded, that.encoded) &&
+                Objects.equal(encodingTypeId, that.encodingTypeId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(object, dataTypeEncodingId);
+        return Objects.hashCode(encoded, encodingTypeId);
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("object", object)
-                .add("dataTypeEncodingId", dataTypeEncodingId)
+                .add("encoded", encoded)
+                .add("encodingTypeId", encodingTypeId)
                 .toString();
     }
 

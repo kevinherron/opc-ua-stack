@@ -1,29 +1,25 @@
 package com.digitalpetri.opcua.stack.core.serialization.xml;
 
+import javax.xml.bind.DatatypeConverter;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
 import java.io.Reader;
-import java.io.StringReader;
 import java.lang.reflect.Array;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import javax.xml.bind.DatatypeConverter;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaSerializationException;
-import com.digitalpetri.opcua.stack.core.serialization.DecoderDelegate;
-import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEnumeration;
 import com.digitalpetri.opcua.stack.core.serialization.UaSerializable;
 import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
-import com.digitalpetri.opcua.stack.core.serialization.binary.BinaryDecoder;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
@@ -43,8 +39,6 @@ import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned;
 import com.digitalpetri.opcua.stack.core.util.Namespaces;
 import com.google.common.collect.Lists;
-
-import static io.netty.buffer.Unpooled.wrappedBuffer;
 
 public class XmlDecoder implements UaDecoder {
 
@@ -286,18 +280,18 @@ public class XmlDecoder implements UaDecoder {
     @Override
     public ExtensionObject decodeExtensionObject(String field) {
         if (nextStartElement(field)) {
-            NodeId typeId = NodeId.NULL_VALUE;
+            NodeId encodingTypeId = NodeId.NULL_VALUE;
             Object body = null;
 
             if (nextStartElement("TypeId")) {
-                typeId = decodeNodeId(null);
+                encodingTypeId = decodeNodeId(null);
 
                 requireNextEndElement("TypeId");
             }
 
             if (nextStartElement("Body")) {
                 try {
-                    body = decodeExtensionObjectValue(typeId);
+                    body = decodeExtensionObjectBody();
                 } catch (XMLStreamException e) {
                     throw new UaSerializationException(StatusCodes.Bad_DecodingError, e);
                 }
@@ -307,14 +301,10 @@ public class XmlDecoder implements UaDecoder {
 
             requireNextEndElement(field);
 
-            if (body instanceof UaStructure) {
-                return new ExtensionObject((UaStructure) body);
-            } else if (body instanceof UaSerializable) {
-                return new ExtensionObject((UaSerializable) body, typeId);
-            } else if (body instanceof XmlElement) {
-                return new ExtensionObject((XmlElement) body, typeId);
+            if (body instanceof XmlElement) {
+                return new ExtensionObject((XmlElement) body, encodingTypeId);
             } else if (body instanceof ByteString) {
-                return new ExtensionObject((ByteString) body, typeId);
+                return new ExtensionObject((ByteString) body, encodingTypeId);
             } else {
                 throw new UaSerializationException(StatusCodes.Bad_DecodingError,
                         "unrecognized ExtensionObject body: " + body);
@@ -324,7 +314,7 @@ public class XmlDecoder implements UaDecoder {
         }
     }
 
-    private Object decodeExtensionObjectValue(NodeId typeId) throws XMLStreamException {
+    private Object decodeExtensionObjectBody() throws XMLStreamException {
         String bodyStartElement = getNextStartElement();
 
         if ("ByteString".equals(bodyStartElement)) {
@@ -332,18 +322,7 @@ public class XmlDecoder implements UaDecoder {
 
             requireNextEndElement("ByteString");
 
-            try {
-                DecoderDelegate<?> delegate = DelegateRegistry.getDecoder(typeId);
-
-                byte[] bs = byteString.bytes();
-                if (bs == null) bs = new byte[0];
-                BinaryDecoder binaryDecoder = new BinaryDecoder();
-                binaryDecoder.setBuffer(wrappedBuffer(bs));
-
-                return delegate.decode(binaryDecoder);
-            } catch (UaSerializationException e) {
-                return byteString;
-            }
+            return byteString;
         } else {
             StringBuilder builder = new StringBuilder();
 
@@ -373,17 +352,7 @@ public class XmlDecoder implements UaDecoder {
 
             String bodyXml = builder.toString();
 
-            try {
-                DecoderDelegate<?> delegate = DelegateRegistry.getDecoder(typeId);
-
-                XmlDecoder xmlDecoder = new XmlDecoder();
-                xmlDecoder.setInput(new StringReader(bodyXml));
-                xmlDecoder.requireNextStartElement(bodyStartElement);
-
-                return delegate.decode(xmlDecoder);
-            } catch (UaSerializationException e) {
-                return new XmlElement(bodyXml);
-            }
+            return new XmlElement(bodyXml);
         }
     }
 

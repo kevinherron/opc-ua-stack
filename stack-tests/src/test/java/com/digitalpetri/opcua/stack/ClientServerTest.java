@@ -71,7 +71,7 @@ public class ClientServerTest extends SecurityFixture {
                 {new Variant(StatusCode.GOOD)},
                 {new Variant(new QualifiedName(0, "QualifiedName"))},
                 {new Variant(LocalizedText.english("LocalizedText"))},
-                {new Variant(new ExtensionObject(new ReadValueId(NodeId.NULL_VALUE, uint(1), null, new QualifiedName(0, "DataEncoding"))))},
+                {new Variant(ExtensionObject.encode(new ReadValueId(NodeId.NULL_VALUE, uint(1), null, new QualifiedName(0, "DataEncoding"))))},
         };
     }
 
