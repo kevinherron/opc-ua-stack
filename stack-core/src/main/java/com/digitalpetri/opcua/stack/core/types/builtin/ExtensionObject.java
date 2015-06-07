@@ -54,13 +54,25 @@ public final class ExtensionObject {
         if (decoded != null) return (T) decoded;
 
         switch (bodyType) {
-            case BYTE_STRING:
-                decoded = context.decodeFromByteString((ByteString) encoded, encodingTypeId);
-                return (T) decoded;
+            case BYTE_STRING: {
+                ByteString bs = (ByteString) encoded;
+                if (bs == null || bs.isNull()) {
+                    return null;
+                } else {
+                    decoded = context.decodeFromByteString((ByteString) encoded, encodingTypeId);
+                    return (T) decoded;
+                }
+            }
 
-            case XML_ELEMENT:
-                decoded = context.decodeFromXmlElement((XmlElement) encoded, encodingTypeId);
-                return (T) decoded;
+            case XML_ELEMENT: {
+                XmlElement e = (XmlElement) encoded;
+                if (e == null || e.isNull()) {
+                    return null;
+                } else {
+                    decoded = context.decodeFromXmlElement((XmlElement) encoded, encodingTypeId);
+                    return (T) decoded;
+                }
+            }
         }
 
         throw new RuntimeException("encodingType=" + bodyType);
