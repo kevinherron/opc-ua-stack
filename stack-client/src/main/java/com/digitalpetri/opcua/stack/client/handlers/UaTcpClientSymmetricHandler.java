@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
-import com.digitalpetri.opcua.stack.client.UaTcpStackClient.UaTcpClientHandler;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
@@ -88,7 +87,7 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
                         secureChannel,
                         MessageType.SecureMessage,
                         messageBuffer,
-                        chunkEncoder.nextRequestId()
+                        message.getRequestHeader().getRequestHandle().longValue()
                 );
 
                 ctx.executor().execute(() -> {
@@ -234,4 +233,5 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
         logger.error("Exception caught: {}", cause.getMessage(), cause);
         ctx.close();
     }
+
 }

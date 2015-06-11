@@ -1,13 +1,12 @@
 package com.digitalpetri.opcua.stack.core.channel;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.cert.Certificate;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
@@ -19,9 +18,9 @@ import com.digitalpetri.opcua.stack.core.channel.headers.SymmetricSecurityHeader
 import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.security.SecurityAlgorithm;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
+import com.digitalpetri.opcua.stack.core.util.LongSequence;
 import com.digitalpetri.opcua.stack.core.util.SignatureUtil;
 import com.google.common.collect.Lists;
-import com.digitalpetri.opcua.stack.core.util.LongSequence;
 import io.netty.buffer.ByteBuf;
 
 public class ChunkEncoder implements HeaderConstants {
@@ -31,7 +30,6 @@ public class ChunkEncoder implements HeaderConstants {
 
     // Wrap after UInt32.MAX - 1024
     private final LongSequence sequenceNumber = new LongSequence(1L, 4294966271L);
-    private final AtomicLong requestId = new AtomicLong(1L);
 
     private final ChannelParameters parameters;
 
@@ -53,10 +51,6 @@ public class ChunkEncoder implements HeaderConstants {
                                          long requestId) throws UaException {
 
         return encode(symmetricDelegate, channel, messageType, messageBuffer, requestId);
-    }
-
-    public long nextRequestId() {
-        return requestId.getAndIncrement();
     }
 
     private List<ByteBuf> encode(Delegate delegate,

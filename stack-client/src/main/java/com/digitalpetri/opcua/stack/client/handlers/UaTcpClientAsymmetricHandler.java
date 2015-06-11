@@ -273,7 +273,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                         secureChannel,
                         MessageType.OpenSecureChannel,
                         messageBuffer,
-                        chunkEncoder.nextRequestId()
+                        request.getRequestHeader().getRequestHandle().longValue()
                 );
 
                 ctx.executor().execute(() -> {
@@ -300,12 +300,11 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 binaryEncoder.setBuffer(messageBuffer);
                 binaryEncoder.encodeMessage(null, request);
 
-                // TODO Find out whether this should be sent symmetric or asymmetric
                 List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
                         secureChannel,
                         MessageType.CloseSecureChannel,
                         messageBuffer,
-                        chunkEncoder.nextRequestId()
+                        request.getRequestHeader().getRequestHandle().longValue()
                 );
 
                 ctx.executor().execute(() -> {

@@ -89,7 +89,7 @@ public class ChunkSerializationTest extends SecureChannelFixture {
                 clientChannel,
                 MessageType.OpenSecureChannel,
                 messageBuffer,
-                encoder.nextRequestId()
+                0L
         );
 
         ByteBuf decodedBuffer = decoder.decodeAsymmetric(
@@ -160,7 +160,7 @@ public class ChunkSerializationTest extends SecureChannelFixture {
                 clientChannel,
                 MessageType.SecureMessage,
                 messageBuffer,
-                encoder.nextRequestId()
+                0L
         );
 
         ByteBuf decodedBuffer = decoder.decodeSymmetric(
