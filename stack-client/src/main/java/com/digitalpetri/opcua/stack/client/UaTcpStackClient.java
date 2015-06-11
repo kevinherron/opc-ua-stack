@@ -12,9 +12,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.digitalpetri.opcua.stack.client.config.UaTcpStackClientConfig;
-import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateContext;
-import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateEvent;
-import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateObserver;
 import com.digitalpetri.opcua.stack.client.handlers.UaTcpClientAcknowledgeHandler;
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
@@ -73,7 +70,8 @@ public class UaTcpStackClient implements UaStackClient {
     private volatile ClientSecureChannel secureChannel;
 
     private final ApplicationDescription application;
-    private final ConnectionStateContext stateContext;
+
+    private final ChannelManager channelManager;
 
     private final UaTcpStackClientConfig config;
 
@@ -90,18 +88,14 @@ public class UaTcpStackClient implements UaStackClient {
         secureChannel = new ClientSecureChannel(
                 SecurityPolicy.None, MessageSecurityMode.None);
 
-        stateContext = new ConnectionStateContext(this);
+        channelManager = new ChannelManager(this);
     }
 
     @Override
     public CompletableFuture<UaStackClient> connect() {
         CompletableFuture<UaStackClient> future = new CompletableFuture<>();
 
-        if (!stateContext.isConnected()) {
-            stateContext.handleEvent(ConnectionStateEvent.CONNECT_REQUESTED);
-        }
-
-        stateContext.getChannelFuture().whenComplete((ch, ex) -> {
+        channelManager.getChannel().whenComplete((ch, ex) -> {
             if (ch != null) future.complete(this);
             else future.completeExceptionally(ex);
         });
@@ -111,18 +105,14 @@ public class UaTcpStackClient implements UaStackClient {
 
     @Override
     public CompletableFuture<UaStackClient> disconnect() {
-        stateContext.handleEvent(ConnectionStateEvent.DISCONNECT_REQUESTED);
+        channelManager.disconnect();
 
         return CompletableFuture.completedFuture(this);
     }
 
     @SuppressWarnings("unchecked")
     public <T extends UaResponseMessage> CompletableFuture<T> sendRequest(UaRequestMessage request) {
-        if (!stateContext.isConnected()) {
-            stateContext.handleEvent(ConnectionStateEvent.CONNECT_REQUESTED);
-        }
-
-        return stateContext.getChannelFuture().thenCompose(ch -> {
+        return channelManager.getChannel().thenCompose(ch -> {
             CompletableFuture<T> future = new CompletableFuture<>();
 
             RequestHeader requestHeader = request.getRequestHeader();
@@ -153,11 +143,7 @@ public class UaTcpStackClient implements UaStackClient {
         Preconditions.checkArgument(requests.size() == futures.size(),
                 "requests and futures parameters must be same size");
 
-        if (!stateContext.isConnected()) {
-            stateContext.handleEvent(ConnectionStateEvent.CONNECT_REQUESTED);
-        }
-
-        stateContext.getChannelFuture().whenComplete((ch, ex) -> {
+        channelManager.getChannel().whenComplete((ch, ex) -> {
             if (ch != null) {
                 Iterator<? extends UaRequestMessage> requestIterator = requests.iterator();
                 Iterator<CompletableFuture<? extends UaResponseMessage>> futureIterator = futures.iterator();
@@ -197,15 +183,7 @@ public class UaTcpStackClient implements UaStackClient {
     }
 
     public CompletableFuture<Channel> getChannelFuture() {
-        return stateContext.getChannelFuture();
-    }
-
-    public void addStateObserver(ConnectionStateObserver observer) {
-        stateContext.addStateObserver(observer);
-    }
-
-    public void removeStateObserver(ConnectionStateObserver observer) {
-        stateContext.removeStateObserver(observer);
+        return channelManager.getChannel();
     }
 
     private void scheduleRequestTimeout(RequestHeader requestHeader) {
@@ -238,7 +216,6 @@ public class UaTcpStackClient implements UaStackClient {
 
     private void onChannelInactive(ChannelHandlerContext ctx) {
         logger.debug("Channel inactive: {}", ctx.channel());
-        stateContext.handleEvent(ConnectionStateEvent.ERR_CONNECTION_LOST);
     }
 
     private void onExceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
