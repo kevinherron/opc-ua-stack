@@ -158,11 +158,13 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
     private void onError(ChannelHandlerContext ctx, ByteBuf buffer) {
         try {
             ErrorMessage errorMessage = TcpMessageDecoder.decodeError(buffer);
-            StatusCode errorCode = errorMessage.getError();
+            StatusCode statusCode = errorMessage.getError();
+            long errorCode = statusCode.getValue();
 
             boolean secureChannelError =
-                    errorCode.getValue() == StatusCodes.Bad_TcpSecureChannelUnknown ||
-                            errorCode.getValue() == StatusCodes.Bad_SecureChannelIdInvalid;
+                    errorCode == StatusCodes.Bad_TcpSecureChannelUnknown ||
+                            errorCode == StatusCodes.Bad_SecureChannelIdInvalid ||
+                            errorCode == StatusCodes.Bad_SecurityChecksFailed;
 
             if (secureChannelError) {
                 client.getSecureChannel().setChannelId(0);
@@ -173,11 +175,11 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
             if (ctx.pipeline().context(UaTcpClientHandler.class) != null) {
                 UaTcpClientHandler handler = ctx.pipeline().remove(UaTcpClientHandler.class);
                 if (secureChannelError) {
-                    handler.secureChannelError(ctx, errorCode);
+                    handler.secureChannelError(ctx, statusCode);
                 }
             }
 
-            handshakeFuture.completeExceptionally(new UaException(errorCode, "error=" + errorMessage.getReason()));
+            handshakeFuture.completeExceptionally(new UaException(statusCode, "error=" + errorMessage.getReason()));
         } catch (UaException e) {
             logger.error("An exception occurred while decoding an error message: {}", e.getMessage(), e);
             if (ctx.pipeline().context(UaTcpClientHandler.class) != null) {
