@@ -313,6 +313,8 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                     ctx.close();
                 });
 
+                secureChannel.setChannelId(0);
+
                 logger.debug("Sent CloseSecureChannelRequest.");
             } catch (UaException e) {
                 logger.error("Error Encoding CloseSecureChannelRequest: {}", e.getMessage(), e);
