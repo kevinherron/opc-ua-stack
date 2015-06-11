@@ -196,7 +196,7 @@ public class UaTcpStackClient implements UaStackClient {
         });
     }
 
-    CompletableFuture<Channel> getChannelFuture() {
+    public CompletableFuture<Channel> getChannelFuture() {
         return stateContext.getChannelFuture();
     }
 
@@ -256,6 +256,9 @@ public class UaTcpStackClient implements UaStackClient {
 
             if (future != null) {
                 future.complete(response);
+            } else {
+                logger.debug("Received {} for unknown requestHandle: {}",
+                        response.getClass().getSimpleName(), requestHandle);
             }
 
             Timeout timeout = timeouts.remove(requestHandle);
