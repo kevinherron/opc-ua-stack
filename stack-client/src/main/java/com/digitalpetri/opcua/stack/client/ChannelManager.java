@@ -68,7 +68,11 @@ public class ChannelManager {
                 ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
                     @Override
                     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-                        state.set(new Idle());
+                        State s = state.get();
+
+                        if (!(s instanceof Idle)) {
+                            state.compareAndSet(s, new Idle());
+                        }
 
                         super.channelInactive(ctx);
                     }
@@ -107,6 +111,8 @@ public class ChannelManager {
         } else if (currentState instanceof Connected) {
             ((Connected) currentState).future.thenAccept(this::closeSecureChannel);
         }
+
+        state.compareAndSet(currentState, new Idle());
     }
 
     private void closeSecureChannel(Channel ch) {
