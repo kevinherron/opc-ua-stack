@@ -128,8 +128,6 @@ public class UaTcpStackClient implements UaStackClient {
                 }
             });
 
-            logger.info("wrote request: " + request);
-
             return future;
         });
     }
@@ -205,8 +203,6 @@ public class UaTcpStackClient implements UaStackClient {
     }
 
     public void receiveResponse(UaResponseMessage response) {
-        logger.info("read response:" + response.getClass().getSimpleName());
-
         ResponseHeader header = response.getResponseHeader();
         UInteger requestHandle = header.getRequestHandle();
 
