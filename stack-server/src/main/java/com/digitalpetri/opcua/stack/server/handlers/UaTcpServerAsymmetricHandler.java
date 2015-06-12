@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.digitalpetri.opcua.stack.server.tcp.UaTcpStackServer;
-import com.google.common.collect.Lists;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.application.CertificateManager;
@@ -36,6 +34,8 @@ import com.digitalpetri.opcua.stack.core.types.structured.OpenSecureChannelRespo
 import com.digitalpetri.opcua.stack.core.types.structured.ResponseHeader;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.digitalpetri.opcua.stack.core.util.CertificateValidator;
+import com.digitalpetri.opcua.stack.server.tcp.UaTcpStackServer;
+import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -248,7 +248,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                                 .decodeMessage(null);
 
                         logger.debug("Received OpenSecureChannelRequest ({}, id={}).",
-                                     request.getRequestType(), secureChannelId);
+                                request.getRequestType(), secureChannelId);
 
                         long requestId = chunkDecoder.getRequestId();
                         installSecurityToken(ctx, request, requestId);
@@ -359,8 +359,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                 List<ByteBuf> chunks = chunkEncoder.encodeAsymmetric(
                         secureChannel,
                         MessageType.OpenSecureChannel,
-                        messageBuffer,
-                        requestId
+                        messageBuffer
                 );
 
                 if (!symmetricHandlerAdded) {

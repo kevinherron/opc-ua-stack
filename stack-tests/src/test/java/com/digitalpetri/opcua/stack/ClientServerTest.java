@@ -225,7 +225,7 @@ public class ClientServerTest extends SecurityFixture {
             RequestHeader header = new RequestHeader(
                     NodeId.NULL_VALUE,
                     DateTime.now(),
-                    uint(i), uint(0), null, uint(60), null);
+                    uint(i), uint(0), null, uint(60000), null);
 
             TestStackRequest request = new TestStackRequest(header, uint(i), i, input);
 
@@ -241,7 +241,7 @@ public class ClientServerTest extends SecurityFixture {
             RequestHeader header = new RequestHeader(
                     NodeId.NULL_VALUE,
                     DateTime.now(),
-                    uint(i), uint(0), null, uint(60), null);
+                    uint(i), uint(0), null, uint(60000), null);
 
             TestStackRequest request = new TestStackRequest(header, uint(i), i, input);
 

@@ -18,7 +18,6 @@ import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
-import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
@@ -86,8 +85,7 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
                 List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
                         secureChannel,
                         MessageType.SecureMessage,
-                        messageBuffer,
-                        message.getRequestHeader().getRequestHandle().longValue()
+                        messageBuffer
                 );
 
                 ctx.executor().execute(() -> {
@@ -190,11 +188,8 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
                         binaryDecoder.setBuffer(messageBuffer);
                         UaResponseMessage response = binaryDecoder.decodeMessage(null);
 
-                        if (response instanceof ServiceFault) {
-                            client.getExecutorService().execute(() -> client.receiveServiceFault((ServiceFault) response));
-                        } else {
-                            client.getExecutorService().execute(() -> client.receiveServiceResponse(response));
-                        }
+                        client.getExecutorService().execute(
+                                () -> client.receiveResponse(response));
 
                         messageBuffer.release();
                         buffersToDecode.clear();

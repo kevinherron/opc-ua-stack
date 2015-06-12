@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
-import com.digitalpetri.opcua.stack.client.UaTcpStackClient.UaTcpClientHandler;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.UaRuntimeException;
@@ -78,9 +77,6 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (renewFuture != null) renewFuture.cancel(false);
 
-        if (ctx.pipeline().context(UaTcpClientHandler.class) != null) {
-            ctx.pipeline().remove(UaTcpClientHandler.class);
-        }
 
         handshakeFuture.completeExceptionally(
                 new UaException(StatusCodes.Bad_ConnectionClosed, "connection closed"));
@@ -272,8 +268,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 List<ByteBuf> chunks = chunkEncoder.encodeAsymmetric(
                         secureChannel,
                         MessageType.OpenSecureChannel,
-                        messageBuffer,
-                        request.getRequestHeader().getRequestHandle().longValue()
+                        messageBuffer
                 );
 
                 ctx.executor().execute(() -> {
@@ -303,8 +298,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
                         secureChannel,
                         MessageType.CloseSecureChannel,
-                        messageBuffer,
-                        request.getRequestHeader().getRequestHandle().longValue()
+                        messageBuffer
                 );
 
                 ctx.executor().execute(() -> {
@@ -357,13 +351,6 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
             }
 
             logger.error("Received error message: " + errorMessage);
-
-            if (ctx.pipeline().context(UaTcpClientHandler.class) != null) {
-                UaTcpClientHandler handler = ctx.pipeline().remove(UaTcpClientHandler.class);
-                if (secureChannelError) {
-                    handler.secureChannelError(ctx, errorCode);
-                }
-            }
 
             handshakeFuture.completeExceptionally(new UaException(errorCode, "error=" + errorMessage.getReason()));
         } catch (UaException e) {

@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.cert.Certificate;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -17,6 +18,7 @@ import com.digitalpetri.opcua.stack.core.channel.headers.SequenceHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
 import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.security.SecurityAlgorithm;
+import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.digitalpetri.opcua.stack.core.util.LongSequence;
 import com.digitalpetri.opcua.stack.core.util.SignatureUtil;
@@ -31,6 +33,8 @@ public class ChunkEncoder implements HeaderConstants {
     // Wrap after UInt32.MAX - 1024
     private final LongSequence sequenceNumber = new LongSequence(1L, 4294966271L);
 
+    private final LongSequence requestId = new LongSequence(1L, UInteger.MAX_VALUE);
+
     private final ChannelParameters parameters;
 
     public ChunkEncoder(ChannelParameters parameters) {
@@ -39,18 +43,16 @@ public class ChunkEncoder implements HeaderConstants {
 
     public List<ByteBuf> encodeAsymmetric(SecureChannel channel,
                                           MessageType messageType,
-                                          ByteBuf messageBuffer,
-                                          long requestId) throws UaException {
+                                          ByteBuf messageBuffer) throws UaException {
 
-        return encode(asymmetricDelegate, channel, messageType, messageBuffer, requestId);
+        return encode(asymmetricDelegate, channel, messageType, messageBuffer, requestId.getAndIncrement());
     }
 
     public List<ByteBuf> encodeSymmetric(SecureChannel channel,
                                          MessageType messageType,
-                                         ByteBuf messageBuffer,
-                                         long requestId) throws UaException {
+                                         ByteBuf messageBuffer) throws UaException {
 
-        return encode(symmetricDelegate, channel, messageType, messageBuffer, requestId);
+        return encode(symmetricDelegate, channel, messageType, messageBuffer, requestId.getAndIncrement());
     }
 
     private List<ByteBuf> encode(Delegate delegate,

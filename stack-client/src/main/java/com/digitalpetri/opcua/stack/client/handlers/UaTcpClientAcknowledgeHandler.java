@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
-import com.digitalpetri.opcua.stack.client.UaTcpStackClient.UaTcpClientHandler;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
@@ -172,19 +171,10 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
 
             logger.error("Received error message: " + errorMessage);
 
-            if (ctx.pipeline().context(UaTcpClientHandler.class) != null) {
-                UaTcpClientHandler handler = ctx.pipeline().remove(UaTcpClientHandler.class);
-                if (secureChannelError) {
-                    handler.secureChannelError(ctx, statusCode);
-                }
-            }
-
             handshakeFuture.completeExceptionally(new UaException(statusCode, "error=" + errorMessage.getReason()));
         } catch (UaException e) {
             logger.error("An exception occurred while decoding an error message: {}", e.getMessage(), e);
-            if (ctx.pipeline().context(UaTcpClientHandler.class) != null) {
-                ctx.pipeline().remove(UaTcpClientHandler.class);
-            }
+
             handshakeFuture.completeExceptionally(e);
         } finally {
             ctx.close();

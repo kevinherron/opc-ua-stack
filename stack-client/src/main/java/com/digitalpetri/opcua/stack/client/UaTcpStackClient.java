@@ -24,7 +24,6 @@ import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
-import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.types.enumerated.ApplicationType;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
@@ -43,10 +42,8 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.HashedWheelTimer;
@@ -55,7 +52,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
-import static com.google.common.collect.Lists.newArrayList;
 
 public class UaTcpStackClient implements UaStackClient {
 
@@ -132,6 +128,8 @@ public class UaTcpStackClient implements UaStackClient {
                 }
             });
 
+            logger.info("wrote request: " + request);
+
             return future;
         });
     }
@@ -206,62 +204,35 @@ public class UaTcpStackClient implements UaStackClient {
         timeouts.put(requestHandle, timeout);
     }
 
-    private void onChannelRead(ChannelHandlerContext ctx, UaResponseMessage msg) throws Exception {
-        if (msg instanceof ServiceFault) {
-            receiveServiceFault((ServiceFault) msg);
-        } else {
-            receiveServiceResponse(msg);
-        }
-    }
+    public void receiveResponse(UaResponseMessage response) {
+        logger.info("read response:" + response.getClass().getSimpleName());
 
-    private void onChannelInactive(ChannelHandlerContext ctx) {
-        logger.debug("Channel inactive: {}", ctx.channel());
-    }
-
-    private void onExceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        logger.error("Exception caught: {}", cause.getMessage(), cause);
-        ctx.close();
-    }
-
-    public void receiveServiceResponse(UaResponseMessage response) {
         ResponseHeader header = response.getResponseHeader();
-
-        if (header.getServiceResult().isGood()) {
-            UInteger requestHandle = header.getRequestHandle();
-
-            CompletableFuture<UaResponseMessage> future = pending.remove(requestHandle);
-
-            if (future != null) {
-                future.complete(response);
-            } else {
-                logger.debug("Received {} for unknown requestHandle: {}",
-                        response.getClass().getSimpleName(), requestHandle);
-            }
-
-            Timeout timeout = timeouts.remove(requestHandle);
-            if (timeout != null) timeout.cancel();
-        } else {
-            ServiceFault serviceFault = new ServiceFault(response.getResponseHeader());
-            receiveServiceFault(serviceFault);
-        }
-    }
-
-    public void receiveServiceFault(ServiceFault serviceFault) {
-        ResponseHeader header = serviceFault.getResponseHeader();
         UInteger requestHandle = header.getRequestHandle();
 
         CompletableFuture<UaResponseMessage> future = pending.remove(requestHandle);
 
         if (future != null) {
-            StatusCode serviceResult = serviceFault.getResponseHeader().getServiceResult();
-            UaServiceFaultException exception = new UaServiceFaultException(
-                    serviceFault, "service fault, serviceResult=" + serviceResult);
+            if (header.getServiceResult().isGood()) {
+                future.complete(response);
+            } else {
+                ServiceFault serviceFault;
 
-            future.completeExceptionally(exception);
+                if (response instanceof ServiceFault) {
+                    serviceFault = (ServiceFault) response;
+                } else {
+                    serviceFault = new ServiceFault(header);
+                }
+
+                future.completeExceptionally(new UaServiceFaultException(serviceFault));
+            }
+
+            Timeout timeout = timeouts.remove(requestHandle);
+            if (timeout != null) timeout.cancel();
+        } else {
+            logger.debug("Received {} for unknown requestHandle: {}",
+                    response.getClass().getSimpleName(), requestHandle);
         }
-
-        Timeout timeout = timeouts.remove(requestHandle);
-        if (timeout != null) timeout.cancel();
     }
 
     @Override
@@ -328,7 +299,6 @@ public class UaTcpStackClient implements UaStackClient {
                     @Override
                     protected void initChannel(SocketChannel channel) throws Exception {
                         channel.pipeline().addLast(new UaTcpClientAcknowledgeHandler(client, handshake));
-                        channel.pipeline().addLast(new UaTcpClientHandler(client));
                     }
                 });
 
@@ -349,43 +319,6 @@ public class UaTcpStackClient implements UaStackClient {
         }
 
         return handshake;
-    }
-
-    public static class UaTcpClientHandler extends SimpleChannelInboundHandler<UaResponseMessage> {
-
-        private final UaTcpStackClient client;
-
-        private UaTcpClientHandler(UaTcpStackClient client) {
-            this.client = client;
-        }
-
-        @Override
-        protected void channelRead0(ChannelHandlerContext ctx, UaResponseMessage msg) throws Exception {
-            client.onChannelRead(ctx, msg);
-        }
-
-        @Override
-        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-            if (ctx.pipeline().context(UaTcpClientHandler.class) != null) {
-                ctx.pipeline().remove(UaTcpClientHandler.class);
-            }
-
-            client.onChannelInactive(ctx);
-
-            super.channelInactive(ctx);
-        }
-
-        @Override
-        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-            client.onExceptionCaught(ctx, cause);
-        }
-
-        public void secureChannelError(ChannelHandlerContext ctx, StatusCode errorCode) {
-            List<CompletableFuture<UaResponseMessage>> futures = newArrayList(client.pending.values());
-            futures.forEach(f -> f.completeExceptionally(new UaException(errorCode)));
-            client.pending.clear();
-        }
-
     }
 
     /**
