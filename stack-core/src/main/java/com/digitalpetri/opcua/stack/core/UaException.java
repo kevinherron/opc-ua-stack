@@ -44,6 +44,28 @@ public class UaException extends Exception {
         return statusCode;
     }
 
+
+    @Override
+    public String getMessage() {
+        String message = super.getMessage();
+        if (message == null || message.isEmpty()) {
+            message = createMessage(statusCode);
+        }
+        return message;
+    }
+
+    /**
+     * Create an appropriate default message for a {@link StatusCode}.
+     *
+     * @param statusCode the {@link StatusCode} to create a message from.
+     * @return a String that can be used as the message in an exception for the given {@link StatusCode}.
+     */
+    protected static String createMessage(StatusCode statusCode) {
+        return StatusCodes.lookup(statusCode.getValue())
+                .map(nd -> nd[0])
+                .orElse(statusCode.toString());
+    }
+
     /**
      * If {@code ex} is a {@link UaException}, or if a {@link UaException} can be found by walking up the exception
      * cause chain, return it.
@@ -51,7 +73,7 @@ public class UaException extends Exception {
      * @param ex the {@link Throwable} to extract from.
      * @return a {@link UaException} if one was present in the exception chain.
      */
-    public static Optional<UaException>  extract(Throwable ex) {
+    public static Optional<UaException> extract(Throwable ex) {
         if (ex instanceof UaException) {
             return Optional.of((UaException) ex);
         } else {

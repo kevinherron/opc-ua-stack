@@ -21,5 +21,5 @@ public class UaServiceFaultException extends UaException {
     public ServiceFault getServiceFault() {
         return serviceFault;
     }
-    
+
 }
