@@ -241,9 +241,13 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
 
         DateTime createdAt = response.getSecurityToken().getCreatedAt();
         long revisedLifetime = response.getSecurityToken().getRevisedLifetime().longValue();
-        long renewAt = (long) (revisedLifetime * 0.75);
 
-        renewFuture = ctx.executor().schedule(() -> renewSecureChannel(ctx), renewAt, TimeUnit.MILLISECONDS);
+        if (revisedLifetime > 0) {
+            long renewAt = (long) (revisedLifetime * 0.75);
+            renewFuture = ctx.executor().schedule(() -> renewSecureChannel(ctx), renewAt, TimeUnit.MILLISECONDS);
+        } else {
+            logger.warn("Server revised secure channel lifetime to 0; renewal will not occur.");
+        }
 
         ctx.executor().execute(() -> {
             // SecureChannel is ready; remove the acknowledge handler and add the symmetric handler.
