@@ -193,8 +193,8 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
 
                         messageBuffer.release();
                         buffersToDecode.clear();
-                    } catch (UaException e) {
-                        logger.error("Error decoding symmetric message: {}", e.getMessage(), e);
+                    } catch (Throwable t) {
+                        logger.error("Error decoding symmetric message: {}", t.getMessage(), t);
                         ctx.close();
                         serializationQueue.pause();
                     }

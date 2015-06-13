@@ -200,8 +200,8 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                         logger.debug("Received OpenSecureChannelResponse.");
 
                         installSecurityToken(ctx, response);
-                    } catch (UaException e) {
-                        logger.error("Error decoding OpenSecureChannelResponse: {}", e.getMessage(), e);
+                    } catch (Throwable t) {
+                        logger.error("Error decoding OpenSecureChannelResponse: {}", t.getMessage(), t);
                         ctx.close();
                     } finally {
                         if (messageBuffer != null) {
