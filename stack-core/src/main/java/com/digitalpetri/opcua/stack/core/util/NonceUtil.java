@@ -2,16 +2,14 @@ package com.digitalpetri.opcua.stack.core.util;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.digitalpetri.opcua.stack.core.security.SecurityAlgorithm;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 
 public class NonceUtil {
 
-    private static final Random random = new Random();
-
-    private static volatile boolean secureRandomEnabled = true;
+    private static volatile boolean secureRandomEnabled = false;
 
     private static volatile SecureRandom secureRandom;
 
@@ -56,7 +54,7 @@ public class NonceUtil {
         if (secureRandom != null && secureRandomEnabled) {
             secureRandom.nextBytes(bs);
         } else {
-            random.nextBytes(bs);
+            ThreadLocalRandom.current().nextBytes(bs);
         }
 
         return new ByteString(bs);
@@ -64,6 +62,7 @@ public class NonceUtil {
 
     /**
      * Generate a nonce for the given {@link SecurityAlgorithm}. The length is determined by the algorithm.
+     *
      * @param algorithm the algorithm to use when determined the nonce length.
      * @return a nonce of the appropriate length for the given algorithm.
      */
