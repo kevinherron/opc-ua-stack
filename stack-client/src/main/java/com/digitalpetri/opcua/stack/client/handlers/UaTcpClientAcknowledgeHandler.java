@@ -1,14 +1,19 @@
 package com.digitalpetri.opcua.stack.client.handlers;
 
 import java.nio.ByteOrder;
+import java.security.KeyPair;
+import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
+import com.digitalpetri.opcua.stack.client.config.UaTcpStackClientConfig;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.channel.ChannelParameters;
+import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
 import com.digitalpetri.opcua.stack.core.channel.SerializationQueue;
 import com.digitalpetri.opcua.stack.core.channel.headers.HeaderDecoder;
 import com.digitalpetri.opcua.stack.core.channel.messages.AcknowledgeMessage;
@@ -17,15 +22,19 @@ import com.digitalpetri.opcua.stack.core.channel.messages.HelloMessage;
 import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageDecoder;
 import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageEncoder;
+import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.serialization.UaMessage;
 import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
+import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
+import com.digitalpetri.opcua.stack.core.types.structured.EndpointDescription;
+import com.digitalpetri.opcua.stack.core.util.CertificateUtil;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import io.netty.util.AttributeKey;
+import org.jooq.lambda.tuple.Tuple2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,17 +47,61 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
 
     private final List<UaMessage> awaitingHandshake = Lists.newArrayList();
 
-    private final CompletableFuture<Channel> handshakeFuture;
+    private final ClientSecureChannel secureChannel;
 
     private final UaTcpStackClient client;
+    private final long secureChannelId;
+    private final CompletableFuture<ClientSecureChannel> handshakeFuture;
 
-    public UaTcpClientAcknowledgeHandler(UaTcpStackClient client, CompletableFuture<Channel> handshakeFuture) {
+    public UaTcpClientAcknowledgeHandler(UaTcpStackClient client,
+                                         long secureChannelId,
+                                         CompletableFuture<ClientSecureChannel> handshakeFuture) {
+
         this.client = client;
+        this.secureChannelId = secureChannelId;
         this.handshakeFuture = handshakeFuture;
+
+        UaTcpStackClientConfig config = client.getConfig();
+
+        secureChannel = config.getEndpoint()
+                .flatMap(e -> config.getKeyPair().map(keyPair -> new Tuple2<>(e, keyPair)))
+                .flatMap(t2 -> config.getCertificate().map(t2::concat))
+                .flatMap(t3 -> {
+                    EndpointDescription endpoint = t3.v1();
+                    KeyPair keyPair = t3.v2();
+                    X509Certificate localCertificate = t3.v3();
+
+                    try {
+                        X509Certificate remoteCertificate = CertificateUtil
+                                .decodeCertificate(endpoint.getServerCertificate().bytes());
+
+                        List<X509Certificate> remoteCertificateChain = CertificateUtil
+                                .decodeCertificates(endpoint.getServerCertificate().bytes());
+
+                        SecurityPolicy securityPolicy = SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri());
+
+                        ClientSecureChannel secureChannel = new ClientSecureChannel(
+                                keyPair,
+                                localCertificate,
+                                remoteCertificate,
+                                remoteCertificateChain,
+                                securityPolicy,
+                                endpoint.getSecurityMode()
+                        );
+
+                        return Optional.of(secureChannel);
+                    } catch (Throwable t) {
+                        return Optional.empty();
+                    }
+                })
+                .orElse(new ClientSecureChannel(SecurityPolicy.None, MessageSecurityMode.None));
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        secureChannel.setChannel(ctx.channel());
+        secureChannel.setChannelId(secureChannelId);
+
         HelloMessage hello = new HelloMessage(
                 PROTOCOL_VERSION,
                 client.getChannelConfig().getMaxChunkSize(),
@@ -145,9 +198,13 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
             int maxArrayLength = client.getChannelConfig().getMaxArrayLength();
             int maxStringLength = client.getChannelConfig().getMaxStringLength();
 
+            SerializationQueue serializationQueue = new SerializationQueue(
+                    parameters, maxArrayLength, maxStringLength);
+
             UaTcpClientAsymmetricHandler handler = new UaTcpClientAsymmetricHandler(
                     client,
-                    new SerializationQueue(parameters, maxArrayLength, maxStringLength),
+                    serializationQueue,
+                    secureChannel,
                     handshakeFuture);
 
             ctx.pipeline().addLast(handler);
@@ -166,7 +223,7 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
                             errorCode == StatusCodes.Bad_SecurityChecksFailed;
 
             if (secureChannelError) {
-                client.getSecureChannel().setChannelId(0);
+                secureChannel.setChannelId(0);
             }
 
             logger.error("Received error message: " + errorMessage);

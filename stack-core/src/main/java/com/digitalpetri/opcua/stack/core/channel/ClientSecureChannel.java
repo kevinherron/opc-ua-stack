@@ -8,10 +8,12 @@ import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.google.common.base.MoreObjects;
+import io.netty.channel.Channel;
 import io.netty.util.DefaultAttributeMap;
 
 public class ClientSecureChannel extends DefaultAttributeMap implements SecureChannel {
 
+    private volatile Channel channel;
     private volatile long channelId = 0;
     private volatile ChannelSecurity channelSecurity;
     private volatile ByteString localNonce = ByteString.NULL_VALUE;
@@ -43,6 +45,10 @@ public class ClientSecureChannel extends DefaultAttributeMap implements SecureCh
         this.messageSecurityMode = messageSecurityMode;
     }
 
+    public void setChannel(Channel channel) {
+        this.channel = channel;
+    }
+
     public void setChannelId(long channelId) {
         this.channelId = channelId;
     }
@@ -59,14 +65,18 @@ public class ClientSecureChannel extends DefaultAttributeMap implements SecureCh
         this.remoteNonce = remoteNonce;
     }
 
-    @Override
-    public KeyPair getKeyPair() {
-        return keyPair;
+    public Channel getChannel() {
+        return channel;
     }
 
     @Override
     public long getChannelId() {
         return channelId;
+    }
+
+    @Override
+    public KeyPair getKeyPair() {
+        return keyPair;
     }
 
     @Override

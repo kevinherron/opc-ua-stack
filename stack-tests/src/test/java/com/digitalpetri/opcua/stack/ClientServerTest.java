@@ -9,6 +9,7 @@ import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
 import com.digitalpetri.opcua.stack.client.config.UaTcpStackClientConfig;
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
@@ -137,7 +138,6 @@ public class ClientServerTest extends SecurityFixture {
         connectAndTest(input, client);
     }
 
-
     @Test(dataProvider = "getVariants")
     public void testClientServerRoundTrip_TestStack_Basic128Rsa15_Sign(Variant input) throws Exception {
         EndpointDescription endpoint = endpoints[1];
@@ -221,23 +221,7 @@ public class ClientServerTest extends SecurityFixture {
         UaTcpStackClient client = createClient(endpoint);
 
         // Test some where we don't wait for disconnect to finish...
-        for (int i = 0; i < 10; i++) {
-            RequestHeader header = new RequestHeader(
-                    NodeId.NULL_VALUE,
-                    DateTime.now(),
-                    uint(i), uint(0), null, uint(60000), null);
-
-            TestStackRequest request = new TestStackRequest(header, uint(i), i, input);
-
-            UaResponseMessage response = client.sendRequest(request).get();
-
-            logger.info("get response: {}", response);
-
-            client.disconnect();
-        }
-
-        // and test some where we DO wait...
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             RequestHeader header = new RequestHeader(
                     NodeId.NULL_VALUE,
                     DateTime.now(),
@@ -247,11 +231,88 @@ public class ClientServerTest extends SecurityFixture {
 
             logger.info("sending request: {}", request);
             UaResponseMessage response = client.sendRequest(request).get();
-            logger.info("get response: {}", response);
+            logger.info("got response: {}", response);
 
             client.disconnect();
-            Thread.sleep(100);
         }
+
+        // and test some where we DO wait...
+        for (int i = 0; i < 100; i++) {
+            RequestHeader header = new RequestHeader(
+                    NodeId.NULL_VALUE,
+                    DateTime.now(),
+                    uint(i), uint(0), null, uint(60000), null);
+
+            TestStackRequest request = new TestStackRequest(header, uint(i), i, input);
+
+            logger.info("sending request: {}", request);
+            UaResponseMessage response = client.sendRequest(request).get();
+            logger.info("got response: {}", response);
+
+            client.disconnect().get();
+        }
+    }
+
+    @Test
+    public void testClientReconnect() throws Exception {
+        EndpointDescription endpoint = endpoints[0];
+        Variant input = new Variant(42);
+
+        logger.info("SecurityPolicy={}, MessageSecurityMode={}, input={}",
+                SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()), endpoint.getSecurityMode(), input);
+
+        UaTcpStackClient client = createClient(endpoint);
+
+        RequestHeader header = new RequestHeader(
+                NodeId.NULL_VALUE,
+                DateTime.now(),
+                uint(0), uint(0), null, uint(60000), null);
+
+        TestStackRequest request = new TestStackRequest(header, uint(0), 0, input);
+
+        logger.info("sending request: {}", request);
+        UaResponseMessage response0 = client.sendRequest(request).get();
+        logger.info("got response: {}", response0);
+
+        long secureChannelId = client.getChannelFuture().get().getChannelId();
+        server.getSecureChannel(secureChannelId).attr(UaTcpStackServer.BoundChannelKey).get().close().await();
+
+        logger.info("sending request: {}", request);
+        UaResponseMessage response1 = client.sendRequest(request).get();
+        logger.info("got response: {}", response1);
+    }
+
+    @Test
+    public void testClientReconnect_InvalidSecureChannel() throws Exception {
+        EndpointDescription endpoint = endpoints[0];
+        Variant input = new Variant(42);
+
+        logger.info("SecurityPolicy={}, MessageSecurityMode={}, input={}",
+                SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()), endpoint.getSecurityMode(), input);
+
+        UaTcpStackClient client = createClient(endpoint);
+
+        RequestHeader header = new RequestHeader(
+                NodeId.NULL_VALUE,
+                DateTime.now(),
+                uint(0), uint(0), null, uint(60000), null);
+
+        TestStackRequest request = new TestStackRequest(header, uint(0), 0, input);
+
+        logger.info("sending request: {}", request);
+        UaResponseMessage response0 = client.sendRequest(request).get();
+        logger.info("got response: {}", response0);
+
+        // Get our original valid secure channel, then sabotage it, then cause a disconnect.
+        // The end effect is that we reconnect with an invalid secure channel id.
+        ClientSecureChannel secureChannel = client.getChannelFuture().get();
+        long secureChannelId = secureChannel.getChannelId();
+        secureChannel.setChannelId(Long.MAX_VALUE);
+        server.getSecureChannel(secureChannelId).attr(UaTcpStackServer.BoundChannelKey).get().close().await();
+
+        logger.info("sending request: {}", request);
+        UaResponseMessage response1 = client.sendRequest(request).get();
+        logger.info("got response: {}", response1);
     }
 
     private UaTcpStackClient createClient(EndpointDescription endpoint) throws UaException {
@@ -270,7 +331,7 @@ public class ClientServerTest extends SecurityFixture {
         List<TestStackRequest> requests = Lists.newArrayList();
         List<CompletableFuture<? extends UaResponseMessage>> futures = Lists.newArrayList();
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             RequestHeader header = new RequestHeader(
                     NodeId.NULL_VALUE,
                     DateTime.now(),
@@ -289,6 +350,9 @@ public class ClientServerTest extends SecurityFixture {
         client.sendRequests(requests, futures);
 
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[futures.size()])).get();
+
+        client.disconnect().get();
+        Thread.sleep(100);
     }
 
 }

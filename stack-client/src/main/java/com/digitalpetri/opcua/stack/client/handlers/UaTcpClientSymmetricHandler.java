@@ -21,7 +21,6 @@ import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import org.slf4j.Logger;
@@ -33,23 +32,22 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
 
     private List<ByteBuf> chunkBuffers;
 
-    private final ClientSecureChannel secureChannel;
-
     private final int maxChunkCount;
     private final int maxChunkSize;
 
     private final UaTcpStackClient client;
     private final SerializationQueue serializationQueue;
-    private final CompletableFuture<Channel> handshakeFuture;
+    private final ClientSecureChannel secureChannel;
+    private final CompletableFuture<ClientSecureChannel> handshakeFuture;
 
     public UaTcpClientSymmetricHandler(UaTcpStackClient client,
                                        SerializationQueue serializationQueue,
-                                       CompletableFuture<Channel> handshakeFuture) {
+                                       ClientSecureChannel secureChannel,
+                                       CompletableFuture<ClientSecureChannel> handshakeFuture) {
         this.client = client;
         this.serializationQueue = serializationQueue;
+        this.secureChannel = secureChannel;
         this.handshakeFuture = handshakeFuture;
-
-        secureChannel = client.getSecureChannel();
 
         maxChunkCount = serializationQueue.getParameters().getLocalMaxChunkCount();
         maxChunkSize = serializationQueue.getParameters().getLocalReceiveBufferSize();
@@ -70,7 +68,7 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
             ctx.channel().attr(UaTcpClientAcknowledgeHandler.KEY_AWAITING_HANDSHAKE).remove();
         }
 
-        client.getExecutorService().execute(() -> handshakeFuture.complete(ctx.channel()));
+        client.getExecutorService().execute(() -> handshakeFuture.complete(secureChannel));
     }
 
     @Override

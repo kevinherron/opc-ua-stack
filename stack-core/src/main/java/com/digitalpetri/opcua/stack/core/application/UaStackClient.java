@@ -13,7 +13,6 @@ import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.types.structured.ApplicationDescription;
 import com.digitalpetri.opcua.stack.core.types.structured.EndpointDescription;
-import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
 
 public interface UaStackClient {
 
@@ -31,8 +30,6 @@ public interface UaStackClient {
     Optional<KeyPair> getKeyPair();
 
     Optional<X509Certificate> getCertificate();
-
-    ClientSecureChannel getSecureChannel();
 
     String getEndpointUrl();
 
