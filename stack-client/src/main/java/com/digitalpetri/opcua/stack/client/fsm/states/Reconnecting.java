@@ -1,11 +1,14 @@
 package com.digitalpetri.opcua.stack.client.fsm.states;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionEvent;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionState;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateFsm;
+import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
@@ -21,6 +24,8 @@ public class Reconnecting implements ConnectionState {
 
     private final CompletableFuture<ClientSecureChannel> channelFuture = new CompletableFuture<>();
 
+    private volatile ScheduledFuture<?> scheduledFuture;
+
     private volatile ClientSecureChannel secureChannel;
 
     private final long delaySeconds;
@@ -35,7 +40,7 @@ public class Reconnecting implements ConnectionState {
     public CompletableFuture<Void> activate(ConnectionEvent event, ConnectionStateFsm fsm) {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
-        connect(fsm, true, new CompletableFuture<>()).whenComplete((sc, ex) -> {
+        Runnable connect = () -> connect(fsm, true, new CompletableFuture<>()).whenComplete((sc, ex) -> {
             if (sc != null) {
                 secureChannel = sc;
                 fsm.handleEvent(ConnectionEvent.RECONNECT_SUCCEEDED);
@@ -46,6 +51,12 @@ public class Reconnecting implements ConnectionState {
 
             future.complete(null);
         });
+
+        if (scheduledFuture == null || (scheduledFuture != null && scheduledFuture.cancel(false))) {
+            logger.debug("Reactivating in {} seconds...", delaySeconds);
+
+            scheduledFuture = Stack.sharedScheduledExecutor().schedule(connect, delaySeconds, TimeUnit.SECONDS);
+        }
 
         return future;
     }
