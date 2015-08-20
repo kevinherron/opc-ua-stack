@@ -37,7 +37,6 @@ import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
-import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
 import com.digitalpetri.opcua.stack.core.types.enumerated.ApplicationType;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.digitalpetri.opcua.stack.core.types.structured.ApplicationDescription;
@@ -49,6 +48,7 @@ import com.digitalpetri.opcua.stack.core.types.structured.GetEndpointsResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.SignedSoftwareCertificate;
 import com.digitalpetri.opcua.stack.core.types.structured.UserTokenPolicy;
 import com.digitalpetri.opcua.stack.server.Endpoint;
+import com.digitalpetri.opcua.stack.server.config.UaTcpStackServerConfig;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
@@ -90,56 +90,22 @@ public class UaTcpStackServer implements UaStackServer {
     private final HashedWheelTimer wheelTimer = Stack.sharedWheelTimer();
     private final Map<Long, Timeout> timeouts = Maps.newConcurrentMap();
 
-    private final String serverName;
-    private final LocalizedText applicationName;
-    private final String applicationUri;
-    private final String productUri;
-    private final CertificateManager certificateManager;
-    private final ExecutorService executor;
-    private final List<UserTokenPolicy> userTokenPolicies;
-    private final List<SignedSoftwareCertificate> softwareCertificates;
-    private final ChannelConfig channelConfig;
+    private final UaTcpStackServerConfig config;
 
-    public UaTcpStackServer(String serverName,
-                            LocalizedText applicationName,
-                            String applicationUri,
-                            String productUri,
-                            CertificateManager certificateManager,
-                            ExecutorService executor,
-                            List<UserTokenPolicy> userTokenPolicies,
-                            List<SignedSoftwareCertificate> softwareCertificates,
-                            ChannelConfig channelConfig) {
-
-        this.serverName = serverName;
-        this.applicationName = applicationName;
-        this.applicationUri = applicationUri;
-        this.productUri = productUri;
-        this.certificateManager = certificateManager;
-        this.executor = executor;
-        this.userTokenPolicies = userTokenPolicies;
-        this.softwareCertificates = softwareCertificates;
-        this.channelConfig = channelConfig;
+    public UaTcpStackServer(UaTcpStackServerConfig config) {
+        this.config = config;
 
         addServiceSet(new DefaultDiscoveryServiceSet());
 
-        addServiceSet(new AttributeServiceSet() {
-        });
-        addServiceSet(new MethodServiceSet() {
-        });
-        addServiceSet(new MonitoredItemServiceSet() {
-        });
-        addServiceSet(new NodeManagementServiceSet() {
-        });
-        addServiceSet(new QueryServiceSet() {
-        });
-        addServiceSet(new SessionServiceSet() {
-        });
-        addServiceSet(new SubscriptionServiceSet() {
-        });
-        addServiceSet(new TestServiceSet() {
-        });
-        addServiceSet(new ViewServiceSet() {
-        });
+        addServiceSet(new AttributeServiceSet() {});
+        addServiceSet(new MethodServiceSet() {});
+        addServiceSet(new MonitoredItemServiceSet() {});
+        addServiceSet(new NodeManagementServiceSet() {});
+        addServiceSet(new QueryServiceSet() {});
+        addServiceSet(new SessionServiceSet() {});
+        addServiceSet(new SubscriptionServiceSet() {});
+        addServiceSet(new TestServiceSet() {});
+        addServiceSet(new ViewServiceSet() {});
     }
 
     @Override
@@ -165,9 +131,15 @@ public class UaTcpStackServer implements UaStackServer {
     }
 
     private void addDiscoveryUrl(URI endpointUri) {
+        String serverName = config.getServerName();
+
         StringBuilder discoveryUrl = new StringBuilder();
 
-        discoveryUrl.append("opc.tcp://").append(endpointUri.getHost()).append(":").append(endpointUri.getPort());
+        discoveryUrl.append("opc.tcp://")
+                .append(endpointUri.getHost())
+                .append(":")
+                .append(endpointUri.getPort());
+
         if (!serverName.isEmpty()) {
             discoveryUrl.append("/").append(serverName);
         }
@@ -243,9 +215,9 @@ public class UaTcpStackServer implements UaStackServer {
     @Override
     public ApplicationDescription getApplicationDescription() {
         return new ApplicationDescription(
-                applicationUri,
-                productUri,
-                applicationName,
+                config.getApplicationUri(),
+                config.getProductUri(),
+                config.getApplicationName(),
                 ApplicationType.Server,
                 null, null,
                 discoveryUrls.toArray(new String[discoveryUrls.size()])
@@ -265,12 +237,14 @@ public class UaTcpStackServer implements UaStackServer {
 
     @Override
     public SignedSoftwareCertificate[] getSoftwareCertificates() {
+        List<SignedSoftwareCertificate> softwareCertificates = config.getSoftwareCertificates();
+
         return softwareCertificates.toArray(new SignedSoftwareCertificate[softwareCertificates.size()]);
     }
 
     @Override
     public List<UserTokenPolicy> getUserTokenPolicies() {
-        return userTokenPolicies;
+        return config.getUserTokenPolicies();
     }
 
     public List<String> getEndpointUrls() {
@@ -283,17 +257,17 @@ public class UaTcpStackServer implements UaStackServer {
 
     @Override
     public CertificateManager getCertificateManager() {
-        return certificateManager;
+        return config.getCertificateManager();
     }
 
     @Override
     public ExecutorService getExecutorService() {
-        return executor;
+        return config.getExecutor();
     }
 
     @Override
     public ChannelConfig getChannelConfig() {
-        return channelConfig;
+        return config.getChannelConfig();
     }
 
     private long nextChannelId() {
@@ -397,6 +371,8 @@ public class UaTcpStackServer implements UaStackServer {
     }
 
     private EndpointDescription mapEndpoint(Endpoint endpoint) {
+        List<UserTokenPolicy> userTokenPolicies = config.getUserTokenPolicies();
+
         return new EndpointDescription(
                 endpoint.getEndpointUri().toString(),
                 getApplicationDescription(),

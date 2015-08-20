@@ -30,8 +30,8 @@ import com.digitalpetri.opcua.stack.core.types.structured.ResponseHeader;
 import com.digitalpetri.opcua.stack.core.types.structured.TestStackRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.TestStackResponse;
 import com.digitalpetri.opcua.stack.core.util.CryptoRestrictions;
+import com.digitalpetri.opcua.stack.server.config.UaTcpStackServerConfig;
 import com.digitalpetri.opcua.stack.server.tcp.SocketServer;
-import com.digitalpetri.opcua.stack.server.tcp.UaTcpServerBuilder;
 import com.digitalpetri.opcua.stack.server.tcp.UaTcpStackServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,10 +89,12 @@ public class ClientServerTest extends SecurityFixture {
         CryptoRestrictions.remove();
         // ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.PARANOID);
 
-        server = new UaTcpServerBuilder()
+        UaTcpStackServerConfig config = UaTcpStackServerConfig.builder()
                 .setServerName("test")
                 .setCertificateManager(serverCertificateManager)
                 .build();
+
+        server = new UaTcpStackServer(config);
 
         server.addEndpoint("opc.tcp://localhost:12685/test", null)
                 .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.Basic128Rsa15, MessageSecurityMode.Sign)

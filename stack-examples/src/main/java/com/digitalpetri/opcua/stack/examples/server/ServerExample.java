@@ -13,8 +13,8 @@ import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.digitalpetri.opcua.stack.core.types.structured.ResponseHeader;
 import com.digitalpetri.opcua.stack.core.types.structured.TestStackRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.TestStackResponse;
+import com.digitalpetri.opcua.stack.server.config.UaTcpStackServerConfig;
 import com.digitalpetri.opcua.stack.server.tcp.UaTcpStackServer;
-import com.digitalpetri.opcua.stack.server.tcp.UaTcpServerBuilder;
 
 public class ServerExample {
 
@@ -30,12 +30,14 @@ public class ServerExample {
         CertificateManager certificateManager = new DirectoryCertificateManager(
                 keyPair, certificate, securityDir);
 
-        server = new UaTcpServerBuilder()
+        UaTcpStackServerConfig config = UaTcpStackServerConfig.builder()
                 .setServerName("example")
                 .setApplicationName(LocalizedText.english("Stack Example Server"))
                 .setApplicationUri(String.format("urn:example-server:%s", UUID.randomUUID()))
                 .setCertificateManager(certificateManager)
                 .build();
+
+        server = new UaTcpStackServer(config);
 
         server.addEndpoint("opc.tcp://localhost:12685/example", null, certificate, SecurityPolicy.None, MessageSecurityMode.None);
         server.addEndpoint("opc.tcp://localhost:12685/example", null, certificate, SecurityPolicy.Basic128Rsa15, MessageSecurityMode.SignAndEncrypt);

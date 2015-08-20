@@ -32,6 +32,7 @@ import com.digitalpetri.opcua.stack.core.types.structured.FindServersResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.GetEndpointsRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.GetEndpointsResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.ResponseHeader;
+import com.digitalpetri.opcua.stack.server.config.UaTcpStackServerConfig;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -47,12 +48,13 @@ public class FallbackServer {
     private final UaTcpStackServer server;
 
     public FallbackServer() {
-        server = new UaTcpServerBuilder()
+        UaTcpStackServerConfig config = UaTcpStackServerConfig.builder()
                 .setApplicationName(LocalizedText.english("Stack Discovery Server"))
                 .setApplicationUri("urn:digitalpetri:stack:discovery")
                 .setProductUri("http://www.digitalpetri.com/opc-ua")
                 .build();
 
+        server = new UaTcpStackServer(config);
         server.addRequestHandler(FindServersRequest.class, new FindServersHandler());
         server.addRequestHandler(GetEndpointsRequest.class, new GetEndpointsHandler());
     }
