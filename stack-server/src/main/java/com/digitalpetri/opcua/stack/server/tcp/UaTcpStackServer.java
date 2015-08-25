@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
@@ -63,6 +62,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
+import static com.digitalpetri.opcua.stack.core.util.ConversionUtil.a;
+import static java.util.stream.Collectors.toList;
 
 public class UaTcpStackServer implements UaStackServer {
 
@@ -97,15 +98,24 @@ public class UaTcpStackServer implements UaStackServer {
 
         addServiceSet(new DefaultDiscoveryServiceSet());
 
-        addServiceSet(new AttributeServiceSet() {});
-        addServiceSet(new MethodServiceSet() {});
-        addServiceSet(new MonitoredItemServiceSet() {});
-        addServiceSet(new NodeManagementServiceSet() {});
-        addServiceSet(new QueryServiceSet() {});
-        addServiceSet(new SessionServiceSet() {});
-        addServiceSet(new SubscriptionServiceSet() {});
-        addServiceSet(new TestServiceSet() {});
-        addServiceSet(new ViewServiceSet() {});
+        addServiceSet(new AttributeServiceSet() {
+        });
+        addServiceSet(new MethodServiceSet() {
+        });
+        addServiceSet(new MonitoredItemServiceSet() {
+        });
+        addServiceSet(new NodeManagementServiceSet() {
+        });
+        addServiceSet(new QueryServiceSet() {
+        });
+        addServiceSet(new SessionServiceSet() {
+        });
+        addServiceSet(new SubscriptionServiceSet() {
+        });
+        addServiceSet(new TestServiceSet() {
+        });
+        addServiceSet(new ViewServiceSet() {
+        });
     }
 
     @Override
@@ -248,7 +258,7 @@ public class UaTcpStackServer implements UaStackServer {
     }
 
     public List<String> getEndpointUrls() {
-        return endpoints.stream().map(e -> e.getEndpointUri().toString()).collect(Collectors.toList());
+        return endpoints.stream().map(e -> e.getEndpointUri().toString()).collect(toList());
     }
 
     public Set<String> getDiscoveryUrls() {
@@ -407,15 +417,20 @@ public class UaTcpStackServer implements UaStackServer {
                     Lists.newArrayList(request.getProfileUris()) :
                     Lists.newArrayList();
 
-            List<EndpointDescription> eds = endpoints.stream()
+            List<EndpointDescription> allEndpoints = endpoints.stream()
                     .map(UaTcpStackServer.this::mapEndpoint)
                     .filter(ed -> filterProfileUris(ed, profileUris))
-                    .filter(this::filterEndpointUrls)
-                    .collect(Collectors.toList());
+                    .collect(toList());
+
+            List<EndpointDescription> matchingEndpoints = allEndpoints.stream()
+                    .filter(ed -> filterEndpointUrls(ed, request.getEndpointUrl()))
+                    .collect(toList());
 
             GetEndpointsResponse response = new GetEndpointsResponse(
                     serviceRequest.createResponseHeader(),
-                    eds.toArray(new EndpointDescription[eds.size()])
+                    matchingEndpoints.isEmpty() ?
+                            a(allEndpoints, EndpointDescription.class) :
+                            a(matchingEndpoints, EndpointDescription.class)
             );
 
             serviceRequest.setResponse(response);
@@ -425,8 +440,16 @@ public class UaTcpStackServer implements UaStackServer {
             return profileUris.size() == 0 || profileUris.contains(endpoint.getTransportProfileUri());
         }
 
-        private boolean filterEndpointUrls(EndpointDescription endpoint) {
-            return true;
+        private boolean filterEndpointUrls(EndpointDescription endpoint, String endpointUrl) {
+            try {
+                String requestedHost = URI.create(endpointUrl).getHost();
+                String endpointHost = URI.create(endpoint.getEndpointUrl()).getHost();
+
+                return requestedHost.equalsIgnoreCase(endpointHost);
+            } catch (Throwable t) {
+                logger.warn("Unable to create URI.", t);
+                return false;
+            }
         }
 
         @Override
@@ -441,7 +464,7 @@ public class UaTcpStackServer implements UaStackServer {
 
             applicationDescriptions = applicationDescriptions.stream()
                     .filter(ad -> filterServerUris(ad, serverUris))
-                    .collect(Collectors.toList());
+                    .collect(toList());
 
             FindServersResponse response = new FindServersResponse(
                     serviceRequest.createResponseHeader(),
