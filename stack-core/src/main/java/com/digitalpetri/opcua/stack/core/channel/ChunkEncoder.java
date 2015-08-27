@@ -48,11 +48,27 @@ public class ChunkEncoder implements HeaderConstants {
         return encode(asymmetricDelegate, channel, messageType, messageBuffer, requestId.getAndIncrement());
     }
 
+    public List<ByteBuf> encodeAsymmetric(SecureChannel channel,
+                                          MessageType messageType,
+                                          ByteBuf messageBuffer,
+                                          long requestId) throws UaException {
+
+        return encode(asymmetricDelegate, channel, messageType, messageBuffer, requestId);
+    }
+
     public List<ByteBuf> encodeSymmetric(SecureChannel channel,
                                          MessageType messageType,
                                          ByteBuf messageBuffer) throws UaException {
 
         return encode(symmetricDelegate, channel, messageType, messageBuffer, requestId.getAndIncrement());
+    }
+
+    public List<ByteBuf> encodeSymmetric(SecureChannel channel,
+                                         MessageType messageType,
+                                         ByteBuf messageBuffer,
+                                         long requestId) throws UaException {
+
+        return encode(symmetricDelegate, channel, messageType, messageBuffer, requestId);
     }
 
     private List<ByteBuf> encode(Delegate delegate,
