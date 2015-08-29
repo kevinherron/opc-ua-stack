@@ -25,18 +25,53 @@ import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 
 public interface CertificateManager {
 
+    /**
+     * Get the {@link KeyPair} belonging to the certificate identified by {@code thumbprint}.
+     * <p>
+     * {@code thumbprint} is a SHA1 hash of the encoded certificate.
+     *
+     * @param thumbprint the thumbprint of the certificate.
+     * @return the {@link KeyPair} belonging to the certificate identified by {@code thumbprint}.
+     */
     Optional<KeyPair> getKeyPair(ByteString thumbprint);
 
+    /**
+     * Get the {@link X509Certificate} identified by {@code thumbprint}.
+     * <p>
+     * {@code thumbprint} is a SHA1 hash of the encoded certificate.
+     *
+     * @param thumbprint the thumbprint of the certificate.
+     * @return the {@link X509Certificate} identified by {@code thumbprint}.
+     */
     Optional<X509Certificate> getCertificate(ByteString thumbprint);
 
+    /**
+     * @return the Set of all managed {@link KeyPair}s.
+     */
     Set<KeyPair> getKeyPairs();
 
+    /**
+     * @return the Set of all managed {@link X509Certificate}s.
+     */
     Set<X509Certificate> getCertificates();
 
+    /**
+     * @return the Set of trusted {@link X509Certificate}s.
+     */
     Set<X509Certificate> getTrustList();
 
+    /**
+     * @return the Set of trusted authority {@link X509Certificate}s.
+     */
     Set<X509Certificate> getAuthorityList();
 
+    /**
+     * Handle a rejected certificate.
+     * <p>
+     * One course of action is to quarantine it so a user can later move it to the trusted list.
+     *
+     * @param certificate the rejected {@link X509Certificate}.
+     */
     void certificateRejected(X509Certificate certificate);
 
 }
