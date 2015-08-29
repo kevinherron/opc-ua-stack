@@ -306,10 +306,25 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
 
         if (secureChannel.isSymmetricSigningEnabled()) {
             SecurityAlgorithm algorithm = secureChannel.getSecurityPolicy().getSymmetricEncryptionAlgorithm();
+
+            // Validate the remote nonce; it must be non-null and the correct length for the security algorithm.
+            ByteString remoteNonce = request.getClientNonce();
+            if (remoteNonce == null || remoteNonce.isNull()) {
+                throw new UaException(StatusCodes.Bad_SecurityChecksFailed, "remote nonce must be non-null");
+            }
+            if (remoteNonce.length() < getNonceLength(algorithm)) {
+                String message = String.format(
+                        "remote nonce length must be at least %d bytes",
+                        getNonceLength(algorithm));
+
+                throw new UaException(StatusCodes.Bad_SecurityChecksFailed, message);
+            }
+
+
             ByteString localNonce = generateNonce(getNonceLength(algorithm));
 
             secureChannel.setLocalNonce(localNonce);
-            secureChannel.setRemoteNonce(request.getClientNonce());
+            secureChannel.setRemoteNonce(remoteNonce);
 
             newKeys = ChannelSecurity.generateKeyPair(
                     secureChannel,
