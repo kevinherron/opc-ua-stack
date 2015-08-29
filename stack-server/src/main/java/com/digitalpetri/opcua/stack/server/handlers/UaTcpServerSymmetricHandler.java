@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.List;
 
-import com.digitalpetri.opcua.stack.server.tcp.UaTcpStackServer;
-import com.google.common.collect.Lists;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.application.services.ServiceRequest;
@@ -21,6 +19,8 @@ import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
+import com.digitalpetri.opcua.stack.server.tcp.UaTcpStackServer;
+import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
@@ -81,7 +81,7 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
                 binaryEncoder.setBuffer(messageBuffer);
                 binaryEncoder.encodeMessage(null, message.getResponse());
 
-                final List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
+                final List<ByteBuf> chunks = chunkEncoder.encodeSymmetricResponse(
                         secureChannel,
                         MessageType.SecureMessage,
                         messageBuffer,

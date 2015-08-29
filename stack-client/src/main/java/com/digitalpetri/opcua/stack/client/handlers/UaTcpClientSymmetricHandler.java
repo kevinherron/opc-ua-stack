@@ -80,7 +80,7 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestMes
                 binaryEncoder.setBuffer(messageBuffer);
                 binaryEncoder.encodeMessage(null, message);
 
-                List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
+                List<ByteBuf> chunks = chunkEncoder.encodeSymmetricRequest(
                         secureChannel,
                         MessageType.SecureMessage,
                         messageBuffer

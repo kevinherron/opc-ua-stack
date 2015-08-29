@@ -85,7 +85,7 @@ public class ChunkSerializationTest extends SecureChannelFixture {
 
         ByteBuf messageBuffer = BufferUtil.buffer().writeBytes(messageBytes);
 
-        List<ByteBuf> chunkBuffers = encoder.encodeAsymmetric(
+        List<ByteBuf> chunkBuffers = encoder.encodeAsymmetricRequest(
                 clientChannel,
                 MessageType.OpenSecureChannel,
                 messageBuffer
@@ -155,7 +155,7 @@ public class ChunkSerializationTest extends SecureChannelFixture {
 
         ByteBuf messageBuffer = BufferUtil.buffer().writeBytes(messageBytes);
 
-        List<ByteBuf> chunkBuffers = encoder.encodeSymmetric(
+        List<ByteBuf> chunkBuffers = encoder.encodeSymmetricRequest(
                 clientChannel,
                 MessageType.SecureMessage,
                 messageBuffer

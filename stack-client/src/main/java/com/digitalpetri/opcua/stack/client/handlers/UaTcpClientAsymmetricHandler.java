@@ -268,7 +268,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 binaryEncoder.setBuffer(messageBuffer);
                 binaryEncoder.encodeMessage(null, request);
 
-                List<ByteBuf> chunks = chunkEncoder.encodeAsymmetric(
+                List<ByteBuf> chunks = chunkEncoder.encodeAsymmetricRequest(
                         secureChannel,
                         MessageType.OpenSecureChannel,
                         messageBuffer
@@ -298,7 +298,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 binaryEncoder.setBuffer(messageBuffer);
                 binaryEncoder.encodeMessage(null, request);
 
-                List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
+                List<ByteBuf> chunks = chunkEncoder.encodeSymmetricRequest(
                         secureChannel,
                         MessageType.CloseSecureChannel,
                         messageBuffer

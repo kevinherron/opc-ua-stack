@@ -4,7 +4,6 @@ import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.cert.Certificate;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -41,32 +40,32 @@ public class ChunkEncoder implements HeaderConstants {
         this.parameters = parameters;
     }
 
-    public List<ByteBuf> encodeAsymmetric(SecureChannel channel,
-                                          MessageType messageType,
-                                          ByteBuf messageBuffer) throws UaException {
+    public List<ByteBuf> encodeAsymmetricRequest(SecureChannel channel,
+                                                 MessageType messageType,
+                                                 ByteBuf messageBuffer) throws UaException {
 
         return encode(asymmetricDelegate, channel, messageType, messageBuffer, requestId.getAndIncrement());
     }
 
-    public List<ByteBuf> encodeAsymmetric(SecureChannel channel,
-                                          MessageType messageType,
-                                          ByteBuf messageBuffer,
-                                          long requestId) throws UaException {
+    public List<ByteBuf> encodeAsymmetricResponse(SecureChannel channel,
+                                                  MessageType messageType,
+                                                  ByteBuf messageBuffer,
+                                                  long requestId) throws UaException {
 
         return encode(asymmetricDelegate, channel, messageType, messageBuffer, requestId);
     }
 
-    public List<ByteBuf> encodeSymmetric(SecureChannel channel,
-                                         MessageType messageType,
-                                         ByteBuf messageBuffer) throws UaException {
+    public List<ByteBuf> encodeSymmetricRequest(SecureChannel channel,
+                                                MessageType messageType,
+                                                ByteBuf messageBuffer) throws UaException {
 
         return encode(symmetricDelegate, channel, messageType, messageBuffer, requestId.getAndIncrement());
     }
 
-    public List<ByteBuf> encodeSymmetric(SecureChannel channel,
-                                         MessageType messageType,
-                                         ByteBuf messageBuffer,
-                                         long requestId) throws UaException {
+    public List<ByteBuf> encodeSymmetricResponse(SecureChannel channel,
+                                                 MessageType messageType,
+                                                 ByteBuf messageBuffer,
+                                                 long requestId) throws UaException {
 
         return encode(symmetricDelegate, channel, messageType, messageBuffer, requestId);
     }
