@@ -15,6 +15,7 @@ public class AttributeIdTest {
         }
 
         assertFalse(AttributeId.from(-1).isPresent());
+        assertFalse(AttributeId.from(0).isPresent());
         assertFalse(AttributeId.from(23).isPresent());
     }
 
