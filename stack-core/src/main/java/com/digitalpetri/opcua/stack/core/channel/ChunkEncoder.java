@@ -33,6 +33,7 @@ public class ChunkEncoder implements HeaderConstants {
     private final LongSequence sequenceNumber = new LongSequence(1L, 4294966271L);
 
     private final LongSequence requestId = new LongSequence(1L, UInteger.MAX_VALUE);
+    private volatile long lastRequestId = 1L;
 
     private final ChannelParameters parameters;
 
@@ -184,7 +185,13 @@ public class ChunkEncoder implements HeaderConstants {
             chunks.add(chunkBuffer);
         }
 
+        lastRequestId = requestId;
+
         return chunks;
+    }
+
+    public long getLastRequestId() {
+        return lastRequestId;
     }
 
     private void writePadding(int cipherTextBlockSize, int paddingSize, ByteBuf buffer) {

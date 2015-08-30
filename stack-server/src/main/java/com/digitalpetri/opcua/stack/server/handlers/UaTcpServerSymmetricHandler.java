@@ -185,18 +185,14 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
 
                 serializationQueue.decode((binaryDecoder, chunkDecoder) -> {
                     try {
-                        ByteBuf messageBuffer = chunkDecoder.decodeSymmetric(
-                                secureChannel,
-                                MessageType.SecureMessage,
-                                buffersToDecode
-                        );
+                        ByteBuf messageBuffer = chunkDecoder.decodeSymmetric(secureChannel, buffersToDecode);
 
                         binaryDecoder.setBuffer(messageBuffer);
                         UaRequestMessage request = binaryDecoder.decodeMessage(null);
 
                         ServiceRequest<UaRequestMessage, UaResponseMessage> serviceRequest = new ServiceRequest<>(
                                 request,
-                                chunkDecoder.getRequestId(),
+                                chunkDecoder.getLastRequestId(),
                                 server,
                                 secureChannel
                         );

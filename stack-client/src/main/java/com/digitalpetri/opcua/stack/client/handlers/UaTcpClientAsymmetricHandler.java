@@ -13,6 +13,7 @@ import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.UaRuntimeException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
 import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
+import com.digitalpetri.opcua.stack.core.channel.MessageAbortedException;
 import com.digitalpetri.opcua.stack.core.channel.SerializationQueue;
 import com.digitalpetri.opcua.stack.core.channel.headers.AsymmetricSecurityHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.HeaderDecoder;
@@ -140,75 +141,67 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
     }
 
     private void onOpenSecureChannel(ChannelHandlerContext ctx, ByteBuf buffer) throws UaException {
-        buffer.skipBytes(3); // Skip messageType
+        buffer.skipBytes(3 + 1 + 4); // skip messageType, chunkType, messageSize
 
-        char chunkType = (char) buffer.readByte();
+        long secureChannelId = buffer.readUnsignedInt();
 
-        if (chunkType == 'A') {
-            chunkBuffers.forEach(ByteBuf::release);
-            chunkBuffers.clear();
-        } else {
-            buffer.skipBytes(4); // Skip messageSize
+        secureChannel.setChannelId(secureChannelId);
 
-            long secureChannelId = buffer.readUnsignedInt();
-
-            secureChannel.setChannelId(secureChannelId);
-
-            AsymmetricSecurityHeader securityHeader = AsymmetricSecurityHeader.decode(buffer);
-            if (!headerRef.compareAndSet(null, securityHeader)) {
-                if (!securityHeader.equals(headerRef.get())) {
-                    throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed,
-                            "subsequent AsymmetricSecurityHeader did not match");
-                }
+        AsymmetricSecurityHeader securityHeader = AsymmetricSecurityHeader.decode(buffer);
+        if (!headerRef.compareAndSet(null, securityHeader)) {
+            if (!securityHeader.equals(headerRef.get())) {
+                throw new UaRuntimeException(StatusCodes.Bad_SecurityChecksFailed,
+                        "subsequent AsymmetricSecurityHeader did not match");
             }
+        }
 
-            int chunkSize = buffer.readerIndex(0).readableBytes();
+        int chunkSize = buffer.readerIndex(0).readableBytes();
 
-            if (chunkSize > maxChunkSize) {
-                throw new UaException(StatusCodes.Bad_TcpMessageTooLarge,
-                        String.format("max chunk size exceeded (%s)", maxChunkSize));
-            }
+        if (chunkSize > maxChunkSize) {
+            throw new UaException(StatusCodes.Bad_TcpMessageTooLarge,
+                    String.format("max chunk size exceeded (%s)", maxChunkSize));
+        }
 
-            chunkBuffers.add(buffer.retain());
+        chunkBuffers.add(buffer.retain());
 
-            if (chunkBuffers.size() > maxChunkCount) {
-                throw new UaException(StatusCodes.Bad_TcpMessageTooLarge,
-                        String.format("max chunk count exceeded (%s)", maxChunkCount));
-            }
+        if (chunkBuffers.size() > maxChunkCount) {
+            throw new UaException(StatusCodes.Bad_TcpMessageTooLarge,
+                    String.format("max chunk count exceeded (%s)", maxChunkCount));
+        }
 
-            if (chunkType == 'F') {
-                final List<ByteBuf> buffersToDecode = chunkBuffers;
-                chunkBuffers = Lists.newArrayListWithCapacity(maxChunkCount);
+        char chunkType = (char) buffer.getByte(3);
 
-                serializationQueue.decode((binaryDecoder, chunkDecoder) -> {
-                    ByteBuf messageBuffer = null;
+        if (chunkType == 'A' || chunkType == 'F') {
+            final List<ByteBuf> buffersToDecode = chunkBuffers;
+            chunkBuffers = Lists.newArrayListWithCapacity(maxChunkCount);
 
-                    try {
-                        messageBuffer = chunkDecoder.decodeAsymmetric(
-                                secureChannel,
-                                MessageType.OpenSecureChannel,
-                                buffersToDecode
-                        );
+            serializationQueue.decode((binaryDecoder, chunkDecoder) -> {
+                ByteBuf decodedBuffer = null;
 
-                        OpenSecureChannelResponse response = binaryDecoder
-                                .setBuffer(messageBuffer)
-                                .decodeMessage(null);
+                try {
+                    decodedBuffer = chunkDecoder.decodeAsymmetric(secureChannel, buffersToDecode);
 
-                        secureChannel.setChannelId(response.getSecurityToken().getChannelId().longValue());
-                        logger.debug("Received OpenSecureChannelResponse.");
+                    OpenSecureChannelResponse response = binaryDecoder
+                            .setBuffer(decodedBuffer)
+                            .decodeMessage(null);
 
-                        installSecurityToken(ctx, response);
-                    } catch (Throwable t) {
-                        logger.error("Error decoding OpenSecureChannelResponse: {}", t.getMessage(), t);
-                        ctx.close();
-                    } finally {
-                        if (messageBuffer != null) {
-                            messageBuffer.release();
-                        }
-                        buffersToDecode.clear();
+                    secureChannel.setChannelId(response.getSecurityToken().getChannelId().longValue());
+                    logger.debug("Received OpenSecureChannelResponse.");
+
+                    installSecurityToken(ctx, response);
+                } catch (MessageAbortedException e) {
+                    logger.error("Received message abort chunk; error={}, reason={}", e.getStatusCode(), e.getMessage());
+                    ctx.close();
+                } catch (Throwable t) {
+                    logger.error("Error decoding OpenSecureChannelResponse: {}", t.getMessage(), t);
+                    ctx.close();
+                } finally {
+                    if (decodedBuffer != null) {
+                        decodedBuffer.release();
                     }
-                });
-            }
+                    buffersToDecode.clear();
+                }
+            });
         }
     }
 

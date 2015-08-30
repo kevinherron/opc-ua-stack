@@ -93,7 +93,6 @@ public class ChunkSerializationTest extends SecureChannelFixture {
 
         ByteBuf decodedBuffer = decoder.decodeAsymmetric(
                 serverChannel,
-                MessageType.OpenSecureChannel,
                 chunkBuffers
         );
 
@@ -163,7 +162,6 @@ public class ChunkSerializationTest extends SecureChannelFixture {
 
         ByteBuf decodedBuffer = decoder.decodeSymmetric(
                 serverChannel,
-                MessageType.SecureMessage,
                 chunkBuffers
         );
 

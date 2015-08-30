@@ -1,8 +1,5 @@
 package com.digitalpetri.opcua.stack.core.channel;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.GeneralSecurityException;
@@ -12,18 +9,20 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
+import com.digitalpetri.opcua.stack.core.StatusCodes;
+import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.headers.AsymmetricSecurityHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.HeaderConstants;
 import com.digitalpetri.opcua.stack.core.channel.headers.SequenceHeader;
+import com.digitalpetri.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
+import com.digitalpetri.opcua.stack.core.channel.messages.ErrorMessage;
 import com.digitalpetri.opcua.stack.core.security.SecurityAlgorithm;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.digitalpetri.opcua.stack.core.util.SignatureUtil;
-import com.digitalpetri.opcua.stack.core.StatusCodes;
-import com.digitalpetri.opcua.stack.core.UaException;
-import com.digitalpetri.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
-import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.CompositeByteBuf;
@@ -37,8 +36,8 @@ public class ChunkDecoder implements HeaderConstants {
     private final Delegate asymmetricDelegate = new AsymmetricDelegate();
     private final Delegate symmetricDelegate = new SymmetricDelegate();
 
-    private final AtomicLong previousSequenceNumber = new AtomicLong(-1L);
-    private final AtomicLong requestId = new AtomicLong(-1L);
+    private volatile long lastSequenceNumber = -1L;
+    private volatile long lastRequestId;
 
     private final ChannelParameters parameters;
 
@@ -46,15 +45,15 @@ public class ChunkDecoder implements HeaderConstants {
         this.parameters = parameters;
     }
 
-    public ByteBuf decodeAsymmetric(SecureChannel channel, MessageType messageType, List<ByteBuf> chunkBuffers) throws UaException {
-        return decode(asymmetricDelegate, channel, messageType, chunkBuffers);
+    public ByteBuf decodeAsymmetric(SecureChannel channel, List<ByteBuf> chunkBuffers) throws UaException {
+        return decode(asymmetricDelegate, channel, chunkBuffers);
     }
 
-    public ByteBuf decodeSymmetric(SecureChannel channel, MessageType messageType, List<ByteBuf> chunkBuffers) throws UaException {
-        return decode(symmetricDelegate, channel, messageType, chunkBuffers);
+    public ByteBuf decodeSymmetric(SecureChannel channel, List<ByteBuf> chunkBuffers) throws UaException {
+        return decode(symmetricDelegate, channel, chunkBuffers);
     }
 
-    private ByteBuf decode(Delegate delegate, SecureChannel channel, MessageType messageType, List<ByteBuf> chunkBuffers) throws UaException {
+    private ByteBuf decode(Delegate delegate, SecureChannel channel, List<ByteBuf> chunkBuffers) throws UaException {
         CompositeByteBuf composite = BufferUtil.compositeBuffer();
 
         int signatureSize = delegate.getSignatureSize(channel);
@@ -64,6 +63,8 @@ public class ChunkDecoder implements HeaderConstants {
         boolean signed = delegate.isSigningEnabled(channel);
 
         for (ByteBuf chunkBuffer : chunkBuffers) {
+            char chunkType = (char) chunkBuffer.getByte(3);
+
             chunkBuffer.skipBytes(SecureMessageHeaderSize);
 
             delegate.readSecurityHeader(channel, chunkBuffer);
@@ -86,14 +87,14 @@ public class ChunkDecoder implements HeaderConstants {
 
             SequenceHeader sequenceHeader = SequenceHeader.decode(chunkBuffer);
             long sequenceNumber = sequenceHeader.getSequenceNumber();
-            requestId.set(sequenceHeader.getRequestId());
+            lastRequestId = sequenceHeader.getRequestId();
 
-            if (previousSequenceNumber.get() == -1) {
-                previousSequenceNumber.set(sequenceNumber);
+            if (lastSequenceNumber == -1) {
+                lastSequenceNumber = sequenceNumber;
             } else {
-                if (previousSequenceNumber.get() + 1 != sequenceNumber) {
+                if (lastSequenceNumber + 1 != sequenceNumber) {
                     String message = String.format("expected sequence number %s but received %s",
-                            previousSequenceNumber.get() + 1, sequenceNumber);
+                            lastSequenceNumber + 1, sequenceNumber);
 
                     logger.error(message);
                     logger.error(ByteBufUtil.hexDump(chunkBuffer, 0, chunkBuffer.writerIndex()));
@@ -101,10 +102,16 @@ public class ChunkDecoder implements HeaderConstants {
                     throw new UaException(StatusCodes.Bad_SecurityChecksFailed, message);
                 }
 
-                previousSequenceNumber.set(sequenceNumber);
+                lastSequenceNumber = sequenceNumber;
             }
 
             ByteBuf bodyBuffer = chunkBuffer.readSlice(bodyEnd - chunkBuffer.readerIndex());
+
+            if (chunkType == 'A') {
+                ErrorMessage errorMessage = ErrorMessage.decode(bodyBuffer);
+
+                throw new MessageAbortedException(errorMessage.getError(), errorMessage.getReason());
+            }
 
             composite.addComponent(bodyBuffer);
             composite.writerIndex(composite.writerIndex() + bodyBuffer.readableBytes());
@@ -116,8 +123,8 @@ public class ChunkDecoder implements HeaderConstants {
     /**
      * @return the most recently decoded request id.
      */
-    public long getRequestId() {
-        return requestId.get();
+    public long getLastRequestId() {
+        return lastRequestId;
     }
 
     private void decryptChunk(Delegate delegate, SecureChannel channel, ByteBuf chunkBuffer) throws UaException {

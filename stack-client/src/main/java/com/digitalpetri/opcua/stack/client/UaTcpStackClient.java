@@ -9,12 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.digitalpetri.opcua.stack.client.config.UaTcpStackClientConfig;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionEvent;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateFsm;
+import com.digitalpetri.opcua.stack.client.handlers.UaRequestFuture;
 import com.digitalpetri.opcua.stack.client.handlers.UaTcpClientAcknowledgeHandler;
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
@@ -53,6 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
+import static com.google.common.collect.Lists.newArrayListWithCapacity;
 
 public class UaTcpStackClient implements UaStackClient {
 
@@ -106,48 +109,62 @@ public class UaTcpStackClient implements UaStackClient {
                 .thenApply(s -> UaTcpStackClient.this);
     }
 
-    @SuppressWarnings("unchecked")
     public <T extends UaResponseMessage> CompletableFuture<T> sendRequest(UaRequestMessage request) {
-        return connectionFsm.getChannel().thenCompose(sc -> {
-            Channel channel = sc.getChannel();
-
-            CompletableFuture<T> future = new CompletableFuture<>();
-
-            RequestHeader requestHeader = request.getRequestHeader();
-
-            pending.put(requestHeader.getRequestHandle(), (CompletableFuture<UaResponseMessage>) future);
-
-            scheduleRequestTimeout(requestHeader);
-
-            channel.writeAndFlush(request).addListener(f -> {
-                if (!f.isSuccess()) {
-                    Throwable cause = f.cause();
-
-                    if (cause instanceof ClosedChannelException) {
-                        sendRequest(request).whenComplete((r, ex) -> {
-                            if (r != null) {
-                                T t = (T) r;
-                                future.complete(t);
-                            } else {
-                                future.completeExceptionally(ex);
-                            }
-                        });
-                    } else {
-                        UInteger requestHandle = request.getRequestHeader().getRequestHandle();
-
-                        pending.remove(requestHandle);
-                        future.completeExceptionally(f.cause());
-
-                        logger.debug("Write failed, requestHandle={}", requestHandle, cause);
-                    }
-                }
-            });
-
-            return future;
-        });
+        return connectionFsm.getChannel()
+                .thenCompose(sc -> sendRequest(request, sc));
     }
 
     @SuppressWarnings("unchecked")
+    private <T extends UaResponseMessage> CompletionStage<T> sendRequest(UaRequestMessage request, ClientSecureChannel sc) {
+        Channel channel = sc.getChannel();
+
+        CompletableFuture<T> future = new CompletableFuture<>();
+        UaRequestFuture requestFuture = new UaRequestFuture(request);
+
+        RequestHeader requestHeader = request.getRequestHeader();
+
+        pending.put(requestHeader.getRequestHandle(), (CompletableFuture<UaResponseMessage>) future);
+
+        scheduleRequestTimeout(requestHeader);
+
+        requestFuture.getFuture().whenComplete((r, x) -> {
+            if (r != null) {
+                receiveResponse(r);
+            } else {
+                UInteger requestHandle = request.getRequestHeader().getRequestHandle();
+
+                pending.remove(requestHandle);
+                future.completeExceptionally(x);
+            }
+        });
+
+        channel.writeAndFlush(requestFuture).addListener(f -> {
+            if (!f.isSuccess()) {
+                Throwable cause = f.cause();
+
+                if (cause instanceof ClosedChannelException) {
+                    sendRequest(request).whenComplete((r, ex) -> {
+                        if (r != null) {
+                            T t = (T) r;
+                            future.complete(t);
+                        } else {
+                            future.completeExceptionally(ex);
+                        }
+                    });
+                } else {
+                    UInteger requestHandle = request.getRequestHeader().getRequestHandle();
+
+                    pending.remove(requestHandle);
+                    future.completeExceptionally(f.cause());
+
+                    logger.debug("Write failed, requestHandle={}", requestHandle, cause);
+                }
+            }
+        });
+
+        return future;
+    }
+
     public void sendRequests(List<? extends UaRequestMessage> requests,
                              List<CompletableFuture<? extends UaResponseMessage>> futures) {
 
@@ -156,41 +173,54 @@ public class UaTcpStackClient implements UaStackClient {
 
         connectionFsm.getChannel().whenComplete((sc, ex) -> {
             if (sc != null) {
-                Channel channel = sc.getChannel();
-                Iterator<? extends UaRequestMessage> requestIterator = requests.iterator();
-                Iterator<CompletableFuture<? extends UaResponseMessage>> futureIterator = futures.iterator();
-
-                while (requestIterator.hasNext() && futureIterator.hasNext()) {
-                    UaRequestMessage request = requestIterator.next();
-                    CompletableFuture<UaResponseMessage> future =
-                            (CompletableFuture<UaResponseMessage>) futureIterator.next();
-
-                    RequestHeader requestHeader = request.getRequestHeader();
-
-                    pending.put(requestHeader.getRequestHandle(), future);
-
-                    scheduleRequestTimeout(requestHeader);
-                }
-
-                channel.eventLoop().execute(() -> {
-                    for (UaRequestMessage request : requests) {
-                        channel.write(request).addListener(f -> {
-                            if (!f.isSuccess()) {
-                                UInteger requestHandle = request.getRequestHeader().getRequestHandle();
-
-                                CompletableFuture<?> future = pending.remove(requestHandle);
-                                if (future != null) future.completeExceptionally(f.cause());
-
-                                logger.debug("Write failed, requestHandle={}", requestHandle, f.cause());
-                            }
-                        });
-                    }
-
-                    channel.flush();
-                });
+                sendRequests(requests, futures, sc);
             } else {
                 futures.forEach(f -> f.completeExceptionally(ex));
             }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    private void sendRequests(List<? extends UaRequestMessage> requests, List<CompletableFuture<? extends UaResponseMessage>> futures, ClientSecureChannel sc) {
+        Channel channel = sc.getChannel();
+        Iterator<? extends UaRequestMessage> requestIterator = requests.iterator();
+        Iterator<CompletableFuture<? extends UaResponseMessage>> futureIterator = futures.iterator();
+
+        List<UaRequestFuture> pendingRequests = newArrayListWithCapacity(requests.size());
+
+        while (requestIterator.hasNext() && futureIterator.hasNext()) {
+            UaRequestMessage request = requestIterator.next();
+            CompletableFuture<UaResponseMessage> future =
+                    (CompletableFuture<UaResponseMessage>) futureIterator.next();
+
+            UaRequestFuture pendingRequest = new UaRequestFuture(request, future);
+            pendingRequests.add(pendingRequest);
+
+            RequestHeader requestHeader = request.getRequestHeader();
+
+            pending.put(requestHeader.getRequestHandle(), future);
+
+            scheduleRequestTimeout(requestHeader);
+
+            pendingRequest.getFuture().thenAccept(this::receiveResponse);
+        }
+
+        channel.eventLoop().execute(() -> {
+            for (UaRequestFuture pendingRequest : pendingRequests) {
+                channel.write(pendingRequest).addListener(f -> {
+                    if (!f.isSuccess()) {
+                        UInteger requestHandle = pendingRequest
+                                .getRequest().getRequestHeader().getRequestHandle();
+
+                        CompletableFuture<?> future = pending.remove(requestHandle);
+                        if (future != null) future.completeExceptionally(f.cause());
+
+                        logger.debug("Write failed, requestHandle={}", requestHandle, f.cause());
+                    }
+                });
+            }
+
+            channel.flush();
         });
     }
 
@@ -218,7 +248,7 @@ public class UaTcpStackClient implements UaStackClient {
         timeouts.put(requestHandle, timeout);
     }
 
-    public void receiveResponse(UaResponseMessage response) {
+    private void receiveResponse(UaResponseMessage response) {
         ResponseHeader header = response.getResponseHeader();
         UInteger requestHandle = header.getRequestHandle();
 
@@ -266,11 +296,6 @@ public class UaTcpStackClient implements UaStackClient {
     public UInteger getChannelLifetime() {
         return config.getChannelLifetime();
     }
-
-//    @Override
-//    public ClientSecureChannel getSecureChannel() {
-//        return secureChannel;
-//    }
 
     @Override
     public ApplicationDescription getApplication() {

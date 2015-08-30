@@ -237,11 +237,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                     ByteBuf messageBuffer = null;
 
                     try {
-                        messageBuffer = chunkDecoder.decodeAsymmetric(
-                                secureChannel,
-                                MessageType.OpenSecureChannel,
-                                buffersToDecode
-                        );
+                        messageBuffer = chunkDecoder.decodeAsymmetric(secureChannel, buffersToDecode);
 
                         OpenSecureChannelRequest request = binaryDecoder
                                 .setBuffer(messageBuffer)
@@ -250,7 +246,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                         logger.debug("Received OpenSecureChannelRequest ({}, id={}).",
                                 request.getRequestType(), secureChannelId);
 
-                        long requestId = chunkDecoder.getRequestId();
+                        long requestId = chunkDecoder.getLastRequestId();
                         installSecurityToken(ctx, request, requestId);
                     } catch (UaException e) {
                         logger.error("Error decoding asymmetric message: {}", e.getMessage(), e);
