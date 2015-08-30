@@ -20,6 +20,7 @@
 package com.digitalpetri.opcua.stack.core;
 
 import java.util.EnumSet;
+import java.util.Optional;
 
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.google.common.collect.ImmutableSet;
@@ -120,4 +121,15 @@ public enum AttributeId {
         return uint(id);
     }
 
+    public static Optional<AttributeId> from(UInteger attributeId) {
+        return from(attributeId.intValue());
+    }
+
+    public static Optional<AttributeId> from(int attributeId) {
+        if (attributeId > 0 && attributeId <= values().length) {
+            return Optional.of(values()[attributeId - 1]);
+        } else {
+            return Optional.empty();
+        }
+    }
 }
