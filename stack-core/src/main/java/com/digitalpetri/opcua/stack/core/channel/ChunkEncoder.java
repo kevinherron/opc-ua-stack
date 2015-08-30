@@ -11,7 +11,6 @@ import javax.crypto.spec.SecretKeySpec;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.headers.AsymmetricSecurityHeader;
-import com.digitalpetri.opcua.stack.core.channel.headers.HeaderConstants;
 import com.digitalpetri.opcua.stack.core.channel.headers.SecureMessageHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.SequenceHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
@@ -24,7 +23,7 @@ import com.digitalpetri.opcua.stack.core.util.SignatureUtil;
 import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 
-public class ChunkEncoder implements HeaderConstants {
+public class ChunkEncoder {
 
     private final Delegate asymmetricDelegate = new AsymmetricDelegate();
     private final Delegate symmetricDelegate = new SymmetricDelegate();
@@ -87,23 +86,23 @@ public class ChunkEncoder implements HeaderConstants {
         int signatureSize = delegate.getSignatureSize(channel);
 
         int maxChunkSize = parameters.getLocalSendBufferSize();
-        int headerSizes = SecureMessageHeaderSize + securityHeaderSize;
+        int headerSizes = SecureMessageHeader.SECURE_MESSAGE_HEADER_SIZE + securityHeaderSize;
         int paddingOverhead = encrypted ? (cipherTextBlockSize > 256 ? 2 : 1) : 0;
 
         int maxBlockCount = (maxChunkSize - headerSizes - signatureSize - paddingOverhead) / cipherTextBlockSize;
-        int maxBodySize = (plainTextBlockSize * maxBlockCount - SequenceHeaderSize);
+        int maxBodySize = (plainTextBlockSize * maxBlockCount - SequenceHeader.SEQUENCE_HEADER_SIZE);
 
         while (messageBuffer.readableBytes() > 0) {
             int bodySize = Math.min(messageBuffer.readableBytes(), maxBodySize);
 
             int paddingSize = encrypted ?
-                    plainTextBlockSize - (SequenceHeaderSize + bodySize + signatureSize + paddingOverhead) % plainTextBlockSize : 0;
+                    plainTextBlockSize - (SequenceHeader.SEQUENCE_HEADER_SIZE + bodySize + signatureSize + paddingOverhead) % plainTextBlockSize : 0;
 
-            int plainTextContentSize = SequenceHeaderSize + bodySize + signatureSize + paddingSize + paddingOverhead;
+            int plainTextContentSize = SequenceHeader.SEQUENCE_HEADER_SIZE + bodySize + signatureSize + paddingSize + paddingOverhead;
 
             assert (plainTextContentSize % plainTextBlockSize == 0);
 
-            int chunkSize = SecureMessageHeaderSize + securityHeaderSize +
+            int chunkSize = SecureMessageHeader.SECURE_MESSAGE_HEADER_SIZE + securityHeaderSize +
                     (plainTextContentSize / plainTextBlockSize) * cipherTextBlockSize;
 
             ByteBuf chunkBuffer = BufferUtil.buffer(chunkSize);
@@ -147,7 +146,7 @@ public class ChunkEncoder implements HeaderConstants {
 
             /* Encryption */
             if (encrypted) {
-                chunkBuffer.readerIndex(SecureMessageHeaderSize + securityHeaderSize);
+                chunkBuffer.readerIndex(SecureMessageHeader.SECURE_MESSAGE_HEADER_SIZE + securityHeaderSize);
 
                 assert (chunkBuffer.readableBytes() % plainTextBlockSize == 0);
 
@@ -358,7 +357,7 @@ public class ChunkEncoder implements HeaderConstants {
 
         @Override
         public int getSecurityHeaderSize(SecureChannel channel) {
-            return SymmetricSecurityHeaderSize;
+            return SymmetricSecurityHeader.SYMMETRIC_SECURITY_HEADER_SIZE;
         }
 
         @Override

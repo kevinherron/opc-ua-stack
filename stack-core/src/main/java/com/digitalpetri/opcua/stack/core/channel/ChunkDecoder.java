@@ -16,7 +16,7 @@ import javax.crypto.spec.SecretKeySpec;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.headers.AsymmetricSecurityHeader;
-import com.digitalpetri.opcua.stack.core.channel.headers.HeaderConstants;
+import com.digitalpetri.opcua.stack.core.channel.headers.SecureMessageHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.SequenceHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
 import com.digitalpetri.opcua.stack.core.channel.messages.ErrorMessage;
@@ -29,7 +29,7 @@ import io.netty.buffer.CompositeByteBuf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ChunkDecoder implements HeaderConstants {
+public class ChunkDecoder {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -65,7 +65,7 @@ public class ChunkDecoder implements HeaderConstants {
         for (ByteBuf chunkBuffer : chunkBuffers) {
             char chunkType = (char) chunkBuffer.getByte(3);
 
-            chunkBuffer.skipBytes(SecureMessageHeaderSize);
+            chunkBuffer.skipBytes(SecureMessageHeader.SECURE_MESSAGE_HEADER_SIZE);
 
             delegate.readSecurityHeader(channel, chunkBuffer);
 

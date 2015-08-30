@@ -1,7 +1,7 @@
 package com.digitalpetri.opcua.stack.core.channel.headers;
 
-import com.google.common.base.MoreObjects;
 import com.digitalpetri.opcua.stack.core.util.annotations.UInt32Primitive;
+import com.google.common.base.MoreObjects;
 import io.netty.buffer.ByteBuf;
 
 /**
@@ -12,6 +12,8 @@ import io.netty.buffer.ByteBuf;
  * this never happens; however, if it does the receiver should treat it as a transport error and force a reconnect.
  */
 public class SequenceHeader {
+
+    public static final int SEQUENCE_HEADER_SIZE = 8;
 
     @UInt32Primitive
     private final long sequenceNumber;

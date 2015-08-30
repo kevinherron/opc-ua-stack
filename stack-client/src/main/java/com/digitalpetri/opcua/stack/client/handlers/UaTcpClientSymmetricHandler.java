@@ -116,7 +116,7 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestFut
     protected void decode(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws Exception {
         buffer = buffer.order(ByteOrder.LITTLE_ENDIAN);
 
-        while (buffer.readableBytes() >= HeaderLength &&
+        while (buffer.readableBytes() >= HEADER_LENGTH &&
                 buffer.readableBytes() >= getMessageLength(buffer)) {
 
             int messageLength = getMessageLength(buffer);

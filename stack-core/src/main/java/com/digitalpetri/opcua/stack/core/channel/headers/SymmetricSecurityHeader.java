@@ -1,10 +1,12 @@
 package com.digitalpetri.opcua.stack.core.channel.headers;
 
-import com.google.common.base.MoreObjects;
 import com.digitalpetri.opcua.stack.core.util.annotations.UInt32Primitive;
+import com.google.common.base.MoreObjects;
 import io.netty.buffer.ByteBuf;
 
 public class SymmetricSecurityHeader {
+
+    public static final int SYMMETRIC_SECURITY_HEADER_SIZE = 4;
 
     @UInt32Primitive
     private final long tokenId;

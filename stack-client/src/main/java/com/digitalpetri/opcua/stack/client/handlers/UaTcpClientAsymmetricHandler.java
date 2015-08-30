@@ -118,7 +118,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
     protected void channelRead0(ChannelHandlerContext ctx, ByteBuf buffer) throws Exception {
         buffer = buffer.order(ByteOrder.LITTLE_ENDIAN);
 
-        while (buffer.readableBytes() >= HeaderLength &&
+        while (buffer.readableBytes() >= HEADER_LENGTH &&
                 buffer.readableBytes() >= getMessageLength(buffer)) {
 
             int messageLength = getMessageLength(buffer);

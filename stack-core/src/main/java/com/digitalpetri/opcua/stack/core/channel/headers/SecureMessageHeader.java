@@ -1,10 +1,12 @@
 package com.digitalpetri.opcua.stack.core.channel.headers;
 
-import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import io.netty.buffer.ByteBuf;
 
 public final class SecureMessageHeader {
+
+    public static final int SECURE_MESSAGE_HEADER_SIZE = 12;
 
     private final MessageType messageType;
     private final char finalFlag;
