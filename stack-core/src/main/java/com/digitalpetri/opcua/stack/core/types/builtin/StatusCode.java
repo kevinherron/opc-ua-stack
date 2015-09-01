@@ -87,14 +87,13 @@ public final class StatusCode {
 
     @Override
     public String toString() {
-        ToStringHelper helper = MoreObjects.toStringHelper(this)
-                .add("value", String.format("0x%08X", value))
-                .add("quality", quality(this));
+        ToStringHelper helper = MoreObjects.toStringHelper(this);
 
-        StatusCodes.lookup(value).ifPresent(nameAndDesc -> {
-            helper.add("name", nameAndDesc[0]);
-            helper.add("desc", nameAndDesc[1]);
-        });
+        StatusCodes.lookup(value).ifPresent(
+                nameAndDesc -> helper.add("name", nameAndDesc[0]));
+
+        helper.add("value", String.format("0x%08X", value));
+        helper.add("quality", quality(this));
 
         return helper.toString();
     }

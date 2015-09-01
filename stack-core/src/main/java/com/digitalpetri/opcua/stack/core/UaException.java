@@ -44,26 +44,20 @@ public class UaException extends Exception {
         return statusCode;
     }
 
-
     @Override
-    public String getMessage() {
-        String message = super.getMessage();
-        if (message == null || message.isEmpty()) {
-            message = createMessage(statusCode);
-        }
-        return message;
-    }
+    public String toString() {
+        Optional<String[]> lookup = StatusCodes.lookup(statusCode.getValue());
 
-    /**
-     * Create an appropriate default message for a {@link StatusCode}.
-     *
-     * @param statusCode the {@link StatusCode} to create a message from.
-     * @return a String that can be used as the message in an exception for the given {@link StatusCode}.
-     */
-    protected static String createMessage(StatusCode statusCode) {
-        return StatusCodes.lookup(statusCode.getValue())
-                .map(nd -> nd[0])
-                .orElse(statusCode.toString());
+        String clazzName = getClass().getSimpleName();
+        String message = getLocalizedMessage();
+
+        String status = lookup.map(nd -> nd[0]).orElse(statusCode.toString());
+
+        if (message == null) {
+            message = lookup.map(nd -> nd[1]).orElse("");
+        }
+
+        return String.format("%s: status=%s, message=%s", clazzName, status, message);
     }
 
     /**
