@@ -348,7 +348,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
 
             logger.error("Received error message: " + errorMessage);
 
-            handshakeFuture.completeExceptionally(new UaException(errorCode, "error=" + errorMessage.getReason()));
+            handshakeFuture.completeExceptionally(new UaException(errorCode, errorMessage.getReason()));
         } catch (UaException e) {
             logger.error("An exception occurred while decoding an error message: {}", e.getMessage(), e);
         } finally {
