@@ -45,19 +45,43 @@ public class UaException extends Exception {
     }
 
     @Override
-    public String toString() {
-        Optional<String[]> lookup = StatusCodes.lookup(statusCode.getValue());
+    public String getMessage() {
+        String message = super.getMessage();
 
+        if (message == null || message.isEmpty()) {
+            Optional<String[]> lookup = StatusCodes.lookup(statusCode.getValue());
+
+            String status = lookup.map(nd -> nd[0]).orElse(statusCode.toString());
+            String description = lookup.map(nd -> nd[1]).orElse("");
+
+            if (description.isEmpty()) {
+                message = String.format("status=%s", status);
+            } else {
+                message = String.format("status=%s, description=%s", status, description);
+            }
+        }
+
+        return message;
+    }
+
+    @Override
+    public String toString() {
         String clazzName = getClass().getSimpleName();
-        String message = getLocalizedMessage();
+
+        Optional<String[]> lookup = StatusCodes.lookup(statusCode.getValue());
 
         String status = lookup.map(nd -> nd[0]).orElse(statusCode.toString());
 
+        String message = super.getMessage();
         if (message == null) {
             message = lookup.map(nd -> nd[1]).orElse("");
         }
 
-        return String.format("%s: status=%s, message=%s", clazzName, status, message);
+        if (message.isEmpty()) {
+            return String.format("%s: status=%s", clazzName, status);
+        } else {
+            return String.format("%s: status=%s, message=%s", clazzName, status, message);
+        }
     }
 
     /**
