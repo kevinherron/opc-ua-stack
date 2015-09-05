@@ -45,21 +45,21 @@ public class ChunkSerializationTest extends SecureChannelFixture {
     @DataProvider
     public Object[][] getAsymmetricSecurityParameters() {
         return new Object[][]{
-                {SecurityPolicy.None, MessageSecurityMode.None, 128},
-                {SecurityPolicy.Basic128Rsa15, MessageSecurityMode.Sign, 128},
-                {SecurityPolicy.Basic128Rsa15, MessageSecurityMode.SignAndEncrypt, 128},
-                {SecurityPolicy.Basic256, MessageSecurityMode.Sign, 128},
-                {SecurityPolicy.Basic256, MessageSecurityMode.SignAndEncrypt, 128},
-                {SecurityPolicy.Basic256Sha256, MessageSecurityMode.Sign, 128},
-                {SecurityPolicy.Basic256Sha256, MessageSecurityMode.SignAndEncrypt, 128},
+                {SecurityPolicy.NONE, MessageSecurityMode.None, 128},
+                {SecurityPolicy.BASIC_128_RSA_15, MessageSecurityMode.Sign, 128},
+                {SecurityPolicy.BASIC_128_RSA_15, MessageSecurityMode.SignAndEncrypt, 128},
+                {SecurityPolicy.BASIC_256, MessageSecurityMode.Sign, 128},
+                {SecurityPolicy.BASIC_256, MessageSecurityMode.SignAndEncrypt, 128},
+                {SecurityPolicy.BASIC_256_SHA256, MessageSecurityMode.Sign, 128},
+                {SecurityPolicy.BASIC_256_SHA256, MessageSecurityMode.SignAndEncrypt, 128},
 
-                {SecurityPolicy.None, MessageSecurityMode.None, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
-                {SecurityPolicy.Basic128Rsa15, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
-                {SecurityPolicy.Basic128Rsa15, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
-                {SecurityPolicy.Basic256, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
-                {SecurityPolicy.Basic256, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
-                {SecurityPolicy.Basic256Sha256, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
-                {SecurityPolicy.Basic256Sha256, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
+                {SecurityPolicy.NONE, MessageSecurityMode.None, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
+                {SecurityPolicy.BASIC_128_RSA_15, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
+                {SecurityPolicy.BASIC_128_RSA_15, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
+                {SecurityPolicy.BASIC_256, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
+                {SecurityPolicy.BASIC_256, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
+                {SecurityPolicy.BASIC_256_SHA256, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
+                {SecurityPolicy.BASIC_256_SHA256, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
         };
     }
 
@@ -106,29 +106,29 @@ public class ChunkSerializationTest extends SecureChannelFixture {
     @DataProvider
     public Object[][] getSymmetricSecurityParameters() {
         return new Object[][]{
-                {SecurityPolicy.None, MessageSecurityMode.None, 128},
-                {SecurityPolicy.Basic128Rsa15, MessageSecurityMode.Sign, 128},
-                {SecurityPolicy.Basic128Rsa15, MessageSecurityMode.SignAndEncrypt, 128},
-                {SecurityPolicy.Basic256, MessageSecurityMode.Sign, 128},
-                {SecurityPolicy.Basic256, MessageSecurityMode.SignAndEncrypt, 128},
-                {SecurityPolicy.Basic256Sha256, MessageSecurityMode.Sign, 128},
-                {SecurityPolicy.Basic256Sha256, MessageSecurityMode.SignAndEncrypt, 128},
+                {SecurityPolicy.NONE, MessageSecurityMode.None, 128},
+                {SecurityPolicy.BASIC_128_RSA_15, MessageSecurityMode.Sign, 128},
+                {SecurityPolicy.BASIC_128_RSA_15, MessageSecurityMode.SignAndEncrypt, 128},
+                {SecurityPolicy.BASIC_256, MessageSecurityMode.Sign, 128},
+                {SecurityPolicy.BASIC_256, MessageSecurityMode.SignAndEncrypt, 128},
+                {SecurityPolicy.BASIC_256_SHA256, MessageSecurityMode.Sign, 128},
+                {SecurityPolicy.BASIC_256_SHA256, MessageSecurityMode.SignAndEncrypt, 128},
 
-                {SecurityPolicy.None, MessageSecurityMode.None, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
-                {SecurityPolicy.Basic128Rsa15, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
-                {SecurityPolicy.Basic128Rsa15, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
-                {SecurityPolicy.Basic256, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
-                {SecurityPolicy.Basic256, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
-                {SecurityPolicy.Basic256Sha256, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
-                {SecurityPolicy.Basic256Sha256, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
+                {SecurityPolicy.NONE, MessageSecurityMode.None, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
+                {SecurityPolicy.BASIC_128_RSA_15, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
+                {SecurityPolicy.BASIC_128_RSA_15, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
+                {SecurityPolicy.BASIC_256, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
+                {SecurityPolicy.BASIC_256, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
+                {SecurityPolicy.BASIC_256_SHA256, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
+                {SecurityPolicy.BASIC_256_SHA256, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_CHUNK_SIZE},
 
-                {SecurityPolicy.None, MessageSecurityMode.None, ChannelConfig.DEFAULT_MAX_MESSAGE_SIZE},
-                {SecurityPolicy.Basic128Rsa15, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_MESSAGE_SIZE},
-                {SecurityPolicy.Basic128Rsa15, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_MESSAGE_SIZE},
-                {SecurityPolicy.Basic256, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_MESSAGE_SIZE},
-                {SecurityPolicy.Basic256, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_MESSAGE_SIZE},
-                {SecurityPolicy.Basic256Sha256, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_MESSAGE_SIZE},
-                {SecurityPolicy.Basic256Sha256, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_MESSAGE_SIZE},
+                {SecurityPolicy.NONE, MessageSecurityMode.None, ChannelConfig.DEFAULT_MAX_MESSAGE_SIZE},
+                {SecurityPolicy.BASIC_128_RSA_15, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_MESSAGE_SIZE},
+                {SecurityPolicy.BASIC_128_RSA_15, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_MESSAGE_SIZE},
+                {SecurityPolicy.BASIC_256, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_MESSAGE_SIZE},
+                {SecurityPolicy.BASIC_256, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_MESSAGE_SIZE},
+                {SecurityPolicy.BASIC_256_SHA256, MessageSecurityMode.Sign, ChannelConfig.DEFAULT_MAX_MESSAGE_SIZE},
+                {SecurityPolicy.BASIC_256_SHA256, MessageSecurityMode.SignAndEncrypt, ChannelConfig.DEFAULT_MAX_MESSAGE_SIZE},
         };
     }
 

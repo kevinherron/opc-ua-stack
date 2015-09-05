@@ -59,27 +59,27 @@ public class ChannelSecurity {
         assert (clientNonce != null);
         assert (serverNonce != null);
 
-        byte[] clientSignatureKey = (keyDerivation == SecurityAlgorithm.PSha1) ?
+        byte[] clientSignatureKey = (keyDerivation == SecurityAlgorithm.P_SHA1) ?
                 PShaUtil.createPSha1Key(serverNonce.bytes(), clientNonce.bytes(), 0, signatureKeySize) :
                 PShaUtil.createPSha256Key(serverNonce.bytes(), clientNonce.bytes(), 0, signatureKeySize);
 
-        byte[] clientEncryptionKey = (keyDerivation == SecurityAlgorithm.PSha1) ?
+        byte[] clientEncryptionKey = (keyDerivation == SecurityAlgorithm.P_SHA1) ?
                 PShaUtil.createPSha1Key(serverNonce.bytes(), clientNonce.bytes(), signatureKeySize, encryptionKeySize) :
                 PShaUtil.createPSha256Key(serverNonce.bytes(), clientNonce.bytes(), signatureKeySize, encryptionKeySize);
 
-        byte[] clientInitializationVector = (keyDerivation == SecurityAlgorithm.PSha1) ?
+        byte[] clientInitializationVector = (keyDerivation == SecurityAlgorithm.P_SHA1) ?
                 PShaUtil.createPSha1Key(serverNonce.bytes(), clientNonce.bytes(), signatureKeySize + encryptionKeySize, cipherTextBlockSize) :
                 PShaUtil.createPSha256Key(serverNonce.bytes(), clientNonce.bytes(), signatureKeySize + encryptionKeySize, cipherTextBlockSize);
 
-        byte[] serverSignatureKey = (keyDerivation == SecurityAlgorithm.PSha1) ?
+        byte[] serverSignatureKey = (keyDerivation == SecurityAlgorithm.P_SHA1) ?
                 PShaUtil.createPSha1Key(clientNonce.bytes(), serverNonce.bytes(), 0, signatureKeySize) :
                 PShaUtil.createPSha256Key(clientNonce.bytes(), serverNonce.bytes(), 0, signatureKeySize);
 
-        byte[] serverEncryptionKey = (keyDerivation == SecurityAlgorithm.PSha1) ?
+        byte[] serverEncryptionKey = (keyDerivation == SecurityAlgorithm.P_SHA1) ?
                 PShaUtil.createPSha1Key(clientNonce.bytes(), serverNonce.bytes(), signatureKeySize, encryptionKeySize) :
                 PShaUtil.createPSha256Key(clientNonce.bytes(), serverNonce.bytes(), signatureKeySize, encryptionKeySize);
 
-        byte[] serverInitializationVector = (keyDerivation == SecurityAlgorithm.PSha1) ?
+        byte[] serverInitializationVector = (keyDerivation == SecurityAlgorithm.P_SHA1) ?
                 PShaUtil.createPSha1Key(clientNonce.bytes(), serverNonce.bytes(), signatureKeySize + encryptionKeySize, cipherTextBlockSize) :
                 PShaUtil.createPSha256Key(clientNonce.bytes(), serverNonce.bytes(), signatureKeySize + encryptionKeySize, cipherTextBlockSize);
 

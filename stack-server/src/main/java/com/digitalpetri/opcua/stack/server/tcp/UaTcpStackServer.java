@@ -182,8 +182,8 @@ public class UaTcpStackServer implements UaStackServer {
             long requestId = serviceRequest.getRequestId();
 
             ServiceResponse serviceResponse = response != null ?
-                    new ServiceResponse(response, requestId) :
-                    new ServiceResponse(serviceRequest.createServiceFault(throwable), requestId);
+                    new ServiceResponse(serviceRequest.getRequest(), requestId, response) :
+                    new ServiceResponse(serviceRequest.getRequest(), requestId, serviceRequest.createServiceFault(throwable));
 
             ServerSecureChannel secureChannel = serviceRequest.getSecureChannel();
             boolean secureChannelValid = secureChannels.containsKey(secureChannel.getChannelId());
@@ -362,8 +362,8 @@ public class UaTcpStackServer implements UaStackServer {
                                         MessageSecurityMode messageSecurity) {
 
         boolean invalidConfiguration = messageSecurity == MessageSecurityMode.Invalid ||
-                (securityPolicy == SecurityPolicy.None && messageSecurity != MessageSecurityMode.None) ||
-                (securityPolicy != SecurityPolicy.None && messageSecurity == MessageSecurityMode.None);
+                (securityPolicy == SecurityPolicy.NONE && messageSecurity != MessageSecurityMode.None) ||
+                (securityPolicy != SecurityPolicy.NONE && messageSecurity == MessageSecurityMode.None);
 
         if (invalidConfiguration) {
             logger.warn("Invalid configuration, ignoring: {} + {}", securityPolicy, messageSecurity);

@@ -170,7 +170,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
             SecurityPolicy securityPolicy = SecurityPolicy.fromUri(securityHeader.getSecurityPolicyUri());
             secureChannel.setSecurityPolicy(securityPolicy);
 
-            if (!securityHeader.getSenderCertificate().isNull() && securityPolicy != SecurityPolicy.None) {
+            if (!securityHeader.getSenderCertificate().isNull() && securityPolicy != SecurityPolicy.NONE) {
                 secureChannel.setRemoteCertificate(securityHeader.getSenderCertificate().bytes());
 
                 CertificateValidator validator = new CertificateValidator(

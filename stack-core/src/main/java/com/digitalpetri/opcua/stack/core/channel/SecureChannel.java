@@ -88,8 +88,8 @@ public interface SecureChannel {
             SecurityAlgorithm algorithm = getSecurityPolicy().getAsymmetricEncryptionAlgorithm();
 
             switch(algorithm) {
-                case Rsa15:
-                case RsaOaep:
+                case RSA_15:
+                case RSA_OAEP:
                     return (getAsymmetricKeyLength(getLocalCertificate()) + 1) / 8;
             }
         }
@@ -102,8 +102,8 @@ public interface SecureChannel {
             SecurityAlgorithm algorithm = getSecurityPolicy().getAsymmetricEncryptionAlgorithm();
 
             switch(algorithm) {
-                case Rsa15:
-                case RsaOaep:
+                case RSA_15:
+                case RSA_OAEP:
                     return (getAsymmetricKeyLength(getRemoteCertificate()) + 1) / 8;
             }
         }
@@ -116,9 +116,9 @@ public interface SecureChannel {
             SecurityAlgorithm algorithm = getSecurityPolicy().getAsymmetricEncryptionAlgorithm();
 
             switch(algorithm) {
-                case Rsa15:
+                case RSA_15:
                     return (getAsymmetricKeyLength(getLocalCertificate()) + 1) / 8 - 11;
-                case RsaOaep:
+                case RSA_OAEP:
                     return (getAsymmetricKeyLength(getLocalCertificate()) + 1) / 8 - 42;
             }
         }
@@ -131,9 +131,9 @@ public interface SecureChannel {
             SecurityAlgorithm algorithm = getSecurityPolicy().getAsymmetricEncryptionAlgorithm();
 
             switch(algorithm) {
-                case Rsa15:
+                case RSA_15:
                     return (getAsymmetricKeyLength(getRemoteCertificate()) + 1) / 8 - 11;
-                case RsaOaep:
+                case RSA_OAEP:
                     return (getAsymmetricKeyLength(getRemoteCertificate()) + 1) / 8 - 42;
             }
         }
@@ -145,8 +145,8 @@ public interface SecureChannel {
         SecurityAlgorithm algorithm = getSecurityPolicy().getAsymmetricSignatureAlgorithm();
 
         switch(algorithm) {
-            case RsaSha1:
-            case RsaSha256:
+            case RSA_SHA1:
+            case RSA_SHA256:
                 return (getAsymmetricKeyLength(getLocalCertificate()) + 1) / 8;
             default:
                 return 0;
@@ -157,8 +157,8 @@ public interface SecureChannel {
         SecurityAlgorithm algorithm = getSecurityPolicy().getAsymmetricSignatureAlgorithm();
 
         switch(algorithm) {
-            case RsaSha1:
-            case RsaSha256:
+            case RSA_SHA1:
+            case RSA_SHA256:
                 return (getAsymmetricKeyLength(getRemoteCertificate()) + 1) / 8;
             default:
                 return 0;
@@ -166,12 +166,12 @@ public interface SecureChannel {
     }
 
     default boolean isAsymmetricSigningEnabled() {
-        return getSecurityPolicy() != SecurityPolicy.None &&
+        return getSecurityPolicy() != SecurityPolicy.NONE &&
                 getLocalCertificate() != null;
     }
 
     default boolean isAsymmetricEncryptionEnabled() {
-        return getSecurityPolicy() != SecurityPolicy.None &&
+        return getSecurityPolicy() != SecurityPolicy.NONE &&
                 getLocalCertificate() != null &&
                 getRemoteCertificate() != null;
     }
@@ -181,8 +181,8 @@ public interface SecureChannel {
             SecurityAlgorithm algorithm = getSecurityPolicy().getSymmetricEncryptionAlgorithm();
 
             switch(algorithm) {
-                case Aes128:
-                case Aes256:
+                case AES128:
+                case AES256:
                     return 16;
             }
         }
@@ -195,8 +195,8 @@ public interface SecureChannel {
             SecurityAlgorithm algorithm = getSecurityPolicy().getSymmetricEncryptionAlgorithm();
 
             switch(algorithm) {
-                case Aes128:
-                case Aes256:
+                case AES128:
+                case AES256:
                     return 16;
             }
         }
@@ -208,9 +208,9 @@ public interface SecureChannel {
         SecurityAlgorithm algorithm = getSecurityPolicy().getSymmetricSignatureAlgorithm();
 
         switch(algorithm) {
-            case HmacSha1:
+            case HMAC_SHA1:
                 return 20;
-            case HmacSha256:
+            case HMAC_SHA256:
                 return 32;
             default:
                 return 0;
@@ -219,13 +219,13 @@ public interface SecureChannel {
 
     default int getSymmetricSignatureKeySize() {
         switch(getSecurityPolicy()) {
-            case None:
+            case NONE:
                 return 0;
-            case Basic128Rsa15:
+            case BASIC_128_RSA_15:
                 return 16;
-            case Basic256:
+            case BASIC_256:
                 return 24;
-            case Basic256Sha256:
+            case BASIC_256_SHA256:
                 return 32;
             default:
                 return 0;
@@ -234,12 +234,12 @@ public interface SecureChannel {
 
     default int getSymmetricEncryptionKeySize() {
         switch(getSecurityPolicy()) {
-            case None:
+            case NONE:
                 return 0;
-            case Basic128Rsa15:
+            case BASIC_128_RSA_15:
                 return 16;
-            case Basic256:
-            case Basic256Sha256:
+            case BASIC_256:
+            case BASIC_256_SHA256:
                 return 32;
             default:
                 return 0;
@@ -248,14 +248,14 @@ public interface SecureChannel {
 
     default boolean isSymmetricSigningEnabled() {
         return getLocalCertificate() != null &&
-                getSecurityPolicy() != SecurityPolicy.None &&
+                getSecurityPolicy() != SecurityPolicy.NONE &&
                 (getMessageSecurityMode() == MessageSecurityMode.Sign ||
                         getMessageSecurityMode() == MessageSecurityMode.SignAndEncrypt);
     }
 
     default boolean isSymmetricEncryptionEnabled() {
         return getRemoteCertificate() != null &&
-                getSecurityPolicy() != SecurityPolicy.None &&
+                getSecurityPolicy() != SecurityPolicy.NONE &&
                 getMessageSecurityMode() == MessageSecurityMode.SignAndEncrypt;
     }
 

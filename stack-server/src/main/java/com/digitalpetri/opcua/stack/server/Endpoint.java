@@ -71,16 +71,16 @@ public class Endpoint {
         }
 
         switch(securityPolicy) {
-            case Basic256Sha256:
+            case BASIC_256_SHA256:
                 securityLevel |= 0x08;
                 break;
-            case Basic256:
+            case BASIC_256:
                 securityLevel |= 0x04;
                 break;
-            case Basic128Rsa15:
+            case BASIC_128_RSA_15:
                 securityLevel |= 0x02;
                 break;
-            case None:
+            case NONE:
                 securityLevel |= 0x01;
                 break;
         }

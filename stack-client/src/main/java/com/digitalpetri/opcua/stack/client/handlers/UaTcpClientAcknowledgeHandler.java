@@ -94,7 +94,7 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
                         return Optional.empty();
                     }
                 })
-                .orElse(new ClientSecureChannel(SecurityPolicy.None, MessageSecurityMode.None));
+                .orElse(new ClientSecureChannel(SecurityPolicy.NONE, MessageSecurityMode.None));
     }
 
     @Override
