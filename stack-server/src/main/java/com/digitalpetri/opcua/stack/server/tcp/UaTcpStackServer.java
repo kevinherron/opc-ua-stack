@@ -63,6 +63,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
 import static com.digitalpetri.opcua.stack.core.util.ConversionUtil.a;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.stream.Collectors.toList;
 
 public class UaTcpStackServer implements UaStackServer {
@@ -171,7 +172,7 @@ public class UaTcpStackServer implements UaStackServer {
             }
         }
 
-        List<ServerSecureChannel> copy = Lists.newArrayList(secureChannels.values());
+        List<ServerSecureChannel> copy = newArrayList(secureChannels.values());
         copy.forEach(this::closeSecureChannel);
     }
 
@@ -230,7 +231,7 @@ public class UaTcpStackServer implements UaStackServer {
                 config.getApplicationName(),
                 ApplicationType.Server,
                 null, null,
-                discoveryUrls.toArray(new String[discoveryUrls.size()])
+                a(newArrayList(this.discoveryUrls), String.class)
         );
     }
 
@@ -414,8 +415,8 @@ public class UaTcpStackServer implements UaStackServer {
             GetEndpointsRequest request = serviceRequest.getRequest();
 
             List<String> profileUris = request.getProfileUris() != null ?
-                    Lists.newArrayList(request.getProfileUris()) :
-                    Lists.newArrayList();
+                    newArrayList(request.getProfileUris()) :
+                    newArrayList();
 
             List<EndpointDescription> allEndpoints = endpoints.stream()
                     .map(UaTcpStackServer.this::mapEndpoint)
@@ -457,10 +458,11 @@ public class UaTcpStackServer implements UaStackServer {
             FindServersRequest request = serviceRequest.getRequest();
 
             List<String> serverUris = request.getServerUris() != null ?
-                    Lists.newArrayList(request.getServerUris()) :
-                    Lists.newArrayList();
+                    newArrayList(request.getServerUris()) :
+                    newArrayList();
 
-            List<ApplicationDescription> applicationDescriptions = Lists.newArrayList(getApplicationDescription());
+            List<ApplicationDescription> applicationDescriptions =
+                    newArrayList(getApplicationDescription(request.getEndpointUrl()));
 
             applicationDescriptions = applicationDescriptions.stream()
                     .filter(ad -> filterServerUris(ad, serverUris))
@@ -468,10 +470,39 @@ public class UaTcpStackServer implements UaStackServer {
 
             FindServersResponse response = new FindServersResponse(
                     serviceRequest.createResponseHeader(),
-                    applicationDescriptions.toArray(new ApplicationDescription[applicationDescriptions.size()])
+                    a(applicationDescriptions, ApplicationDescription.class)
             );
 
             serviceRequest.setResponse(response);
+        }
+
+        private ApplicationDescription getApplicationDescription(String endpointUrl) {
+            List<String> allDiscoveryUrls = newArrayList(discoveryUrls);
+
+            List<String> matchingDiscoveryUrls = allDiscoveryUrls.stream()
+                    .filter(discoveryUrl -> {
+                        try {
+                            String requestedHost = URI.create(endpointUrl).getHost();
+                            String discoveryHost = URI.create(discoveryUrl).getHost();
+
+                            return requestedHost.equalsIgnoreCase(discoveryHost);
+                        } catch (Throwable t) {
+                            logger.warn("Unable to create URI.", t);
+                            return false;
+                        }
+                    })
+                    .collect(toList());
+
+            return new ApplicationDescription(
+                    config.getApplicationUri(),
+                    config.getProductUri(),
+                    config.getApplicationName(),
+                    ApplicationType.Server,
+                    null, null,
+                    matchingDiscoveryUrls.isEmpty() ?
+                            a(allDiscoveryUrls, String.class) :
+                            a(matchingDiscoveryUrls, String.class)
+            );
         }
 
         private boolean filterServerUris(ApplicationDescription ad, List<String> serverUris) {
