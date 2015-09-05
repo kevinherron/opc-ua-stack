@@ -132,4 +132,21 @@ public enum AttributeId {
             return Optional.empty();
         }
     }
+
+    /**
+     * @param attributeId the id to test for validity.
+     * @return {@code true} if {@code attributeId} is valid.
+     */
+    public static boolean isValid(UInteger attributeId) {
+        return from(attributeId).isPresent();
+    }
+
+    /**
+     * @param attributeId the id to test for validity.
+     * @return {@code true} if {@code attributeId} is valid.
+     */
+    public static boolean isValid(int attributeId) {
+        return from(attributeId).isPresent();
+    }
+
 }
