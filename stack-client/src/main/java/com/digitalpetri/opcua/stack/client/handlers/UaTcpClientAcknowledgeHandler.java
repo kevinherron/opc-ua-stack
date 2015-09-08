@@ -34,7 +34,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import io.netty.util.AttributeKey;
-import org.jooq.lambda.tuple.Tuple2;
+import org.jooq.lambda.tuple.Tuple1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +64,18 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
         UaTcpStackClientConfig config = client.getConfig();
 
         secureChannel = config.getEndpoint()
-                .flatMap(e -> config.getKeyPair().map(keyPair -> new Tuple2<>(e, keyPair)))
+                .flatMap(e -> {
+                    SecurityPolicy securityPolicy = SecurityPolicy
+                            .fromUriSafe(e.getSecurityPolicyUri())
+                            .orElse(SecurityPolicy.NONE);
+
+                    if (securityPolicy == SecurityPolicy.NONE) {
+                        return Optional.empty();
+                    } else {
+                        return Optional.of(new Tuple1<>(e));
+                    }
+                })
+                .flatMap(t1 -> config.getKeyPair().map(t1::concat))
                 .flatMap(t2 -> config.getCertificate().map(t2::concat))
                 .flatMap(t3 -> {
                     EndpointDescription endpoint = t3.v1();
