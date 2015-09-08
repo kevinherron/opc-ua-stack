@@ -1,5 +1,7 @@
 package com.digitalpetri.opcua.stack.core.security;
 
+import java.util.Optional;
+
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 
@@ -116,6 +118,14 @@ public enum SecurityPolicy {
 
         throw new UaException(StatusCodes.Bad_SecurityPolicyRejected,
                 "unknown securityPolicyUri: " + securityPolicyUri);
+    }
+
+    public static Optional<SecurityPolicy> fromUriSafe(String securityPolicyUri) {
+        try {
+            return Optional.of(fromUri(securityPolicyUri));
+        } catch (Throwable t) {
+            return Optional.empty();
+        }
     }
 
 }
