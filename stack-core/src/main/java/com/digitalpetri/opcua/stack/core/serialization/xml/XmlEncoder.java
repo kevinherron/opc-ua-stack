@@ -1,25 +1,29 @@
 package com.digitalpetri.opcua.stack.core.serialization.xml;
 
-import javax.annotation.Nonnull;
-import javax.xml.bind.DatatypeConverter;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.Calendar;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import javax.annotation.Nonnull;
+import javax.xml.bind.DatatypeConverter;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaSerializationException;
 import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
+import com.digitalpetri.opcua.stack.core.serialization.UaEnumeration;
 import com.digitalpetri.opcua.stack.core.serialization.UaSerializable;
 import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
+import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
+import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.digitalpetri.opcua.stack.core.types.builtin.ExpandedNodeId;
+import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
 import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
 import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 import com.digitalpetri.opcua.stack.core.types.builtin.QualifiedName;
@@ -32,16 +36,7 @@ import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.ULong;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned;
 import com.digitalpetri.opcua.stack.core.util.Namespaces;
-import com.digitalpetri.opcua.stack.core.serialization.UaEnumeration;
-import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
-import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
-import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
 import org.jooq.lambda.Unchecked;
-
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
 
 public class XmlEncoder implements UaEncoder {
 

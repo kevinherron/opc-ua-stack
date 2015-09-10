@@ -4,58 +4,58 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import com.digitalpetri.opcua.stack.core.application.services.AttributeServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.DiscoveryServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.MethodServiceSet;
 import com.digitalpetri.opcua.stack.core.application.services.MonitoredItemServiceSet;
 import com.digitalpetri.opcua.stack.core.application.services.NodeManagementServiceSet;
 import com.digitalpetri.opcua.stack.core.application.services.QueryServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.ServiceRequestHandler;
 import com.digitalpetri.opcua.stack.core.application.services.SessionServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.SubscriptionServiceSet;
 import com.digitalpetri.opcua.stack.core.application.services.TestServiceSet;
+import com.digitalpetri.opcua.stack.core.application.services.ViewServiceSet;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
+import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
+import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.digitalpetri.opcua.stack.core.types.structured.ActivateSessionRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.AddNodesRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.AddReferencesRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.ApplicationDescription;
 import com.digitalpetri.opcua.stack.core.types.structured.BrowseNextRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.BrowseRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.CallRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.CancelRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.CloseSessionRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.CreateMonitoredItemsRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.CreateSessionRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.CreateSubscriptionRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.DeleteMonitoredItemsRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.DeleteNodesRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.DeleteReferencesRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.DeleteSubscriptionsRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.EndpointDescription;
 import com.digitalpetri.opcua.stack.core.types.structured.FindServersRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.GetEndpointsRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.HistoryReadRequest;
-import com.digitalpetri.opcua.stack.core.types.structured.ModifySubscriptionRequest;
-import com.digitalpetri.opcua.stack.core.types.structured.RepublishRequest;
-import com.digitalpetri.opcua.stack.core.types.structured.SetPublishingModeRequest;
-import com.digitalpetri.opcua.stack.core.types.structured.SetTriggeringRequest;
-import com.digitalpetri.opcua.stack.core.types.structured.TestStackExRequest;
-import com.digitalpetri.opcua.stack.core.application.services.AttributeServiceSet;
-import com.digitalpetri.opcua.stack.core.application.services.DiscoveryServiceSet;
-import com.digitalpetri.opcua.stack.core.application.services.MethodServiceSet;
-import com.digitalpetri.opcua.stack.core.application.services.ServiceRequestHandler;
-import com.digitalpetri.opcua.stack.core.application.services.SubscriptionServiceSet;
-import com.digitalpetri.opcua.stack.core.application.services.ViewServiceSet;
-import com.digitalpetri.opcua.stack.core.serialization.UaRequestMessage;
-import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
-import com.digitalpetri.opcua.stack.core.types.structured.AddNodesRequest;
-import com.digitalpetri.opcua.stack.core.types.structured.ApplicationDescription;
-import com.digitalpetri.opcua.stack.core.types.structured.BrowseRequest;
-import com.digitalpetri.opcua.stack.core.types.structured.CreateMonitoredItemsRequest;
-import com.digitalpetri.opcua.stack.core.types.structured.CreateSubscriptionRequest;
-import com.digitalpetri.opcua.stack.core.types.structured.DeleteReferencesRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.HistoryUpdateRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.ModifyMonitoredItemsRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.ModifySubscriptionRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.PublishRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.QueryFirstRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.QueryNextRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.ReadRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.RegisterNodesRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.RegisterServerRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.RepublishRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.SetMonitoringModeRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.SetPublishingModeRequest;
+import com.digitalpetri.opcua.stack.core.types.structured.SetTriggeringRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.SignedSoftwareCertificate;
+import com.digitalpetri.opcua.stack.core.types.structured.TestStackExRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.TestStackRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.TransferSubscriptionsRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.TranslateBrowsePathsToNodeIdsRequest;
@@ -98,7 +98,7 @@ public interface UaStackServer {
      * @param certificate     the {@link X509Certificate} for this endpoint.
      * @param securityPolicy  the {@link SecurityPolicy} for this endpoint.
      * @param messageSecurity the {@link MessageSecurityMode} for this endpoint.
-     * @return
+     * @return this {@link UaStackServer}.
      */
     UaStackServer addEndpoint(String endpointUri,
                               String bindAddress,
@@ -111,7 +111,7 @@ public interface UaStackServer {
      *
      * @param endpointUri the endpoint URL.
      * @param bindAddress the address to bind to.
-     * @return
+     * @return this {@link UaStackServer}.
      */
     default UaStackServer addEndpoint(String endpointUri, String bindAddress) {
         return addEndpoint(

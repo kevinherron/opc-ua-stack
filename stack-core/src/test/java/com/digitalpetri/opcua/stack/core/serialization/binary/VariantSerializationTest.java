@@ -9,7 +9,6 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 import static org.testng.Assert.assertEquals;
 
 public class VariantSerializationTest extends BinarySerializationFixture {

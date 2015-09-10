@@ -4,9 +4,6 @@ package com.digitalpetri.opcua.stack.core;
 import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned;
 
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
-
 public class Identifiers {
 
     public static final com.digitalpetri.opcua.stack.core.types.builtin.NodeId ActivateSessionRequest = init(465);

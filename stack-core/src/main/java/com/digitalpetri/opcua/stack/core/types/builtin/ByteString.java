@@ -3,11 +3,9 @@ package com.digitalpetri.opcua.stack.core.types.builtin;
 import java.util.Arrays;
 import javax.annotation.Nullable;
 
+import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UByte;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned;
 import com.google.common.base.MoreObjects;
-import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UByte;
-
-import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ubyte;
 
 public final class ByteString {
 
