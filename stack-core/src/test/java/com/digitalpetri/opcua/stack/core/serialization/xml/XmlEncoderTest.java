@@ -16,8 +16,8 @@
 
 package com.digitalpetri.opcua.stack.core.serialization.xml;
 
-import javax.xml.stream.XMLStreamException;
 import java.io.StringWriter;
+import javax.xml.stream.XMLStreamException;
 
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import org.testng.annotations.Test;

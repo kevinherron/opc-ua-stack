@@ -7,8 +7,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
-import com.google.common.collect.Sets;
 import com.digitalpetri.opcua.stack.core.application.CertificateManager;
+import com.google.common.collect.Sets;
 import org.testng.annotations.BeforeTest;
 
 public abstract class SecurityFixture {

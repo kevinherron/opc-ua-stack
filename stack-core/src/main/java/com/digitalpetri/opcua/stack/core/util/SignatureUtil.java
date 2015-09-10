@@ -1,15 +1,15 @@
 package com.digitalpetri.opcua.stack.core.util;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.Signature;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
-import com.digitalpetri.opcua.stack.core.security.SecurityAlgorithm;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.security.SecurityAlgorithm;
 
 public class SignatureUtil {
 

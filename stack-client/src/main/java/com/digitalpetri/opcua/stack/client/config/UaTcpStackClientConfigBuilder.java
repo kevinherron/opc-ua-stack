@@ -1,10 +1,10 @@
 package com.digitalpetri.opcua.stack.client.config;
 
-import javax.annotation.Nullable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
+import javax.annotation.Nullable;
 
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;

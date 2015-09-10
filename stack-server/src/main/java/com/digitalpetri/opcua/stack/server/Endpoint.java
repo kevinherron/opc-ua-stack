@@ -1,10 +1,10 @@
 package com.digitalpetri.opcua.stack.server;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.net.URI;
 import java.security.cert.X509Certificate;
 import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;

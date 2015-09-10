@@ -7,16 +7,16 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.xml.bind.DatatypeConverter;
 
+import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaRuntimeException;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
+import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.digitalpetri.opcua.stack.core.types.enumerated.IdType;
 import com.google.common.base.MoreObjects;
-import com.digitalpetri.opcua.stack.core.StatusCodes;
-import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UShort;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class NodeId {
 

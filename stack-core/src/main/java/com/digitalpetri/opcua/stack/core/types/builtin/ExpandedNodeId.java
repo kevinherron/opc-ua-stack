@@ -1,8 +1,8 @@
 package com.digitalpetri.opcua.stack.core.types.builtin;
 
-import javax.xml.bind.DatatypeConverter;
 import java.util.Optional;
 import java.util.UUID;
+import javax.xml.bind.DatatypeConverter;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaRuntimeException;

@@ -2,6 +2,7 @@ package com.digitalpetri.opcua.stack.core.types.structured;
 
 import java.util.UUID;
 
+import com.digitalpetri.opcua.stack.core.Identifiers;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
@@ -12,6 +13,7 @@ import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.digitalpetri.opcua.stack.core.types.builtin.ExpandedNodeId;
+import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
 import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
 import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 import com.digitalpetri.opcua.stack.core.types.builtin.QualifiedName;
@@ -22,8 +24,6 @@ import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.ULong;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.digitalpetri.opcua.stack.core.types.enumerated.EnumeratedTestType;
-import com.digitalpetri.opcua.stack.core.Identifiers;
-import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
 
 @UaDataType("ArrayTestType")
 public class ArrayTestType implements UaStructure {

@@ -2,7 +2,8 @@ package com.digitalpetri.opcua.stack.core;
 
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 
 public class AttributeIdTest {
 

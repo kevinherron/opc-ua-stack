@@ -5,10 +5,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.BiConsumer;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.digitalpetri.opcua.stack.core.serialization.binary.BinaryDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.binary.BinaryEncoder;
 import com.digitalpetri.opcua.stack.core.util.ExecutionQueue;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.slf4j.LoggerFactory;
 
 public class SerializationQueue {

@@ -1,11 +1,11 @@
 package com.digitalpetri.opcua.stack.core.serialization.binary;
 
-import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.nio.ByteOrder;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import javax.annotation.Nonnull;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaSerializationException;

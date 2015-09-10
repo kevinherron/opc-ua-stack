@@ -1,11 +1,11 @@
 package com.digitalpetri.opcua.stack.core.types.enumerated;
 
-import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableMap.Builder;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
+import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEnumeration;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableMap.Builder;
 
 public enum ExceptionDeviationFormat implements UaEnumeration {
 

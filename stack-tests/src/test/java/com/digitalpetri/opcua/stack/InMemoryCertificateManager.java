@@ -22,9 +22,9 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import com.google.common.collect.Sets;
 import com.digitalpetri.opcua.stack.core.application.CertificateManager;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
+import com.google.common.collect.Sets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

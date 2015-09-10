@@ -8,13 +8,13 @@ import com.digitalpetri.opcua.stack.core.types.structured.DeleteSubscriptionsReq
 import com.digitalpetri.opcua.stack.core.types.structured.DeleteSubscriptionsResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.ModifySubscriptionRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.ModifySubscriptionResponse;
+import com.digitalpetri.opcua.stack.core.types.structured.PublishRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.PublishResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.RepublishRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.RepublishResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.SetPublishingModeRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.SetPublishingModeResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.TransferSubscriptionsRequest;
-import com.digitalpetri.opcua.stack.core.types.structured.PublishRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.TransferSubscriptionsResponse;
 
 public interface SubscriptionServiceSet {

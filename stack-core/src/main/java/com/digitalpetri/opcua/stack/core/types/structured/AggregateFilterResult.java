@@ -1,12 +1,12 @@
 package com.digitalpetri.opcua.stack.core.types.structured;
 
+import com.digitalpetri.opcua.stack.core.Identifiers;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
 import com.digitalpetri.opcua.stack.core.types.UaDataType;
-import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
-import com.digitalpetri.opcua.stack.core.Identifiers;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
+import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 
 @UaDataType("AggregateFilterResult")
 public class AggregateFilterResult extends MonitoringFilterResult {

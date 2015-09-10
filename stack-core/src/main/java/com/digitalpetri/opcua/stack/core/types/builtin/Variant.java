@@ -5,13 +5,13 @@ import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nullable;
 
-import com.google.common.base.MoreObjects;
-import com.google.common.base.MoreObjects.ToStringHelper;
 import com.digitalpetri.opcua.stack.core.Identifiers;
 import com.digitalpetri.opcua.stack.core.serialization.UaEnumeration;
 import com.digitalpetri.opcua.stack.core.serialization.UaStructure;
 import com.digitalpetri.opcua.stack.core.util.ArrayUtil;
 import com.digitalpetri.opcua.stack.core.util.TypeUtil;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 
 import static com.google.common.base.Preconditions.checkArgument;
 

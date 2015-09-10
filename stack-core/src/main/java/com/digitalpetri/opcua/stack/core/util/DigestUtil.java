@@ -3,8 +3,8 @@ package com.digitalpetri.opcua.stack.core.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import com.digitalpetri.opcua.stack.core.UaRuntimeException;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
+import com.digitalpetri.opcua.stack.core.UaRuntimeException;
 
 public class DigestUtil {
 

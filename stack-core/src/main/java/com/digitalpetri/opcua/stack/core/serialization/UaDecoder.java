@@ -5,20 +5,20 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.digitalpetri.opcua.stack.core.UaSerializationException;
-import com.digitalpetri.opcua.stack.core.types.builtin.DiagnosticInfo;
-import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
-import com.digitalpetri.opcua.stack.core.types.builtin.QualifiedName;
-import com.digitalpetri.opcua.stack.core.types.builtin.Variant;
-import com.digitalpetri.opcua.stack.core.types.builtin.XmlElement;
-import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
+import com.digitalpetri.opcua.stack.core.types.builtin.DiagnosticInfo;
 import com.digitalpetri.opcua.stack.core.types.builtin.ExpandedNodeId;
 import com.digitalpetri.opcua.stack.core.types.builtin.ExtensionObject;
 import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
+import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
+import com.digitalpetri.opcua.stack.core.types.builtin.QualifiedName;
 import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
+import com.digitalpetri.opcua.stack.core.types.builtin.Variant;
+import com.digitalpetri.opcua.stack.core.types.builtin.XmlElement;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UByte;
+import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.ULong;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UShort;
 

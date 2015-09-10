@@ -2,7 +2,6 @@ package com.digitalpetri.opcua.stack.core.application.services;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.google.common.base.MoreObjects;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.application.UaStackServer;
 import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
@@ -12,6 +11,7 @@ import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import com.digitalpetri.opcua.stack.core.types.structured.ResponseHeader;
 import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
+import com.google.common.base.MoreObjects;
 import io.netty.util.DefaultAttributeMap;
 
 public class ServiceRequest<ReqT extends UaRequestMessage, ResT extends UaResponseMessage> extends DefaultAttributeMap {

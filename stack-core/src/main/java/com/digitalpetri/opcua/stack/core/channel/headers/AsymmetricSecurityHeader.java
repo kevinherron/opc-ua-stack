@@ -3,9 +3,9 @@ package com.digitalpetri.opcua.stack.core.channel.headers;
 import java.nio.charset.Charset;
 import javax.annotation.Nonnull;
 
+import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
-import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import io.netty.buffer.ByteBuf;
 
 public class AsymmetricSecurityHeader {

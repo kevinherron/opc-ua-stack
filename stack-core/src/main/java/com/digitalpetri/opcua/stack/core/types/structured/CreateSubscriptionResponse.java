@@ -1,5 +1,6 @@
 package com.digitalpetri.opcua.stack.core.types.structured;
 
+import com.digitalpetri.opcua.stack.core.Identifiers;
 import com.digitalpetri.opcua.stack.core.serialization.DelegateRegistry;
 import com.digitalpetri.opcua.stack.core.serialization.UaDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaEncoder;
@@ -7,7 +8,6 @@ import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.types.UaDataType;
 import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
-import com.digitalpetri.opcua.stack.core.Identifiers;
 
 @UaDataType("CreateSubscriptionResponse")
 public class CreateSubscriptionResponse implements UaResponseMessage {

@@ -4,13 +4,13 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.List;
 
+import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
-import com.digitalpetri.opcua.stack.core.types.structured.EndpointDescription;
-import com.google.common.base.MoreObjects;
-import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
+import com.digitalpetri.opcua.stack.core.types.structured.EndpointDescription;
 import com.digitalpetri.opcua.stack.core.util.CertificateUtil;
+import com.google.common.base.MoreObjects;
 import io.netty.util.DefaultAttributeMap;
 
 public class ServerSecureChannel extends DefaultAttributeMap implements SecureChannel {

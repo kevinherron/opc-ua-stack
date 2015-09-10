@@ -1,10 +1,5 @@
 package com.digitalpetri.opcua.stack.core.serialization.xml;
 
-import javax.xml.bind.DatatypeConverter;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Array;
@@ -13,6 +8,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import javax.xml.bind.DatatypeConverter;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaSerializationException;

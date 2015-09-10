@@ -1,9 +1,9 @@
 package com.digitalpetri.opcua.stack.core.serialization;
 
-import javax.xml.stream.XMLStreamException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.ByteOrder;
+import javax.xml.stream.XMLStreamException;
 
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaSerializationException;

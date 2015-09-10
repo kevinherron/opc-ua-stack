@@ -1,9 +1,9 @@
 package com.digitalpetri.opcua.stack.core.channel;
 
-import com.digitalpetri.opcua.stack.core.UaRuntimeException;
-import com.digitalpetri.opcua.stack.core.channel.messages.ErrorMessage;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
+import com.digitalpetri.opcua.stack.core.UaRuntimeException;
+import com.digitalpetri.opcua.stack.core.channel.messages.ErrorMessage;
 import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageEncoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

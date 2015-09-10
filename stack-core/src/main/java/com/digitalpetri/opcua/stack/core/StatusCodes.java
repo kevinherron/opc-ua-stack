@@ -4,9 +4,9 @@ package com.digitalpetri.opcua.stack.core;
 import java.lang.reflect.Field;
 import java.util.Optional;
 
+import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import com.digitalpetri.opcua.stack.core.util.annotations.Description;
 import com.google.common.collect.ImmutableMap;
-import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 
 @SuppressWarnings("unused")
 public class StatusCodes {

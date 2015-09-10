@@ -2,10 +2,10 @@ package com.digitalpetri.opcua.stack.core.channel.messages;
 
 import javax.annotation.Nonnull;
 
-import com.google.common.base.MoreObjects;
 import com.digitalpetri.opcua.stack.core.serialization.binary.BinaryDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.binary.BinaryEncoder;
 import com.digitalpetri.opcua.stack.core.util.annotations.UInt32Primitive;
+import com.google.common.base.MoreObjects;
 import io.netty.buffer.ByteBuf;
 
 import static com.google.common.base.Preconditions.checkArgument;

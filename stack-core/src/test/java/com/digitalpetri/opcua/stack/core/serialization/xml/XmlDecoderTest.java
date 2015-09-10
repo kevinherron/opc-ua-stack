@@ -1,9 +1,9 @@
 package com.digitalpetri.opcua.stack.core.serialization.xml;
 
 
-import javax.xml.stream.XMLStreamException;
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
+import javax.xml.stream.XMLStreamException;
 
 import com.digitalpetri.opcua.stack.core.types.builtin.QualifiedName;
 import com.digitalpetri.opcua.stack.core.types.builtin.Variant;

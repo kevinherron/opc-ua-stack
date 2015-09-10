@@ -1,10 +1,10 @@
 package com.digitalpetri.opcua.stack.core.serialization.binary;
 
-import static org.testng.Assert.assertEquals;
-
 import com.digitalpetri.opcua.stack.core.types.builtin.XmlElement;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertEquals;
 
 public class XmlElementSerializationTest extends BinarySerializationFixture {
 

@@ -3,7 +3,6 @@ package com.digitalpetri.opcua.stack.core.serialization;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 
-import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.UaSerializationException;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DataValue;
@@ -18,6 +17,7 @@ import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import com.digitalpetri.opcua.stack.core.types.builtin.Variant;
 import com.digitalpetri.opcua.stack.core.types.builtin.XmlElement;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UByte;
+import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.ULong;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UShort;
 
