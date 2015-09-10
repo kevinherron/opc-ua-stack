@@ -116,7 +116,7 @@ public interface UaStackServer {
     default UaStackServer addEndpoint(String endpointUri, String bindAddress) {
         return addEndpoint(
                 endpointUri, bindAddress, null,
-                SecurityPolicy.NONE, MessageSecurityMode.None);
+                SecurityPolicy.None, MessageSecurityMode.None);
     }
 
     default void addServiceSet(AttributeServiceSet serviceSet) {

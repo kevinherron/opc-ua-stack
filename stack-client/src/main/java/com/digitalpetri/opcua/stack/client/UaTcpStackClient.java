@@ -105,7 +105,7 @@ public class UaTcpStackClient implements UaStackClient {
     @Override
     public CompletableFuture<UaStackClient> disconnect() {
         return connectionFsm
-                .handleEvent(ConnectionEvent.DISCONNECT_REQUESTED)
+                .handleEvent(ConnectionEvent.DisconnectRequested)
                 .thenApply(s -> UaTcpStackClient.this);
     }
 

@@ -414,7 +414,7 @@ public class BinaryEncoder implements UaEncoder {
             Object object = value.getEncoded();
 
             switch (value.getBodyType()) {
-                case BYTE_STRING:
+                case ByteString:
                     ByteString byteString = (ByteString) object;
 
                     encodeNodeId(null, value.getEncodingTypeId());
@@ -423,7 +423,7 @@ public class BinaryEncoder implements UaEncoder {
                     encodeByteString(null, byteString);
                     break;
 
-                case XML_ELEMENT:
+                case XmlElement:
                     XmlElement xmlElement = (XmlElement) object;
 
                     encodeNodeId(null, value.getEncodingTypeId());

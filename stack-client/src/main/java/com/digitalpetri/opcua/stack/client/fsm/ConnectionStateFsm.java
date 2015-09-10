@@ -29,7 +29,7 @@ public class ConnectionStateFsm {
     }
 
     public CompletableFuture<ClientSecureChannel> getChannel() {
-        return handleEvent(ConnectionEvent.CONNECT_REQUESTED)
+        return handleEvent(ConnectionEvent.ConnectRequested)
                 .thenCompose(ConnectionState::getSecureChannel);
     }
 

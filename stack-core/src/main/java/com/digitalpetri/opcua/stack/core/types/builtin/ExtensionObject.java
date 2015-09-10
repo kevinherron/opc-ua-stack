@@ -8,9 +8,9 @@ import com.google.common.base.Objects;
 
 public final class ExtensionObject {
 
-    public static enum BodyType {
-        BYTE_STRING,
-        XML_ELEMENT
+    public enum BodyType {
+        ByteString,
+        XmlElement
     }
 
     private volatile Object decoded;
@@ -24,14 +24,14 @@ public final class ExtensionObject {
         this.encoded = encoded;
         this.encodingTypeId = encodingTypeId;
 
-        bodyType = BodyType.BYTE_STRING;
+        bodyType = BodyType.ByteString;
     }
 
     public ExtensionObject(XmlElement encoded, NodeId encodingTypeId) {
         this.encoded = encoded;
         this.encodingTypeId = encodingTypeId;
 
-        bodyType = BodyType.XML_ELEMENT;
+        bodyType = BodyType.XmlElement;
     }
 
     public Object getEncoded() {
@@ -54,7 +54,7 @@ public final class ExtensionObject {
         if (decoded != null) return (T) decoded;
 
         switch (bodyType) {
-            case BYTE_STRING: {
+            case ByteString: {
                 ByteString bs = (ByteString) encoded;
                 if (bs == null || bs.isNull()) {
                     return null;
@@ -64,7 +64,7 @@ public final class ExtensionObject {
                 }
             }
 
-            case XML_ELEMENT: {
+            case XmlElement: {
                 XmlElement e = (XmlElement) encoded;
                 if (e == null || e.isNull()) {
                     return null;

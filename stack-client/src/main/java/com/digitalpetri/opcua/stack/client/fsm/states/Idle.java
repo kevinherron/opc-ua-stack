@@ -24,7 +24,7 @@ public class Idle implements ConnectionState {
     @Override
     public ConnectionState transition(ConnectionEvent event, ConnectionStateFsm fsm) {
         switch (event) {
-            case CONNECT_REQUESTED:
+            case ConnectRequested:
                 return new Connecting(channelFuture);
         }
 

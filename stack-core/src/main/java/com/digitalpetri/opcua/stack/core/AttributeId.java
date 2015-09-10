@@ -30,81 +30,81 @@ import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.
 
 public enum AttributeId {
 
-    NODE_ID(1),
-    NODE_CLASS(2),
-    BROWSE_NAME(3),
-    DISPLAY_NAME(4),
-    DESCRIPTION(5),
-    WRITE_MASK(6),
-    USER_WRITE_MASK(7),
-    IS_ABSTRACT(8),
-    SYMMETRIC(9),
-    INVERSE_NAME(10),
-    CONTAINS_NO_LOOPS(11),
-    EVENT_NOTIFIER(12),
-    VALUE(13),
-    DATA_TYPE(14),
-    VALUE_RANK(15),
-    ARRAY_DIMENSIONS(16),
-    ACCESS_LEVEL(17),
-    USER_ACCESS_LEVEL(18),
-    MINIMUM_SAMPLING_INTERVAL(19),
-    HISTORIZING(20),
-    EXECUTABLE(21),
-    USER_EXECUTABLE(22);
+    NodeId(1),
+    NodeClass(2),
+    BrowseName(3),
+    DisplayName(4),
+    Description(5),
+    WriteMask(6),
+    UserWriteMask(7),
+    IsAbstract(8),
+    Symmetric(9),
+    InverseName(10),
+    ContainsNoLoops(11),
+    EventNotifier(12),
+    Value(13),
+    DataType(14),
+    ValueRank(15),
+    ArrayDimensions(16),
+    AccessLevel(17),
+    UserAccessLevel(18),
+    MinimumSamplingInterval(19),
+    Historizing(20),
+    Executable(21),
+    UserExecutable(22);
 
     public static final ImmutableSet<AttributeId> BASE_NODE_ATTRIBUTES = ImmutableSet.copyOf(
             EnumSet.of(
-                    NODE_ID, NODE_CLASS, BROWSE_NAME, DISPLAY_NAME, DESCRIPTION, WRITE_MASK, USER_WRITE_MASK)
+                    NodeId, NodeClass, BrowseName, DisplayName, Description, WriteMask, UserWriteMask)
     );
 
     public static final ImmutableSet<AttributeId> DATA_TYPE_NODE_ATTRIBUTES = ImmutableSet.copyOf(
             Sets.union(
                     BASE_NODE_ATTRIBUTES,
-                    EnumSet.of(IS_ABSTRACT))
+                    EnumSet.of(IsAbstract))
     );
 
     public static final ImmutableSet<AttributeId> METHOD_NODE_ATTRIBUTES = ImmutableSet.copyOf(
             Sets.union(
                     BASE_NODE_ATTRIBUTES,
-                    EnumSet.of(EXECUTABLE, USER_EXECUTABLE))
+                    EnumSet.of(Executable, UserExecutable))
     );
 
     public static final ImmutableSet<AttributeId> OBJECT_NODE_ATTRIBUTES = ImmutableSet.copyOf(
             Sets.union(
                     BASE_NODE_ATTRIBUTES,
-                    EnumSet.of(EVENT_NOTIFIER))
+                    EnumSet.of(EventNotifier))
     );
 
     public static final ImmutableSet<AttributeId> OBJECT_TYPE_NODE_ATTRIBUTES = ImmutableSet.copyOf(
             Sets.union(
                     BASE_NODE_ATTRIBUTES,
-                    EnumSet.of(IS_ABSTRACT))
+                    EnumSet.of(IsAbstract))
     );
 
     public static final ImmutableSet<AttributeId> REFERENCE_TYPE_NODE_ATTRIBUTES = ImmutableSet.copyOf(
             Sets.union(
                     BASE_NODE_ATTRIBUTES,
-                    EnumSet.of(IS_ABSTRACT, SYMMETRIC, INVERSE_NAME))
+                    EnumSet.of(IsAbstract, Symmetric, InverseName))
     );
 
     public static final ImmutableSet<AttributeId> VARIABLE_NODE_ATTRIBUTES = ImmutableSet.copyOf(
             Sets.union(
                     BASE_NODE_ATTRIBUTES,
-                    EnumSet.of(VALUE, DATA_TYPE, VALUE_RANK, ARRAY_DIMENSIONS,
-                            ACCESS_LEVEL, USER_ACCESS_LEVEL, MINIMUM_SAMPLING_INTERVAL, HISTORIZING))
+                    EnumSet.of(Value, DataType, ValueRank, ArrayDimensions,
+                            AccessLevel, UserAccessLevel, MinimumSamplingInterval, Historizing))
     );
 
     public static final ImmutableSet<AttributeId> VARIABLE_TYPE_NODE_ATTRIBUTES = ImmutableSet.copyOf(
             Sets.union(
                     BASE_NODE_ATTRIBUTES,
-                    EnumSet.of(VALUE, DATA_TYPE, VALUE_RANK, ARRAY_DIMENSIONS, IS_ABSTRACT))
+                    EnumSet.of(Value, DataType, ValueRank, ArrayDimensions, IsAbstract))
     );
 
     public static final ImmutableSet<AttributeId> VIEW_NODE_ATTRIBUTES = ImmutableSet.copyOf(
             Sets.union(
                     BASE_NODE_ATTRIBUTES,
-                    EnumSet.of(CONTAINS_NO_LOOPS, EVENT_NOTIFIER))
+                    EnumSet.of(ContainsNoLoops, EventNotifier))
     );
 
     private final int id;

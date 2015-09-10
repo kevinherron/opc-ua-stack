@@ -67,9 +67,9 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
                 .flatMap(e -> {
                     SecurityPolicy securityPolicy = SecurityPolicy
                             .fromUriSafe(e.getSecurityPolicyUri())
-                            .orElse(SecurityPolicy.NONE);
+                            .orElse(SecurityPolicy.None);
 
-                    if (securityPolicy == SecurityPolicy.NONE) {
+                    if (securityPolicy == SecurityPolicy.None) {
                         return Optional.empty();
                     } else {
                         return Optional.of(new Tuple1<>(e));
@@ -105,7 +105,7 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
                         return Optional.empty();
                     }
                 })
-                .orElse(new ClientSecureChannel(SecurityPolicy.NONE, MessageSecurityMode.None));
+                .orElse(new ClientSecureChannel(SecurityPolicy.None, MessageSecurityMode.None));
     }
 
     @Override

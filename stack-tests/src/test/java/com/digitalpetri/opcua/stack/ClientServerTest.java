@@ -97,12 +97,12 @@ public class ClientServerTest extends SecurityFixture {
         server = new UaTcpStackServer(config);
 
         server.addEndpoint("opc.tcp://localhost:12685/test", null)
-                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.BASIC_128_RSA_15, MessageSecurityMode.Sign)
-                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.BASIC_256, MessageSecurityMode.Sign)
-                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.BASIC_256_SHA256, MessageSecurityMode.Sign)
-                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.BASIC_128_RSA_15, MessageSecurityMode.SignAndEncrypt)
-                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.BASIC_256, MessageSecurityMode.SignAndEncrypt)
-                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.BASIC_256_SHA256, MessageSecurityMode.SignAndEncrypt);
+                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.Basic128Rsa15, MessageSecurityMode.Sign)
+                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.Basic256, MessageSecurityMode.Sign)
+                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.Basic256Sha256, MessageSecurityMode.Sign)
+                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.Basic128Rsa15, MessageSecurityMode.SignAndEncrypt)
+                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.Basic256, MessageSecurityMode.SignAndEncrypt)
+                .addEndpoint("opc.tcp://localhost:12685/test", null, serverCertificate, SecurityPolicy.Basic256Sha256, MessageSecurityMode.SignAndEncrypt);
 
         server.addRequestHandler(TestStackRequest.class, (service) -> {
             TestStackRequest request = service.getRequest();

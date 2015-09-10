@@ -24,10 +24,10 @@ public abstract class SecureChannelFixture extends SecurityFixture {
         ByteString serverNonce = generateNonce(getNonceLength(securityPolicy.getSymmetricEncryptionAlgorithm()));
 
         ClientSecureChannel clientChannel = new ClientSecureChannel(
-                securityPolicy == SecurityPolicy.NONE ? null : clientKeyPair,
-                securityPolicy == SecurityPolicy.NONE ? null : clientCertificate,
-                securityPolicy == SecurityPolicy.NONE ? null : serverCertificate,
-                securityPolicy == SecurityPolicy.NONE ? null : Lists.newArrayList(serverCertificate),
+                securityPolicy == SecurityPolicy.None ? null : clientKeyPair,
+                securityPolicy == SecurityPolicy.None ? null : clientCertificate,
+                securityPolicy == SecurityPolicy.None ? null : serverCertificate,
+                securityPolicy == SecurityPolicy.None ? null : Lists.newArrayList(serverCertificate),
                 securityPolicy,
                 messageSecurity
         );
@@ -42,12 +42,12 @@ public abstract class SecureChannelFixture extends SecurityFixture {
         serverChannel.setRemoteNonce(clientNonce);
 
         switch (securityPolicy) {
-            case NONE:
+            case None:
                 break;
 
-            case BASIC_128_RSA_15:
-            case BASIC_256:
-            case BASIC_256_SHA256:
+            case Basic128Rsa15:
+            case Basic256:
+            case Basic256Sha256:
             default:
                 if (messageSecurity != MessageSecurityMode.None) {
                     ChannelSecurity.SecuritySecrets clientSecrets = ChannelSecurity.generateKeyPair(

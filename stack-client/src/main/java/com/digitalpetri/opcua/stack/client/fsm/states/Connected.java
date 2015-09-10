@@ -32,7 +32,7 @@ public class Connected implements ConnectionState {
         inactivityListener = new ChannelInboundHandlerAdapter() {
             @Override
             public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-                fsm.handleEvent(ConnectionEvent.CONNECTION_LOST);
+                fsm.handleEvent(ConnectionEvent.ConnectionLost);
 
                 super.channelInactive(ctx);
             }
@@ -57,10 +57,10 @@ public class Connected implements ConnectionState {
     @Override
     public ConnectionState transition(ConnectionEvent event, ConnectionStateFsm fsm) {
         switch (event) {
-            case CONNECTION_LOST:
+            case ConnectionLost:
                 return new Reconnecting(0L, secureChannel.getChannelId());
 
-            case DISCONNECT_REQUESTED:
+            case DisconnectRequested:
                 return new Disconnecting(secureChannel);
         }
 

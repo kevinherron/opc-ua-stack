@@ -363,8 +363,8 @@ public class UaTcpStackServer implements UaStackServer {
                                         MessageSecurityMode messageSecurity) {
 
         boolean invalidConfiguration = messageSecurity == MessageSecurityMode.Invalid ||
-                (securityPolicy == SecurityPolicy.NONE && messageSecurity != MessageSecurityMode.None) ||
-                (securityPolicy != SecurityPolicy.NONE && messageSecurity == MessageSecurityMode.None);
+                (securityPolicy == SecurityPolicy.None && messageSecurity != MessageSecurityMode.None) ||
+                (securityPolicy != SecurityPolicy.None && messageSecurity == MessageSecurityMode.None);
 
         if (invalidConfiguration) {
             logger.warn("Invalid configuration, ignoring: {} + {}", securityPolicy, messageSecurity);

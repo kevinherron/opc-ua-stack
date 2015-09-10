@@ -10,77 +10,77 @@ import com.digitalpetri.opcua.stack.core.UaException;
 
 public enum SecurityAlgorithm {
 
-    NONE("", ""),
+    None("", ""),
 
     /**
      * Symmetric Signature; transformation to be used with {@link Mac#getInstance(String)}.
      */
-    HMAC_SHA1("http://www.w3.org/2000/09/xmldsig#hmac-sha1", "HmacSHA1"),
+    HmacSha1("http://www.w3.org/2000/09/xmldsig#hmac-sha1", "HmacSHA1"),
 
     /**
      * Symmetric Signature; transformation to be used with {@link Mac#getInstance(String)}.
      */
-    HMAC_SHA256("http://www.w3.org/2000/09/xmldsig#hmac-sha256", "HmacSHA256"),
+    HmacSha256("http://www.w3.org/2000/09/xmldsig#hmac-sha256", "HmacSHA256"),
 
     /**
      * Symmetric Encryption; transformation to be used with {@link Cipher#getInstance(String)}.
      */
-    AES128("http://www.w3.org/2001/04/xmlenc#aes128-cbc", "AES/CBC/NoPadding"),
+    Aes128("http://www.w3.org/2001/04/xmlenc#aes128-cbc", "AES/CBC/NoPadding"),
 
     /**
      * Symmetric Encryption; transformation to be used with {@link Cipher#getInstance(String)}.
      */
-    AES256("http://www.w3.org/2001/04/xmlenc#aes256-cbc", "AES/CBC/NoPadding"),
+    Aes256("http://www.w3.org/2001/04/xmlenc#aes256-cbc", "AES/CBC/NoPadding"),
 
     /**
      * Asymmetric Signature; transformation to be used with {@link Signature#getInstance(String)}.
      */
-    RSA_SHA1("http://www.w3.org/2000/09/xmldsig#rsa-sha1", "SHA1withRSA"),
+    RsaSha1("http://www.w3.org/2000/09/xmldsig#rsa-sha1", "SHA1withRSA"),
 
     /**
      * Asymmetric Signature; transformation to be used with {@link Signature#getInstance(String)}.
      */
-    RSA_SHA256("http://www.w3.org/2000/09/xmldsig#rsa-sha256", "SHA256withRSA"),
+    RsaSha256("http://www.w3.org/2000/09/xmldsig#rsa-sha256", "SHA256withRSA"),
 
     /**
      * Asymmetric Encryption; transformation to be used with {@link Cipher#getInstance(String)}.
      */
-    RSA_15("http://www.w3.org/2001/04/xmlenc#rsa-1_5", "RSA/ECB/PKCS1Padding"),
+    Rsa15("http://www.w3.org/2001/04/xmlenc#rsa-1_5", "RSA/ECB/PKCS1Padding"),
 
     /**
      * Asymmetric Encryption; transformation to be used with {@link Cipher#getInstance(String)}.
      */
-    RSA_OAEP("http://www.w3.org/2001/04/xmlenc#rsa-oaep", "RSA/ECB/OAEPWithSHA-1AndMGF1Padding"),
+    RsaOaep("http://www.w3.org/2001/04/xmlenc#rsa-oaep", "RSA/ECB/OAEPWithSHA-1AndMGF1Padding"),
 
     /**
      * Asymmetric Key Wrap
      */
-    KW_RSA_15("http://www.w3.org/2001/04/xmlenc#rsa-1_5", ""),
+    KwRsa15("http://www.w3.org/2001/04/xmlenc#rsa-1_5", ""),
 
     /**
      * Asymmetric Key Wrap
      */
-    KW_RSA_OAEP("http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p", ""),
+    KwRsaOaep("http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p", ""),
 
     /**
      * Key Derivation
      */
-    P_SHA1("http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512/dk/p_sha1", ""),
+    PSha1("http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512/dk/p_sha1", ""),
 
     /**
      * Key Derivation
      */
-    P_SHA256("http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512/dk/p_sha256", ""),
+    PSha256("http://docs.oasis-open.org/ws-sx/ws-secureconversation/200512/dk/p_sha256", ""),
 
     /**
      * Cryptographic Hash; transformation to be used with {@link MessageDigest#getInstance(String)}.
      */
-    SHA1("http://www.w3.org/2000/09/xmldsig#sha1", "SHA-1"),
+    Sha1("http://www.w3.org/2000/09/xmldsig#sha1", "SHA-1"),
 
     /**
      * Cryptographic Hash; transformation to be used with {@link MessageDigest#getInstance(String)}.
      */
-    SHA256("http://www.w3.org/2001/04/xmlenc#sha256", "SHA-256");
+    Sha256("http://www.w3.org/2001/04/xmlenc#sha256", "SHA-256");
 
     private final String uri;
     private final String transformation;

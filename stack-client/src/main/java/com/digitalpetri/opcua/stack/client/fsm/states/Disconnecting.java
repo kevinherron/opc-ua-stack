@@ -31,7 +31,7 @@ public class Disconnecting implements ConnectionState {
         if (channel != null) {
             return closeSecureChannel(fsm, channel);
         } else {
-            fsm.handleEvent(ConnectionEvent.DISCONNECT_SUCCEEDED);
+            fsm.handleEvent(ConnectionEvent.DisconnectSucceeded);
             return CF_VOID_COMPLETED;
         }
     }
@@ -45,7 +45,7 @@ public class Disconnecting implements ConnectionState {
         sc.getChannel().pipeline().addLast(new ChannelInboundHandlerAdapter() {
             @Override
             public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-                fsm.handleEvent(ConnectionEvent.DISCONNECT_SUCCEEDED);
+                fsm.handleEvent(ConnectionEvent.DisconnectSucceeded);
 
                 future.complete(null);
 
@@ -67,10 +67,10 @@ public class Disconnecting implements ConnectionState {
     @Override
     public ConnectionState transition(ConnectionEvent event, ConnectionStateFsm fsm) {
         switch (event) {
-            case CONNECT_REQUESTED:
+            case ConnectRequested:
                 return new Connecting(new CompletableFuture<>());
 
-            case DISCONNECT_SUCCEEDED:
+            case DisconnectSucceeded:
                 return new Idle();
         }
 

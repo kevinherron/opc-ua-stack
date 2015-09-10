@@ -43,10 +43,10 @@ public class Reconnecting implements ConnectionState {
         Runnable connect = () -> connect(fsm, true, new CompletableFuture<>()).whenComplete((sc, ex) -> {
             if (sc != null) {
                 secureChannel = sc;
-                fsm.handleEvent(ConnectionEvent.RECONNECT_SUCCEEDED);
+                fsm.handleEvent(ConnectionEvent.ReconnectSucceeded);
             } else {
                 channelFuture.completeExceptionally(ex);
-                fsm.handleEvent(ConnectionEvent.RECONNECT_FAILED);
+                fsm.handleEvent(ConnectionEvent.ReconnectFailed);
             }
 
             future.complete(null);
@@ -109,10 +109,10 @@ public class Reconnecting implements ConnectionState {
     @Override
     public ConnectionState transition(ConnectionEvent event, ConnectionStateFsm fsm) {
         switch (event) {
-            case RECONNECT_FAILED:
+            case ReconnectFailed:
                 return new Reconnecting(nextDelay(), secureChannelId);
 
-            case RECONNECT_SUCCEEDED:
+            case ReconnectSucceeded:
                 return new Connected(secureChannel, channelFuture);
         }
 

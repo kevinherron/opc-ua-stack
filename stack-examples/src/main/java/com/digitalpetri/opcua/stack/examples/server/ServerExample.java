@@ -39,8 +39,8 @@ public class ServerExample {
 
         server = new UaTcpStackServer(config);
 
-        server.addEndpoint("opc.tcp://localhost:12685/example", null, certificate, SecurityPolicy.NONE, MessageSecurityMode.None);
-        server.addEndpoint("opc.tcp://localhost:12685/example", null, certificate, SecurityPolicy.BASIC_128_RSA_15, MessageSecurityMode.SignAndEncrypt);
+        server.addEndpoint("opc.tcp://localhost:12685/example", null, certificate, SecurityPolicy.None, MessageSecurityMode.None);
+        server.addEndpoint("opc.tcp://localhost:12685/example", null, certificate, SecurityPolicy.Basic128Rsa15, MessageSecurityMode.SignAndEncrypt);
 
         server.addRequestHandler(TestStackRequest.class, service -> {
             TestStackRequest request = service.getRequest();

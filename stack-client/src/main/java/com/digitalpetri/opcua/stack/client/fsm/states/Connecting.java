@@ -31,10 +31,10 @@ public class Connecting implements ConnectionState {
         connect(fsm, true, new CompletableFuture<>()).whenComplete((sc, ex) -> {
             if (sc != null) {
                 secureChannel = sc;
-                fsm.handleEvent(ConnectionEvent.CONNECT_SUCCEEDED);
+                fsm.handleEvent(ConnectionEvent.ConnectSucceeded);
             } else {
                 channelFuture.completeExceptionally(ex);
-                fsm.handleEvent(ConnectionEvent.CONNECT_FAILED);
+                fsm.handleEvent(ConnectionEvent.ConnectFailed);
             }
 
             future.complete(null);
@@ -85,10 +85,10 @@ public class Connecting implements ConnectionState {
     @Override
     public ConnectionState transition(ConnectionEvent event, ConnectionStateFsm fsm) {
         switch (event) {
-            case CONNECT_SUCCEEDED:
+            case ConnectSucceeded:
                 return new Connected(secureChannel, channelFuture);
 
-            case CONNECT_FAILED:
+            case ConnectFailed:
                 return new Idle();
         }
 

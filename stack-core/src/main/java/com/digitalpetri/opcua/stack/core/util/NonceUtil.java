@@ -78,9 +78,9 @@ public class NonceUtil {
      */
     public static int getNonceLength(SecurityAlgorithm algorithm) {
         switch (algorithm) {
-            case AES128:
+            case Aes128:
                 return 16;
-            case AES256:
+            case Aes256:
                 return 32;
             default:
                 return 0;
