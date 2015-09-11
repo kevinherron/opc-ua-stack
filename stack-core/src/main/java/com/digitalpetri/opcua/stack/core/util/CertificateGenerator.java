@@ -85,9 +85,13 @@ public class CertificateGenerator {
         invokeKeyTool(args.toArray(new String[args.size()]));
 
         KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-        keyStore.load(new FileInputStream(new File(keyStorePath)), keyStorePassword.toCharArray());
 
-        return (X509Certificate) keyStore.getCertificate(certificateAlias);
+        try (FileInputStream fis = new FileInputStream(new File(keyStorePath))) {
+            
+            keyStore.load(fis, keyStorePassword.toCharArray());
+
+            return (X509Certificate) keyStore.getCertificate(certificateAlias);
+        }
     }
 
     private List<String> buildKeyToolArgs(String subject,
