@@ -55,23 +55,4 @@ public interface CertificateManager {
      */
     Set<X509Certificate> getCertificates();
 
-    /**
-     * @return the Set of trusted {@link X509Certificate}s.
-     */
-    Set<X509Certificate> getTrustList();
-
-    /**
-     * @return the Set of trusted authority {@link X509Certificate}s.
-     */
-    Set<X509Certificate> getAuthorityList();
-
-    /**
-     * Handle a rejected certificate.
-     * <p>
-     * One course of action is to quarantine it so a user can later move it to the trusted list.
-     *
-     * @param certificate the rejected {@link X509Certificate}.
-     */
-    void certificateRejected(X509Certificate certificate);
-
 }

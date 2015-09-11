@@ -92,6 +92,7 @@ public class ClientServerTest extends SecurityFixture {
         UaTcpStackServerConfig config = UaTcpStackServerConfig.builder()
                 .setServerName("test")
                 .setCertificateManager(serverCertificateManager)
+                .setCertificateValidator(serverCertificateValidator)
                 .build();
 
         server = new UaTcpStackServer(config);

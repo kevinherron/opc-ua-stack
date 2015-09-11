@@ -1,46 +1,36 @@
 package com.digitalpetri.opcua.stack.core.application;
 
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.file.FileSystems;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
-import java.nio.file.WatchEvent.Kind;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.security.KeyPair;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.digitalpetri.opcua.stack.core.UaException;
-import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.util.CertificateUtil;
+import com.digitalpetri.opcua.stack.core.util.CertificateValidationUtil;
 import com.digitalpetri.opcua.stack.core.util.DigestUtil;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DirectoryCertificateManager implements CertificateManager {
+public class DefaultCertificateValidator implements CertificateValidator {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    private final Map<ByteString, KeyPair> privateKeys = Maps.newConcurrentMap();
-    private final Map<ByteString, X509Certificate> certificates = Maps.newConcurrentMap();
 
     private final Set<X509Certificate> trustedCertificates = Sets.newConcurrentHashSet();
     private final Set<X509Certificate> authorityCertificates = Sets.newConcurrentHashSet();
@@ -49,40 +39,7 @@ public class DirectoryCertificateManager implements CertificateManager {
     private final File rejectedDir;
     private final File revocationDir;
 
-    public DirectoryCertificateManager(File certificatesBaseDir) {
-        this((KeyPair) null, null, certificatesBaseDir);
-    }
-
-    public DirectoryCertificateManager(KeyPair privateKey,
-                                       X509Certificate certificate,
-                                       File certificatesBaseDir) {
-
-        this(Lists.newArrayList(privateKey), Lists.newArrayList(certificate), certificatesBaseDir);
-    }
-
-    public DirectoryCertificateManager(List<KeyPair> privateKeys,
-                                       List<X509Certificate> certificates,
-                                       File certificatesBaseDir) {
-
-        Preconditions.checkState(privateKeys.size() == certificates.size(),
-                "privateKeys.size() and certificates.size() must be equal");
-
-        for (int i = 0; i < privateKeys.size(); i++) {
-            KeyPair privateKey = privateKeys.get(0);
-            X509Certificate certificate = certificates.get(0);
-
-            if (privateKey != null && certificate != null) {
-                try {
-                    ByteString thumbprint = ByteString.of(DigestUtil.sha1(certificate.getEncoded()));
-
-                    this.privateKeys.put(thumbprint, privateKey);
-                    this.certificates.put(thumbprint, certificate);
-                } catch (CertificateEncodingException e) {
-                    logger.error("Error getting certificate thumbprint.", e);
-                }
-            }
-        }
-
+    public DefaultCertificateValidator(File certificatesBaseDir) {
         trustedDir = new File(certificatesBaseDir.getAbsolutePath() + File.separator + "trusted");
         if (!trustedDir.exists() && !trustedDir.mkdirs()) {
             logger.warn("Could not create trusted certificate dir: {}", trustedDir);
@@ -128,7 +85,7 @@ public class DirectoryCertificateManager implements CertificateManager {
         trustedCertificates.clear();
         authorityCertificates.clear();
 
-        Set<X509Certificate> certificates = getCertificates(trustedDir);
+        Set<X509Certificate> certificates = certificatesFromDir(trustedDir);
 
         certificates.stream()
                 .filter(c -> c.getBasicConstraints() == -1)
@@ -142,38 +99,51 @@ public class DirectoryCertificateManager implements CertificateManager {
                 trustedCertificates.size(), authorityCertificates.size());
     }
 
+    private Set<X509Certificate> certificatesFromDir(File dir) {
+        File[] files = dir.listFiles();
+        if (files == null) files = new File[0];
+
+        return Arrays.stream(files)
+                .map(this::file2certificate)
+                .filter(c -> c != null)
+                .collect(Collectors.toSet());
+    }
+
+    private X509Certificate file2certificate(File f) {
+        try {
+            try (FileInputStream inputStream = new FileInputStream(f)) {
+                return CertificateUtil.decodeCertificate(inputStream);
+            }
+        } catch (Throwable ignored) {
+            return null;
+        }
+    }
+
+
     @Override
-    public Optional<KeyPair> getKeyPair(ByteString thumbprint) {
-        return Optional.ofNullable(privateKeys.get(thumbprint));
+    public void validate(X509Certificate certificate) throws UaException {
+        try {
+            CertificateValidationUtil.validateCertificateValidity(certificate);
+            
+        } catch (UaException e) {
+            certificateRejected(certificate);
+            throw e;
+        }
     }
 
     @Override
-    public Optional<X509Certificate> getCertificate(ByteString thumbprint) {
-        return Optional.ofNullable(certificates.get(thumbprint));
+    public void verifyTrustChain(X509Certificate certificate, List<X509Certificate> chain) throws UaException {
+        try {
+            CertificateValidationUtil.validateTrustChain(
+                    certificate, chain, trustedCertificates, authorityCertificates);
+
+        } catch (UaException e) {
+            certificateRejected(certificate);
+            throw e;
+        }
     }
 
-    @Override
-    public Set<KeyPair> getKeyPairs() {
-        return Sets.newHashSet(privateKeys.values());
-    }
-
-    @Override
-    public Set<X509Certificate> getCertificates() {
-        return Sets.newHashSet(certificates.values());
-    }
-
-    @Override
-    public synchronized Set<X509Certificate> getTrustList() {
-        return trustedCertificates;
-    }
-
-    @Override
-    public synchronized Set<X509Certificate> getAuthorityList() {
-        return authorityCertificates;
-    }
-
-    @Override
-    public void certificateRejected(X509Certificate certificate) {
+    private void certificateRejected(X509Certificate certificate) {
         try {
             String[] ss = certificate.getSubjectX500Principal().getName().split(",");
             String name = ss.length > 0 ? ss[0] : certificate.getSubjectX500Principal().getName();
@@ -191,24 +161,6 @@ public class DirectoryCertificateManager implements CertificateManager {
             logger.debug("Added rejected certificate entry: {}", filename);
         } catch (CertificateEncodingException | IOException e) {
             logger.error("Error adding rejected certificate entry.", e);
-        }
-    }
-
-    private Set<X509Certificate> getCertificates(File dir) {
-        File[] files = dir.listFiles();
-        if (files == null) files = new File[0];
-
-        return Arrays.stream(files)
-                .map(this::file2certificate)
-                .filter(c -> c != null)
-                .collect(Collectors.toSet());
-    }
-
-    private X509Certificate file2certificate(File f) {
-        try {
-            return CertificateUtil.decodeCertificate(new FileInputStream(f));
-        } catch (UaException | FileNotFoundException ignored) {
-            return null;
         }
     }
 
@@ -230,7 +182,7 @@ public class DirectoryCertificateManager implements CertificateManager {
 
                     if (key == trustedKey) {
                         for (WatchEvent<?> watchEvent : key.pollEvents()) {
-                            Kind<?> kind = watchEvent.kind();
+                            WatchEvent.Kind<?> kind = watchEvent.kind();
 
                             if (kind != StandardWatchEventKinds.OVERFLOW) {
                                 synchronizeTrustedCertificates();

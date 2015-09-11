@@ -18,28 +18,21 @@ package com.digitalpetri.opcua.stack;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 import com.digitalpetri.opcua.stack.core.application.CertificateManager;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.google.common.collect.Sets;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class InMemoryCertificateManager implements CertificateManager {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+public class TestCertificateManager implements CertificateManager {
 
     private final KeyPair keyPair;
     private final X509Certificate certificate;
-    private final Set<X509Certificate> trustList;
 
-    public InMemoryCertificateManager(KeyPair keyPair, X509Certificate certificate, Set<X509Certificate> trustList) {
+    public TestCertificateManager(KeyPair keyPair, X509Certificate certificate) {
         this.keyPair = keyPair;
         this.certificate = certificate;
-        this.trustList = trustList;
     }
 
     @Override
@@ -60,21 +53,6 @@ public class InMemoryCertificateManager implements CertificateManager {
     @Override
     public Set<X509Certificate> getCertificates() {
         return Sets.newHashSet(certificate);
-    }
-
-    @Override
-    public Set<X509Certificate> getTrustList() {
-        return trustList;
-    }
-
-    @Override
-    public Set<X509Certificate> getAuthorityList() {
-        return new HashSet<>();
-    }
-
-    @Override
-    public void certificateRejected(X509Certificate certificate) {
-        logger.info("Certificate rejected: {}", certificate);
     }
 
 }

@@ -6,7 +6,9 @@ import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 import com.digitalpetri.opcua.stack.core.application.CertificateManager;
-import com.digitalpetri.opcua.stack.core.application.DirectoryCertificateManager;
+import com.digitalpetri.opcua.stack.core.application.CertificateValidator;
+import com.digitalpetri.opcua.stack.core.application.DefaultCertificateManager;
+import com.digitalpetri.opcua.stack.core.application.DefaultCertificateValidator;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
@@ -27,14 +29,15 @@ public class ServerExample {
             throw new Exception("unable to create security directory");
         }
 
-        CertificateManager certificateManager = new DirectoryCertificateManager(
-                keyPair, certificate, securityDir);
+        CertificateManager certificateManager = new DefaultCertificateManager(keyPair, certificate);
+        CertificateValidator certificateValidator = new DefaultCertificateValidator(securityDir);
 
         UaTcpStackServerConfig config = UaTcpStackServerConfig.builder()
                 .setServerName("example")
                 .setApplicationName(LocalizedText.english("Stack Example Server"))
                 .setApplicationUri(String.format("urn:example-server:%s", UUID.randomUUID()))
                 .setCertificateManager(certificateManager)
+                .setCertificateValidator(certificateValidator)
                 .build();
 
         server = new UaTcpStackServer(config);

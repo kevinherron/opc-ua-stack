@@ -71,6 +71,8 @@ public interface UaStackServer {
 
     CertificateManager getCertificateManager();
 
+    CertificateValidator getCertificateValidator();
+
     ChannelConfig getChannelConfig();
 
     ExecutorService getExecutorService();

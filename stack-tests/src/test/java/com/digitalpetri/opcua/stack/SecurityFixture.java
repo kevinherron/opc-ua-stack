@@ -8,7 +8,7 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
 import com.digitalpetri.opcua.stack.core.application.CertificateManager;
-import com.google.common.collect.Sets;
+import com.digitalpetri.opcua.stack.core.application.CertificateValidator;
 import org.testng.annotations.BeforeTest;
 
 public abstract class SecurityFixture {
@@ -26,6 +26,7 @@ public abstract class SecurityFixture {
     protected volatile KeyPair serverKeyPair;
 
     protected volatile CertificateManager serverCertificateManager;
+    protected volatile CertificateValidator serverCertificateValidator;
 
     @BeforeTest
     public void setUp() throws Exception {
@@ -51,11 +52,12 @@ public abstract class SecurityFixture {
             serverKeyPair = new KeyPair(serverPublicKey, (PrivateKey) serverPrivateKey);
         }
 
-        serverCertificateManager = new InMemoryCertificateManager(
+        serverCertificateManager = new TestCertificateManager(
                 serverKeyPair,
-                serverCertificate,
-                Sets.newHashSet(clientCertificate)
+                serverCertificate
         );
+
+        serverCertificateValidator = new TestCertificateValidator(clientCertificate);
     }
 
 }

@@ -40,9 +40,9 @@ import com.digitalpetri.opcua.stack.core.UaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CertificateValidator {
+public class CertificateValidationUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(CertificateValidator.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CertificateValidationUtil.class);
 
     private static final String KEY_USAGE_OID = "2.5.29.15";
 
@@ -50,40 +50,19 @@ public class CertificateValidator {
     private static final int SUBJECT_ALT_NAME_DNS_NAME = 2;
     private static final int SUBJECT_ALT_NAME_IP_ADDRESS = 7;
 
-    private final Set<X509Certificate> trustList;
-    private final Set<X509Certificate> authorityList;
+    public static void validateTrustChain(X509Certificate certificate,
+                                          List<X509Certificate> chain,
+                                          Set<X509Certificate> trustedCertificates,
+                                          Set<X509Certificate> authorityCertificates) throws UaException {
 
-    public CertificateValidator(Set<X509Certificate> trustList,
-                                Set<X509Certificate> authorityList) {
-
-        this.trustList = trustList;
-        this.authorityList = authorityList;
-    }
-
-    public void validate(X509Certificate certificate,
-                         List<X509Certificate> chain,
-                         String hostname,
-                         String applicationUri) throws UaException {
-
-        validateCertificateValidity(certificate);
-        validateHostnameOrIpAddress(certificate, hostname);
-        validateApplicationUri(certificate, applicationUri);
-        validateApplicationCertificateUsage(certificate);
-        validateTrustChain(certificate, chain);
-    }
-
-
-    public void validateTrustChain(X509Certificate certificate,
-                                   List<X509Certificate> chain) throws UaException {
-
-        boolean certificateTrusted = trustList.stream()
+        boolean certificateTrusted = trustedCertificates.stream()
                 .anyMatch(c -> Arrays.equals(certificate.getSignature(), c.getSignature()));
 
         if (certificateTrusted) return;
 
         try {
             Set<TrustAnchor> trustAnchors = new HashSet<>();
-            authorityList.forEach(ca -> trustAnchors.add(new TrustAnchor(ca, null)));
+            authorityCertificates.forEach(ca -> trustAnchors.add(new TrustAnchor(ca, null)));
 
             X509CertSelector selector = new X509CertSelector();
             selector.setCertificate(certificate);
@@ -101,13 +80,13 @@ public class CertificateValidator {
 
             PKIXCertPathBuilderResult result = (PKIXCertPathBuilderResult) builder.build(params);
 
-            logger.debug("Validated certificate chain: {}", result.getCertPath());
+            LOGGER.debug("Validated certificate chain: {}", result.getCertPath());
         } catch (Throwable t) {
             throw new UaException(StatusCodes.Bad_SecurityChecksFailed);
         }
     }
 
-    public void validateCertificateValidity(X509Certificate certificate) throws UaException {
+    public static void validateCertificateValidity(X509Certificate certificate) throws UaException {
         try {
             certificate.checkValidity();
         } catch (CertificateExpiredException e) {
@@ -129,7 +108,7 @@ public class CertificateValidator {
      * @param hostname    the hostname used in the endpoint URL.
      * @throws UaException if there is no matching DNSName or IPAddress entry.
      */
-    public void validateHostnameOrIpAddress(X509Certificate certificate, String hostname) throws UaException {
+    public static void validateHostnameOrIpAddress(X509Certificate certificate, String hostname) throws UaException {
         boolean dnsNameMatches =
                 validateSubjectAltNameField(certificate, SUBJECT_ALT_NAME_DNS_NAME, hostname::equals);
 
@@ -148,13 +127,13 @@ public class CertificateValidator {
      * @param applicationUri the URI to validate.
      * @throws UaException if the certificate is invalid, does not contain a uri, or contains a uri that does not match.
      */
-    public void validateApplicationUri(X509Certificate certificate, String applicationUri) throws UaException {
+    public static void validateApplicationUri(X509Certificate certificate, String applicationUri) throws UaException {
         if (!validateSubjectAltNameField(certificate, SUBJECT_ALT_NAME_URI, applicationUri::equals)) {
             throw new UaException(StatusCodes.Bad_CertificateUriInvalid);
         }
     }
 
-    public void validateApplicationCertificateUsage(X509Certificate certificate) throws UaException {
+    public static void validateApplicationCertificateUsage(X509Certificate certificate) throws UaException {
         Set<String> criticalExtensions = certificate.getCriticalExtensionOIDs();
         if (criticalExtensions == null) criticalExtensions = new HashSet<>();
 
@@ -187,8 +166,8 @@ public class CertificateValidator {
         }
     }
 
-    public boolean validateSubjectAltNameField(X509Certificate certificate, int field,
-                                               Predicate<Object> fieldValidator) throws UaException {
+    public static boolean validateSubjectAltNameField(X509Certificate certificate, int field,
+                                                      Predicate<Object> fieldValidator) throws UaException {
 
         try {
             Collection<List<?>> subjectAltNames = certificate.getSubjectAlternativeNames();

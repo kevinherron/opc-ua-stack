@@ -16,6 +16,7 @@ import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.application.CertificateManager;
+import com.digitalpetri.opcua.stack.core.application.CertificateValidator;
 import com.digitalpetri.opcua.stack.core.application.UaStackServer;
 import com.digitalpetri.opcua.stack.core.application.services.AttributeServiceSet;
 import com.digitalpetri.opcua.stack.core.application.services.DiscoveryServiceSet;
@@ -269,6 +270,11 @@ public class UaTcpStackServer implements UaStackServer {
     @Override
     public CertificateManager getCertificateManager() {
         return config.getCertificateManager();
+    }
+
+    @Override
+    public CertificateValidator getCertificateValidator() {
+        return config.getCertificateValidator();
     }
 
     @Override

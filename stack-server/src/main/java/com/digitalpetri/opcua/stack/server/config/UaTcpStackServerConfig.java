@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import com.digitalpetri.opcua.stack.core.application.CertificateManager;
+import com.digitalpetri.opcua.stack.core.application.CertificateValidator;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
 import com.digitalpetri.opcua.stack.core.types.structured.ApplicationDescription;
@@ -50,7 +51,15 @@ public interface UaTcpStackServerConfig {
      */
     String getProductUri();
 
+    /**
+     * @return the {@link CertificateManager} for this server.
+     */
     CertificateManager getCertificateManager();
+
+    /**
+     * @return the {@link CertificateValidator} for this server.
+     */
+    CertificateValidator getCertificateValidator();
 
     ExecutorService getExecutor();
 

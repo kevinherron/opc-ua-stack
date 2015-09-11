@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutorService;
 
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.application.CertificateManager;
+import com.digitalpetri.opcua.stack.core.application.CertificateValidator;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
 import com.digitalpetri.opcua.stack.core.types.structured.SignedSoftwareCertificate;
@@ -23,6 +24,8 @@ public class UaTcpStackServerConfigBuilder {
     private ChannelConfig channelConfig = ChannelConfig.DEFAULT;
 
     private CertificateManager certificateManager;
+    private CertificateValidator certificateValidator;
+
     private ExecutorService executor = Stack.sharedExecutor();
     private List<UserTokenPolicy> userTokenPolicies = Lists.newArrayList();
     private List<SignedSoftwareCertificate> softwareCertificates = Lists.newArrayList();
@@ -53,6 +56,11 @@ public class UaTcpStackServerConfigBuilder {
         return this;
     }
 
+    public UaTcpStackServerConfigBuilder setCertificateValidator(CertificateValidator certificateValidator) {
+        this.certificateValidator = certificateValidator;
+        return this;
+    }
+
     public UaTcpStackServerConfigBuilder setUserTokenPolicies(List<UserTokenPolicy> userTokenPolicies) {
         this.userTokenPolicies = userTokenPolicies;
         return this;
@@ -75,6 +83,7 @@ public class UaTcpStackServerConfigBuilder {
 
     public UaTcpStackServerConfig build() {
         Preconditions.checkNotNull(certificateManager, "certificateManager must be non-null");
+        Preconditions.checkNotNull(certificateValidator, "certificateValidator must be non-null");
 
         return new UaTcpStackServerConfigImpl(
                 serverName,
@@ -83,6 +92,7 @@ public class UaTcpStackServerConfigBuilder {
                 productUri,
                 channelConfig,
                 certificateManager,
+                certificateValidator,
                 executor,
                 userTokenPolicies,
                 softwareCertificates
@@ -99,6 +109,7 @@ public class UaTcpStackServerConfigBuilder {
         private final ChannelConfig channelConfig;
 
         private final CertificateManager certificateManager;
+        private final CertificateValidator certificateValidator;
         private final ExecutorService executor;
         private final List<UserTokenPolicy> userTokenPolicies;
         private final List<SignedSoftwareCertificate> softwareCertificates;
@@ -109,6 +120,7 @@ public class UaTcpStackServerConfigBuilder {
                                           String productUri,
                                           ChannelConfig channelConfig,
                                           CertificateManager certificateManager,
+                                          CertificateValidator certificateValidator,
                                           ExecutorService executor,
                                           List<UserTokenPolicy> userTokenPolicies,
                                           List<SignedSoftwareCertificate> softwareCertificates) {
@@ -119,6 +131,7 @@ public class UaTcpStackServerConfigBuilder {
             this.productUri = productUri;
             this.channelConfig = channelConfig;
             this.certificateManager = certificateManager;
+            this.certificateValidator = certificateValidator;
             this.executor = executor;
             this.userTokenPolicies = userTokenPolicies;
             this.softwareCertificates = softwareCertificates;
@@ -152,6 +165,11 @@ public class UaTcpStackServerConfigBuilder {
         @Override
         public CertificateManager getCertificateManager() {
             return certificateManager;
+        }
+
+        @Override
+        public CertificateValidator getCertificateValidator() {
+            return certificateValidator;
         }
 
         @Override

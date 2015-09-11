@@ -13,6 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.application.CertificateManager;
+import com.digitalpetri.opcua.stack.core.application.CertificateValidator;
 import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
 import com.digitalpetri.opcua.stack.core.channel.ExceptionHandler;
 import com.digitalpetri.opcua.stack.core.channel.SerializationQueue;
@@ -33,7 +34,6 @@ import com.digitalpetri.opcua.stack.core.types.structured.OpenSecureChannelReque
 import com.digitalpetri.opcua.stack.core.types.structured.OpenSecureChannelResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.ResponseHeader;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
-import com.digitalpetri.opcua.stack.core.util.CertificateValidator;
 import com.digitalpetri.opcua.stack.server.tcp.UaTcpStackServer;
 import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
@@ -173,18 +173,16 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
             if (!securityHeader.getSenderCertificate().isNull() && securityPolicy != SecurityPolicy.None) {
                 secureChannel.setRemoteCertificate(securityHeader.getSenderCertificate().bytes());
 
-                CertificateValidator validator = new CertificateValidator(
-                        server.getCertificateManager().getTrustList(),
-                        server.getCertificateManager().getAuthorityList());
-
                 try {
-                    validator.validateTrustChain(
+                    CertificateValidator certificateValidator = server.getCertificateValidator();
+
+                    certificateValidator.validate(secureChannel.getRemoteCertificate());
+
+                    certificateValidator.verifyTrustChain(
                             secureChannel.getRemoteCertificate(),
                             secureChannel.getRemoteCertificateChain());
                 } catch (UaException e) {
                     try {
-                        server.getCertificateManager().certificateRejected(secureChannel.getRemoteCertificate());
-
                         UaException cause = new UaException(e.getStatusCode(), "security checks failed");
                         ErrorMessage errorMessage = ExceptionHandler.sendErrorMessage(ctx, cause);
 
