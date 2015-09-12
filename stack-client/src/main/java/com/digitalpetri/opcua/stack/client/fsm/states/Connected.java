@@ -32,6 +32,8 @@ public class Connected implements ConnectionState {
         inactivityListener = new ChannelInboundHandlerAdapter() {
             @Override
             public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+                logger.debug("channelInactive()");
+
                 fsm.handleEvent(ConnectionEvent.ConnectionLost);
 
                 super.channelInactive(ctx);
@@ -49,6 +51,7 @@ public class Connected implements ConnectionState {
     public CompletableFuture<Void> deactivate(ConnectionEvent event, ConnectionStateFsm fsm) {
         if (secureChannel != null && inactivityListener != null) {
             secureChannel.getChannel().pipeline().remove(inactivityListener);
+            logger.debug("Removed inactivityListener");
         }
 
         return CF_VOID_COMPLETED;

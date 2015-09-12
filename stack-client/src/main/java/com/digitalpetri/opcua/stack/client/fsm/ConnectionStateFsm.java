@@ -71,7 +71,7 @@ public class ConnectionStateFsm {
         if (currState != nextState) {
             logger.debug("deactivating S({})", currState);
 
-            return currState.deactivate(event, this).thenApply(vd -> {
+            return currState.deactivate(event, this).thenCompose(vd -> {
                 logger.debug("deactivated S({})", currState);
                 logger.debug("activating S({})", nextState);
 

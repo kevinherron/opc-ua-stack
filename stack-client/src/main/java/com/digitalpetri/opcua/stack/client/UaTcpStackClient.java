@@ -143,6 +143,8 @@ public class UaTcpStackClient implements UaStackClient {
                 Throwable cause = f.cause();
 
                 if (cause instanceof ClosedChannelException) {
+                    logger.debug("Channel closed; retrying...");
+
                     sendRequest(request).whenComplete((r, ex) -> {
                         if (r != null) {
                             T t = (T) r;

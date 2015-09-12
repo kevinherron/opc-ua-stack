@@ -42,7 +42,7 @@ public class Disconnecting implements ConnectionState {
         RequestHeader requestHeader = new RequestHeader(
                 NodeId.NULL_VALUE, DateTime.now(), uint(0), uint(0), null, uint(0), null);
 
-        sc.getChannel().pipeline().addLast(new ChannelInboundHandlerAdapter() {
+        sc.getChannel().pipeline().addFirst(new ChannelInboundHandlerAdapter() {
             @Override
             public void channelInactive(ChannelHandlerContext ctx) throws Exception {
                 fsm.handleEvent(ConnectionEvent.DisconnectSucceeded);
