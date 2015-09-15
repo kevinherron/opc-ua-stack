@@ -15,7 +15,8 @@
 
     <scm>
         <url>https://github.com/digitalpetri/opc-ua-stack</url>
-        <connection>scm:git:git@github.com/digitalpetri/opc-ua-stack.git</connection>
+        <connection>scm:git:git://github.com/digitalpetri/opc-ua-stack.git</connection>
+        <developerConnection>scm:git:git@github.com:digitalpetri/opc-ua-stack.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
