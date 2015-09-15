@@ -5,7 +5,7 @@
     <parent>
         <artifactId>opc-ua-stack</artifactId>
         <groupId>com.digitalpetri.opcua</groupId>
-        <version>1.0.2</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>stack-examples</artifactId>
