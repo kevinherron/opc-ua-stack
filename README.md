@@ -19,23 +19,14 @@ You'll now find a "security" folder in whatever you've configured your working d
 Maven
 --------
 
-Snapshots are available from the Sonatype repository:
-```xml
-<repository>
-    <id>oss-sonatype</id>
-    <name>oss-sonatype</name>
-    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-</repository>
-```
-
-Release versions will be available from Maven Central and won't require an explicit repository definition.
+Releases are available from Maven Central:
 
 #### Stack Server
 ```xml
 <dependency>
     <groupId>com.digitalpetri.opcua</groupId>
     <artifactId>stack-server</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
@@ -44,8 +35,17 @@ Release versions will be available from Maven Central and won't require an expli
 <dependency>
     <groupId>com.digitalpetri.opcua</groupId>
     <artifactId>stack-client</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 </dependency>
+```
+
+The latest snapshots are available from the Sonatype snapshot repository:
+```xml
+<repository>
+    <id>oss-sonatype</id>
+    <name>oss-sonatype</name>
+    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+</repository>
 ```
 
 Supported Features
