@@ -4,7 +4,7 @@
 
     <groupId>com.digitalpetri.opcua</groupId>
     <artifactId>opc-ua-stack</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>OPC-UA Stack</name>
@@ -15,7 +15,7 @@
         <url>https://github.com/digitalpetri/opc-ua-stack</url>
         <connection>scm:git:git://github.com/digitalpetri/opc-ua-stack.git</connection>
         <developerConnection>scm:git:git@github.com:digitalpetri/opc-ua-stack.git</developerConnection>
-        <tag>v1.0.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <developers>
