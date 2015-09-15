@@ -16,10 +16,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <guava.version>18.0</guava.version>
-        <javassist.version>3.18.2-GA</javassist.version>
-        <jsr305.version>2.0.3</jsr305.version>
-        <netty.version>4.0.30.Final</netty.version>
-        <slf4j.version>1.7.7</slf4j.version>
+        <javassist.version>3.20.0-GA</javassist.version>
+        <jsr305.version>3.0.0</jsr305.version>
+        <netty.version>4.0.31.Final</netty.version>
+        <slf4j.version>1.7.12</slf4j.version>
     </properties>
 
     <dependencies>
