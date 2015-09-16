@@ -27,7 +27,7 @@ public class NonceUtil {
             }
             sr.nextBytes(new byte[32]);
             secureRandom = sr;
-        }).start();
+        }, "SecureRandomGetInstanceStrong").start();
     }
 
     public static void enableSecureRandom() {
