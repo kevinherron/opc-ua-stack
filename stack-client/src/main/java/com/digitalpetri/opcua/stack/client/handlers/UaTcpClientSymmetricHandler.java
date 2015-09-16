@@ -157,8 +157,12 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestFut
                     .orElse(-1L);
 
             if (securityHeader.getTokenId() != previousTokenId) {
-                throw new UaException(StatusCodes.Bad_SecureChannelTokenUnknown,
-                        "unknown secure channel token: " + securityHeader.getTokenId());
+                String message = String.format(
+                        "received unknown secure channel token. " +
+                                "tokenId=%s, previousTokenId=%s, currentTokenId=%s",
+                        securityHeader.getTokenId(), previousTokenId, currentTokenId);
+
+                throw new UaException(StatusCodes.Bad_SecureChannelTokenUnknown, message);
             }
         }
 
