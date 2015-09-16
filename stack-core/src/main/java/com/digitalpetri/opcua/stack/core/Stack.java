@@ -9,6 +9,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.digitalpetri.opcua.stack.core.util.ManifestUtil;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.util.HashedWheelTimer;
+import io.netty.util.Timeout;
+import org.slf4j.LoggerFactory;
 
 public final class Stack {
 
@@ -20,89 +22,120 @@ public final class Stack {
 
     public static final int DEFAULT_PORT = 12685;
 
+
+    private static NioEventLoopGroup EVENT_LOOP;
+    private static ExecutorService EXECUTOR_SERVICE;
+    private static ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE;
+    private static HashedWheelTimer WHEEL_TIMER;
+
     /**
      * @return a shared {@link NioEventLoopGroup}.
      */
-    public static NioEventLoopGroup sharedEventLoop() {
-        return EventLoopHolder.EVENT_LOOP;
+    public static synchronized NioEventLoopGroup sharedEventLoop() {
+        if (EVENT_LOOP == null) {
+            ThreadFactory threadFactory = new ThreadFactory() {
+                private final AtomicLong threadNumber = new AtomicLong(0L);
+
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread thread = new Thread(r, "netty-event-loop-" + threadNumber.getAndIncrement());
+                    thread.setDaemon(true);
+                    return thread;
+                }
+            };
+
+            EVENT_LOOP = new NioEventLoopGroup(0, threadFactory);
+        }
+
+        return EVENT_LOOP;
     }
 
     /**
      * @return a shared {@link ExecutorService}.
      */
-    public static ExecutorService sharedExecutor() {
-        return ExecutorHolder.EXECUTOR_SERVICE;
+    public static synchronized ExecutorService sharedExecutor() {
+        if (EXECUTOR_SERVICE == null) {
+            ThreadFactory threadFactory = new ThreadFactory() {
+                private final AtomicLong threadNumber = new AtomicLong(0L);
+
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread thread = new Thread(r, "ua-shared-pool-" + threadNumber.getAndIncrement());
+                    thread.setDaemon(true);
+                    return thread;
+                }
+            };
+
+            EXECUTOR_SERVICE = Executors.newCachedThreadPool(threadFactory);
+        }
+
+        return EXECUTOR_SERVICE;
     }
 
     /**
      * @return a shared {@link ScheduledExecutorService}.
      */
-    public static ScheduledExecutorService sharedScheduledExecutor() {
-        return ScheduledExecutorHolder.SCHEDULED_EXECUTOR_SERVICE;
+    public static synchronized ScheduledExecutorService sharedScheduledExecutor() {
+        if (SCHEDULED_EXECUTOR_SERVICE == null) {
+            ThreadFactory threadFactory = new ThreadFactory() {
+                private final AtomicLong threadNumber = new AtomicLong(0L);
+
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread thread = new Thread(r, "ua-shared-scheduled-executor-" + threadNumber.getAndIncrement());
+                    thread.setDaemon(true);
+                    return thread;
+                }
+            };
+
+            SCHEDULED_EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor(threadFactory);
+        }
+
+        return SCHEDULED_EXECUTOR_SERVICE;
     }
 
     /**
      * @return a shared {@link HashedWheelTimer}.
      */
-    public static HashedWheelTimer sharedWheelTimer() {
-        return WheelTimerHolder.WHEEL_TIMER;
-    }
-
-    public static void releaseSharedResources() {
-        sharedEventLoop().shutdownGracefully();
-        sharedExecutor().shutdown();
-        sharedWheelTimer().stop();
-    }
-
-    private static class EventLoopHolder {
-        private static final NioEventLoopGroup EVENT_LOOP = new NioEventLoopGroup(0, new ThreadFactory() {
-            private final AtomicLong threadNumber = new AtomicLong(0L);
-
-            @Override
-            public Thread newThread(Runnable r) {
-                Thread thread = new Thread(r, "netty-event-loop-" + threadNumber.getAndIncrement());
+    public static synchronized HashedWheelTimer sharedWheelTimer() {
+        if (WHEEL_TIMER == null) {
+            ThreadFactory threadFactory = r -> {
+                Thread thread = new Thread(r, "netty-wheel-timer");
                 thread.setDaemon(true);
                 return thread;
+            };
+
+            WHEEL_TIMER = new HashedWheelTimer(threadFactory);
+        }
+
+        return WHEEL_TIMER;
+    }
+
+    public static synchronized void releaseSharedResources() {
+        if (EVENT_LOOP != null) {
+            try {
+                EVENT_LOOP.shutdownGracefully().await();
+            } catch (InterruptedException e) {
+                LoggerFactory.getLogger(Stack.class)
+                        .warn("Interrupted awaiting event loop shutdown.", e);
             }
-        });
-    }
+            EVENT_LOOP = null;
+        }
 
-    private static class ExecutorHolder {
-        private static final ExecutorService EXECUTOR_SERVICE = Executors.newFixedThreadPool(
-                Runtime.getRuntime().availableProcessors() * 2,
-                new ThreadFactory() {
-                    private final AtomicLong threadNumber = new AtomicLong(0L);
+        if (SCHEDULED_EXECUTOR_SERVICE != null) {
+            SCHEDULED_EXECUTOR_SERVICE.shutdown();
+            SCHEDULED_EXECUTOR_SERVICE = null;
+        }
 
-                    @Override
-                    public Thread newThread(Runnable r) {
-                        Thread thread = new Thread(r, "ua-shared-pool-" + threadNumber.getAndIncrement());
-                        thread.setDaemon(true);
-                        return thread;
-                    }
-                });
-    }
+        if (EXECUTOR_SERVICE != null) {
+            EXECUTOR_SERVICE.shutdown();
+            EXECUTOR_SERVICE = null;
+        }
 
-    private static class ScheduledExecutorHolder {
-        private static final ScheduledExecutorService SCHEDULED_EXECUTOR_SERVICE =
-                Executors.newSingleThreadScheduledExecutor(
-                        new ThreadFactory() {
-                            private final AtomicLong threadNumber = new AtomicLong(0L);
-
-                            @Override
-                            public Thread newThread(Runnable r) {
-                                Thread thread = new Thread(r, "ua-shared-scheduled-executor-" + threadNumber.getAndIncrement());
-                                thread.setDaemon(true);
-                                return thread;
-                            }
-                        });
-    }
-
-    private static class WheelTimerHolder {
-        private static final HashedWheelTimer WHEEL_TIMER = new HashedWheelTimer(r -> {
-            Thread thread = new Thread(r, "netty-wheel-timer");
-            thread.setDaemon(true);
-            return thread;
-        });
+        if (WHEEL_TIMER != null) {
+            WHEEL_TIMER.stop().forEach(Timeout::cancel);
+            WHEEL_TIMER = null;
+        }
     }
 
 }
