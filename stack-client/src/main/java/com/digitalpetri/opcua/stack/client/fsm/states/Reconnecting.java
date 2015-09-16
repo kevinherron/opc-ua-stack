@@ -83,7 +83,8 @@ public class Reconnecting implements ConnectionState {
                 boolean secureChannelError =
                         statusCode.getValue() == StatusCodes.Bad_TcpSecureChannelUnknown ||
                                 statusCode.getValue() == StatusCodes.Bad_SecureChannelClosed ||
-                                statusCode.getValue() == StatusCodes.Bad_SecureChannelIdInvalid;
+                                statusCode.getValue() == StatusCodes.Bad_SecureChannelIdInvalid ||
+                                statusCode.getValue() == StatusCodes.Bad_ConnectionClosed;
 
                 if (initialAttempt && secureChannelError) {
                     // Try again if bootstrapping failed because we couldn't re-open the previous channel.
