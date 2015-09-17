@@ -65,7 +65,8 @@ public class UaTcpStackClient implements UaStackClient {
 
     private final Map<UInteger, CompletableFuture<UaResponseMessage>> pending = Maps.newConcurrentMap();
     private final Map<UInteger, Timeout> timeouts = Maps.newConcurrentMap();
-    private final HashedWheelTimer wheelTimer = Stack.sharedWheelTimer();
+
+    private final HashedWheelTimer wheelTimer;
 
     private final ApplicationDescription application;
 
@@ -75,6 +76,8 @@ public class UaTcpStackClient implements UaStackClient {
 
     public UaTcpStackClient(UaTcpStackClientConfig config) {
         this.config = config;
+
+        wheelTimer = config.getWheelTimer();
 
         application = new ApplicationDescription(
                 config.getApplicationUri(),
@@ -326,7 +329,7 @@ public class UaTcpStackClient implements UaStackClient {
 
         Bootstrap bootstrap = new Bootstrap();
 
-        bootstrap.group(Stack.sharedEventLoop())
+        bootstrap.group(client.getConfig().getEventLoop())
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)

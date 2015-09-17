@@ -11,6 +11,8 @@ import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.types.structured.EndpointDescription;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.util.HashedWheelTimer;
 
 import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 
@@ -27,7 +29,9 @@ public class UaTcpStackClientConfigBuilder {
 
     private ChannelConfig channelConfig = ChannelConfig.DEFAULT;
     private UInteger channelLifetime = uint(60 * 60 * 1000);
-    private ExecutorService executor = Stack.sharedExecutor();
+    private ExecutorService executor;
+    private NioEventLoopGroup eventLoop;
+    private HashedWheelTimer wheelTimer;
 
     public UaTcpStackClientConfigBuilder setEndpointUrl(String endpointUrl) {
         this.endpointUrl = endpointUrl;
@@ -79,7 +83,27 @@ public class UaTcpStackClientConfigBuilder {
         return this;
     }
 
+    public UaTcpStackClientConfigBuilder setEventLoop(NioEventLoopGroup eventLoop) {
+        this.eventLoop = eventLoop;
+        return this;
+    }
+
+    public UaTcpStackClientConfigBuilder setWheelTimer(HashedWheelTimer wheelTimer) {
+        this.wheelTimer = wheelTimer;
+        return this;
+    }
+
     public UaTcpStackClientConfig build() {
+        if (executor == null) {
+            executor = Stack.sharedExecutor();
+        }
+        if (eventLoop == null) {
+            eventLoop = Stack.sharedEventLoop();
+        }
+        if (wheelTimer == null) {
+            wheelTimer = Stack.sharedWheelTimer();
+        }
+
         return new UaTcpStackClientConfigImpl(
                 endpointUrl,
                 endpoint,
@@ -90,7 +114,9 @@ public class UaTcpStackClientConfigBuilder {
                 productUri,
                 channelConfig,
                 channelLifetime,
-                executor);
+                executor,
+                eventLoop,
+                wheelTimer);
     }
 
     public static class UaTcpStackClientConfigImpl implements UaTcpStackClientConfig {
@@ -107,6 +133,8 @@ public class UaTcpStackClientConfigBuilder {
         private final ChannelConfig channelConfig;
         private final UInteger channelLifetime;
         private final ExecutorService executor;
+        private final NioEventLoopGroup eventLoop;
+        private final HashedWheelTimer wheelTimer;
 
         public UaTcpStackClientConfigImpl(@Nullable String endpointUrl,
                                           @Nullable EndpointDescription endpoint,
@@ -117,7 +145,9 @@ public class UaTcpStackClientConfigBuilder {
                                           String productUri,
                                           ChannelConfig channelConfig,
                                           UInteger channelLifetime,
-                                          ExecutorService executor) {
+                                          ExecutorService executor,
+                                          NioEventLoopGroup eventLoop,
+                                          HashedWheelTimer wheelTimer) {
 
             this.endpointUrl = endpointUrl;
             this.endpoint = endpoint;
@@ -129,6 +159,8 @@ public class UaTcpStackClientConfigBuilder {
             this.channelConfig = channelConfig;
             this.channelLifetime = channelLifetime;
             this.executor = executor;
+            this.eventLoop = eventLoop;
+            this.wheelTimer = wheelTimer;
         }
 
         @Override
@@ -179,6 +211,16 @@ public class UaTcpStackClientConfigBuilder {
         @Override
         public ExecutorService getExecutor() {
             return executor;
+        }
+
+        @Override
+        public NioEventLoopGroup getEventLoop() {
+            return eventLoop;
+        }
+
+        @Override
+        public HashedWheelTimer getWheelTimer() {
+            return wheelTimer;
         }
 
     }

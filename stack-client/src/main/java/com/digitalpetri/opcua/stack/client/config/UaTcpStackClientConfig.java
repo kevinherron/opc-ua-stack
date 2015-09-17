@@ -10,6 +10,8 @@ import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.types.structured.EndpointDescription;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.util.HashedWheelTimer;
 
 public interface UaTcpStackClientConfig {
 
@@ -76,6 +78,16 @@ public interface UaTcpStackClientConfig {
      * @return the {@link ExecutorService} the {@link UaTcpStackClient} will use.
      */
     ExecutorService getExecutor();
+
+    /**
+     * @return the {@link NioEventLoopGroup} the {@link UaTcpStackClient} will use.
+     */
+    NioEventLoopGroup getEventLoop();
+
+    /**
+     * @return the {@link HashedWheelTimer} the {@link UaTcpStackClient} will use.
+     */
+    HashedWheelTimer getWheelTimer();
 
     static UaTcpStackClientConfigBuilder builder() {
         return new UaTcpStackClientConfigBuilder();
