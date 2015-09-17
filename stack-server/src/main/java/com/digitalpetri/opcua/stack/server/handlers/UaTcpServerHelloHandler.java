@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.List;
 
+import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
@@ -114,7 +115,13 @@ public class UaTcpServerHelloHandler extends ByteToMessageDecoder implements Hea
         int maxArrayLength = config.getMaxArrayLength();
         int maxStringLength = config.getMaxStringLength();
 
-        SerializationQueue serializationQueue = new SerializationQueue(parameters, maxArrayLength, maxStringLength);
+        SerializationQueue serializationQueue = new SerializationQueue(
+                server.getConfig().getExecutor(),
+                parameters,
+                maxArrayLength,
+                maxStringLength
+        );
+
         ctx.pipeline().addLast(new UaTcpServerAsymmetricHandler(server, serializationQueue));
         ctx.pipeline().remove(this);
 

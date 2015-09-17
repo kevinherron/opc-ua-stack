@@ -210,7 +210,10 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
             int maxStringLength = client.getChannelConfig().getMaxStringLength();
 
             SerializationQueue serializationQueue = new SerializationQueue(
-                    parameters, maxArrayLength, maxStringLength);
+                    client.getConfig().getExecutor(),
+                    parameters,
+                    maxArrayLength,
+                    maxStringLength);
 
             UaTcpClientAsymmetricHandler handler = new UaTcpClientAsymmetricHandler(
                     client,
