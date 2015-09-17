@@ -35,7 +35,7 @@ Releases are available from Maven Central:
 <dependency>
     <groupId>com.digitalpetri.opcua</groupId>
     <artifactId>stack-client</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
