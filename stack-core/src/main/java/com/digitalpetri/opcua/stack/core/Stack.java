@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.digitalpetri.opcua.stack.core.util.ManifestUtil;
@@ -111,10 +112,24 @@ public final class Stack {
         return WHEEL_TIMER;
     }
 
+    /**
+     * Release shared resources, waiting at most 5 seconds for the {@link NioEventLoopGroup} to shutdown gracefully.
+     */
     public static synchronized void releaseSharedResources() {
+        releaseSharedResources(5, TimeUnit.SECONDS);
+    }
+
+    /**
+     * Release shared resources, waiting at most the specified timeout for the {@link NioEventLoopGroup} to shutdown
+     * gracefully.
+     *
+     * @param timeout the duration of the timeout.
+     * @param unit    the unit of the timeout duration.
+     */
+    public static synchronized void releaseSharedResources(long timeout, TimeUnit unit) {
         if (EVENT_LOOP != null) {
             try {
-                EVENT_LOOP.shutdownGracefully().await();
+                EVENT_LOOP.shutdownGracefully().await(timeout, unit);
             } catch (InterruptedException e) {
                 LoggerFactory.getLogger(Stack.class)
                         .warn("Interrupted awaiting event loop shutdown.", e);
