@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.List;
 
-import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
