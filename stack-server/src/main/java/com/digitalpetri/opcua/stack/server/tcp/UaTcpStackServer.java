@@ -120,6 +120,10 @@ public class UaTcpStackServer implements UaStackServer {
         });
     }
 
+    public UaTcpStackServerConfig getConfig() {
+        return config;
+    }
+
     @Override
     public void startup() {
         for (Endpoint endpoint : endpoints) {

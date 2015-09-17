@@ -26,7 +26,7 @@ public class UaTcpStackServerConfigBuilder {
     private CertificateManager certificateManager;
     private CertificateValidator certificateValidator;
 
-    private ExecutorService executor = Stack.sharedExecutor();
+    private ExecutorService executor;
     private List<UserTokenPolicy> userTokenPolicies = Lists.newArrayList();
     private List<SignedSoftwareCertificate> softwareCertificates = Lists.newArrayList();
 
@@ -84,6 +84,10 @@ public class UaTcpStackServerConfigBuilder {
     public UaTcpStackServerConfig build() {
         Preconditions.checkNotNull(certificateManager, "certificateManager must be non-null");
         Preconditions.checkNotNull(certificateValidator, "certificateValidator must be non-null");
+
+        if (executor == null) {
+            executor = Stack.sharedExecutor();
+        }
 
         return new UaTcpStackServerConfigImpl(
                 serverName,
