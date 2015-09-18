@@ -61,7 +61,7 @@ public class Connected implements ConnectionState {
     public ConnectionState transition(ConnectionEvent event, ConnectionStateFsm fsm) {
         switch (event) {
             case ConnectionLost:
-                return new Reconnecting(0L, secureChannel.getChannelId());
+                return new ReconnectDelay(0L, secureChannel.getChannelId());
 
             case DisconnectRequested:
                 return new Disconnecting(secureChannel);

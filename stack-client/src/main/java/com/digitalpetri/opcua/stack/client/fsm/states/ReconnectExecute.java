@@ -2,13 +2,11 @@ package com.digitalpetri.opcua.stack.client.fsm.states;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionEvent;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionState;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateFsm;
-import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
@@ -16,22 +14,24 @@ import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Reconnecting implements ConnectionState {
+public class ReconnectExecute implements ConnectionState {
 
     private static final int MAX_RECONNECT_DELAY_SECONDS = 16;
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final CompletableFuture<ClientSecureChannel> channelFuture = new CompletableFuture<>();
-
-    private volatile ScheduledFuture<?> scheduledFuture;
+    private final CompletableFuture<ClientSecureChannel> channelFuture;
 
     private volatile ClientSecureChannel secureChannel;
 
     private final long delaySeconds;
     private volatile long secureChannelId;
 
-    public Reconnecting(long delaySeconds, long secureChannelId) {
+    public ReconnectExecute(CompletableFuture<ClientSecureChannel> channelFuture,
+                            long delaySeconds,
+                            long secureChannelId) {
+
+        this.channelFuture = channelFuture;
         this.delaySeconds = delaySeconds;
         this.secureChannelId = secureChannelId;
     }
@@ -40,7 +40,7 @@ public class Reconnecting implements ConnectionState {
     public CompletableFuture<Void> activate(ConnectionEvent event, ConnectionStateFsm fsm) {
         CompletableFuture<Void> future = new CompletableFuture<>();
 
-        Runnable connect = () -> connect(fsm, true, new CompletableFuture<>()).whenComplete((sc, ex) -> {
+        connect(fsm, true, new CompletableFuture<>()).whenComplete((sc, ex) -> {
             if (sc != null) {
                 secureChannel = sc;
                 fsm.handleEvent(ConnectionEvent.ReconnectSucceeded);
@@ -51,12 +51,6 @@ public class Reconnecting implements ConnectionState {
 
             future.complete(null);
         });
-
-        if (scheduledFuture == null || (scheduledFuture != null && scheduledFuture.cancel(false))) {
-            logger.debug("Reactivating in {} seconds...", delaySeconds);
-
-            scheduledFuture = Stack.sharedScheduledExecutor().schedule(connect, delaySeconds, TimeUnit.SECONDS);
-        }
 
         return future;
     }
@@ -110,8 +104,11 @@ public class Reconnecting implements ConnectionState {
     @Override
     public ConnectionState transition(ConnectionEvent event, ConnectionStateFsm fsm) {
         switch (event) {
+            case DisconnectRequested:
+                return new Disconnecting(secureChannel);
+
             case ReconnectFailed:
-                return new Reconnecting(nextDelay(), secureChannelId);
+                return new ReconnectDelay(nextDelay(), secureChannelId);
 
             case ReconnectSucceeded:
                 return new Connected(secureChannel, channelFuture);
@@ -135,7 +132,7 @@ public class Reconnecting implements ConnectionState {
 
     @Override
     public String toString() {
-        return "Reconnecting{" +
+        return "ReconnectExecute{" +
                 "delaySeconds=" + delaySeconds +
                 ", secureChannelId=" + secureChannelId +
                 '}';

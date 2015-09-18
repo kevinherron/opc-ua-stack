@@ -53,10 +53,13 @@ public class ConnectionStateFsm {
             logger.debug("semaphore acquired - handleEvent({})", event);
             CompletableFuture<ConnectionState> f = handleEvent0(event);
 
-            f.whenComplete((s, t) -> {
+            f.whenCompleteAsync((s, t) -> {
+                state.set(s);
+
                 future.complete(s);
                 permit.release();
-            });
+                logger.debug("semaphore released - handleEvent({})", event);
+            }, client.getConfig().getExecutor());
         });
 
         return future;
@@ -78,8 +81,6 @@ public class ConnectionStateFsm {
                 return nextState.activate(event, this);
             }).thenApply(vd -> {
                 logger.debug("activated S({})", nextState);
-
-                state.set(nextState);
 
                 return nextState;
             });

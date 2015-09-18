@@ -8,6 +8,7 @@ public enum ConnectionEvent {
     ConnectionLost,
     DisconnectRequested,
     DisconnectSucceeded,
+    ReconnectRequested,
     ReconnectFailed,
     ReconnectSucceeded
 
