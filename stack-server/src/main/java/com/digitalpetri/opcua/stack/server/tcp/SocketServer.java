@@ -78,7 +78,7 @@ public class SocketServer {
 
             if (!servers.containsKey(key)) {
                 servers.put(key, server);
-                logger.debug("Added server at {}", url);
+                logger.debug("Added server at path: \"{}\"", key);
             }
         });
 
@@ -87,7 +87,7 @@ public class SocketServer {
 
             if (!servers.containsKey(key)) {
                 servers.put(key, server);
-                logger.debug("Added server at {}", url);
+                logger.debug("Added server at path: \"{}\"", key);
             }
         });
     }
@@ -97,14 +97,14 @@ public class SocketServer {
             String key = pathOrUrl(url);
 
             if (servers.remove(key) != null) {
-                logger.debug("Removed server at {}", url);
+                logger.debug("Removed server at path: \"{}\"", key);
             }
         });
         server.getDiscoveryUrls().forEach(url -> {
             String key = pathOrUrl(url);
 
             if (servers.remove(key) != null) {
-                logger.debug("Removed server at {}", url);
+                logger.debug("Removed server at path: \"{}\"", key);
             }
         });
     }
