@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <artifactId>opc-ua-stack</artifactId>
         <groupId>com.digitalpetri.opcua</groupId>
+        <artifactId>opc-ua-stack</artifactId>
         <version>1.0.2-SNAPSHOT</version>
     </parent>
 
