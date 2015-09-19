@@ -16,17 +16,19 @@ import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.util.CertificateUtil;
 import com.digitalpetri.opcua.stack.core.util.CertificateValidationUtil;
 import com.digitalpetri.opcua.stack.core.util.DigestUtil;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.util.stream.Collectors.toSet;
 
 public class DefaultCertificateValidator implements CertificateValidator {
 
@@ -60,6 +62,44 @@ public class DefaultCertificateValidator implements CertificateValidator {
         synchronizeTrustedCertificates();
     }
 
+    @Override
+    public void validate(X509Certificate certificate) throws UaException {
+        try {
+            CertificateValidationUtil.validateCertificateValidity(certificate);
+
+        } catch (UaException e) {
+            certificateRejected(certificate);
+            throw e;
+        }
+    }
+
+    @Override
+    public synchronized void verifyTrustChain(X509Certificate certificate,
+                                              List<X509Certificate> chain) throws UaException {
+        try {
+            CertificateValidationUtil.validateTrustChain(
+                    certificate, chain, trustedCertificates, authorityCertificates);
+
+        } catch (UaException e) {
+            certificateRejected(certificate);
+            throw e;
+        }
+    }
+
+    /**
+     * @return an immutable copy of the current trusted certificates.
+     */
+    public synchronized ImmutableSet<X509Certificate> getTrustedCertificates() {
+        return ImmutableSet.copyOf(trustedCertificates);
+    }
+
+    /**
+     * @return an immutable copy of the current trusted authority certificates.
+     */
+    public synchronized ImmutableSet<X509Certificate> getAuthorityCertificates() {
+        return ImmutableSet.copyOf(authorityCertificates);
+    }
+
     private void createWatchService() {
         try {
             WatchService watchService = FileSystems.getDefault().newWatchService();
@@ -79,21 +119,26 @@ public class DefaultCertificateValidator implements CertificateValidator {
         }
     }
 
-    private synchronized void synchronizeTrustedCertificates() {
+    private void synchronizeTrustedCertificates() {
         logger.debug("Synchronizing trusted certificates...");
-
-        trustedCertificates.clear();
-        authorityCertificates.clear();
 
         Set<X509Certificate> certificates = certificatesFromDir(trustedDir);
 
-        certificates.stream()
+        Set<X509Certificate> trusted = certificates.stream()
                 .filter(c -> c.getBasicConstraints() == -1)
-                .forEach(trustedCertificates::add);
+                .collect(toSet());
 
-        certificates.stream()
+        Set<X509Certificate> authority = certificates.stream()
                 .filter(c -> c.getBasicConstraints() != -1)
-                .forEach(authorityCertificates::add);
+                .collect(toSet());
+
+        synchronized (DefaultCertificateValidator.this) {
+            trustedCertificates.clear();
+            trustedCertificates.addAll(trusted);
+
+            authorityCertificates.clear();
+            authorityCertificates.addAll(authority);
+        }
 
         logger.debug("trustedCertificates.size()={}, authorityCertificates.size()={}",
                 trustedCertificates.size(), authorityCertificates.size());
@@ -106,8 +151,9 @@ public class DefaultCertificateValidator implements CertificateValidator {
         return Arrays.stream(files)
                 .map(this::file2certificate)
                 .filter(c -> c != null)
-                .collect(Collectors.toSet());
+                .collect(toSet());
     }
+
 
     private X509Certificate file2certificate(File f) {
         try {
@@ -116,30 +162,6 @@ public class DefaultCertificateValidator implements CertificateValidator {
             }
         } catch (Throwable ignored) {
             return null;
-        }
-    }
-
-
-    @Override
-    public void validate(X509Certificate certificate) throws UaException {
-        try {
-            CertificateValidationUtil.validateCertificateValidity(certificate);
-            
-        } catch (UaException e) {
-            certificateRejected(certificate);
-            throw e;
-        }
-    }
-
-    @Override
-    public void verifyTrustChain(X509Certificate certificate, List<X509Certificate> chain) throws UaException {
-        try {
-            CertificateValidationUtil.validateTrustChain(
-                    certificate, chain, trustedCertificates, authorityCertificates);
-
-        } catch (UaException e) {
-            certificateRejected(certificate);
-            throw e;
         }
     }
 
@@ -194,7 +216,7 @@ public class DefaultCertificateValidator implements CertificateValidator {
                         break;
                     }
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    logger.error("Watcher interrupted.", e);
                 }
             }
         }
