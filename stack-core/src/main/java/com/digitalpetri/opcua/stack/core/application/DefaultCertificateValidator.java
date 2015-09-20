@@ -112,6 +112,7 @@ public class DefaultCertificateValidator implements CertificateValidator {
             );
 
             Thread thread = new Thread(new Watcher(watchService, trustedKey));
+            thread.setName("ua-certificate-directory-watcher");
             thread.setDaemon(true);
             thread.start();
         } catch (IOException e) {

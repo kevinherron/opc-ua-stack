@@ -39,7 +39,7 @@ public final class Stack {
 
                 @Override
                 public Thread newThread(Runnable r) {
-                    Thread thread = new Thread(r, "netty-event-loop-" + threadNumber.getAndIncrement());
+                    Thread thread = new Thread(r, "ua-netty-event-loop-" + threadNumber.getAndIncrement());
                     thread.setDaemon(true);
                     return thread;
                 }
@@ -101,7 +101,7 @@ public final class Stack {
     public static synchronized HashedWheelTimer sharedWheelTimer() {
         if (WHEEL_TIMER == null) {
             ThreadFactory threadFactory = r -> {
-                Thread thread = new Thread(r, "netty-wheel-timer");
+                Thread thread = new Thread(r, "ua-netty-wheel-timer");
                 thread.setDaemon(true);
                 return thread;
             };
