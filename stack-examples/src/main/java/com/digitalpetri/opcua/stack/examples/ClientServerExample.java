@@ -1,5 +1,7 @@
 package com.digitalpetri.opcua.stack.examples;
 
+import java.io.File;
+import java.net.InetAddress;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.KeyStore;
@@ -8,19 +10,26 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.types.structured.TestStackResponse;
+import com.digitalpetri.opcua.stack.core.util.CertificateGenerator;
 import com.digitalpetri.opcua.stack.examples.client.ClientExample;
 import com.digitalpetri.opcua.stack.examples.server.ServerExample;
+import com.google.common.net.InetAddresses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
+
 public class ClientServerExample {
 
-    private static final String CLIENT_ALIAS = "client-test-certificate";
-    private static final String SERVER_ALIAS = "server-test-certificate";
+    private static final String CLIENT_ALIAS = "client-certificate";
+    private static final String SERVER_ALIAS = "server-certificate";
     private static final char[] PASSWORD = "test".toCharArray();
 
     public static void main(String[] args) throws Exception {
