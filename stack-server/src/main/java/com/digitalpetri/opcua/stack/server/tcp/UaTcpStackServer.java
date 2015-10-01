@@ -132,6 +132,7 @@ public class UaTcpStackServer implements UaStackServer {
                 String bindAddress = endpoint.getBindAddress().orElse(endpointUri.getHost());
 
                 SocketServer socketServer = SocketServer.boundTo(bindAddress, endpointUri.getPort());
+                socketServer.setStrictEndpointUrlsEnabled(config.isStrictEndpointUrlsEnabled());
 
                 logger.info("{} bound to {} [{}/{}]",
                         endpoint.getEndpointUri(), socketServer.getLocalAddress(),

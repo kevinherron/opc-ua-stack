@@ -15,7 +15,7 @@ public interface UaTcpStackServerConfig {
 
     /**
      * The server name to use when building endpoint URLs: "opc.tcp://{hostname}:{port}/{serverName}.".
-     * <p>
+     * <p/>
      * If empty, endpoint URLs will be of the format "opc.tcp://{hostname}:{port}".
      *
      * @return the server name to use when building endpoint URLs.
@@ -24,7 +24,7 @@ public interface UaTcpStackServerConfig {
 
     /**
      * Get the application name for the server.
-     * <p>
+     * <p/>
      * This will be used in the {@link ApplicationDescription} returned to clients.
      *
      * @return the application name for the server.
@@ -33,9 +33,9 @@ public interface UaTcpStackServerConfig {
 
     /**
      * Get the application uri for the server.
-     * <p>
+     * <p/>
      * This will be used in the {@link ApplicationDescription} returned to clients.
-     * <p>
+     * <p/>
      * <b>The application uri must match the application uri used on the server's application instance certificate.</b>
      *
      * @return the application uri for the server.
@@ -44,7 +44,7 @@ public interface UaTcpStackServerConfig {
 
     /**
      * Get the product uri for the server.
-     * <p>
+     * <p/>
      * This will be used in the {@link ApplicationDescription} returned to clients.
      *
      * @return the product uri for the server.
@@ -73,6 +73,15 @@ public interface UaTcpStackServerConfig {
     List<SignedSoftwareCertificate> getSoftwareCertificates();
 
     ChannelConfig getChannelConfig();
+
+    /**
+     * If {@code true}, when a UA TCP "Hello" message is received, endpoint URL must exactly match a registered server
+     * name. If {@code false}, and only one server is registered, that server will be returned even if the path does not
+     * match.
+     *
+     * @return {@code true} if strict endpoint URLs are enabled.
+     */
+    boolean isStrictEndpointUrlsEnabled();
 
     static UaTcpStackServerConfigBuilder builder() {
         return new UaTcpStackServerConfigBuilder();

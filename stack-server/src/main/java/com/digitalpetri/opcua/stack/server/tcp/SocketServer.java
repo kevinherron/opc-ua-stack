@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.URI;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -29,6 +30,8 @@ public class SocketServer {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Map<String, UaTcpStackServer> servers = Maps.newConcurrentMap();
+
+    private volatile boolean strictEndpointUrlsEnabled = true;
 
     private volatile Channel channel;
 
@@ -109,8 +112,25 @@ public class SocketServer {
         });
     }
 
+    /**
+     * Get the server identified {@code endpointUrl}.
+     *
+     * @return the {@link UaTcpStackServer} identified by {@code endpointUrl}.
+     */
     public UaTcpStackServer getServer(String endpointUrl) {
-        return servers.get(pathOrUrl(endpointUrl));
+        String path = pathOrUrl(endpointUrl);
+
+        UaTcpStackServer server = servers.get(path);
+
+        if (server == null && servers.size() == 1 && !strictEndpointUrlsEnabled) {
+            Iterator<UaTcpStackServer> iterator = servers.values().iterator();
+
+            if (iterator.hasNext()) {
+                server = iterator.next();
+            }
+        }
+
+        return server;
     }
 
     private String pathOrUrl(String endpointUrl) {
@@ -129,6 +149,24 @@ public class SocketServer {
 
     public void shutdown() {
         if (channel != null) channel.close();
+    }
+
+    /**
+     * @return {@code true} if strict endpoint URLs are enabled.
+     */
+    public boolean isStrictEndpointUrlsEnabled() {
+        return strictEndpointUrlsEnabled;
+    }
+
+    /**
+     * If {@code true}, during a {@link #getServer(String)} call the path of the endpoint URL must exactly match a
+     * registered server name. If {@code false}, and only one server is registered, that server will be returned even
+     * if the path does not match.
+     *
+     * @param strictEndpointUrlsEnabled {@code true} if strict endpoint URLs should be enabled.
+     */
+    public void setStrictEndpointUrlsEnabled(boolean strictEndpointUrlsEnabled) {
+        this.strictEndpointUrlsEnabled = strictEndpointUrlsEnabled;
     }
 
     public static synchronized SocketServer boundTo(String address) throws Exception {

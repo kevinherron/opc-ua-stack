@@ -22,6 +22,7 @@ public class UaTcpStackServerConfigBuilder {
     private String productUri = "server product uri not configured";
 
     private ChannelConfig channelConfig = ChannelConfig.DEFAULT;
+    private boolean strictEndpointUrlsEnabled = true;
 
     private CertificateManager certificateManager;
     private CertificateValidator certificateValidator;
@@ -81,6 +82,11 @@ public class UaTcpStackServerConfigBuilder {
         return this;
     }
 
+    public UaTcpStackServerConfigBuilder setStrictEndpointUrlsEnabled(boolean strictEndpointUrlsEnabled) {
+        this.strictEndpointUrlsEnabled = strictEndpointUrlsEnabled;
+        return this;
+    }
+
     public UaTcpStackServerConfig build() {
         Preconditions.checkNotNull(certificateManager, "certificateManager must be non-null");
         Preconditions.checkNotNull(certificateValidator, "certificateValidator must be non-null");
@@ -95,6 +101,7 @@ public class UaTcpStackServerConfigBuilder {
                 applicationUri,
                 productUri,
                 channelConfig,
+                strictEndpointUrlsEnabled,
                 certificateManager,
                 certificateValidator,
                 executor,
@@ -111,9 +118,11 @@ public class UaTcpStackServerConfigBuilder {
         private final String productUri;
 
         private final ChannelConfig channelConfig;
+        private final boolean strictEndpointUrlsEnabled;
 
         private final CertificateManager certificateManager;
         private final CertificateValidator certificateValidator;
+
         private final ExecutorService executor;
         private final List<UserTokenPolicy> userTokenPolicies;
         private final List<SignedSoftwareCertificate> softwareCertificates;
@@ -123,6 +132,7 @@ public class UaTcpStackServerConfigBuilder {
                                           String applicationUri,
                                           String productUri,
                                           ChannelConfig channelConfig,
+                                          boolean strictEndpointUrlsEnabled,
                                           CertificateManager certificateManager,
                                           CertificateValidator certificateValidator,
                                           ExecutorService executor,
@@ -134,6 +144,7 @@ public class UaTcpStackServerConfigBuilder {
             this.applicationUri = applicationUri;
             this.productUri = productUri;
             this.channelConfig = channelConfig;
+            this.strictEndpointUrlsEnabled = strictEndpointUrlsEnabled;
             this.certificateManager = certificateManager;
             this.certificateValidator = certificateValidator;
             this.executor = executor;
@@ -164,6 +175,11 @@ public class UaTcpStackServerConfigBuilder {
         @Override
         public ChannelConfig getChannelConfig() {
             return channelConfig;
+        }
+
+        @Override
+        public boolean isStrictEndpointUrlsEnabled() {
+            return strictEndpointUrlsEnabled;
         }
 
         @Override
