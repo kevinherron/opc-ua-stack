@@ -146,28 +146,7 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestFut
                     "invalid secure channel id: " + secureChannelId);
         }
 
-        SymmetricSecurityHeader securityHeader = SymmetricSecurityHeader.decode(buffer);
-
-        ChannelSecurity channelSecurity = secureChannel.getChannelSecurity();
-        long currentTokenId = channelSecurity.getCurrentToken().getTokenId().longValue();
-
-        if (securityHeader.getTokenId() != currentTokenId) {
-            long previousTokenId = channelSecurity.getPreviousToken()
-                    .map(t -> t.getTokenId().longValue())
-                    .orElse(-1L);
-
-            if (securityHeader.getTokenId() != previousTokenId) {
-                String message = String.format(
-                        "received unknown secure channel token. " +
-                                "tokenId=%s, previousTokenId=%s, currentTokenId=%s",
-                        securityHeader.getTokenId(), previousTokenId, currentTokenId);
-
-                throw new UaException(StatusCodes.Bad_SecureChannelTokenUnknown, message);
-            }
-        }
-
         int chunkSize = buffer.readerIndex(0).readableBytes();
-
         if (chunkSize > maxChunkSize) {
             throw new UaException(StatusCodes.Bad_TcpMessageTooLarge,
                     String.format("max chunk size exceeded (%s)", maxChunkSize));
@@ -188,7 +167,10 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestFut
 
             serializationQueue.decode((binaryDecoder, chunkDecoder) -> {
                 ByteBuf decodedBuffer = null;
+
                 try {
+                    validateChunkHeaders(buffersToDecode);
+
                     decodedBuffer = chunkDecoder.decodeSymmetric(secureChannel, buffersToDecode);
 
                     binaryDecoder.setBuffer(decodedBuffer);
@@ -224,6 +206,33 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestFut
                     buffersToDecode.clear();
                 }
             });
+        }
+    }
+
+    private void validateChunkHeaders(List<ByteBuf> chunkBuffers) throws UaException {
+        ChannelSecurity channelSecurity = secureChannel.getChannelSecurity();
+        long currentTokenId = channelSecurity.getCurrentToken().getTokenId().longValue();
+        long previousTokenId = channelSecurity.getPreviousToken()
+                .map(t -> t.getTokenId().longValue())
+                .orElse(-1L);
+
+        for (ByteBuf chunkBuffer : chunkBuffers) {
+            chunkBuffer.skipBytes(3 + 1 + 4 + 4); // skip messageType, chunkType, messageSize, secureChannelId
+
+            SymmetricSecurityHeader securityHeader = SymmetricSecurityHeader.decode(chunkBuffer);
+
+            if (securityHeader.getTokenId() != currentTokenId) {
+                if (securityHeader.getTokenId() != previousTokenId) {
+                    String message = String.format(
+                            "received unknown secure channel token. " +
+                                    "tokenId=%s, previousTokenId=%s, currentTokenId=%s",
+                            securityHeader.getTokenId(), previousTokenId, currentTokenId);
+
+                    throw new UaException(StatusCodes.Bad_SecureChannelTokenUnknown, message);
+                }
+            }
+
+            chunkBuffer.readerIndex(0);
         }
     }
 
