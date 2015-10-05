@@ -139,34 +139,7 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
                         "invalid secure channel id: " + secureChannelId);
             }
 
-            SymmetricSecurityHeader securityHeader = SymmetricSecurityHeader.decode(buffer);
-
-            ChannelSecurity channelSecurity = secureChannel.getChannelSecurity();
-            long currentTokenId = channelSecurity.getCurrentToken().getTokenId().longValue();
-            long receivedTokenId = securityHeader.getTokenId();
-
-            if (receivedTokenId != currentTokenId) {
-                long previousTokenId = channelSecurity.getPreviousToken()
-                        .map(t -> t.getTokenId().longValue())
-                        .orElse(-1L);
-
-                logger.debug("receivedTokenId={} did not match currentTokenId={}",
-                        receivedTokenId, currentTokenId);
-
-                if (receivedTokenId != previousTokenId) {
-                    logger.warn("receivedTokenId={} did not match previousTokenId={}",
-                            receivedTokenId, previousTokenId);
-
-                    throw new UaException(StatusCodes.Bad_SecureChannelTokenUnknown,
-                            "unknown secure channel token: " + receivedTokenId);
-                }
-
-                logger.debug("receivedTokenId={} matched previousTokenId={}",
-                        receivedTokenId, previousTokenId);
-            }
-
             int chunkSize = buffer.readerIndex(0).readableBytes();
-
             if (chunkSize > maxChunkSize) {
                 throw new UaException(StatusCodes.Bad_TcpMessageTooLarge,
                         String.format("max chunk size exceeded (%s)", maxChunkSize));
@@ -185,6 +158,8 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
 
                 serializationQueue.decode((binaryDecoder, chunkDecoder) -> {
                     try {
+                        validateChunkHeaders(buffersToDecode);
+
                         ByteBuf messageBuffer = chunkDecoder.decodeSymmetric(secureChannel, buffersToDecode);
 
                         binaryDecoder.setBuffer(messageBuffer);
@@ -207,6 +182,34 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
                     }
                 });
             }
+        }
+    }
+
+
+    private void validateChunkHeaders(List<ByteBuf> chunkBuffers) throws UaException {
+        ChannelSecurity channelSecurity = secureChannel.getChannelSecurity();
+        long currentTokenId = channelSecurity.getCurrentToken().getTokenId().longValue();
+        long previousTokenId = channelSecurity.getPreviousToken()
+                .map(t -> t.getTokenId().longValue())
+                .orElse(-1L);
+
+        for (ByteBuf chunkBuffer : chunkBuffers) {
+            chunkBuffer.skipBytes(3 + 1 + 4 + 4); // skip messageType, chunkType, messageSize, secureChannelId
+
+            SymmetricSecurityHeader securityHeader = SymmetricSecurityHeader.decode(chunkBuffer);
+
+            if (securityHeader.getTokenId() != currentTokenId) {
+                if (securityHeader.getTokenId() != previousTokenId) {
+                    String message = String.format(
+                            "received unknown secure channel token. " +
+                                    "tokenId=%s, previousTokenId=%s, currentTokenId=%s",
+                            securityHeader.getTokenId(), previousTokenId, currentTokenId);
+
+                    throw new UaException(StatusCodes.Bad_SecureChannelTokenUnknown, message);
+                }
+            }
+
+            chunkBuffer.readerIndex(0);
         }
     }
 
