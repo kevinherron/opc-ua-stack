@@ -18,7 +18,6 @@ package com.digitalpetri.opcua.stack.core.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.security.cert.CertPath;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -79,11 +78,11 @@ public class CertificateUtil {
     }
 
     /**
-     * Decode a {@link CertPath}.
+     * Decode either a sequence of DER-encoded X.509 certificates or a PKCS#7 certificate chain.
      *
      * @param certificateBytes the byte[] to decode from.
-     * @return a {@link CertPath}
-     * @throws UaException if decoding the {@link CertPath} fails.
+     * @return a {@link List} of certificates deocded from {@code certificateBytes}.
+     * @throws UaException if decoding fails.
      */
     public static List<X509Certificate> decodeCertificates(byte[] certificateBytes) throws UaException {
         Preconditions.checkNotNull(certificateBytes, "certificateBytes cannot be null");
