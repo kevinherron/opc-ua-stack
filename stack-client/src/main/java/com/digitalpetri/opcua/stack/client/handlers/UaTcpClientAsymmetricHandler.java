@@ -27,6 +27,7 @@ import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaException;
 import com.digitalpetri.opcua.stack.core.UaRuntimeException;
+import com.digitalpetri.opcua.stack.core.UaServiceFaultException;
 import com.digitalpetri.opcua.stack.core.channel.ChannelSecurity;
 import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
 import com.digitalpetri.opcua.stack.core.channel.MessageAbortedException;
@@ -36,6 +37,7 @@ import com.digitalpetri.opcua.stack.core.channel.headers.HeaderDecoder;
 import com.digitalpetri.opcua.stack.core.channel.messages.ErrorMessage;
 import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageDecoder;
+import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
@@ -45,6 +47,7 @@ import com.digitalpetri.opcua.stack.core.types.structured.CloseSecureChannelRequ
 import com.digitalpetri.opcua.stack.core.types.structured.OpenSecureChannelRequest;
 import com.digitalpetri.opcua.stack.core.types.structured.OpenSecureChannelResponse;
 import com.digitalpetri.opcua.stack.core.types.structured.RequestHeader;
+import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.digitalpetri.opcua.stack.core.util.NonceUtil;
 import com.google.common.collect.Lists;
@@ -197,14 +200,26 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 try {
                     decodedBuffer = chunkDecoder.decodeAsymmetric(secureChannel, buffersToDecode);
 
-                    OpenSecureChannelResponse response = binaryDecoder
+                    UaResponseMessage responseMessage = binaryDecoder
                             .setBuffer(decodedBuffer)
                             .decodeMessage(null);
 
-                    secureChannel.setChannelId(response.getSecurityToken().getChannelId().longValue());
-                    logger.debug("Received OpenSecureChannelResponse.");
+                    StatusCode serviceResult = responseMessage.getResponseHeader().getServiceResult();
 
-                    installSecurityToken(ctx, response);
+                    if (serviceResult.isGood()) {
+                        OpenSecureChannelResponse response = (OpenSecureChannelResponse) responseMessage;
+
+                        secureChannel.setChannelId(response.getSecurityToken().getChannelId().longValue());
+                        logger.debug("Received OpenSecureChannelResponse.");
+
+                        installSecurityToken(ctx, response);
+                    } else {
+                        ServiceFault serviceFault = (responseMessage instanceof ServiceFault) ?
+                                (ServiceFault) responseMessage :
+                                new ServiceFault(responseMessage.getResponseHeader());
+
+                        throw new UaServiceFaultException(serviceFault);
+                    }
                 } catch (MessageAbortedException e) {
                     logger.error("Received message abort chunk; error={}, reason={}", e.getStatusCode(), e.getMessage());
                     ctx.close();
