@@ -280,8 +280,14 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
             }
         });
 
-        logger.debug("SecureChannel id={}, lifetime={}ms, createdAt={}",
-                secureChannel.getChannelId(), revisedLifetime, createdAt);
+        ChannelSecurity channelSecurity = secureChannel.getChannelSecurity();
+
+        logger.debug(
+                "SecureChannel id={}, currentToken={}, previousToken={}, lifetime={}ms, createdAt={}",
+                secureChannel.getChannelId(),
+                channelSecurity.getCurrentToken(),
+                channelSecurity.getPreviousToken(),
+                revisedLifetime, createdAt);
     }
 
     private void sendOpenSecureChannelRequest(ChannelHandlerContext ctx, OpenSecureChannelRequest request) {
@@ -303,8 +309,14 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                     ctx.flush();
                 });
 
-                logger.debug("Sent OpenSecureChannelRequest ({}, id={}).",
-                        request.getRequestType(), secureChannel.getChannelId());
+                ChannelSecurity channelSecurity = secureChannel.getChannelSecurity();
+
+                logger.debug(
+                        "Sent OpenSecureChannelRequest ({}, id={}, currentToken={}, previousToken={}).",
+                        request.getRequestType(),
+                        secureChannel.getChannelId(),
+                        channelSecurity != null ? channelSecurity.getCurrentToken() : null,
+                        channelSecurity != null ? channelSecurity.getPreviousToken() : null);
             } catch (UaException e) {
                 logger.error("Error encoding OpenSecureChannelRequest: {}", e.getMessage(), e);
                 ctx.close();
