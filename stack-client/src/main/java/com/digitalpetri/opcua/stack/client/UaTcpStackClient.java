@@ -20,6 +20,7 @@ import java.net.URI;
 import java.nio.channels.ClosedChannelException;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
-import static com.google.common.collect.Lists.newArrayListWithCapacity;
 
 public class UaTcpStackClient implements UaStackClient {
 
@@ -207,7 +207,7 @@ public class UaTcpStackClient implements UaStackClient {
         Iterator<? extends UaRequestMessage> requestIterator = requests.iterator();
         Iterator<CompletableFuture<? extends UaResponseMessage>> futureIterator = futures.iterator();
 
-        List<UaRequestFuture> pendingRequests = newArrayListWithCapacity(requests.size());
+        List<UaRequestFuture> pendingRequests = new ArrayList<>(requests.size());
 
         while (requestIterator.hasNext() && futureIterator.hasNext()) {
             UaRequestMessage request = requestIterator.next();

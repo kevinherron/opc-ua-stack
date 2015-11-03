@@ -17,6 +17,7 @@
 package com.digitalpetri.opcua.stack.client.handlers;
 
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
@@ -50,7 +51,6 @@ import com.digitalpetri.opcua.stack.core.types.structured.RequestHeader;
 import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.digitalpetri.opcua.stack.core.util.NonceUtil;
-import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -63,7 +63,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private List<ByteBuf> chunkBuffers = Lists.newArrayList();
+    private List<ByteBuf> chunkBuffers = new ArrayList<>();
 
     private ScheduledFuture renewFuture;
 
@@ -192,7 +192,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
 
         if (chunkType == 'A' || chunkType == 'F') {
             final List<ByteBuf> buffersToDecode = chunkBuffers;
-            chunkBuffers = Lists.newArrayListWithCapacity(maxChunkCount);
+            chunkBuffers = new ArrayList<>(maxChunkCount);
 
             serializationQueue.decode((binaryDecoder, chunkDecoder) -> {
                 ByteBuf decodedBuffer = null;

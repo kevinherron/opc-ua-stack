@@ -16,6 +16,7 @@
 
 package com.digitalpetri.opcua.stack.server.config;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -27,7 +28,6 @@ import com.digitalpetri.opcua.stack.core.types.builtin.LocalizedText;
 import com.digitalpetri.opcua.stack.core.types.structured.SignedSoftwareCertificate;
 import com.digitalpetri.opcua.stack.core.types.structured.UserTokenPolicy;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 
 public class UaTcpStackServerConfigBuilder {
 
@@ -44,8 +44,8 @@ public class UaTcpStackServerConfigBuilder {
     private CertificateValidator certificateValidator;
 
     private ExecutorService executor;
-    private List<UserTokenPolicy> userTokenPolicies = Lists.newArrayList();
-    private List<SignedSoftwareCertificate> softwareCertificates = Lists.newArrayList();
+    private List<UserTokenPolicy> userTokenPolicies = new ArrayList<>();
+    private List<SignedSoftwareCertificate> softwareCertificates = new ArrayList<>();
 
 
     public UaTcpStackServerConfigBuilder setServerName(String serverName) {

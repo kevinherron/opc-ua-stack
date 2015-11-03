@@ -22,13 +22,12 @@ import java.lang.reflect.Method;
 import java.security.KeyStore;
 import java.security.Permission;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import static com.google.common.collect.Lists.newArrayList;
 
 /**
  * Generates an {@link X509Certificate} and stores it in a keystore.
@@ -116,7 +115,7 @@ public class CertificateGenerator {
                                           List<String> dnsNames,
                                           List<String> ipAddresses) {
 
-        List<String> args = newArrayList();
+        List<String> args = new ArrayList<>();
         args.add("-selfcert");
         args.add("-genkey");
         args.add("-validity");

@@ -20,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -443,7 +444,7 @@ public class UaTcpStackServer implements UaStackServer {
 
             List<String> profileUris = request.getProfileUris() != null ?
                     newArrayList(request.getProfileUris()) :
-                    newArrayList();
+                    new ArrayList<>();
 
             List<EndpointDescription> allEndpoints = endpoints.stream()
                     .map(UaTcpStackServer.this::mapEndpoint)
@@ -486,7 +487,7 @@ public class UaTcpStackServer implements UaStackServer {
 
             List<String> serverUris = request.getServerUris() != null ?
                     newArrayList(request.getServerUris()) :
-                    newArrayList();
+                    new ArrayList<>();
 
             List<ApplicationDescription> applicationDescriptions =
                     newArrayList(getApplicationDescription(request.getEndpointUrl()));

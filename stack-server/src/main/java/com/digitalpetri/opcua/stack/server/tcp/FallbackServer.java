@@ -16,6 +16,7 @@
 
 package com.digitalpetri.opcua.stack.server.tcp;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +93,7 @@ public class FallbackServer {
 
             List<String> profileUris = request.getProfileUris() != null ?
                     Lists.newArrayList(request.getProfileUris()) :
-                    Lists.newArrayList();
+                    new ArrayList<>();
 
             EndpointDescription[] filtered = Arrays.stream(endpoints)
                     .filter(ed -> filterProfileUris(ed, profileUris))
@@ -121,7 +122,7 @@ public class FallbackServer {
         public void handle(ServiceRequest<FindServersRequest, FindServersResponse> service) throws UaException {
             FindServersRequest request = service.getRequest();
 
-            List<ApplicationDescription> servers = Lists.newArrayList();
+            List<ApplicationDescription> servers = new ArrayList<>();
             List<String> serverUris = Lists.newArrayList(request.getServerUris());
 
             for (UaTcpStackServer server : registered) {

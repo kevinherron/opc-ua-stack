@@ -17,6 +17,7 @@
 package com.digitalpetri.opcua.stack.client.handlers;
 
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -36,7 +37,6 @@ import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -72,7 +72,7 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestFut
         maxChunkCount = serializationQueue.getParameters().getLocalMaxChunkCount();
         maxChunkSize = serializationQueue.getParameters().getLocalReceiveBufferSize();
 
-        chunkBuffers = Lists.newArrayListWithCapacity(maxChunkCount);
+        chunkBuffers = new ArrayList<>(maxChunkCount);
     }
 
     @Override
@@ -179,7 +179,7 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestFut
 
         if (chunkType == 'A' || chunkType == 'F') {
             final List<ByteBuf> buffersToDecode = chunkBuffers;
-            chunkBuffers = Lists.newArrayListWithCapacity(maxChunkCount);
+            chunkBuffers = new ArrayList<>(maxChunkCount);
 
             serializationQueue.decode((binaryDecoder, chunkDecoder) -> {
                 ByteBuf decodedBuffer = null;

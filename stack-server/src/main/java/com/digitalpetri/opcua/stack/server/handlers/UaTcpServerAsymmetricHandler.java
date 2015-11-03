@@ -21,6 +21,7 @@ import java.net.URI;
 import java.nio.ByteOrder;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +52,6 @@ import com.digitalpetri.opcua.stack.core.types.structured.OpenSecureChannelRespo
 import com.digitalpetri.opcua.stack.core.types.structured.ResponseHeader;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.digitalpetri.opcua.stack.server.tcp.UaTcpStackServer;
-import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -73,7 +73,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
     private ServerSecureChannel secureChannel;
     private volatile boolean symmetricHandlerAdded = false;
 
-    private List<ByteBuf> chunkBuffers = Lists.newArrayList();
+    private List<ByteBuf> chunkBuffers = new ArrayList<>();
 
     private final AtomicReference<AsymmetricSecurityHeader> headerRef = new AtomicReference<>();
 
@@ -250,7 +250,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
             if (chunkType == 'F') {
                 final List<ByteBuf> buffersToDecode = chunkBuffers;
 
-                chunkBuffers = Lists.newArrayListWithCapacity(maxChunkCount);
+                chunkBuffers = new ArrayList<>(maxChunkCount);
                 headerRef.set(null);
 
                 serializationQueue.decode((binaryDecoder, chunkDecoder) -> {

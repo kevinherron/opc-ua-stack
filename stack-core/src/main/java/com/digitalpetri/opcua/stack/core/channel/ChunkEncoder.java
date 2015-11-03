@@ -19,6 +19,7 @@ package com.digitalpetri.opcua.stack.core.channel;
 import java.nio.ByteBuffer;
 import java.security.GeneralSecurityException;
 import java.security.cert.Certificate;
+import java.util.ArrayList;
 import java.util.List;
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -36,7 +37,6 @@ import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.digitalpetri.opcua.stack.core.util.LongSequence;
 import com.digitalpetri.opcua.stack.core.util.SignatureUtil;
-import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 
 public class ChunkEncoder {
@@ -92,7 +92,7 @@ public class ChunkEncoder {
                                  ByteBuf messageBuffer,
                                  long requestId) throws UaException {
 
-        List<ByteBuf> chunks = Lists.newArrayList();
+        List<ByteBuf> chunks = new ArrayList<>();
 
         boolean encrypted = delegate.isEncryptionEnabled(channel);
 

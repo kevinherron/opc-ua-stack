@@ -19,6 +19,7 @@ package com.digitalpetri.opcua.stack.client.handlers;
 import java.nio.ByteOrder;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -44,7 +45,6 @@ import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.digitalpetri.opcua.stack.core.types.structured.EndpointDescription;
 import com.digitalpetri.opcua.stack.core.util.CertificateUtil;
-import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -61,7 +61,7 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final List<UaMessage> awaitingHandshake = Lists.newArrayList();
+    private final List<UaMessage> awaitingHandshake = new ArrayList<>();
 
     private final ClientSecureChannel secureChannel;
 

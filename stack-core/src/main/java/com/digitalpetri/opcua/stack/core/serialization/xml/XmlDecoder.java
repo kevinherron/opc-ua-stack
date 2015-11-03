@@ -19,6 +19,7 @@ package com.digitalpetri.opcua.stack.core.serialization.xml;
 import java.io.InputStream;
 import java.io.Reader;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
@@ -54,7 +55,6 @@ import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.ULong;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UShort;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned;
 import com.digitalpetri.opcua.stack.core.util.Namespaces;
-import com.google.common.collect.Lists;
 
 public class XmlDecoder implements UaDecoder {
 
@@ -457,7 +457,7 @@ public class XmlDecoder implements UaDecoder {
 
         if (valueStartElement.startsWith("ListOf")) {
             String valueType = valueStartElement.substring(6);
-            List<Object> values = Lists.newArrayList();
+            List<Object> values = new ArrayList<>();
 
             while (true) {
                 if (nextStartElement(valueType)) {
