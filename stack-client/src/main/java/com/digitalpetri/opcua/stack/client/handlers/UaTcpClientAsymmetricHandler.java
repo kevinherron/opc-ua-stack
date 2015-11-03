@@ -282,12 +282,18 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
 
         ChannelSecurity channelSecurity = secureChannel.getChannelSecurity();
 
+        long currentTokenId = channelSecurity.getCurrentToken().getTokenId().longValue();
+
+        long previousTokenId = channelSecurity.getPreviousToken()
+                        .map(t -> t.getTokenId().longValue()).orElse(-1L);
+
         logger.debug(
-                "SecureChannel id={}, currentToken={}, previousToken={}, lifetime={}ms, createdAt={}",
+                "SecureChannel id={}, currentTokenId={}, previousTokenId={}, lifetime={}ms, createdAt={}",
                 secureChannel.getChannelId(),
-                channelSecurity.getCurrentToken(),
-                channelSecurity.getPreviousToken(),
-                revisedLifetime, createdAt);
+                currentTokenId,
+                previousTokenId,
+                revisedLifetime,
+                createdAt);
     }
 
     private void sendOpenSecureChannelRequest(ChannelHandlerContext ctx, OpenSecureChannelRequest request) {
@@ -311,12 +317,18 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
 
                 ChannelSecurity channelSecurity = secureChannel.getChannelSecurity();
 
+                long currentTokenId = channelSecurity != null ?
+                        channelSecurity.getCurrentToken().getTokenId().longValue() : -1L;
+
+                long previousTokenId = channelSecurity != null ?
+                        channelSecurity.getPreviousToken().map(t -> t.getTokenId().longValue()).orElse(-1L) : -1L;
+
                 logger.debug(
                         "Sent OpenSecureChannelRequest ({}, id={}, currentToken={}, previousToken={}).",
                         request.getRequestType(),
                         secureChannel.getChannelId(),
-                        channelSecurity != null ? channelSecurity.getCurrentToken() : null,
-                        channelSecurity != null ? channelSecurity.getPreviousToken() : null);
+                        currentTokenId,
+                        previousTokenId);
             } catch (UaException e) {
                 logger.error("Error encoding OpenSecureChannelRequest: {}", e.getMessage(), e);
                 ctx.close();
