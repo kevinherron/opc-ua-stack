@@ -42,6 +42,7 @@ import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.builtin.DateTime;
 import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
+import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.types.enumerated.SecurityTokenRequestType;
 import com.digitalpetri.opcua.stack.core.types.structured.ChannelSecurityToken;
 import com.digitalpetri.opcua.stack.core.types.structured.CloseSecureChannelRequest;
@@ -50,6 +51,7 @@ import com.digitalpetri.opcua.stack.core.types.structured.OpenSecureChannelRespo
 import com.digitalpetri.opcua.stack.core.types.structured.RequestHeader;
 import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
+import com.digitalpetri.opcua.stack.core.util.LongSequence;
 import com.digitalpetri.opcua.stack.core.util.NonceUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -68,6 +70,8 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
     private ScheduledFuture renewFuture;
 
     private final AtomicReference<AsymmetricSecurityHeader> headerRef = new AtomicReference<>();
+
+    private final LongSequence requestId;
 
     private final int maxChunkCount;
     private final int maxChunkSize;
@@ -89,6 +93,12 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
 
         maxChunkCount = serializationQueue.getParameters().getLocalMaxChunkCount();
         maxChunkSize = serializationQueue.getParameters().getLocalReceiveBufferSize();
+
+        secureChannel
+                .attr(ClientSecureChannel.KEY_REQUEST_ID_SEQUENCE)
+                .setIfAbsent(new LongSequence(1L, UInteger.MAX_VALUE));
+
+        requestId = secureChannel.attr(ClientSecureChannel.KEY_REQUEST_ID_SEQUENCE).get();
     }
 
     @Override
@@ -304,10 +314,11 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 binaryEncoder.setBuffer(messageBuffer);
                 binaryEncoder.encodeMessage(null, request);
 
-                List<ByteBuf> chunks = chunkEncoder.encodeAsymmetricRequest(
+                List<ByteBuf> chunks = chunkEncoder.encodeAsymmetric(
                         secureChannel,
                         MessageType.OpenSecureChannel,
-                        messageBuffer
+                        messageBuffer,
+                        requestId.getAndIncrement()
                 );
 
                 ctx.executor().execute(() -> {
@@ -346,10 +357,11 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 binaryEncoder.setBuffer(messageBuffer);
                 binaryEncoder.encodeMessage(null, request);
 
-                List<ByteBuf> chunks = chunkEncoder.encodeSymmetricRequest(
+                List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
                         secureChannel,
                         MessageType.CloseSecureChannel,
-                        messageBuffer
+                        messageBuffer,
+                        requestId.getAndIncrement()
                 );
 
                 ctx.executor().execute(() -> {

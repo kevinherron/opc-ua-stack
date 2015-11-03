@@ -340,7 +340,10 @@ public class UaTcpStackClient implements UaStackClient {
         return config.getExecutor();
     }
 
-    public static CompletableFuture<ClientSecureChannel> bootstrap(UaTcpStackClient client, long secureChannelId) {
+    public static CompletableFuture<ClientSecureChannel> bootstrap(
+            UaTcpStackClient client,
+            Optional<ClientSecureChannel> existingChannel) {
+
         CompletableFuture<ClientSecureChannel> handshake = new CompletableFuture<>();
 
         Bootstrap bootstrap = new Bootstrap();
@@ -354,7 +357,7 @@ public class UaTcpStackClient implements UaStackClient {
                     @Override
                     protected void initChannel(SocketChannel channel) throws Exception {
                         UaTcpClientAcknowledgeHandler acknowledgeHandler =
-                                new UaTcpClientAcknowledgeHandler(client, secureChannelId, handshake);
+                                new UaTcpClientAcknowledgeHandler(client, existingChannel, handshake);
 
                         channel.pipeline().addLast(acknowledgeHandler);
                     }

@@ -43,12 +43,10 @@ public class Connected implements ConnectionState {
 
     @Override
     public CompletableFuture<Void> activate(ConnectionEvent event, ConnectionStateFsm fsm) {
-        logger.debug("activate({}, {})", event, fsm);
-
         inactivityListener = new ChannelInboundHandlerAdapter() {
             @Override
             public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-                logger.debug("channelInactive()");
+                logger.warn("Channel went inactive: {}", ctx.channel());
 
                 fsm.handleEvent(ConnectionEvent.ConnectionLost);
 
@@ -77,7 +75,7 @@ public class Connected implements ConnectionState {
     public ConnectionState transition(ConnectionEvent event, ConnectionStateFsm fsm) {
         switch (event) {
             case ConnectionLost:
-                return new ReconnectDelay(0L, secureChannel.getChannelId());
+                return new ReconnectDelay(0L, secureChannel);
 
             case DisconnectRequested:
                 return new Disconnecting(secureChannel);

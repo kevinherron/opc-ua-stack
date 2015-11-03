@@ -16,6 +16,7 @@
 
 package com.digitalpetri.opcua.stack.client.fsm.states;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
@@ -63,7 +64,7 @@ public class Connecting implements ConnectionState {
                                                            boolean initialAttempt,
                                                            CompletableFuture<ClientSecureChannel> future) {
 
-        UaTcpStackClient.bootstrap(fsm.getClient(), 0L).whenComplete((sc, ex) -> {
+        UaTcpStackClient.bootstrap(fsm.getClient(), Optional.empty()).whenComplete((sc, ex) -> {
             if (sc != null) {
                 logger.debug("Channel bootstrap succeeded: localAddress={}, remoteAddress={}",
                         sc.getChannel().localAddress(), sc.getChannel().remoteAddress());

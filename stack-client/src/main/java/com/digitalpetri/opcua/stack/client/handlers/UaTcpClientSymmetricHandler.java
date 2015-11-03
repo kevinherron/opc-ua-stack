@@ -36,19 +36,26 @@ import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
+import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
+import com.digitalpetri.opcua.stack.core.util.LongSequence;
 import com.google.common.collect.Maps;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
+import io.netty.util.AttributeKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestFuture> implements HeaderDecoder {
 
+    public static final AttributeKey<Map<Long, UaRequestFuture>> KEY_PENDING_REQUEST_FUTURES =
+            AttributeKey.valueOf("pending-request-futures");
+
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final Map<Long, UaRequestFuture> pending = Maps.newConcurrentMap();
+    private final Map<Long, UaRequestFuture> pending;
+    private final LongSequence requestId;
 
     private List<ByteBuf> chunkBuffers;
 
@@ -73,6 +80,18 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestFut
         maxChunkSize = serializationQueue.getParameters().getLocalReceiveBufferSize();
 
         chunkBuffers = new ArrayList<>(maxChunkCount);
+
+        secureChannel
+                .attr(KEY_PENDING_REQUEST_FUTURES)
+                .setIfAbsent(Maps.newConcurrentMap());
+
+        pending = secureChannel.attr(KEY_PENDING_REQUEST_FUTURES).get();
+
+        secureChannel
+                .attr(ClientSecureChannel.KEY_REQUEST_ID_SEQUENCE)
+                .setIfAbsent(new LongSequence(1L, UInteger.MAX_VALUE));
+
+        requestId = secureChannel.attr(ClientSecureChannel.KEY_REQUEST_ID_SEQUENCE).get();
     }
 
     @Override
@@ -100,10 +119,11 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestFut
                 binaryEncoder.setBuffer(messageBuffer);
                 binaryEncoder.encodeMessage(null, message.getRequest());
 
-                List<ByteBuf> chunks = chunkEncoder.encodeSymmetricRequest(
+                List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
                         secureChannel,
                         MessageType.SecureMessage,
-                        messageBuffer
+                        messageBuffer,
+                        requestId.getAndIncrement()
                 );
 
                 long requestId = chunkEncoder.getLastRequestId();

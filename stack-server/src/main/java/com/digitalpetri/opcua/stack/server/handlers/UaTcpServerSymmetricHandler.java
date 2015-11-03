@@ -97,7 +97,7 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
                 binaryEncoder.setBuffer(messageBuffer);
                 binaryEncoder.encodeMessage(null, message.getResponse());
 
-                final List<ByteBuf> chunks = chunkEncoder.encodeSymmetricResponse(
+                final List<ByteBuf> chunks = chunkEncoder.encodeSymmetric(
                         secureChannel,
                         MessageType.SecureMessage,
                         messageBuffer,

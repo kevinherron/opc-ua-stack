@@ -387,7 +387,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                 binaryEncoder.setBuffer(messageBuffer);
                 binaryEncoder.encodeMessage(null, response);
 
-                List<ByteBuf> chunks = chunkEncoder.encodeAsymmetricResponse(
+                List<ByteBuf> chunks = chunkEncoder.encodeAsymmetric(
                         secureChannel,
                         MessageType.OpenSecureChannel,
                         messageBuffer,

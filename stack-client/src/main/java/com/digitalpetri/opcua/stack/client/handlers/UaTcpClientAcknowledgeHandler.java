@@ -66,68 +66,69 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
     private final ClientSecureChannel secureChannel;
 
     private final UaTcpStackClient client;
-    private final long secureChannelId;
     private final CompletableFuture<ClientSecureChannel> handshakeFuture;
 
     public UaTcpClientAcknowledgeHandler(UaTcpStackClient client,
-                                         long secureChannelId,
+                                         Optional<ClientSecureChannel> existingChannel,
                                          CompletableFuture<ClientSecureChannel> handshakeFuture) {
 
         this.client = client;
-        this.secureChannelId = secureChannelId;
         this.handshakeFuture = handshakeFuture;
 
         UaTcpStackClientConfig config = client.getConfig();
 
-        secureChannel = config.getEndpoint()
-                .flatMap(e -> {
-                    SecurityPolicy securityPolicy = SecurityPolicy
-                            .fromUriSafe(e.getSecurityPolicyUri())
-                            .orElse(SecurityPolicy.None);
+        if (existingChannel.isPresent()) {
+            secureChannel = existingChannel.get();
+        } else {
+            secureChannel = config.getEndpoint()
+                    .flatMap(e -> {
+                        SecurityPolicy securityPolicy = SecurityPolicy
+                                .fromUriSafe(e.getSecurityPolicyUri())
+                                .orElse(SecurityPolicy.None);
 
-                    if (securityPolicy == SecurityPolicy.None) {
-                        return Optional.empty();
-                    } else {
-                        return Optional.of(new Tuple1<>(e));
-                    }
-                })
-                .flatMap(t1 -> config.getKeyPair().map(t1::concat))
-                .flatMap(t2 -> config.getCertificate().map(t2::concat))
-                .flatMap(t3 -> {
-                    EndpointDescription endpoint = t3.v1();
-                    KeyPair keyPair = t3.v2();
-                    X509Certificate localCertificate = t3.v3();
+                        if (securityPolicy == SecurityPolicy.None) {
+                            return Optional.empty();
+                        } else {
+                            return Optional.of(new Tuple1<>(e));
+                        }
+                    })
+                    .flatMap(t1 -> config.getKeyPair().map(t1::concat))
+                    .flatMap(t2 -> config.getCertificate().map(t2::concat))
+                    .flatMap(t3 -> {
+                        EndpointDescription endpoint = t3.v1();
+                        KeyPair keyPair = t3.v2();
+                        X509Certificate localCertificate = t3.v3();
 
-                    try {
-                        X509Certificate remoteCertificate = CertificateUtil
-                                .decodeCertificate(endpoint.getServerCertificate().bytes());
+                        try {
+                            X509Certificate remoteCertificate = CertificateUtil
+                                    .decodeCertificate(endpoint.getServerCertificate().bytes());
 
-                        List<X509Certificate> remoteCertificateChain = CertificateUtil
-                                .decodeCertificates(endpoint.getServerCertificate().bytes());
+                            List<X509Certificate> remoteCertificateChain = CertificateUtil
+                                    .decodeCertificates(endpoint.getServerCertificate().bytes());
 
-                        SecurityPolicy securityPolicy = SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri());
+                            SecurityPolicy securityPolicy = SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri());
 
-                        ClientSecureChannel secureChannel = new ClientSecureChannel(
-                                keyPair,
-                                localCertificate,
-                                remoteCertificate,
-                                remoteCertificateChain,
-                                securityPolicy,
-                                endpoint.getSecurityMode()
-                        );
+                            ClientSecureChannel secureChannel = new ClientSecureChannel(
+                                    keyPair,
+                                    localCertificate,
+                                    remoteCertificate,
+                                    remoteCertificateChain,
+                                    securityPolicy,
+                                    endpoint.getSecurityMode()
+                            );
 
-                        return Optional.of(secureChannel);
-                    } catch (Throwable t) {
-                        return Optional.empty();
-                    }
-                })
-                .orElse(new ClientSecureChannel(SecurityPolicy.None, MessageSecurityMode.None));
+                            return Optional.of(secureChannel);
+                        } catch (Throwable t) {
+                            return Optional.empty();
+                        }
+                    })
+                    .orElse(new ClientSecureChannel(SecurityPolicy.None, MessageSecurityMode.None));
+        }
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         secureChannel.setChannel(ctx.channel());
-        secureChannel.setChannelId(secureChannelId);
 
         HelloMessage hello = new HelloMessage(
                 PROTOCOL_VERSION,

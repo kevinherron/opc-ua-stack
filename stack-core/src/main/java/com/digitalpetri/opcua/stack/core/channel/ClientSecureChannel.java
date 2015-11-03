@@ -23,11 +23,16 @@ import java.util.List;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
 import com.digitalpetri.opcua.stack.core.types.builtin.ByteString;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
+import com.digitalpetri.opcua.stack.core.util.LongSequence;
 import com.google.common.base.MoreObjects;
 import io.netty.channel.Channel;
+import io.netty.util.AttributeKey;
 import io.netty.util.DefaultAttributeMap;
 
 public class ClientSecureChannel extends DefaultAttributeMap implements SecureChannel {
+
+    public static final AttributeKey<LongSequence> KEY_REQUEST_ID_SEQUENCE =
+            AttributeKey.valueOf("request-id-sequence");
 
     private volatile Channel channel;
     private volatile long channelId = 0;

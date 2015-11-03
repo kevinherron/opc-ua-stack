@@ -33,7 +33,6 @@ import com.digitalpetri.opcua.stack.core.channel.headers.SequenceHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
 import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.security.SecurityAlgorithm;
-import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.digitalpetri.opcua.stack.core.util.LongSequence;
 import com.digitalpetri.opcua.stack.core.util.SignatureUtil;
@@ -47,7 +46,6 @@ public class ChunkEncoder {
     // Wrap after UInt32.MAX - 1024
     private final LongSequence sequenceNumber = new LongSequence(1L, 4294966271L);
 
-    private final LongSequence requestId = new LongSequence(1L, UInteger.MAX_VALUE);
     private volatile long lastRequestId = 1L;
 
     private final ChannelParameters parameters;
@@ -56,32 +54,18 @@ public class ChunkEncoder {
         this.parameters = parameters;
     }
 
-    public List<ByteBuf> encodeAsymmetricRequest(SecureChannel channel,
-                                                 MessageType messageType,
-                                                 ByteBuf messageBuffer) throws UaException {
-
-        return encode(asymmetricDelegate, channel, messageType, messageBuffer, requestId.getAndIncrement());
-    }
-
-    public List<ByteBuf> encodeAsymmetricResponse(SecureChannel channel,
-                                                  MessageType messageType,
-                                                  ByteBuf messageBuffer,
-                                                  long requestId) throws UaException {
+    public List<ByteBuf> encodeAsymmetric(SecureChannel channel,
+                                          MessageType messageType,
+                                          ByteBuf messageBuffer,
+                                          long requestId) throws UaException {
 
         return encode(asymmetricDelegate, channel, messageType, messageBuffer, requestId);
     }
 
-    public List<ByteBuf> encodeSymmetricRequest(SecureChannel channel,
-                                                MessageType messageType,
-                                                ByteBuf messageBuffer) throws UaException {
-
-        return encode(symmetricDelegate, channel, messageType, messageBuffer, requestId.getAndIncrement());
-    }
-
-    public List<ByteBuf> encodeSymmetricResponse(SecureChannel channel,
-                                                 MessageType messageType,
-                                                 ByteBuf messageBuffer,
-                                                 long requestId) throws UaException {
+    public List<ByteBuf> encodeSymmetric(SecureChannel channel,
+                                         MessageType messageType,
+                                         ByteBuf messageBuffer,
+                                         long requestId) throws UaException {
 
         return encode(symmetricDelegate, channel, messageType, messageBuffer, requestId);
     }

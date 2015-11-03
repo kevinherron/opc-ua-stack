@@ -16,8 +16,8 @@
 
 package com.digitalpetri.opcua.stack.client.fsm.states;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ScheduledFuture;
 
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
 import com.digitalpetri.opcua.stack.client.fsm.ConnectionEvent;
@@ -41,15 +41,15 @@ public class ReconnectExecute implements ConnectionState {
     private volatile ClientSecureChannel secureChannel;
 
     private final long delaySeconds;
-    private volatile long secureChannelId;
+    private final ClientSecureChannel existingChannel;
 
     public ReconnectExecute(CompletableFuture<ClientSecureChannel> channelFuture,
-                            long delaySeconds,
-                            long secureChannelId) {
+                            ClientSecureChannel existingChannel,
+                            long delaySeconds) {
 
         this.channelFuture = channelFuture;
+        this.existingChannel = existingChannel;
         this.delaySeconds = delaySeconds;
-        this.secureChannelId = secureChannelId;
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ReconnectExecute implements ConnectionState {
 
         logger.debug("Reconnecting...");
 
-        UaTcpStackClient.bootstrap(fsm.getClient(), secureChannelId).whenComplete((sc, ex) -> {
+        UaTcpStackClient.bootstrap(fsm.getClient(), Optional.of(existingChannel)).whenComplete((sc, ex) -> {
             if (sc != null) {
                 logger.debug("Channel bootstrap succeeded: localAddress={}, remoteAddress={}",
                         sc.getChannel().localAddress(), sc.getChannel().remoteAddress());
@@ -100,7 +100,7 @@ public class ReconnectExecute implements ConnectionState {
                     // Try again if bootstrapping failed because we couldn't re-open the previous channel.
                     logger.debug("Previous channel unusable, retrying...");
 
-                    secureChannelId = 0L;
+                    existingChannel.setChannelId(0);
 
                     connect(fsm, false, future);
                 } else {
@@ -124,7 +124,7 @@ public class ReconnectExecute implements ConnectionState {
                 return new Disconnecting(secureChannel);
 
             case ReconnectFailed:
-                return new ReconnectDelay(nextDelay(), secureChannelId);
+                return new ReconnectDelay(nextDelay(), existingChannel);
 
             case ReconnectSucceeded:
                 return new Connected(secureChannel, channelFuture);
@@ -150,7 +150,7 @@ public class ReconnectExecute implements ConnectionState {
     public String toString() {
         return "ReconnectExecute{" +
                 "delaySeconds=" + delaySeconds +
-                ", secureChannelId=" + secureChannelId +
+                ", secureChannelId=" + existingChannel.getChannelId() +
                 '}';
     }
 

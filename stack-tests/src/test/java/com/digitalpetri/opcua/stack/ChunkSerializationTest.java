@@ -22,12 +22,16 @@ import com.digitalpetri.opcua.stack.core.channel.ChannelConfig;
 import com.digitalpetri.opcua.stack.core.channel.ChannelParameters;
 import com.digitalpetri.opcua.stack.core.channel.ChunkDecoder;
 import com.digitalpetri.opcua.stack.core.channel.ChunkEncoder;
+import com.digitalpetri.opcua.stack.core.channel.ClientSecureChannel;
 import com.digitalpetri.opcua.stack.core.channel.SecureChannel;
+import com.digitalpetri.opcua.stack.core.channel.ServerSecureChannel;
 import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
+import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.digitalpetri.opcua.stack.core.util.CryptoRestrictions;
+import com.digitalpetri.opcua.stack.core.util.LongSequence;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.ReferenceCountUtil;
 import org.slf4j.Logger;
@@ -91,8 +95,15 @@ public class ChunkSerializationTest extends SecureChannelFixture {
         ChunkDecoder decoder = new ChunkDecoder(parameters);
 
         SecureChannel[] channels = generateChannels(securityPolicy, messageSecurity);
-        SecureChannel clientChannel = channels[0];
-        SecureChannel serverChannel = channels[1];
+        ClientSecureChannel clientChannel = (ClientSecureChannel) channels[0];
+        ServerSecureChannel serverChannel = (ServerSecureChannel) channels[1];
+
+        clientChannel
+                .attr(ClientSecureChannel.KEY_REQUEST_ID_SEQUENCE)
+                .setIfAbsent(new LongSequence(1L, UInteger.MAX_VALUE));
+
+        LongSequence requestId = clientChannel
+                .attr(ClientSecureChannel.KEY_REQUEST_ID_SEQUENCE).get();
 
         byte[] messageBytes = new byte[messageSize];
         for (int i = 0; i < messageBytes.length; i++) {
@@ -101,10 +112,11 @@ public class ChunkSerializationTest extends SecureChannelFixture {
 
         ByteBuf messageBuffer = BufferUtil.buffer().writeBytes(messageBytes);
 
-        List<ByteBuf> chunkBuffers = encoder.encodeAsymmetricRequest(
+        List<ByteBuf> chunkBuffers = encoder.encodeAsymmetric(
                 clientChannel,
                 MessageType.OpenSecureChannel,
-                messageBuffer
+                messageBuffer,
+                requestId.getAndIncrement()
         );
 
         ByteBuf decodedBuffer = decoder.decodeAsymmetric(
@@ -160,8 +172,15 @@ public class ChunkSerializationTest extends SecureChannelFixture {
         ChunkDecoder decoder = new ChunkDecoder(parameters);
 
         SecureChannel[] channels = generateChannels(securityPolicy, messageSecurity);
-        SecureChannel clientChannel = channels[0];
-        SecureChannel serverChannel = channels[1];
+        ClientSecureChannel clientChannel = (ClientSecureChannel) channels[0];
+        ServerSecureChannel serverChannel = (ServerSecureChannel) channels[1];
+
+        clientChannel
+                .attr(ClientSecureChannel.KEY_REQUEST_ID_SEQUENCE)
+                .setIfAbsent(new LongSequence(1L, UInteger.MAX_VALUE));
+
+        LongSequence requestId = clientChannel
+                .attr(ClientSecureChannel.KEY_REQUEST_ID_SEQUENCE).get();
 
         byte[] messageBytes = new byte[messageSize];
         for (int i = 0; i < messageBytes.length; i++) {
@@ -170,10 +189,11 @@ public class ChunkSerializationTest extends SecureChannelFixture {
 
         ByteBuf messageBuffer = BufferUtil.buffer().writeBytes(messageBytes);
 
-        List<ByteBuf> chunkBuffers = encoder.encodeSymmetricRequest(
+        List<ByteBuf> chunkBuffers = encoder.encodeSymmetric(
                 clientChannel,
                 MessageType.SecureMessage,
-                messageBuffer
+                messageBuffer,
+                requestId.getAndIncrement()
         );
 
         ByteBuf decodedBuffer = decoder.decodeSymmetric(

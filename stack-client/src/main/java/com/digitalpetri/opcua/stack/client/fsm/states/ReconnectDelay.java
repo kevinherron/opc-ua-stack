@@ -37,11 +37,11 @@ public class ReconnectDelay implements ConnectionState {
     private volatile ScheduledFuture<?> scheduledFuture;
 
     private final long delaySeconds;
-    private volatile long secureChannelId;
+    private final ClientSecureChannel existingChannel;
 
-    public ReconnectDelay(long delaySeconds, long secureChannelId) {
+    public ReconnectDelay(long delaySeconds, ClientSecureChannel existingChannel) {
         this.delaySeconds = delaySeconds;
-        this.secureChannelId = secureChannelId;
+        this.existingChannel = existingChannel;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class ReconnectDelay implements ConnectionState {
                 return new Disconnecting(null);
 
             case ReconnectRequested:
-                return new ReconnectExecute(channelFuture, delaySeconds, secureChannelId);
+                return new ReconnectExecute(channelFuture, existingChannel, delaySeconds);
         }
 
         return this;
@@ -91,7 +91,7 @@ public class ReconnectDelay implements ConnectionState {
     public String toString() {
         return "ReconnectDelay{" +
                 "delaySeconds=" + delaySeconds +
-                ", secureChannelId=" + secureChannelId +
+                ", secureChannelId=" + existingChannel.getChannelId() +
                 '}';
     }
 
