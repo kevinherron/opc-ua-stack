@@ -169,8 +169,41 @@
                         <manifestEntries>
                             <X-Stack-Version>${project.version}</X-Stack-Version>
                         </manifestEntries>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                     </archive>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>2.4.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-manifest</id>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                        <configuration>
+                            <supportedProjectTypes>
+                                <supportedProjectType>jar</supportedProjectType>
+                                <supportedProjectType>bundle</supportedProjectType>
+                            </supportedProjectTypes>
+                            <instructions>
+                                <Export-Package>${project.groupId}.stack.*</Export-Package>
+
+                                <!-- enforce JVM vendor package as optional -->
+                                <Import-Package>
+                                    sun.misc.*;resolution:=optional,sun.nio.ch;resolution:=optional,sun.security.*;resolution:=optional
+                                </Import-Package>
+
+                                <!-- override "internal" private package convention -->
+                                <Private-Package>!*</Private-Package>
+                            </instructions>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
