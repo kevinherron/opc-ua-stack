@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.digitalpetri.opcua.stack.core.Stack;
 import com.digitalpetri.opcua.stack.core.StatusCodes;
 import com.digitalpetri.opcua.stack.core.UaSerializationException;
 import com.digitalpetri.opcua.stack.core.types.builtin.NodeId;
@@ -27,6 +28,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.reflect.ClassPath;
+import com.google.common.reflect.ClassPath.ClassInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,27 +127,42 @@ public class DelegateRegistry {
          */
         Logger logger = LoggerFactory.getLogger(DelegateRegistry.class);
 
+        ClassLoader classLoader = Stack.getCustomClassLoader()
+                .orElse(DelegateRegistry.class.getClassLoader());
+
         try {
-            ClassLoader classLoader = DelegateRegistry.class.getClassLoader();
-            ClassPath classPath = ClassPath.from(classLoader);
+            loadGeneratedClasses(classLoader);
+        } catch (Exception e1) {
+            // Temporarily set the thread context ClassLoader to our
+            // ClassLoader and try loading the classes one more time.
+            
+            Thread thread = Thread.currentThread();
+            ClassLoader contextClassLoader = thread.getContextClassLoader();
 
-            ImmutableSet<ClassPath.ClassInfo> structures =
-                    classPath.getTopLevelClasses("com.digitalpetri.opcua.stack.core.types.structured");
+            thread.setContextClassLoader(classLoader);
 
-            ImmutableSet<ClassPath.ClassInfo> enumerations =
-                    classPath.getTopLevelClasses("com.digitalpetri.opcua.stack.core.types.enumerated");
+            try {
+                loadGeneratedClasses(classLoader);
+            } catch (Exception e2) {
+                logger.error("Error loading generated classes.", e2);
+            } finally {
+                thread.setContextClassLoader(contextClassLoader);
+            }
+        }
+    }
 
-            Sets.union(structures, enumerations).forEach(classInfo -> {
-                Class<?> clazz = classInfo.load();
+    private static void loadGeneratedClasses(ClassLoader classLoader) throws IOException, ClassNotFoundException {
+        ClassPath classPath = ClassPath.from(classLoader);
 
-                try {
-                    Class.forName(clazz.getName(), true, classLoader);
-                } catch (Exception e) {
-                    logger.error("Error loading class: {}", clazz, e);
-                }
-            });
-        } catch (IOException e) {
-            logger.error("Error loading class path.", e);
+        ImmutableSet<ClassInfo> structures =
+                classPath.getTopLevelClasses("com.digitalpetri.opcua.stack.core.types.structured");
+
+        ImmutableSet<ClassInfo> enumerations =
+                classPath.getTopLevelClasses("com.digitalpetri.opcua.stack.core.types.enumerated");
+
+        for (ClassInfo classInfo : Sets.union(structures, enumerations)) {
+            Class<?> clazz = classInfo.load();
+            Class.forName(clazz.getName(), true, classLoader);
         }
     }
 
