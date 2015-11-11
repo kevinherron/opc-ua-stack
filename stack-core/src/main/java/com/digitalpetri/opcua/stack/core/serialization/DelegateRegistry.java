@@ -135,7 +135,7 @@ public class DelegateRegistry {
         } catch (Exception e1) {
             // Temporarily set the thread context ClassLoader to our
             // ClassLoader and try loading the classes one more time.
-            
+
             Thread thread = Thread.currentThread();
             ClassLoader contextClassLoader = thread.getContextClassLoader();
 
