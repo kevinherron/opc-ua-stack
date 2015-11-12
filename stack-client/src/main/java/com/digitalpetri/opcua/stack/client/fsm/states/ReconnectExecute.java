@@ -54,6 +54,10 @@ public class ReconnectExecute implements ConnectionState {
 
     @Override
     public CompletableFuture<Void> activate(ConnectionEvent event, ConnectionStateFsm fsm) {
+        if (!fsm.getClient().getConfig().isSecureChannelReauthenticationEnabled()) {
+            existingChannel.setChannelId(0);
+        }
+
         CompletableFuture<Void> future = new CompletableFuture<>();
 
         connect(fsm, true, new CompletableFuture<>()).whenComplete((sc, ex) -> {
