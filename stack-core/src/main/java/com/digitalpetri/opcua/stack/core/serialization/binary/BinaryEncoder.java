@@ -53,6 +53,7 @@ import com.digitalpetri.opcua.stack.core.types.enumerated.IdType;
 import com.digitalpetri.opcua.stack.core.util.ArrayUtil;
 import com.digitalpetri.opcua.stack.core.util.TypeUtil;
 import io.netty.buffer.ByteBuf;
+import org.slf4j.LoggerFactory;
 
 public class BinaryEncoder implements UaEncoder {
 
@@ -532,6 +533,11 @@ public class BinaryEncoder implements UaEncoder {
             }
 
             int typeId = TypeUtil.getBuiltinTypeId(valueClass);
+
+            if (typeId == -1) {
+                LoggerFactory.getLogger(getClass())
+                        .warn("Not a built-in type: {}", valueClass);
+            }
 
             if (value.getClass().isArray()) {
                 int[] dimensions = ArrayUtil.getDimensions(value);
