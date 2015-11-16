@@ -31,9 +31,7 @@ import com.digitalpetri.opcua.stack.core.channel.MessageAbortedException;
 import com.digitalpetri.opcua.stack.core.channel.SerializationQueue;
 import com.digitalpetri.opcua.stack.core.channel.headers.HeaderDecoder;
 import com.digitalpetri.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
-import com.digitalpetri.opcua.stack.core.channel.messages.ErrorMessage;
 import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
-import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageDecoder;
 import com.digitalpetri.opcua.stack.core.serialization.UaMessage;
 import com.digitalpetri.opcua.stack.core.serialization.UaResponseMessage;
 import com.digitalpetri.opcua.stack.core.types.builtin.unsigned.UInteger;
@@ -163,12 +161,10 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestFut
                     onSecureMessage(ctx, buffer.readSlice(messageLength));
                     break;
 
-                case Error:
-                    onError(ctx, buffer.readSlice(messageLength));
-                    break;
-
                 default:
-                    out.add(buffer.readSlice(messageLength).retain());
+                    throw new UaException(
+                            StatusCodes.Bad_TcpMessageTypeInvalid,
+                            "unexpected MessageType: " + messageType);
             }
         }
     }
@@ -269,18 +265,6 @@ public class UaTcpClientSymmetricHandler extends ByteToMessageCodec<UaRequestFut
             }
 
             chunkBuffer.readerIndex(0);
-        }
-    }
-
-    private void onError(ChannelHandlerContext ctx, ByteBuf buffer) {
-        try {
-            ErrorMessage error = TcpMessageDecoder.decodeError(buffer);
-
-            logger.error("Received error message: " + error);
-        } catch (UaException e) {
-            logger.error("An exception occurred while decoding an error message: {}", e.getMessage(), e);
-        } finally {
-            ctx.close();
         }
     }
 

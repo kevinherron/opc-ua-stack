@@ -55,13 +55,13 @@ import com.digitalpetri.opcua.stack.core.util.LongSequence;
 import com.digitalpetri.opcua.stack.core.util.NonceUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.ByteToMessageDecoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 
-public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<ByteBuf> implements HeaderDecoder {
+public class UaTcpClientAsymmetricHandler extends ByteToMessageDecoder implements HeaderDecoder {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -144,7 +144,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, ByteBuf buffer) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws Exception {
         buffer = buffer.order(ByteOrder.LITTLE_ENDIAN);
 
         while (buffer.readableBytes() >= HEADER_LENGTH &&
@@ -163,8 +163,8 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                     break;
 
                 default:
-                    throw new UaException(StatusCodes.Bad_TcpMessageTypeInvalid,
-                            "unexpected MessageType: " + messageType);
+                    out.add(buffer.readSlice(messageLength).retain());
+
             }
         }
     }
@@ -285,7 +285,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
             // SecureChannel is ready; remove the acknowledge handler and add the symmetric handler.
             if (ctx.pipeline().get(UaTcpClientAcknowledgeHandler.class) != null) {
                 ctx.pipeline().remove(UaTcpClientAcknowledgeHandler.class);
-                ctx.pipeline().addFirst(new UaTcpClientSymmetricHandler(
+                ctx.pipeline().addLast(new UaTcpClientSymmetricHandler(
                         client, serializationQueue, secureChannel, handshakeFuture));
             }
         });
