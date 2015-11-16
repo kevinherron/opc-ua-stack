@@ -24,6 +24,7 @@ import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import com.digitalpetri.opcua.stack.core.util.annotations.Description;
 import com.google.common.collect.ImmutableMap;
 
+
 @SuppressWarnings("unused")
 public class StatusCodes {
 
@@ -87,6 +88,12 @@ public class StatusCodes {
     @Description("The message encoding/decoding limits imposed by the stack have been exceeded.")
     public final static long Bad_EncodingLimitsExceeded = 0x80080000L;
 
+    @Description("The request message size exceeds limits set by the server.")
+    public final static long Bad_RequestTooLarge = 0x80B80000L;
+
+    @Description("The response message size exceeds limits set by the client.")
+    public final static long Bad_ResponseTooLarge = 0x80B90000L;
+
     @Description("An unrecognized response was received from the server.")
     public final static long Bad_UnknownResponse = 0x80090000L;
 
@@ -110,6 +117,9 @@ public class StatusCodes {
 
     @Description("The request could not be processed because it specified too many operations.")
     public final static long Bad_TooManyOperations = 0x80100000L;
+
+    @Description("The request could not be processed because there are too many monitored items in the subscription.")
+    public final static long Bad_TooManyMonitoredItems = 0x80DB0000L;
 
     @Description("The extension object cannot be (de)serialized because the data type id is not recognized.")
     public final static long Bad_DataTypeIdUnknown = 0x80110000L;
@@ -147,11 +157,14 @@ public class StatusCodes {
     @Description("It was not possible to determine if the Issuer Certificate has been revoked.")
     public final static long Bad_CertificateIssuerRevocationUnknown = 0x801C0000L;
 
-    @Description("The Certificate has been revoked.")
+    @Description("The certificate has been revoked.")
     public final static long Bad_CertificateRevoked = 0x801D0000L;
 
-    @Description("The Issuer Certificate has been revoked.")
+    @Description("The issuer certificate has been revoked.")
     public final static long Bad_CertificateIssuerRevoked = 0x801E0000L;
+
+    @Description("The certificate chain is incomplete.")
+    public final static long Bad_CertificateChainIncomplete = 0x810D0000L;
 
     @Description("User does not have permission to perform the requested operation.")
     public final static long Bad_UserAccessDenied = 0x801F0000L;
@@ -192,6 +205,9 @@ public class StatusCodes {
     @Description("The request was cancelled by the client.")
     public final static long Bad_RequestCancelledByClient = 0x802C0000L;
 
+    @Description("Too many arguments were provided.")
+    public final static long Bad_TooManyArguments = 0x80E50000L;
+
     @Description("The subscription was transferred to another session.")
     public final static long Good_SubscriptionTransferred = 0x002D0000L;
 
@@ -204,7 +220,7 @@ public class StatusCodes {
     @Description("The value written was accepted but was clamped.")
     public final static long Good_Clamped = 0x00300000L;
 
-    @Description("Communication with the data source is defined, but not established, and there is no last known value available.")
+    @Description("Communication with the data source is defined.")
     public final static long Bad_NoCommunication = 0x80310000L;
 
     @Description("Waiting for the server to obtain values from the underlying data source.")
@@ -276,8 +292,23 @@ public class StatusCodes {
     @Description("The content filter is not valid.")
     public final static long Bad_ContentFilterInvalid = 0x80480000L;
 
+    @Description("An unregognized operator was provided in a filter.")
+    public final static long Bad_FilterOperatorInvalid = 0x80C10000L;
+
+    @Description("A valid operator was provided.")
+    public final static long Bad_FilterOperatorUnsupported = 0x80C20000L;
+
+    @Description("The number of operands provided for the filter operator was less then expected for the operand provided.")
+    public final static long Bad_FilterOperandCountMismatch = 0x80C30000L;
+
     @Description("The operand used in a content filter is not valid.")
     public final static long Bad_FilterOperandInvalid = 0x80490000L;
+
+    @Description("The referenced element is not a valid element in the content filter.")
+    public final static long Bad_FilterElementInvalid = 0x80C40000L;
+
+    @Description("The referenced literal is not a valid value.")
+    public final static long Bad_FilterLiteralInvalid = 0x80C50000L;
 
     @Description("The continuation point provide is longer valid.")
     public final static long Bad_ContinuationPointInvalid = 0x804A0000L;
@@ -327,6 +358,9 @@ public class StatusCodes {
     @Description("The client did not provide at least one software certificate that is valid and meets the profile requirements for the server.")
     public final static long Bad_NoValidCertificates = 0x80590000L;
 
+    @Description("The server does not support changing the user identity assigned to the session.")
+    public final static long Bad_IdentityChangeNotSupported = 0x80C60000L;
+
     @Description("The request was cancelled by the client with the Cancel service.")
     public final static long Bad_RequestCancelledByRequest = 0x805A0000L;
 
@@ -375,11 +409,32 @@ public class StatusCodes {
     @Description("The server will not allow the node to be deleted.")
     public final static long Bad_NoDeleteRights = 0x80690000L;
 
+    @Description("The server was not able to delete all target references.")
+    public final static long Uncertain_ReferenceNotDeleted = 0x40BC0000L;
+
     @Description("The server index is not valid.")
     public final static long Bad_ServerIndexInvalid = 0x806A0000L;
 
     @Description("The view id does not refer to a valid view node.")
     public final static long Bad_ViewIdUnknown = 0x806B0000L;
+
+    @Description("The view timestamp is not available or not supported.")
+    public final static long Bad_ViewTimestampInvalid = 0x80C90000L;
+
+    @Description("The view parameters are not consistent with each other.")
+    public final static long Bad_ViewParameterMismatch = 0x80CA0000L;
+
+    @Description("The view version is not available or not supported.")
+    public final static long Bad_ViewVersionInvalid = 0x80CB0000L;
+
+    @Description("The list of references may not be complete because the underlying system is not available.")
+    public final static long Uncertain_NotAllNodesAvailable = 0x40C00000L;
+
+    @Description("The server should have followed a reference to a node in a remote server but did not. The result set may be incomplete.")
+    public final static long Good_ResultsMayBeIncomplete = 0x00BA0000L;
+
+    @Description("The provided Nodeid was not a type definition nodeid.")
+    public final static long Bad_NotTypeDefinition = 0x80C80000L;
 
     @Description("One of the references to follow in the relative path references to a node in the address space in another server.")
     public final static long Uncertain_ReferenceOutOfServer = 0x406C0000L;
@@ -396,13 +451,19 @@ public class StatusCodes {
     @Description("The max age parameter is invalid.")
     public final static long Bad_MaxAgeInvalid = 0x80700000L;
 
+    @Description("The operation is not permitted over the current secure channel.")
+    public final static long Bad_SecurityModeInsufficient = 0x80E60000L;
+
     @Description("The history details parameter is not valid.")
     public final static long Bad_HistoryOperationInvalid = 0x80710000L;
 
     @Description("The server does not support the requested operation.")
     public final static long Bad_HistoryOperationUnsupported = 0x80720000L;
 
-    @Description("The server not does support writing the combination of value, status and timestamps provided.")
+    @Description("The defined timestamp to return was invalid.")
+    public final static long Bad_InvalidTimestampArgument = 0x80BD0000L;
+
+    @Description("The server not does support writing the combination of value.")
     public final static long Bad_WriteNotSupported = 0x80730000L;
 
     @Description("The value supplied for the attribute is not of the same type as the attribute's value.")
@@ -431,6 +492,9 @@ public class StatusCodes {
 
     @Description("The Client of the current Session does not support one or more Profiles that are necessary for the Subscription.")
     public final static long Bad_InsufficientClientProfile = 0x807C0000L;
+
+    @Description("The sub-state machine is not currently active.")
+    public final static long Bad_StateNotActive = 0x80BF0000L;
 
     @Description("The server cannot process the request because it is too busy.")
     public final static long Bad_TcpServerTooBusy = 0x807D0000L;
@@ -468,10 +532,13 @@ public class StatusCodes {
     @Description("The sequence number is not valid.")
     public final static long Bad_SequenceNumberInvalid = 0x80880000L;
 
+    @Description("The applications do not have compatible protocol versions.")
+    public final static long Bad_ProtocolVersionUnsupported = 0x80BE0000L;
+
     @Description("There is a problem with the configuration that affects the usefulness of the value.")
     public final static long Bad_ConfigurationError = 0x80890000L;
 
-    @Description("The variable should receive its value from another variable, but has never been configured to do so.")
+    @Description("The variable should receive its value from another variable.")
     public final static long Bad_NotConnected = 0x808A0000L;
 
     @Description("There has been a failure in the device/data source that generates the value that has affected the value.")
@@ -510,25 +577,58 @@ public class StatusCodes {
     @Description("The value has been overridden.")
     public final static long Good_LocalOverride = 0x00960000L;
 
-    @Description("This Condition refresh failed, a Condition refresh operation is already in progress.")
+    @Description("This Condition refresh failed.")
     public final static long Bad_RefreshInProgress = 0x80970000L;
 
     @Description("This condition has already been disabled.")
     public final static long Bad_ConditionAlreadyDisabled = 0x80980000L;
 
-    @Description("Property not available, this condition is disabled.")
+    @Description("This condition has already been enabled.")
+    public final static long Bad_ConditionAlreadyEnabled = 0x80CC0000L;
+
+    @Description("Property not available.")
     public final static long Bad_ConditionDisabled = 0x80990000L;
 
     @Description("The specified event id is not recognized.")
     public final static long Bad_EventIdUnknown = 0x809A0000L;
 
+    @Description("The event cannot be acknowledged.")
+    public final static long Bad_EventNotAcknowledgeable = 0x80BB0000L;
+
+    @Description("The dialog condition is not active.")
+    public final static long Bad_DialogNotActive = 0x80CD0000L;
+
+    @Description("The response is not valid for the dialog.")
+    public final static long Bad_DialogResponseInvalid = 0x80CE0000L;
+
+    @Description("The condition branch has already been acknowledged.")
+    public final static long Bad_ConditionBranchAlreadyAcked = 0x80CF0000L;
+
+    @Description("The condition branch has already been confirmed.")
+    public final static long Bad_ConditionBranchAlreadyConfirmed = 0x80D00000L;
+
+    @Description("The condition has already been shelved.")
+    public final static long Bad_ConditionAlreadyShelved = 0x80D10000L;
+
+    @Description("The condition is not currently shelved.")
+    public final static long Bad_ConditionNotShelved = 0x80D20000L;
+
+    @Description("The shelving time not within an acceptable range.")
+    public final static long Bad_ShelvingTimeOutOfRange = 0x80D30000L;
+
     @Description("No data exists for the requested time range or event filter.")
     public final static long Bad_NoData = 0x809B0000L;
+
+    @Description("No data found to provide upper or lower bound value.")
+    public final static long Bad_BoundNotFound = 0x80D70000L;
+
+    @Description("The server cannot retrieve a bound for the variable.")
+    public final static long Bad_BoundNotSupported = 0x80D80000L;
 
     @Description("Data is missing due to collection started/stopped/lost.")
     public final static long Bad_DataLost = 0x809D0000L;
 
-    @Description("Expected data is unavailable for the requested time range due to an un-mounted volume, an off-line archive or tape, or similar reason for temporary unavailability.")
+    @Description("Expected data is unavailable for the requested time range due to an un-mounted volume.")
     public final static long Bad_DataUnavailable = 0x809E0000L;
 
     @Description("The data or event was not successfully inserted because a matching entry exists.")
@@ -555,6 +655,45 @@ public class StatusCodes {
     @Description("The data or event field was successfully replaced in the historical database.")
     public final static long Good_MoreData = 0x00A60000L;
 
+    @Description("The requested number of Aggregates does not match the requested number of NodeIds.")
+    public final static long Bad_AggregateListMismatch = 0x80D40000L;
+
+    @Description("The requested Aggregate is not support by the server.")
+    public final static long Bad_AggregateNotSupported = 0x80D50000L;
+
+    @Description("The aggregate value could not be derived due to invalid data inputs.")
+    public final static long Bad_AggregateInvalidInputs = 0x80D60000L;
+
+    @Description("The aggregate configuration is not valid for specified node.")
+    public final static long Bad_AggregateConfigurationRejected = 0x80DA0000L;
+
+    @Description("The request pecifies fields which are not valid for the EventType or cannot be saved by the historian.")
+    public final static long Good_DataIgnored = 0x00D90000L;
+
+    @Description("The request was rejected by the server because it did not meet the criteria set by the server.")
+    public final static long Bad_RequestNotAllowed = 0x80E40000L;
+
+    @Description("The value does not come from the real source and has been edited by the server.")
+    public final static long Good_Edited = 0x00DC0000L;
+
+    @Description("There was an error in execution of these post-actions.")
+    public final static long Good_PostActionFailed = 0x00DD0000L;
+
+    @Description("The related EngineeringUnit has been changed but the Variable Value is still provided based on the previous unit.")
+    public final static long Uncertain_DominantValueChanged = 0x40DE0000L;
+
+    @Description("A dependent value has been changed but the change has not been applied to the device.")
+    public final static long Good_DependentValueChanged = 0x00E00000L;
+
+    @Description("The related EngineeringUnit has been changed but this change has not been applied to the device. The Variable Value is still dependent on the previous unit but its status is currently Bad.")
+    public final static long Bad_DominantValueChanged = 0x80E10000L;
+
+    @Description("A dependent value has been changed but the change has not been applied to the device. The quality of the dominant variable is uncertain.")
+    public final static long Uncertain_DependentValueChanged = 0x40E20000L;
+
+    @Description("A dependent value has been changed but the change has not been applied to the device. The quality of the dominant variable is Bad.")
+    public final static long Bad_DependentValueChanged = 0x80E30000L;
+
     @Description("The communication layer has raised an event.")
     public final static long Good_CommunicationEvent = 0x00A70000L;
 
@@ -579,7 +718,7 @@ public class StatusCodes {
     @Description("The network connection has been closed.")
     public final static long Bad_ConnectionClosed = 0x80AE0000L;
 
-    @Description("The operation cannot be completed because the object is closed, uninitialized or in some other invalid state.")
+    @Description("The operation cannot be completed because the object is closed.")
     public final static long Bad_InvalidState = 0x80AF0000L;
 
     @Description("Cannot move beyond end of the stream.")
@@ -605,110 +744,5 @@ public class StatusCodes {
 
     @Description("The operation could not be finished because all available connections are in use.")
     public final static long Bad_MaxConnectionsReached = 0x80B70000L;
-
-    @Description("The request message size exceeds limits set by the server.")
-    public final static long Bad_RequestTooLarge = 0x80B80000L;
-
-    @Description("The response message size exceeds limits set by the client.")
-    public final static long Bad_ResponseTooLarge = 0x80B90000L;
-
-    @Description("The server should have followed a reference to a node in a remote server but did not. The result set may be incomplete.")
-    public final static long Good_ResultsMayBeIncomplete = 0x00BA0000L;
-
-    @Description("The event cannot be acknowledged.")
-    public final static long Bad_EventNotAcknowledgeable = 0x80BB0000L;
-
-    @Description("The server was not able to delete all target references.")
-    public final static long Uncertain_ReferenceNotDeleted = 0x40BC0000L;
-
-    @Description("The defined timestamp to return was invalid.")
-    public final static long Bad_InvalidTimestampArgument = 0x80BD0000L;
-
-    @Description("The applications do not have compatible protocol versions.")
-    public final static long Bad_ProtocolVersionUnsupported = 0x80BE0000L;
-
-    @Description("The sub-state machine is not currently active.")
-    public final static long Bad_StateNotActive = 0x80BF0000L;
-
-    @Description("The list of references may not be complete because the underlying system is not available.")
-    public final static long Uncertain_NotAllNodesAvailable = 0x40C00000L;
-
-    @Description("An unrecognized operator was provided in a filter.")
-    public final static long Bad_FilterOperatorInvalid = 0x80C10000L;
-
-    @Description("A valid operator was provided, but the server does not provide support for this filter operator.")
-    public final static long Bad_FilterOperatorUnsupported = 0x80C20000L;
-
-    @Description("The number of operands provided for the filter operator was less then expected for the operand provided.")
-    public final static long Bad_FilterOperandCountMismatch = 0x80C30000L;
-
-    @Description("The referenced element is not a valid element in the content filter.")
-    public final static long Bad_FilterElementInvalid = 0x80C40000L;
-
-    @Description("The referenced literal is not a valid value.")
-    public final static long Bad_FilterLiteralInvalid = 0x80C50000L;
-
-    @Description("The Server does not support changing the user identity assigned to the session.")
-    public final static long Bad_IdentityChangeNotSupported = 0x80C60000L;
-
-    @Description("The provided NodeId was not a type definition NodeId.")
-    public final static long Bad_NotTypeDefinition = 0x80C80000L;
-
-    @Description("The view timestamp is not available or not supported.")
-    public final static long Bad_ViewTimestampInvalid = 0x80C90000L;
-
-    @Description("The view parameters are not consistent with each other.")
-    public final static long Bad_ViewParameterMismatch = 0x80CA0000L;
-
-    @Description("The view version is not available or not supported.")
-    public final static long Bad_ViewVersionInvalid = 0x80CB0000L;
-
-    @Description("This condition has already been enabled.")
-    public final static long Bad_ConditionAlreadyEnabled = 0x80CC0000L;
-
-    @Description("The dialog condition is not active.")
-    public final static long Bad_DialogNotActive = 0x80CD0000L;
-
-    @Description("The response is not valid for the dialog.")
-    public final static long Bad_DialogResponseInvalid = 0x80CE0000L;
-
-    @Description("The condition branch has already been acknowledged.")
-    public final static long Bad_ConditionBranchAlreadyAcked = 0x80CF0000L;
-
-    @Description("The condition branch has already been confirmed.")
-    public final static long Bad_ConditionBranchAlreadyConfirmed = 0x80D00000L;
-
-    @Description("The condition has already been shelved.")
-    public final static long Bad_ConditionAlreadyShelved = 0x80D10000L;
-
-    @Description("The condition is not currently shelved.")
-    public final static long Bad_ConditionNotShelved = 0x80D20000L;
-
-    @Description("The shelving time not within an acceptable range.")
-    public final static long Bad_ShelvingTimeOutOfRange = 0x80D30000L;
-
-    @Description("The requested number of Aggregates does not match the requested number of NodeIds.")
-    public final static long Bad_AggregateListMismatch = 0x80D40000L;
-
-    @Description("The requested Aggregate is not support by the server.")
-    public final static long Bad_AggregateNotSupported = 0x80D50000L;
-
-    @Description("The aggregate value could not be derived due to invalid data inputs.")
-    public final static long Bad_AggregateInvalidInputs = 0x80D60000L;
-
-    @Description("No data found to provide upper or lower bound value.")
-    public final static long Bad_BoundNotFound = 0x80D70000L;
-
-    @Description("The server cannot retrieve a bound for the variable.")
-    public final static long Bad_BoundNotSupported = 0x80D80000L;
-
-    @Description("The request specifies fields which are not valid for the EventType or cannot be saved by the historian.")
-    public final static long Good_DataIgnored = 0x00D90000L;
-
-    @Description("The aggregate configuration is not valid for specified node.")
-    public final static long Bad_AggregateConfigurationRejected = 0x80DA0000L;
-
-    @Description("The request could not be processed because there are too many monitored items in the subscription.")
-    public final static long Bad_TooManyMonitoredItems = 0x80DB0000L;
 
 }
