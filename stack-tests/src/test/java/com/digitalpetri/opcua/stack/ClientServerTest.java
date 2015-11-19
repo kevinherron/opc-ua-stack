@@ -296,6 +296,8 @@ public class ClientServerTest extends SecurityFixture {
         long secureChannelId = client.getChannelFuture().get().getChannelId();
         server.getSecureChannel(secureChannelId).attr(UaTcpStackServer.BoundChannelKey).get().close().await();
 
+        Thread.sleep(500);
+
         logger.info("sending request: {}", request);
         UaResponseMessage response1 = client.sendRequest(request).get();
         logger.info("got response: {}", response1);
@@ -328,6 +330,7 @@ public class ClientServerTest extends SecurityFixture {
         long secureChannelId = secureChannel.getChannelId();
         secureChannel.setChannelId(Long.MAX_VALUE);
         server.getSecureChannel(secureChannelId).attr(UaTcpStackServer.BoundChannelKey).get().close().await();
+        Thread.sleep(500);
 
         logger.info("sending request: {}", request);
         UaResponseMessage response1 = client.sendRequest(request).get();
