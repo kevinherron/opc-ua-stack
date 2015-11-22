@@ -5773,6 +5773,52 @@ public class Identifiers {
     public static final NodeId AuditUrlMismatchEventType_SessionId = init(14414);
     public static final NodeId Server_ServerRedundancy_ServerNetworkGroups = init(14415);
 
+
+    // Refugees from prior to OPC-UA 1.03...
+
+    public static final NodeId ArrayTestType = init(402);
+    public static final NodeId ArrayTestType_Encoding_DefaultBinary = init(404);
+    public static final NodeId ArrayTestType_Encoding_DefaultXml = init(403);
+    public static final NodeId CompositeTestType = init(405);
+    public static final NodeId CompositeTestType_Encoding_DefaultBinary = init(407);
+    public static final NodeId CompositeTestType_Encoding_DefaultXml = init(406);
+    public static final NodeId ScalarTestType = init(399);
+    public static final NodeId ScalarTestType_Encoding_DefaultBinary = init(401);
+    public static final NodeId ScalarTestType_Encoding_DefaultXml = init(400);
+    public static final NodeId TestStackRequest = init(408);
+    public static final NodeId TestStackRequest_Encoding_DefaultBinary = init(410);
+    public static final NodeId TestStackRequest_Encoding_DefaultXml = init(409);
+    public static final NodeId TestStackResponse = init(411);
+    public static final NodeId TestStackResponse_Encoding_DefaultBinary = init(413);
+    public static final NodeId TestStackResponse_Encoding_DefaultXml = init(412);
+    public static final NodeId TestStackExRequest = init(414);
+    public static final NodeId TestStackExRequest_Encoding_DefaultBinary = init(416);
+    public static final NodeId TestStackExRequest_Encoding_DefaultXml = init(415);
+    public static final NodeId TestStackExResponse = init(417);
+    public static final NodeId TestStackExResponse_Encoding_DefaultBinary = init(419);
+    public static final NodeId TestStackExResponse_Encoding_DefaultXml = init(418);
+
+    public static final NodeId OpcUa_BinarySchema_ArrayTestType = init(7752);
+    public static final NodeId OpcUa_BinarySchema_ArrayTestType_DataTypeVersion = init(7753);
+    public static final NodeId OpcUa_BinarySchema_ArrayTestType_DictionaryFragment = init(7754);
+    public static final NodeId OpcUa_BinarySchema_CompositeTestType = init(7755);
+    public static final NodeId OpcUa_BinarySchema_CompositeTestType_DataTypeVersion = init(7756);
+    public static final NodeId OpcUa_BinarySchema_CompositeTestType_DictionaryFragment = init(7757);
+    public static final NodeId OpcUa_BinarySchema_ScalarTestType = init(7749);
+    public static final NodeId OpcUa_BinarySchema_ScalarTestType_DataTypeVersion = init(7750);
+    public static final NodeId OpcUa_BinarySchema_ScalarTestType_DictionaryFragment = init(7751);
+
+    public static final NodeId OpcUa_XmlSchema_ArrayTestType = init(8387);
+    public static final NodeId OpcUa_XmlSchema_ArrayTestType_DataTypeVersion = init(8388);
+    public static final NodeId OpcUa_XmlSchema_ArrayTestType_DictionaryFragment = init(8389);
+    public static final NodeId OpcUa_XmlSchema_CompositeTestType = init(8390);
+    public static final NodeId OpcUa_XmlSchema_CompositeTestType_DataTypeVersion = init(8391);
+    public static final NodeId OpcUa_XmlSchema_CompositeTestType_DictionaryFragment = init(8392);
+    public static final NodeId OpcUa_XmlSchema_ScalarTestType = init(8384);
+    public static final NodeId OpcUa_XmlSchema_ScalarTestType_DataTypeVersion = init(8385);
+    public static final NodeId OpcUa_XmlSchema_ScalarTestType_DictionaryFragment = init(8386);
+
+
     private static NodeId init(int value) {
         return new NodeId(ushort(0), uint(value));
     }
