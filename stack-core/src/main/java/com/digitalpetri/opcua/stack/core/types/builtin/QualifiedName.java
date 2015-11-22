@@ -104,6 +104,10 @@ public final class QualifiedName {
                 .toString();
     }
 
+    public String toParseableString() {
+        return String.format("%s:%s", namespaceIndex.intValue(), name);
+    }
+
     public static QualifiedName parse(String s) {
         String[] ss = s.split(":");
 
