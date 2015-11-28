@@ -46,28 +46,18 @@ public class BrowsePathTarget implements UaStructure {
         this._remainingPathIndex = _remainingPathIndex;
     }
 
-    public ExpandedNodeId getTargetId() {
-        return _targetId;
-    }
+    public ExpandedNodeId getTargetId() { return _targetId; }
 
-    public UInteger getRemainingPathIndex() {
-        return _remainingPathIndex;
-    }
+    public UInteger getRemainingPathIndex() { return _remainingPathIndex; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(BrowsePathTarget browsePathTarget, UaEncoder encoder) {

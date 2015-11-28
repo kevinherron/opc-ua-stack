@@ -57,44 +57,26 @@ public class QueryFirstRequest implements UaRequestMessage {
         this._maxReferencesToReturn = _maxReferencesToReturn;
     }
 
-    public RequestHeader getRequestHeader() {
-        return _requestHeader;
-    }
+    public RequestHeader getRequestHeader() { return _requestHeader; }
 
-    public ViewDescription getView() {
-        return _view;
-    }
+    public ViewDescription getView() { return _view; }
 
-    public NodeTypeDescription[] getNodeTypes() {
-        return _nodeTypes;
-    }
+    public NodeTypeDescription[] getNodeTypes() { return _nodeTypes; }
 
-    public ContentFilter getFilter() {
-        return _filter;
-    }
+    public ContentFilter getFilter() { return _filter; }
 
-    public UInteger getMaxDataSetsToReturn() {
-        return _maxDataSetsToReturn;
-    }
+    public UInteger getMaxDataSetsToReturn() { return _maxDataSetsToReturn; }
 
-    public UInteger getMaxReferencesToReturn() {
-        return _maxReferencesToReturn;
-    }
+    public UInteger getMaxReferencesToReturn() { return _maxReferencesToReturn; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(QueryFirstRequest queryFirstRequest, UaEncoder encoder) {

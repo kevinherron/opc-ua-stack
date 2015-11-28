@@ -52,36 +52,22 @@ public class HistoryReadValueId implements UaStructure {
         this._continuationPoint = _continuationPoint;
     }
 
-    public NodeId getNodeId() {
-        return _nodeId;
-    }
+    public NodeId getNodeId() { return _nodeId; }
 
-    public String getIndexRange() {
-        return _indexRange;
-    }
+    public String getIndexRange() { return _indexRange; }
 
-    public QualifiedName getDataEncoding() {
-        return _dataEncoding;
-    }
+    public QualifiedName getDataEncoding() { return _dataEncoding; }
 
-    public ByteString getContinuationPoint() {
-        return _continuationPoint;
-    }
+    public ByteString getContinuationPoint() { return _continuationPoint; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(HistoryReadValueId historyReadValueId, UaEncoder encoder) {

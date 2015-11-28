@@ -31,7 +31,7 @@ public enum EnumeratedTestType implements UaEnumeration {
 
     private final int value;
 
-    private EnumeratedTestType(int value) {
+    EnumeratedTestType(int value) {
         this.value = value;
     }
 

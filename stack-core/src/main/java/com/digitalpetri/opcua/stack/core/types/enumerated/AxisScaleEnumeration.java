@@ -31,7 +31,7 @@ public enum AxisScaleEnumeration implements UaEnumeration {
 
     private final int value;
 
-    private AxisScaleEnumeration(int value) {
+    AxisScaleEnumeration(int value) {
         this.value = value;
     }
 

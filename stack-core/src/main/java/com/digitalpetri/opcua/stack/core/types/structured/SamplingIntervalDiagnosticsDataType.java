@@ -51,36 +51,22 @@ public class SamplingIntervalDiagnosticsDataType implements UaStructure {
         this._disabledMonitoredItemCount = _disabledMonitoredItemCount;
     }
 
-    public Double getSamplingInterval() {
-        return _samplingInterval;
-    }
+    public Double getSamplingInterval() { return _samplingInterval; }
 
-    public UInteger getMonitoredItemCount() {
-        return _monitoredItemCount;
-    }
+    public UInteger getMonitoredItemCount() { return _monitoredItemCount; }
 
-    public UInteger getMaxMonitoredItemCount() {
-        return _maxMonitoredItemCount;
-    }
+    public UInteger getMaxMonitoredItemCount() { return _maxMonitoredItemCount; }
 
-    public UInteger getDisabledMonitoredItemCount() {
-        return _disabledMonitoredItemCount;
-    }
+    public UInteger getDisabledMonitoredItemCount() { return _disabledMonitoredItemCount; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(SamplingIntervalDiagnosticsDataType samplingIntervalDiagnosticsDataType, UaEncoder encoder) {

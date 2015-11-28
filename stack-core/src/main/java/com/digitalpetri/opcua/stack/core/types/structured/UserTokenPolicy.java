@@ -54,40 +54,24 @@ public class UserTokenPolicy implements UaStructure {
         this._securityPolicyUri = _securityPolicyUri;
     }
 
-    public String getPolicyId() {
-        return _policyId;
-    }
+    public String getPolicyId() { return _policyId; }
 
-    public UserTokenType getTokenType() {
-        return _tokenType;
-    }
+    public UserTokenType getTokenType() { return _tokenType; }
 
-    public String getIssuedTokenType() {
-        return _issuedTokenType;
-    }
+    public String getIssuedTokenType() { return _issuedTokenType; }
 
-    public String getIssuerEndpointUrl() {
-        return _issuerEndpointUrl;
-    }
+    public String getIssuerEndpointUrl() { return _issuerEndpointUrl; }
 
-    public String getSecurityPolicyUri() {
-        return _securityPolicyUri;
-    }
+    public String getSecurityPolicyUri() { return _securityPolicyUri; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(UserTokenPolicy userTokenPolicy, UaEncoder encoder) {

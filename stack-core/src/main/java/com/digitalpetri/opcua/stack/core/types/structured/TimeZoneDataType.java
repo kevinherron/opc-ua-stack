@@ -44,28 +44,18 @@ public class TimeZoneDataType implements UaStructure {
         this._daylightSavingInOffset = _daylightSavingInOffset;
     }
 
-    public Short getOffset() {
-        return _offset;
-    }
+    public Short getOffset() { return _offset; }
 
-    public Boolean getDaylightSavingInOffset() {
-        return _daylightSavingInOffset;
-    }
+    public Boolean getDaylightSavingInOffset() { return _daylightSavingInOffset; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(TimeZoneDataType timeZoneDataType, UaEncoder encoder) {

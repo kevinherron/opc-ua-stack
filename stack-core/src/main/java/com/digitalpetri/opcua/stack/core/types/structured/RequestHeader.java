@@ -62,48 +62,28 @@ public class RequestHeader implements UaStructure {
         this._additionalHeader = _additionalHeader;
     }
 
-    public NodeId getAuthenticationToken() {
-        return _authenticationToken;
-    }
+    public NodeId getAuthenticationToken() { return _authenticationToken; }
 
-    public DateTime getTimestamp() {
-        return _timestamp;
-    }
+    public DateTime getTimestamp() { return _timestamp; }
 
-    public UInteger getRequestHandle() {
-        return _requestHandle;
-    }
+    public UInteger getRequestHandle() { return _requestHandle; }
 
-    public UInteger getReturnDiagnostics() {
-        return _returnDiagnostics;
-    }
+    public UInteger getReturnDiagnostics() { return _returnDiagnostics; }
 
-    public String getAuditEntryId() {
-        return _auditEntryId;
-    }
+    public String getAuditEntryId() { return _auditEntryId; }
 
-    public UInteger getTimeoutHint() {
-        return _timeoutHint;
-    }
+    public UInteger getTimeoutHint() { return _timeoutHint; }
 
-    public ExtensionObject getAdditionalHeader() {
-        return _additionalHeader;
-    }
+    public ExtensionObject getAdditionalHeader() { return _additionalHeader; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(RequestHeader requestHeader, UaEncoder encoder) {

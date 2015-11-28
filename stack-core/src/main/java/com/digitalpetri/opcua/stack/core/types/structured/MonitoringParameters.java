@@ -55,40 +55,24 @@ public class MonitoringParameters implements UaStructure {
         this._discardOldest = _discardOldest;
     }
 
-    public UInteger getClientHandle() {
-        return _clientHandle;
-    }
+    public UInteger getClientHandle() { return _clientHandle; }
 
-    public Double getSamplingInterval() {
-        return _samplingInterval;
-    }
+    public Double getSamplingInterval() { return _samplingInterval; }
 
-    public ExtensionObject getFilter() {
-        return _filter;
-    }
+    public ExtensionObject getFilter() { return _filter; }
 
-    public UInteger getQueueSize() {
-        return _queueSize;
-    }
+    public UInteger getQueueSize() { return _queueSize; }
 
-    public Boolean getDiscardOldest() {
-        return _discardOldest;
-    }
+    public Boolean getDiscardOldest() { return _discardOldest; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(MonitoringParameters monitoringParameters, UaEncoder encoder) {

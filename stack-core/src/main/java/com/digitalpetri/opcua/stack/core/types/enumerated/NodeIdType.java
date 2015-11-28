@@ -34,7 +34,7 @@ public enum NodeIdType implements UaEnumeration {
 
     private final int value;
 
-    private NodeIdType(int value) {
+    NodeIdType(int value) {
         this.value = value;
     }
 

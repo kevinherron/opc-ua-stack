@@ -60,7 +60,7 @@ public enum NodeAttributesMask implements UaEnumeration {
 
     private final int value;
 
-    private NodeAttributesMask(int value) {
+    NodeAttributesMask(int value) {
         this.value = value;
     }
 

@@ -55,40 +55,24 @@ public class HistoryReadRequest implements UaRequestMessage {
         this._nodesToRead = _nodesToRead;
     }
 
-    public RequestHeader getRequestHeader() {
-        return _requestHeader;
-    }
+    public RequestHeader getRequestHeader() { return _requestHeader; }
 
-    public ExtensionObject getHistoryReadDetails() {
-        return _historyReadDetails;
-    }
+    public ExtensionObject getHistoryReadDetails() { return _historyReadDetails; }
 
-    public TimestampsToReturn getTimestampsToReturn() {
-        return _timestampsToReturn;
-    }
+    public TimestampsToReturn getTimestampsToReturn() { return _timestampsToReturn; }
 
-    public Boolean getReleaseContinuationPoints() {
-        return _releaseContinuationPoints;
-    }
+    public Boolean getReleaseContinuationPoints() { return _releaseContinuationPoints; }
 
-    public HistoryReadValueId[] getNodesToRead() {
-        return _nodesToRead;
-    }
+    public HistoryReadValueId[] getNodesToRead() { return _nodesToRead; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(HistoryReadRequest historyReadRequest, UaEncoder encoder) {

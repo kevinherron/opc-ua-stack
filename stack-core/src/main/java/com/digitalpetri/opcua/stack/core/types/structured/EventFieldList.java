@@ -46,28 +46,18 @@ public class EventFieldList implements UaStructure {
         this._eventFields = _eventFields;
     }
 
-    public UInteger getClientHandle() {
-        return _clientHandle;
-    }
+    public UInteger getClientHandle() { return _clientHandle; }
 
-    public Variant[] getEventFields() {
-        return _eventFields;
-    }
+    public Variant[] getEventFields() { return _eventFields; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(EventFieldList eventFieldList, UaEncoder encoder) {

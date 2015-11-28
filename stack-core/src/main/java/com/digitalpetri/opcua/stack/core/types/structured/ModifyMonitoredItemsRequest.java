@@ -52,36 +52,22 @@ public class ModifyMonitoredItemsRequest implements UaRequestMessage {
         this._itemsToModify = _itemsToModify;
     }
 
-    public RequestHeader getRequestHeader() {
-        return _requestHeader;
-    }
+    public RequestHeader getRequestHeader() { return _requestHeader; }
 
-    public UInteger getSubscriptionId() {
-        return _subscriptionId;
-    }
+    public UInteger getSubscriptionId() { return _subscriptionId; }
 
-    public TimestampsToReturn getTimestampsToReturn() {
-        return _timestampsToReturn;
-    }
+    public TimestampsToReturn getTimestampsToReturn() { return _timestampsToReturn; }
 
-    public MonitoredItemModifyRequest[] getItemsToModify() {
-        return _itemsToModify;
-    }
+    public MonitoredItemModifyRequest[] getItemsToModify() { return _itemsToModify; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(ModifyMonitoredItemsRequest modifyMonitoredItemsRequest, UaEncoder encoder) {

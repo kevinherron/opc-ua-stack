@@ -48,32 +48,20 @@ public class MonitoredItemCreateRequest implements UaStructure {
         this._requestedParameters = _requestedParameters;
     }
 
-    public ReadValueId getItemToMonitor() {
-        return _itemToMonitor;
-    }
+    public ReadValueId getItemToMonitor() { return _itemToMonitor; }
 
-    public MonitoringMode getMonitoringMode() {
-        return _monitoringMode;
-    }
+    public MonitoringMode getMonitoringMode() { return _monitoringMode; }
 
-    public MonitoringParameters getRequestedParameters() {
-        return _requestedParameters;
-    }
+    public MonitoringParameters getRequestedParameters() { return _requestedParameters; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(MonitoredItemCreateRequest monitoredItemCreateRequest, UaEncoder encoder) {

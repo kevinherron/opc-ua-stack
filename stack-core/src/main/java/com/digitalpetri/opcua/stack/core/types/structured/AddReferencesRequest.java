@@ -44,28 +44,18 @@ public class AddReferencesRequest implements UaRequestMessage {
         this._referencesToAdd = _referencesToAdd;
     }
 
-    public RequestHeader getRequestHeader() {
-        return _requestHeader;
-    }
+    public RequestHeader getRequestHeader() { return _requestHeader; }
 
-    public AddReferencesItem[] getReferencesToAdd() {
-        return _referencesToAdd;
-    }
+    public AddReferencesItem[] getReferencesToAdd() { return _referencesToAdd; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(AddReferencesRequest addReferencesRequest, UaEncoder encoder) {

@@ -27,12 +27,12 @@ public enum OpenFileMode implements UaEnumeration {
 
     Read(1),
     Write(2),
-    EraseExisiting(4),
+    EraseExisting(4),
     Append(8);
 
     private final int value;
 
-    private OpenFileMode(int value) {
+    OpenFileMode(int value) {
         this.value = value;
     }
 

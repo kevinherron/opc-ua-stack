@@ -48,32 +48,20 @@ public class ModelChangeStructureDataType implements UaStructure {
         this._verb = _verb;
     }
 
-    public NodeId getAffected() {
-        return _affected;
-    }
+    public NodeId getAffected() { return _affected; }
 
-    public NodeId getAffectedType() {
-        return _affectedType;
-    }
+    public NodeId getAffectedType() { return _affectedType; }
 
-    public UByte getVerb() {
-        return _verb;
-    }
+    public UByte getVerb() { return _verb; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(ModelChangeStructureDataType modelChangeStructureDataType, UaEncoder encoder) {

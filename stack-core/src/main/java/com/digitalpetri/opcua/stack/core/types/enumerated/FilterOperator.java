@@ -46,7 +46,7 @@ public enum FilterOperator implements UaEnumeration {
 
     private final int value;
 
-    private FilterOperator(int value) {
+    FilterOperator(int value) {
         this.value = value;
     }
 

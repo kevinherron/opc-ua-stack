@@ -52,36 +52,22 @@ public class SetMonitoringModeRequest implements UaRequestMessage {
         this._monitoredItemIds = _monitoredItemIds;
     }
 
-    public RequestHeader getRequestHeader() {
-        return _requestHeader;
-    }
+    public RequestHeader getRequestHeader() { return _requestHeader; }
 
-    public UInteger getSubscriptionId() {
-        return _subscriptionId;
-    }
+    public UInteger getSubscriptionId() { return _subscriptionId; }
 
-    public MonitoringMode getMonitoringMode() {
-        return _monitoringMode;
-    }
+    public MonitoringMode getMonitoringMode() { return _monitoringMode; }
 
-    public UInteger[] getMonitoredItemIds() {
-        return _monitoredItemIds;
-    }
+    public UInteger[] getMonitoredItemIds() { return _monitoredItemIds; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(SetMonitoringModeRequest setMonitoringModeRequest, UaEncoder encoder) {

@@ -46,28 +46,18 @@ public class MonitoredItemNotification implements UaStructure {
         this._value = _value;
     }
 
-    public UInteger getClientHandle() {
-        return _clientHandle;
-    }
+    public UInteger getClientHandle() { return _clientHandle; }
 
-    public DataValue getValue() {
-        return _value;
-    }
+    public DataValue getValue() { return _value; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(MonitoredItemNotification monitoredItemNotification, UaEncoder encoder) {

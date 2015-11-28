@@ -56,40 +56,24 @@ public class MonitoredItemCreateResult implements UaStructure {
         this._filterResult = _filterResult;
     }
 
-    public StatusCode getStatusCode() {
-        return _statusCode;
-    }
+    public StatusCode getStatusCode() { return _statusCode; }
 
-    public UInteger getMonitoredItemId() {
-        return _monitoredItemId;
-    }
+    public UInteger getMonitoredItemId() { return _monitoredItemId; }
 
-    public Double getRevisedSamplingInterval() {
-        return _revisedSamplingInterval;
-    }
+    public Double getRevisedSamplingInterval() { return _revisedSamplingInterval; }
 
-    public UInteger getRevisedQueueSize() {
-        return _revisedQueueSize;
-    }
+    public UInteger getRevisedQueueSize() { return _revisedQueueSize; }
 
-    public ExtensionObject getFilterResult() {
-        return _filterResult;
-    }
+    public ExtensionObject getFilterResult() { return _filterResult; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(MonitoredItemCreateResult monitoredItemCreateResult, UaEncoder encoder) {

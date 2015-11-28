@@ -32,7 +32,7 @@ public enum HistoryUpdateType implements UaEnumeration {
 
     private final int value;
 
-    private HistoryUpdateType(int value) {
+    HistoryUpdateType(int value) {
         this.value = value;
     }
 

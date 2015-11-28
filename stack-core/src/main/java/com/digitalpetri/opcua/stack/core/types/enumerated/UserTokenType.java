@@ -28,11 +28,12 @@ public enum UserTokenType implements UaEnumeration {
     Anonymous(0),
     UserName(1),
     Certificate(2),
-    IssuedToken(3);
+    IssuedToken(3),
+    Kerberos(4);
 
     private final int value;
 
-    private UserTokenType(int value) {
+    UserTokenType(int value) {
         this.value = value;
     }
 

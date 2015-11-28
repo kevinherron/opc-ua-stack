@@ -32,7 +32,7 @@ public enum MessageSecurityMode implements UaEnumeration {
 
     private final int value;
 
-    private MessageSecurityMode(int value) {
+    MessageSecurityMode(int value) {
         this.value = value;
     }
 

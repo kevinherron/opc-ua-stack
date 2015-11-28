@@ -32,7 +32,7 @@ public enum IdType implements UaEnumeration {
 
     private final int value;
 
-    private IdType(int value) {
+    IdType(int value) {
         this.value = value;
     }
 

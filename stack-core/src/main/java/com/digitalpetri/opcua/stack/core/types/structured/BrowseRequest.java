@@ -51,36 +51,22 @@ public class BrowseRequest implements UaRequestMessage {
         this._nodesToBrowse = _nodesToBrowse;
     }
 
-    public RequestHeader getRequestHeader() {
-        return _requestHeader;
-    }
+    public RequestHeader getRequestHeader() { return _requestHeader; }
 
-    public ViewDescription getView() {
-        return _view;
-    }
+    public ViewDescription getView() { return _view; }
 
-    public UInteger getRequestedMaxReferencesPerNode() {
-        return _requestedMaxReferencesPerNode;
-    }
+    public UInteger getRequestedMaxReferencesPerNode() { return _requestedMaxReferencesPerNode; }
 
-    public BrowseDescription[] getNodesToBrowse() {
-        return _nodesToBrowse;
-    }
+    public BrowseDescription[] getNodesToBrowse() { return _nodesToBrowse; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(BrowseRequest browseRequest, UaEncoder encoder) {

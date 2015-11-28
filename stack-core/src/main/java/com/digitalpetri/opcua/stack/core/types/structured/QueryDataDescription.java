@@ -48,32 +48,20 @@ public class QueryDataDescription implements UaStructure {
         this._indexRange = _indexRange;
     }
 
-    public RelativePath getRelativePath() {
-        return _relativePath;
-    }
+    public RelativePath getRelativePath() { return _relativePath; }
 
-    public UInteger getAttributeId() {
-        return _attributeId;
-    }
+    public UInteger getAttributeId() { return _attributeId; }
 
-    public String getIndexRange() {
-        return _indexRange;
-    }
+    public String getIndexRange() { return _indexRange; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(QueryDataDescription queryDataDescription, UaEncoder encoder) {

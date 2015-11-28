@@ -70,60 +70,34 @@ public class CreateSessionResponse implements UaResponseMessage {
         this._maxRequestMessageSize = _maxRequestMessageSize;
     }
 
-    public ResponseHeader getResponseHeader() {
-        return _responseHeader;
-    }
+    public ResponseHeader getResponseHeader() { return _responseHeader; }
 
-    public NodeId getSessionId() {
-        return _sessionId;
-    }
+    public NodeId getSessionId() { return _sessionId; }
 
-    public NodeId getAuthenticationToken() {
-        return _authenticationToken;
-    }
+    public NodeId getAuthenticationToken() { return _authenticationToken; }
 
-    public Double getRevisedSessionTimeout() {
-        return _revisedSessionTimeout;
-    }
+    public Double getRevisedSessionTimeout() { return _revisedSessionTimeout; }
 
-    public ByteString getServerNonce() {
-        return _serverNonce;
-    }
+    public ByteString getServerNonce() { return _serverNonce; }
 
-    public ByteString getServerCertificate() {
-        return _serverCertificate;
-    }
+    public ByteString getServerCertificate() { return _serverCertificate; }
 
-    public EndpointDescription[] getServerEndpoints() {
-        return _serverEndpoints;
-    }
+    public EndpointDescription[] getServerEndpoints() { return _serverEndpoints; }
 
-    public SignedSoftwareCertificate[] getServerSoftwareCertificates() {
-        return _serverSoftwareCertificates;
-    }
+    public SignedSoftwareCertificate[] getServerSoftwareCertificates() { return _serverSoftwareCertificates; }
 
-    public SignatureData getServerSignature() {
-        return _serverSignature;
-    }
+    public SignatureData getServerSignature() { return _serverSignature; }
 
-    public UInteger getMaxRequestMessageSize() {
-        return _maxRequestMessageSize;
-    }
+    public UInteger getMaxRequestMessageSize() { return _maxRequestMessageSize; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(CreateSessionResponse createSessionResponse, UaEncoder encoder) {

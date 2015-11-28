@@ -133,144 +133,76 @@ public class SubscriptionDiagnosticsDataType implements UaStructure {
         this._eventQueueOverFlowCount = _eventQueueOverFlowCount;
     }
 
-    public NodeId getSessionId() {
-        return _sessionId;
-    }
+    public NodeId getSessionId() { return _sessionId; }
 
-    public UInteger getSubscriptionId() {
-        return _subscriptionId;
-    }
+    public UInteger getSubscriptionId() { return _subscriptionId; }
 
-    public UByte getPriority() {
-        return _priority;
-    }
+    public UByte getPriority() { return _priority; }
 
-    public Double getPublishingInterval() {
-        return _publishingInterval;
-    }
+    public Double getPublishingInterval() { return _publishingInterval; }
 
-    public UInteger getMaxKeepAliveCount() {
-        return _maxKeepAliveCount;
-    }
+    public UInteger getMaxKeepAliveCount() { return _maxKeepAliveCount; }
 
-    public UInteger getMaxLifetimeCount() {
-        return _maxLifetimeCount;
-    }
+    public UInteger getMaxLifetimeCount() { return _maxLifetimeCount; }
 
-    public UInteger getMaxNotificationsPerPublish() {
-        return _maxNotificationsPerPublish;
-    }
+    public UInteger getMaxNotificationsPerPublish() { return _maxNotificationsPerPublish; }
 
-    public Boolean getPublishingEnabled() {
-        return _publishingEnabled;
-    }
+    public Boolean getPublishingEnabled() { return _publishingEnabled; }
 
-    public UInteger getModifyCount() {
-        return _modifyCount;
-    }
+    public UInteger getModifyCount() { return _modifyCount; }
 
-    public UInteger getEnableCount() {
-        return _enableCount;
-    }
+    public UInteger getEnableCount() { return _enableCount; }
 
-    public UInteger getDisableCount() {
-        return _disableCount;
-    }
+    public UInteger getDisableCount() { return _disableCount; }
 
-    public UInteger getRepublishRequestCount() {
-        return _republishRequestCount;
-    }
+    public UInteger getRepublishRequestCount() { return _republishRequestCount; }
 
-    public UInteger getRepublishMessageRequestCount() {
-        return _republishMessageRequestCount;
-    }
+    public UInteger getRepublishMessageRequestCount() { return _republishMessageRequestCount; }
 
-    public UInteger getRepublishMessageCount() {
-        return _republishMessageCount;
-    }
+    public UInteger getRepublishMessageCount() { return _republishMessageCount; }
 
-    public UInteger getTransferRequestCount() {
-        return _transferRequestCount;
-    }
+    public UInteger getTransferRequestCount() { return _transferRequestCount; }
 
-    public UInteger getTransferredToAltClientCount() {
-        return _transferredToAltClientCount;
-    }
+    public UInteger getTransferredToAltClientCount() { return _transferredToAltClientCount; }
 
-    public UInteger getTransferredToSameClientCount() {
-        return _transferredToSameClientCount;
-    }
+    public UInteger getTransferredToSameClientCount() { return _transferredToSameClientCount; }
 
-    public UInteger getPublishRequestCount() {
-        return _publishRequestCount;
-    }
+    public UInteger getPublishRequestCount() { return _publishRequestCount; }
 
-    public UInteger getDataChangeNotificationsCount() {
-        return _dataChangeNotificationsCount;
-    }
+    public UInteger getDataChangeNotificationsCount() { return _dataChangeNotificationsCount; }
 
-    public UInteger getEventNotificationsCount() {
-        return _eventNotificationsCount;
-    }
+    public UInteger getEventNotificationsCount() { return _eventNotificationsCount; }
 
-    public UInteger getNotificationsCount() {
-        return _notificationsCount;
-    }
+    public UInteger getNotificationsCount() { return _notificationsCount; }
 
-    public UInteger getLatePublishRequestCount() {
-        return _latePublishRequestCount;
-    }
+    public UInteger getLatePublishRequestCount() { return _latePublishRequestCount; }
 
-    public UInteger getCurrentKeepAliveCount() {
-        return _currentKeepAliveCount;
-    }
+    public UInteger getCurrentKeepAliveCount() { return _currentKeepAliveCount; }
 
-    public UInteger getCurrentLifetimeCount() {
-        return _currentLifetimeCount;
-    }
+    public UInteger getCurrentLifetimeCount() { return _currentLifetimeCount; }
 
-    public UInteger getUnacknowledgedMessageCount() {
-        return _unacknowledgedMessageCount;
-    }
+    public UInteger getUnacknowledgedMessageCount() { return _unacknowledgedMessageCount; }
 
-    public UInteger getDiscardedMessageCount() {
-        return _discardedMessageCount;
-    }
+    public UInteger getDiscardedMessageCount() { return _discardedMessageCount; }
 
-    public UInteger getMonitoredItemCount() {
-        return _monitoredItemCount;
-    }
+    public UInteger getMonitoredItemCount() { return _monitoredItemCount; }
 
-    public UInteger getDisabledMonitoredItemCount() {
-        return _disabledMonitoredItemCount;
-    }
+    public UInteger getDisabledMonitoredItemCount() { return _disabledMonitoredItemCount; }
 
-    public UInteger getMonitoringQueueOverflowCount() {
-        return _monitoringQueueOverflowCount;
-    }
+    public UInteger getMonitoringQueueOverflowCount() { return _monitoringQueueOverflowCount; }
 
-    public UInteger getNextSequenceNumber() {
-        return _nextSequenceNumber;
-    }
+    public UInteger getNextSequenceNumber() { return _nextSequenceNumber; }
 
-    public UInteger getEventQueueOverFlowCount() {
-        return _eventQueueOverFlowCount;
-    }
+    public UInteger getEventQueueOverFlowCount() { return _eventQueueOverFlowCount; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(SubscriptionDiagnosticsDataType subscriptionDiagnosticsDataType, UaEncoder encoder) {

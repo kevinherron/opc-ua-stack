@@ -52,36 +52,22 @@ public class OpenSecureChannelResponse implements UaResponseMessage {
         this._serverNonce = _serverNonce;
     }
 
-    public ResponseHeader getResponseHeader() {
-        return _responseHeader;
-    }
+    public ResponseHeader getResponseHeader() { return _responseHeader; }
 
-    public UInteger getServerProtocolVersion() {
-        return _serverProtocolVersion;
-    }
+    public UInteger getServerProtocolVersion() { return _serverProtocolVersion; }
 
-    public ChannelSecurityToken getSecurityToken() {
-        return _securityToken;
-    }
+    public ChannelSecurityToken getSecurityToken() { return _securityToken; }
 
-    public ByteString getServerNonce() {
-        return _serverNonce;
-    }
+    public ByteString getServerNonce() { return _serverNonce; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(OpenSecureChannelResponse openSecureChannelResponse, UaEncoder encoder) {

@@ -50,36 +50,22 @@ public class NodeReference implements UaStructure {
         this._referencedNodeIds = _referencedNodeIds;
     }
 
-    public NodeId getNodeId() {
-        return _nodeId;
-    }
+    public NodeId getNodeId() { return _nodeId; }
 
-    public NodeId getReferenceTypeId() {
-        return _referenceTypeId;
-    }
+    public NodeId getReferenceTypeId() { return _referenceTypeId; }
 
-    public Boolean getIsForward() {
-        return _isForward;
-    }
+    public Boolean getIsForward() { return _isForward; }
 
-    public NodeId[] getReferencedNodeIds() {
-        return _referencedNodeIds;
-    }
+    public NodeId[] getReferencedNodeIds() { return _referencedNodeIds; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(NodeReference nodeReference, UaEncoder encoder) {

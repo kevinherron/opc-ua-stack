@@ -52,36 +52,22 @@ public class WriteValue implements UaStructure {
         this._value = _value;
     }
 
-    public NodeId getNodeId() {
-        return _nodeId;
-    }
+    public NodeId getNodeId() { return _nodeId; }
 
-    public UInteger getAttributeId() {
-        return _attributeId;
-    }
+    public UInteger getAttributeId() { return _attributeId; }
 
-    public String getIndexRange() {
-        return _indexRange;
-    }
+    public String getIndexRange() { return _indexRange; }
 
-    public DataValue getValue() {
-        return _value;
-    }
+    public DataValue getValue() { return _value; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(WriteValue writeValue, UaEncoder encoder) {

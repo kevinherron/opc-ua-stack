@@ -32,7 +32,7 @@ public enum TimestampsToReturn implements UaEnumeration {
 
     private final int value;
 
-    private TimestampsToReturn(int value) {
+    TimestampsToReturn(int value) {
         this.value = value;
     }
 

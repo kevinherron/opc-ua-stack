@@ -49,32 +49,20 @@ public class AggregateFilterResult extends MonitoringFilterResult {
         this._revisedAggregateConfiguration = _revisedAggregateConfiguration;
     }
 
-    public DateTime getRevisedStartTime() {
-        return _revisedStartTime;
-    }
+    public DateTime getRevisedStartTime() { return _revisedStartTime; }
 
-    public Double getRevisedProcessingInterval() {
-        return _revisedProcessingInterval;
-    }
+    public Double getRevisedProcessingInterval() { return _revisedProcessingInterval; }
 
-    public AggregateConfiguration getRevisedAggregateConfiguration() {
-        return _revisedAggregateConfiguration;
-    }
+    public AggregateConfiguration getRevisedAggregateConfiguration() { return _revisedAggregateConfiguration; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(AggregateFilterResult aggregateFilterResult, UaEncoder encoder) {

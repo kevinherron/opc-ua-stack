@@ -44,28 +44,18 @@ public class NetworkGroupDataType implements UaStructure {
         this._networkPaths = _networkPaths;
     }
 
-    public String getServerUri() {
-        return _serverUri;
-    }
+    public String getServerUri() { return _serverUri; }
 
-    public EndpointUrlListDataType[] getNetworkPaths() {
-        return _networkPaths;
-    }
+    public EndpointUrlListDataType[] getNetworkPaths() { return _networkPaths; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(NetworkGroupDataType networkGroupDataType, UaEncoder encoder) {

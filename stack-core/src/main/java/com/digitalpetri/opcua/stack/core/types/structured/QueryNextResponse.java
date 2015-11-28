@@ -48,32 +48,20 @@ public class QueryNextResponse implements UaResponseMessage {
         this._revisedContinuationPoint = _revisedContinuationPoint;
     }
 
-    public ResponseHeader getResponseHeader() {
-        return _responseHeader;
-    }
+    public ResponseHeader getResponseHeader() { return _responseHeader; }
 
-    public QueryDataSet[] getQueryDataSets() {
-        return _queryDataSets;
-    }
+    public QueryDataSet[] getQueryDataSets() { return _queryDataSets; }
 
-    public ByteString getRevisedContinuationPoint() {
-        return _revisedContinuationPoint;
-    }
+    public ByteString getRevisedContinuationPoint() { return _revisedContinuationPoint; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(QueryNextResponse queryNextResponse, UaEncoder encoder) {

@@ -67,56 +67,32 @@ public class CreateSessionRequest implements UaRequestMessage {
         this._maxResponseMessageSize = _maxResponseMessageSize;
     }
 
-    public RequestHeader getRequestHeader() {
-        return _requestHeader;
-    }
+    public RequestHeader getRequestHeader() { return _requestHeader; }
 
-    public ApplicationDescription getClientDescription() {
-        return _clientDescription;
-    }
+    public ApplicationDescription getClientDescription() { return _clientDescription; }
 
-    public String getServerUri() {
-        return _serverUri;
-    }
+    public String getServerUri() { return _serverUri; }
 
-    public String getEndpointUrl() {
-        return _endpointUrl;
-    }
+    public String getEndpointUrl() { return _endpointUrl; }
 
-    public String getSessionName() {
-        return _sessionName;
-    }
+    public String getSessionName() { return _sessionName; }
 
-    public ByteString getClientNonce() {
-        return _clientNonce;
-    }
+    public ByteString getClientNonce() { return _clientNonce; }
 
-    public ByteString getClientCertificate() {
-        return _clientCertificate;
-    }
+    public ByteString getClientCertificate() { return _clientCertificate; }
 
-    public Double getRequestedSessionTimeout() {
-        return _requestedSessionTimeout;
-    }
+    public Double getRequestedSessionTimeout() { return _requestedSessionTimeout; }
 
-    public UInteger getMaxResponseMessageSize() {
-        return _maxResponseMessageSize;
-    }
+    public UInteger getMaxResponseMessageSize() { return _maxResponseMessageSize; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(CreateSessionRequest createSessionRequest, UaEncoder encoder) {

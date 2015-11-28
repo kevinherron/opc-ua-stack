@@ -46,28 +46,18 @@ public class DataChangeNotification extends NotificationData {
         this._diagnosticInfos = _diagnosticInfos;
     }
 
-    public MonitoredItemNotification[] getMonitoredItems() {
-        return _monitoredItems;
-    }
+    public MonitoredItemNotification[] getMonitoredItems() { return _monitoredItems; }
 
-    public DiagnosticInfo[] getDiagnosticInfos() {
-        return _diagnosticInfos;
-    }
+    public DiagnosticInfo[] getDiagnosticInfos() { return _diagnosticInfos; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(DataChangeNotification dataChangeNotification, UaEncoder encoder) {

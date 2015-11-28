@@ -60,44 +60,26 @@ public class ServerStatusDataType implements UaStructure {
         this._shutdownReason = _shutdownReason;
     }
 
-    public DateTime getStartTime() {
-        return _startTime;
-    }
+    public DateTime getStartTime() { return _startTime; }
 
-    public DateTime getCurrentTime() {
-        return _currentTime;
-    }
+    public DateTime getCurrentTime() { return _currentTime; }
 
-    public ServerState getState() {
-        return _state;
-    }
+    public ServerState getState() { return _state; }
 
-    public BuildInfo getBuildInfo() {
-        return _buildInfo;
-    }
+    public BuildInfo getBuildInfo() { return _buildInfo; }
 
-    public UInteger getSecondsTillShutdown() {
-        return _secondsTillShutdown;
-    }
+    public UInteger getSecondsTillShutdown() { return _secondsTillShutdown; }
 
-    public LocalizedText getShutdownReason() {
-        return _shutdownReason;
-    }
+    public LocalizedText getShutdownReason() { return _shutdownReason; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(ServerStatusDataType serverStatusDataType, UaEncoder encoder) {

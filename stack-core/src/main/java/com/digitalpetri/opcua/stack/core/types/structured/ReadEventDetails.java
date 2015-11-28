@@ -53,36 +53,22 @@ public class ReadEventDetails extends HistoryReadDetails {
         this._filter = _filter;
     }
 
-    public UInteger getNumValuesPerNode() {
-        return _numValuesPerNode;
-    }
+    public UInteger getNumValuesPerNode() { return _numValuesPerNode; }
 
-    public DateTime getStartTime() {
-        return _startTime;
-    }
+    public DateTime getStartTime() { return _startTime; }
 
-    public DateTime getEndTime() {
-        return _endTime;
-    }
+    public DateTime getEndTime() { return _endTime; }
 
-    public EventFilter getFilter() {
-        return _filter;
-    }
+    public EventFilter getFilter() { return _filter; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(ReadEventDetails readEventDetails, UaEncoder encoder) {

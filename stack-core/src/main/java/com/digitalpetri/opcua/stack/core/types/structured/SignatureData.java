@@ -45,28 +45,18 @@ public class SignatureData implements UaStructure {
         this._signature = _signature;
     }
 
-    public String getAlgorithm() {
-        return _algorithm;
-    }
+    public String getAlgorithm() { return _algorithm; }
 
-    public ByteString getSignature() {
-        return _signature;
-    }
+    public ByteString getSignature() { return _signature; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(SignatureData signatureData, UaEncoder encoder) {

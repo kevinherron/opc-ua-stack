@@ -44,28 +44,18 @@ public class UnregisterNodesRequest implements UaRequestMessage {
         this._nodesToUnregister = _nodesToUnregister;
     }
 
-    public RequestHeader getRequestHeader() {
-        return _requestHeader;
-    }
+    public RequestHeader getRequestHeader() { return _requestHeader; }
 
-    public NodeId[] getNodesToUnregister() {
-        return _nodesToUnregister;
-    }
+    public NodeId[] getNodesToUnregister() { return _nodesToUnregister; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(UnregisterNodesRequest unregisterNodesRequest, UaEncoder encoder) {

@@ -32,7 +32,7 @@ public enum ApplicationType implements UaEnumeration {
 
     private final int value;
 
-    private ApplicationType(int value) {
+    ApplicationType(int value) {
         this.value = value;
     }
 

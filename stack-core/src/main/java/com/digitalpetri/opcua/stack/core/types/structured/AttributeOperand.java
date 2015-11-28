@@ -55,40 +55,24 @@ public class AttributeOperand extends FilterOperand {
         this._indexRange = _indexRange;
     }
 
-    public NodeId getNodeId() {
-        return _nodeId;
-    }
+    public NodeId getNodeId() { return _nodeId; }
 
-    public String getAlias() {
-        return _alias;
-    }
+    public String getAlias() { return _alias; }
 
-    public RelativePath getBrowsePath() {
-        return _browsePath;
-    }
+    public RelativePath getBrowsePath() { return _browsePath; }
 
-    public UInteger getAttributeId() {
-        return _attributeId;
-    }
+    public UInteger getAttributeId() { return _attributeId; }
 
-    public String getIndexRange() {
-        return _indexRange;
-    }
+    public String getIndexRange() { return _indexRange; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(AttributeOperand attributeOperand, UaEncoder encoder) {

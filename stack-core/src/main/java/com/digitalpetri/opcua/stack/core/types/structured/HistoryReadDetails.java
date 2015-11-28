@@ -35,20 +35,15 @@ public class HistoryReadDetails implements UaStructure {
     public HistoryReadDetails() {
     }
 
-    @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
+
+    @Override
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(HistoryReadDetails historyReadDetails, UaEncoder encoder) {

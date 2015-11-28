@@ -48,32 +48,20 @@ public class RepublishRequest implements UaRequestMessage {
         this._retransmitSequenceNumber = _retransmitSequenceNumber;
     }
 
-    public RequestHeader getRequestHeader() {
-        return _requestHeader;
-    }
+    public RequestHeader getRequestHeader() { return _requestHeader; }
 
-    public UInteger getSubscriptionId() {
-        return _subscriptionId;
-    }
+    public UInteger getSubscriptionId() { return _subscriptionId; }
 
-    public UInteger getRetransmitSequenceNumber() {
-        return _retransmitSequenceNumber;
-    }
+    public UInteger getRetransmitSequenceNumber() { return _retransmitSequenceNumber; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(RepublishRequest republishRequest, UaEncoder encoder) {

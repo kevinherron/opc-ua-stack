@@ -57,40 +57,24 @@ public class VariableTypeAttributes extends NodeAttributes {
         this._isAbstract = _isAbstract;
     }
 
-    public Variant getValue() {
-        return _value;
-    }
+    public Variant getValue() { return _value; }
 
-    public NodeId getDataType() {
-        return _dataType;
-    }
+    public NodeId getDataType() { return _dataType; }
 
-    public Integer getValueRank() {
-        return _valueRank;
-    }
+    public Integer getValueRank() { return _valueRank; }
 
-    public UInteger[] getArrayDimensions() {
-        return _arrayDimensions;
-    }
+    public UInteger[] getArrayDimensions() { return _arrayDimensions; }
 
-    public Boolean getIsAbstract() {
-        return _isAbstract;
-    }
+    public Boolean getIsAbstract() { return _isAbstract; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(VariableTypeAttributes variableTypeAttributes, UaEncoder encoder) {

@@ -31,7 +31,7 @@ public enum DataChangeTrigger implements UaEnumeration {
 
     private final int value;
 
-    private DataChangeTrigger(int value) {
+    DataChangeTrigger(int value) {
         this.value = value;
     }
 

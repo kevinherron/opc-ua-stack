@@ -32,7 +32,7 @@ public enum PerformUpdateType implements UaEnumeration {
 
     private final int value;
 
-    private PerformUpdateType(int value) {
+    PerformUpdateType(int value) {
         this.value = value;
     }
 

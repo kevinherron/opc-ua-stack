@@ -51,36 +51,22 @@ public class ModifySubscriptionResponse implements UaResponseMessage {
         this._revisedMaxKeepAliveCount = _revisedMaxKeepAliveCount;
     }
 
-    public ResponseHeader getResponseHeader() {
-        return _responseHeader;
-    }
+    public ResponseHeader getResponseHeader() { return _responseHeader; }
 
-    public Double getRevisedPublishingInterval() {
-        return _revisedPublishingInterval;
-    }
+    public Double getRevisedPublishingInterval() { return _revisedPublishingInterval; }
 
-    public UInteger getRevisedLifetimeCount() {
-        return _revisedLifetimeCount;
-    }
+    public UInteger getRevisedLifetimeCount() { return _revisedLifetimeCount; }
 
-    public UInteger getRevisedMaxKeepAliveCount() {
-        return _revisedMaxKeepAliveCount;
-    }
+    public UInteger getRevisedMaxKeepAliveCount() { return _revisedMaxKeepAliveCount; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(ModifySubscriptionResponse modifySubscriptionResponse, UaEncoder encoder) {

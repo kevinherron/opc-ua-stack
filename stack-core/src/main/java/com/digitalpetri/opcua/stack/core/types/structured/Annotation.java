@@ -48,32 +48,20 @@ public class Annotation implements UaStructure {
         this._annotationTime = _annotationTime;
     }
 
-    public String getMessage() {
-        return _message;
-    }
+    public String getMessage() { return _message; }
 
-    public String getUserName() {
-        return _userName;
-    }
+    public String getUserName() { return _userName; }
 
-    public DateTime getAnnotationTime() {
-        return _annotationTime;
-    }
+    public DateTime getAnnotationTime() { return _annotationTime; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(Annotation annotation, UaEncoder encoder) {

@@ -75,68 +75,38 @@ public class ServerDiagnosticsSummaryDataType implements UaStructure {
         this._rejectedRequestsCount = _rejectedRequestsCount;
     }
 
-    public UInteger getServerViewCount() {
-        return _serverViewCount;
-    }
+    public UInteger getServerViewCount() { return _serverViewCount; }
 
-    public UInteger getCurrentSessionCount() {
-        return _currentSessionCount;
-    }
+    public UInteger getCurrentSessionCount() { return _currentSessionCount; }
 
-    public UInteger getCumulatedSessionCount() {
-        return _cumulatedSessionCount;
-    }
+    public UInteger getCumulatedSessionCount() { return _cumulatedSessionCount; }
 
-    public UInteger getSecurityRejectedSessionCount() {
-        return _securityRejectedSessionCount;
-    }
+    public UInteger getSecurityRejectedSessionCount() { return _securityRejectedSessionCount; }
 
-    public UInteger getRejectedSessionCount() {
-        return _rejectedSessionCount;
-    }
+    public UInteger getRejectedSessionCount() { return _rejectedSessionCount; }
 
-    public UInteger getSessionTimeoutCount() {
-        return _sessionTimeoutCount;
-    }
+    public UInteger getSessionTimeoutCount() { return _sessionTimeoutCount; }
 
-    public UInteger getSessionAbortCount() {
-        return _sessionAbortCount;
-    }
+    public UInteger getSessionAbortCount() { return _sessionAbortCount; }
 
-    public UInteger getCurrentSubscriptionCount() {
-        return _currentSubscriptionCount;
-    }
+    public UInteger getCurrentSubscriptionCount() { return _currentSubscriptionCount; }
 
-    public UInteger getCumulatedSubscriptionCount() {
-        return _cumulatedSubscriptionCount;
-    }
+    public UInteger getCumulatedSubscriptionCount() { return _cumulatedSubscriptionCount; }
 
-    public UInteger getPublishingIntervalCount() {
-        return _publishingIntervalCount;
-    }
+    public UInteger getPublishingIntervalCount() { return _publishingIntervalCount; }
 
-    public UInteger getSecurityRejectedRequestsCount() {
-        return _securityRejectedRequestsCount;
-    }
+    public UInteger getSecurityRejectedRequestsCount() { return _securityRejectedRequestsCount; }
 
-    public UInteger getRejectedRequestsCount() {
-        return _rejectedRequestsCount;
-    }
+    public UInteger getRejectedRequestsCount() { return _rejectedRequestsCount; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(ServerDiagnosticsSummaryDataType serverDiagnosticsSummaryDataType, UaEncoder encoder) {

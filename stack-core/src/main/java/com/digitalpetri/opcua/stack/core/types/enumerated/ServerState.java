@@ -36,7 +36,7 @@ public enum ServerState implements UaEnumeration {
 
     private final int value;
 
-    private ServerState(int value) {
+    ServerState(int value) {
         this.value = value;
     }
 

@@ -53,36 +53,22 @@ public class SimpleAttributeOperand extends FilterOperand {
         this._indexRange = _indexRange;
     }
 
-    public NodeId getTypeDefinitionId() {
-        return _typeDefinitionId;
-    }
+    public NodeId getTypeDefinitionId() { return _typeDefinitionId; }
 
-    public QualifiedName[] getBrowsePath() {
-        return _browsePath;
-    }
+    public QualifiedName[] getBrowsePath() { return _browsePath; }
 
-    public UInteger getAttributeId() {
-        return _attributeId;
-    }
+    public UInteger getAttributeId() { return _attributeId; }
 
-    public String getIndexRange() {
-        return _indexRange;
-    }
+    public String getIndexRange() { return _indexRange; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(SimpleAttributeOperand simpleAttributeOperand, UaEncoder encoder) {

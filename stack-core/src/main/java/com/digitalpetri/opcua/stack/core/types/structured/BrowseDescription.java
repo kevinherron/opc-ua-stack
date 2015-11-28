@@ -58,44 +58,26 @@ public class BrowseDescription implements UaStructure {
         this._resultMask = _resultMask;
     }
 
-    public NodeId getNodeId() {
-        return _nodeId;
-    }
+    public NodeId getNodeId() { return _nodeId; }
 
-    public BrowseDirection getBrowseDirection() {
-        return _browseDirection;
-    }
+    public BrowseDirection getBrowseDirection() { return _browseDirection; }
 
-    public NodeId getReferenceTypeId() {
-        return _referenceTypeId;
-    }
+    public NodeId getReferenceTypeId() { return _referenceTypeId; }
 
-    public Boolean getIncludeSubtypes() {
-        return _includeSubtypes;
-    }
+    public Boolean getIncludeSubtypes() { return _includeSubtypes; }
 
-    public UInteger getNodeClassMask() {
-        return _nodeClassMask;
-    }
+    public UInteger getNodeClassMask() { return _nodeClassMask; }
 
-    public UInteger getResultMask() {
-        return _resultMask;
-    }
+    public UInteger getResultMask() { return _resultMask; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(BrowseDescription browseDescription, UaEncoder encoder) {

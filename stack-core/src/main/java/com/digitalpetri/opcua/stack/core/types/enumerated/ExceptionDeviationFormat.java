@@ -26,14 +26,14 @@ import com.google.common.collect.ImmutableMap.Builder;
 public enum ExceptionDeviationFormat implements UaEnumeration {
 
     AbsoluteValue(0),
-    PercentOfRange(1),
-    PercentOfValue(2),
+    PercentOfValue(1),
+    PercentOfRange(2),
     PercentOfEURange(3),
     Unknown(4);
 
     private final int value;
 
-    private ExceptionDeviationFormat(int value) {
+    ExceptionDeviationFormat(int value) {
         this.value = value;
     }
 

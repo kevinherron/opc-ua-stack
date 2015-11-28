@@ -30,7 +30,7 @@ public enum SecurityTokenRequestType implements UaEnumeration {
 
     private final int value;
 
-    private SecurityTokenRequestType(int value) {
+    SecurityTokenRequestType(int value) {
         this.value = value;
     }
 

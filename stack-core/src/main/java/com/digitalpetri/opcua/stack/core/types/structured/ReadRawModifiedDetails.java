@@ -56,40 +56,24 @@ public class ReadRawModifiedDetails extends HistoryReadDetails {
         this._returnBounds = _returnBounds;
     }
 
-    public Boolean getIsReadModified() {
-        return _isReadModified;
-    }
+    public Boolean getIsReadModified() { return _isReadModified; }
 
-    public DateTime getStartTime() {
-        return _startTime;
-    }
+    public DateTime getStartTime() { return _startTime; }
 
-    public DateTime getEndTime() {
-        return _endTime;
-    }
+    public DateTime getEndTime() { return _endTime; }
 
-    public UInteger getNumValuesPerNode() {
-        return _numValuesPerNode;
-    }
+    public UInteger getNumValuesPerNode() { return _numValuesPerNode; }
 
-    public Boolean getReturnBounds() {
-        return _returnBounds;
-    }
+    public Boolean getReturnBounds() { return _returnBounds; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(ReadRawModifiedDetails readRawModifiedDetails, UaEncoder encoder) {

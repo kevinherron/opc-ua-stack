@@ -32,7 +32,7 @@ public enum ComplianceLevel implements UaEnumeration {
 
     private final int value;
 
-    private ComplianceLevel(int value) {
+    ComplianceLevel(int value) {
         this.value = value;
     }
 

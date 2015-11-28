@@ -169,192 +169,100 @@ public class SessionDiagnosticsDataType implements UaStructure {
         this._unregisterNodesCount = _unregisterNodesCount;
     }
 
-    public NodeId getSessionId() {
-        return _sessionId;
-    }
+    public NodeId getSessionId() { return _sessionId; }
 
-    public String getSessionName() {
-        return _sessionName;
-    }
+    public String getSessionName() { return _sessionName; }
 
-    public ApplicationDescription getClientDescription() {
-        return _clientDescription;
-    }
+    public ApplicationDescription getClientDescription() { return _clientDescription; }
 
-    public String getServerUri() {
-        return _serverUri;
-    }
+    public String getServerUri() { return _serverUri; }
 
-    public String getEndpointUrl() {
-        return _endpointUrl;
-    }
+    public String getEndpointUrl() { return _endpointUrl; }
 
-    public String[] getLocaleIds() {
-        return _localeIds;
-    }
+    public String[] getLocaleIds() { return _localeIds; }
 
-    public Double getActualSessionTimeout() {
-        return _actualSessionTimeout;
-    }
+    public Double getActualSessionTimeout() { return _actualSessionTimeout; }
 
-    public UInteger getMaxResponseMessageSize() {
-        return _maxResponseMessageSize;
-    }
+    public UInteger getMaxResponseMessageSize() { return _maxResponseMessageSize; }
 
-    public DateTime getClientConnectionTime() {
-        return _clientConnectionTime;
-    }
+    public DateTime getClientConnectionTime() { return _clientConnectionTime; }
 
-    public DateTime getClientLastContactTime() {
-        return _clientLastContactTime;
-    }
+    public DateTime getClientLastContactTime() { return _clientLastContactTime; }
 
-    public UInteger getCurrentSubscriptionsCount() {
-        return _currentSubscriptionsCount;
-    }
+    public UInteger getCurrentSubscriptionsCount() { return _currentSubscriptionsCount; }
 
-    public UInteger getCurrentMonitoredItemsCount() {
-        return _currentMonitoredItemsCount;
-    }
+    public UInteger getCurrentMonitoredItemsCount() { return _currentMonitoredItemsCount; }
 
-    public UInteger getCurrentPublishRequestsInQueue() {
-        return _currentPublishRequestsInQueue;
-    }
+    public UInteger getCurrentPublishRequestsInQueue() { return _currentPublishRequestsInQueue; }
 
-    public ServiceCounterDataType getTotalRequestCount() {
-        return _totalRequestCount;
-    }
+    public ServiceCounterDataType getTotalRequestCount() { return _totalRequestCount; }
 
-    public UInteger getUnauthorizedRequestCount() {
-        return _unauthorizedRequestCount;
-    }
+    public UInteger getUnauthorizedRequestCount() { return _unauthorizedRequestCount; }
 
-    public ServiceCounterDataType getReadCount() {
-        return _readCount;
-    }
+    public ServiceCounterDataType getReadCount() { return _readCount; }
 
-    public ServiceCounterDataType getHistoryReadCount() {
-        return _historyReadCount;
-    }
+    public ServiceCounterDataType getHistoryReadCount() { return _historyReadCount; }
 
-    public ServiceCounterDataType getWriteCount() {
-        return _writeCount;
-    }
+    public ServiceCounterDataType getWriteCount() { return _writeCount; }
 
-    public ServiceCounterDataType getHistoryUpdateCount() {
-        return _historyUpdateCount;
-    }
+    public ServiceCounterDataType getHistoryUpdateCount() { return _historyUpdateCount; }
 
-    public ServiceCounterDataType getCallCount() {
-        return _callCount;
-    }
+    public ServiceCounterDataType getCallCount() { return _callCount; }
 
-    public ServiceCounterDataType getCreateMonitoredItemsCount() {
-        return _createMonitoredItemsCount;
-    }
+    public ServiceCounterDataType getCreateMonitoredItemsCount() { return _createMonitoredItemsCount; }
 
-    public ServiceCounterDataType getModifyMonitoredItemsCount() {
-        return _modifyMonitoredItemsCount;
-    }
+    public ServiceCounterDataType getModifyMonitoredItemsCount() { return _modifyMonitoredItemsCount; }
 
-    public ServiceCounterDataType getSetMonitoringModeCount() {
-        return _setMonitoringModeCount;
-    }
+    public ServiceCounterDataType getSetMonitoringModeCount() { return _setMonitoringModeCount; }
 
-    public ServiceCounterDataType getSetTriggeringCount() {
-        return _setTriggeringCount;
-    }
+    public ServiceCounterDataType getSetTriggeringCount() { return _setTriggeringCount; }
 
-    public ServiceCounterDataType getDeleteMonitoredItemsCount() {
-        return _deleteMonitoredItemsCount;
-    }
+    public ServiceCounterDataType getDeleteMonitoredItemsCount() { return _deleteMonitoredItemsCount; }
 
-    public ServiceCounterDataType getCreateSubscriptionCount() {
-        return _createSubscriptionCount;
-    }
+    public ServiceCounterDataType getCreateSubscriptionCount() { return _createSubscriptionCount; }
 
-    public ServiceCounterDataType getModifySubscriptionCount() {
-        return _modifySubscriptionCount;
-    }
+    public ServiceCounterDataType getModifySubscriptionCount() { return _modifySubscriptionCount; }
 
-    public ServiceCounterDataType getSetPublishingModeCount() {
-        return _setPublishingModeCount;
-    }
+    public ServiceCounterDataType getSetPublishingModeCount() { return _setPublishingModeCount; }
 
-    public ServiceCounterDataType getPublishCount() {
-        return _publishCount;
-    }
+    public ServiceCounterDataType getPublishCount() { return _publishCount; }
 
-    public ServiceCounterDataType getRepublishCount() {
-        return _republishCount;
-    }
+    public ServiceCounterDataType getRepublishCount() { return _republishCount; }
 
-    public ServiceCounterDataType getTransferSubscriptionsCount() {
-        return _transferSubscriptionsCount;
-    }
+    public ServiceCounterDataType getTransferSubscriptionsCount() { return _transferSubscriptionsCount; }
 
-    public ServiceCounterDataType getDeleteSubscriptionsCount() {
-        return _deleteSubscriptionsCount;
-    }
+    public ServiceCounterDataType getDeleteSubscriptionsCount() { return _deleteSubscriptionsCount; }
 
-    public ServiceCounterDataType getAddNodesCount() {
-        return _addNodesCount;
-    }
+    public ServiceCounterDataType getAddNodesCount() { return _addNodesCount; }
 
-    public ServiceCounterDataType getAddReferencesCount() {
-        return _addReferencesCount;
-    }
+    public ServiceCounterDataType getAddReferencesCount() { return _addReferencesCount; }
 
-    public ServiceCounterDataType getDeleteNodesCount() {
-        return _deleteNodesCount;
-    }
+    public ServiceCounterDataType getDeleteNodesCount() { return _deleteNodesCount; }
 
-    public ServiceCounterDataType getDeleteReferencesCount() {
-        return _deleteReferencesCount;
-    }
+    public ServiceCounterDataType getDeleteReferencesCount() { return _deleteReferencesCount; }
 
-    public ServiceCounterDataType getBrowseCount() {
-        return _browseCount;
-    }
+    public ServiceCounterDataType getBrowseCount() { return _browseCount; }
 
-    public ServiceCounterDataType getBrowseNextCount() {
-        return _browseNextCount;
-    }
+    public ServiceCounterDataType getBrowseNextCount() { return _browseNextCount; }
 
-    public ServiceCounterDataType getTranslateBrowsePathsToNodeIdsCount() {
-        return _translateBrowsePathsToNodeIdsCount;
-    }
+    public ServiceCounterDataType getTranslateBrowsePathsToNodeIdsCount() { return _translateBrowsePathsToNodeIdsCount; }
 
-    public ServiceCounterDataType getQueryFirstCount() {
-        return _queryFirstCount;
-    }
+    public ServiceCounterDataType getQueryFirstCount() { return _queryFirstCount; }
 
-    public ServiceCounterDataType getQueryNextCount() {
-        return _queryNextCount;
-    }
+    public ServiceCounterDataType getQueryNextCount() { return _queryNextCount; }
 
-    public ServiceCounterDataType getRegisterNodesCount() {
-        return _registerNodesCount;
-    }
+    public ServiceCounterDataType getRegisterNodesCount() { return _registerNodesCount; }
 
-    public ServiceCounterDataType getUnregisterNodesCount() {
-        return _unregisterNodesCount;
-    }
+    public ServiceCounterDataType getUnregisterNodesCount() { return _unregisterNodesCount; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(SessionDiagnosticsDataType sessionDiagnosticsDataType, UaEncoder encoder) {

@@ -31,7 +31,7 @@ public enum BrowseDirection implements UaEnumeration {
 
     private final int value;
 
-    private BrowseDirection(int value) {
+    BrowseDirection(int value) {
         this.value = value;
     }
 

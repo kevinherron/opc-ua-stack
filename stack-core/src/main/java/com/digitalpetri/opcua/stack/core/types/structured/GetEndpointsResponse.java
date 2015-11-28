@@ -44,28 +44,18 @@ public class GetEndpointsResponse implements UaResponseMessage {
         this._endpoints = _endpoints;
     }
 
-    public ResponseHeader getResponseHeader() {
-        return _responseHeader;
-    }
+    public ResponseHeader getResponseHeader() { return _responseHeader; }
 
-    public EndpointDescription[] getEndpoints() {
-        return _endpoints;
-    }
+    public EndpointDescription[] getEndpoints() { return _endpoints; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(GetEndpointsResponse getEndpointsResponse, UaEncoder encoder) {

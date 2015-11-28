@@ -38,7 +38,7 @@ public enum BrowseResultMask implements UaEnumeration {
 
     private final int value;
 
-    private BrowseResultMask(int value) {
+    BrowseResultMask(int value) {
         this.value = value;
     }
 

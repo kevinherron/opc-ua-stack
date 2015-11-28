@@ -58,44 +58,26 @@ public class QueryFirstResponse implements UaResponseMessage {
         this._filterResult = _filterResult;
     }
 
-    public ResponseHeader getResponseHeader() {
-        return _responseHeader;
-    }
+    public ResponseHeader getResponseHeader() { return _responseHeader; }
 
-    public QueryDataSet[] getQueryDataSets() {
-        return _queryDataSets;
-    }
+    public QueryDataSet[] getQueryDataSets() { return _queryDataSets; }
 
-    public ByteString getContinuationPoint() {
-        return _continuationPoint;
-    }
+    public ByteString getContinuationPoint() { return _continuationPoint; }
 
-    public ParsingResult[] getParsingResults() {
-        return _parsingResults;
-    }
+    public ParsingResult[] getParsingResults() { return _parsingResults; }
 
-    public DiagnosticInfo[] getDiagnosticInfos() {
-        return _diagnosticInfos;
-    }
+    public DiagnosticInfo[] getDiagnosticInfos() { return _diagnosticInfos; }
 
-    public ContentFilterResult getFilterResult() {
-        return _filterResult;
-    }
+    public ContentFilterResult getFilterResult() { return _filterResult; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(QueryFirstResponse queryFirstResponse, UaEncoder encoder) {

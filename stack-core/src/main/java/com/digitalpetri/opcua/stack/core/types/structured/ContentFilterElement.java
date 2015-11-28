@@ -46,28 +46,18 @@ public class ContentFilterElement implements UaStructure {
         this._filterOperands = _filterOperands;
     }
 
-    public FilterOperator getFilterOperator() {
-        return _filterOperator;
-    }
+    public FilterOperator getFilterOperator() { return _filterOperator; }
 
-    public ExtensionObject[] getFilterOperands() {
-        return _filterOperands;
-    }
+    public ExtensionObject[] getFilterOperands() { return _filterOperands; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(ContentFilterElement contentFilterElement, UaEncoder encoder) {

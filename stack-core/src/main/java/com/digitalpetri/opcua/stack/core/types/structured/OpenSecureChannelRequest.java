@@ -60,44 +60,26 @@ public class OpenSecureChannelRequest implements UaRequestMessage {
         this._requestedLifetime = _requestedLifetime;
     }
 
-    public RequestHeader getRequestHeader() {
-        return _requestHeader;
-    }
+    public RequestHeader getRequestHeader() { return _requestHeader; }
 
-    public UInteger getClientProtocolVersion() {
-        return _clientProtocolVersion;
-    }
+    public UInteger getClientProtocolVersion() { return _clientProtocolVersion; }
 
-    public SecurityTokenRequestType getRequestType() {
-        return _requestType;
-    }
+    public SecurityTokenRequestType getRequestType() { return _requestType; }
 
-    public MessageSecurityMode getSecurityMode() {
-        return _securityMode;
-    }
+    public MessageSecurityMode getSecurityMode() { return _securityMode; }
 
-    public ByteString getClientNonce() {
-        return _clientNonce;
-    }
+    public ByteString getClientNonce() { return _clientNonce; }
 
-    public UInteger getRequestedLifetime() {
-        return _requestedLifetime;
-    }
+    public UInteger getRequestedLifetime() { return _requestedLifetime; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(OpenSecureChannelRequest openSecureChannelRequest, UaEncoder encoder) {

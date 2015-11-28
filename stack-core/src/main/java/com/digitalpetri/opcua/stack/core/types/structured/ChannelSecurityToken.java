@@ -52,36 +52,22 @@ public class ChannelSecurityToken implements UaStructure {
         this._revisedLifetime = _revisedLifetime;
     }
 
-    public UInteger getChannelId() {
-        return _channelId;
-    }
+    public UInteger getChannelId() { return _channelId; }
 
-    public UInteger getTokenId() {
-        return _tokenId;
-    }
+    public UInteger getTokenId() { return _tokenId; }
 
-    public DateTime getCreatedAt() {
-        return _createdAt;
-    }
+    public DateTime getCreatedAt() { return _createdAt; }
 
-    public UInteger getRevisedLifetime() {
-        return _revisedLifetime;
-    }
+    public UInteger getRevisedLifetime() { return _revisedLifetime; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(ChannelSecurityToken channelSecurityToken, UaEncoder encoder) {

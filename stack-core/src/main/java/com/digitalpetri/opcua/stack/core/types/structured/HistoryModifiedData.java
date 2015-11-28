@@ -31,36 +31,33 @@ public class HistoryModifiedData extends HistoryData {
     public static final NodeId BinaryEncodingId = Identifiers.HistoryModifiedData_Encoding_DefaultBinary;
     public static final NodeId XmlEncodingId = Identifiers.HistoryModifiedData_Encoding_DefaultXml;
 
+    protected final DataValue[] _dataValues;
     protected final ModificationInfo[] _modificationInfos;
 
     public HistoryModifiedData() {
-        super(null);
+        super();
+        this._dataValues = null;
         this._modificationInfos = null;
     }
 
     public HistoryModifiedData(DataValue[] _dataValues, ModificationInfo[] _modificationInfos) {
-        super(_dataValues);
+        super();
+        this._dataValues = _dataValues;
         this._modificationInfos = _modificationInfos;
     }
 
-    public ModificationInfo[] getModificationInfos() {
-        return _modificationInfos;
-    }
+    public DataValue[] getDataValues() { return _dataValues; }
+
+    public ModificationInfo[] getModificationInfos() { return _modificationInfos; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(HistoryModifiedData historyModifiedData, UaEncoder encoder) {

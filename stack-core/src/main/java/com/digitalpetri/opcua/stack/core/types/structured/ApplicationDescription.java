@@ -61,48 +61,28 @@ public class ApplicationDescription implements UaStructure {
         this._discoveryUrls = _discoveryUrls;
     }
 
-    public String getApplicationUri() {
-        return _applicationUri;
-    }
+    public String getApplicationUri() { return _applicationUri; }
 
-    public String getProductUri() {
-        return _productUri;
-    }
+    public String getProductUri() { return _productUri; }
 
-    public LocalizedText getApplicationName() {
-        return _applicationName;
-    }
+    public LocalizedText getApplicationName() { return _applicationName; }
 
-    public ApplicationType getApplicationType() {
-        return _applicationType;
-    }
+    public ApplicationType getApplicationType() { return _applicationType; }
 
-    public String getGatewayServerUri() {
-        return _gatewayServerUri;
-    }
+    public String getGatewayServerUri() { return _gatewayServerUri; }
 
-    public String getDiscoveryProfileUri() {
-        return _discoveryProfileUri;
-    }
+    public String getDiscoveryProfileUri() { return _discoveryProfileUri; }
 
-    public String[] getDiscoveryUrls() {
-        return _discoveryUrls;
-    }
+    public String[] getDiscoveryUrls() { return _discoveryUrls; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(ApplicationDescription applicationDescription, UaEncoder encoder) {

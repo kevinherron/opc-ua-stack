@@ -48,32 +48,20 @@ public class SetPublishingModeRequest implements UaRequestMessage {
         this._subscriptionIds = _subscriptionIds;
     }
 
-    public RequestHeader getRequestHeader() {
-        return _requestHeader;
-    }
+    public RequestHeader getRequestHeader() { return _requestHeader; }
 
-    public Boolean getPublishingEnabled() {
-        return _publishingEnabled;
-    }
+    public Boolean getPublishingEnabled() { return _publishingEnabled; }
 
-    public UInteger[] getSubscriptionIds() {
-        return _subscriptionIds;
-    }
+    public UInteger[] getSubscriptionIds() { return _subscriptionIds; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(SetPublishingModeRequest setPublishingModeRequest, UaEncoder encoder) {

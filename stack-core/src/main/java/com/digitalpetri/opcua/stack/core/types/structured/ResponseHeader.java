@@ -61,44 +61,26 @@ public class ResponseHeader implements UaStructure {
         this._additionalHeader = _additionalHeader;
     }
 
-    public DateTime getTimestamp() {
-        return _timestamp;
-    }
+    public DateTime getTimestamp() { return _timestamp; }
 
-    public UInteger getRequestHandle() {
-        return _requestHandle;
-    }
+    public UInteger getRequestHandle() { return _requestHandle; }
 
-    public StatusCode getServiceResult() {
-        return _serviceResult;
-    }
+    public StatusCode getServiceResult() { return _serviceResult; }
 
-    public DiagnosticInfo getServiceDiagnostics() {
-        return _serviceDiagnostics;
-    }
+    public DiagnosticInfo getServiceDiagnostics() { return _serviceDiagnostics; }
 
-    public String[] getStringTable() {
-        return _stringTable;
-    }
+    public String[] getStringTable() { return _stringTable; }
 
-    public ExtensionObject getAdditionalHeader() {
-        return _additionalHeader;
-    }
+    public ExtensionObject getAdditionalHeader() { return _additionalHeader; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(ResponseHeader responseHeader, UaEncoder encoder) {

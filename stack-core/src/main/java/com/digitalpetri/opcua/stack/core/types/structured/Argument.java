@@ -55,40 +55,24 @@ public class Argument implements UaStructure {
         this._description = _description;
     }
 
-    public String getName() {
-        return _name;
-    }
+    public String getName() { return _name; }
 
-    public NodeId getDataType() {
-        return _dataType;
-    }
+    public NodeId getDataType() { return _dataType; }
 
-    public Integer getValueRank() {
-        return _valueRank;
-    }
+    public Integer getValueRank() { return _valueRank; }
 
-    public UInteger[] getArrayDimensions() {
-        return _arrayDimensions;
-    }
+    public UInteger[] getArrayDimensions() { return _arrayDimensions; }
 
-    public LocalizedText getDescription() {
-        return _description;
-    }
+    public LocalizedText getDescription() { return _description; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(Argument argument, UaEncoder encoder) {

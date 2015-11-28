@@ -44,28 +44,18 @@ public class XVType implements UaStructure {
         this._value = _value;
     }
 
-    public Double getX() {
-        return _x;
-    }
+    public Double getX() { return _x; }
 
-    public Float getValue() {
-        return _value;
-    }
+    public Float getValue() { return _value; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(XVType xVType, UaEncoder encoder) {

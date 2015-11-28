@@ -45,28 +45,18 @@ public class MonitoredItemModifyRequest implements UaStructure {
         this._requestedParameters = _requestedParameters;
     }
 
-    public UInteger getMonitoredItemId() {
-        return _monitoredItemId;
-    }
+    public UInteger getMonitoredItemId() { return _monitoredItemId; }
 
-    public MonitoringParameters getRequestedParameters() {
-        return _requestedParameters;
-    }
+    public MonitoringParameters getRequestedParameters() { return _requestedParameters; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(MonitoredItemModifyRequest monitoredItemModifyRequest, UaEncoder encoder) {

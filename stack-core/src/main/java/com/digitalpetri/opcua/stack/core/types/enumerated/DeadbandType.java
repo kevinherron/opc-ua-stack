@@ -31,7 +31,7 @@ public enum DeadbandType implements UaEnumeration {
 
     private final int value;
 
-    private DeadbandType(int value) {
+    DeadbandType(int value) {
         this.value = value;
     }
 

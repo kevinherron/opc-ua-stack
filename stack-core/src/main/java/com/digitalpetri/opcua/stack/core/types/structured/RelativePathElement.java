@@ -51,36 +51,22 @@ public class RelativePathElement implements UaStructure {
         this._targetName = _targetName;
     }
 
-    public NodeId getReferenceTypeId() {
-        return _referenceTypeId;
-    }
+    public NodeId getReferenceTypeId() { return _referenceTypeId; }
 
-    public Boolean getIsInverse() {
-        return _isInverse;
-    }
+    public Boolean getIsInverse() { return _isInverse; }
 
-    public Boolean getIncludeSubtypes() {
-        return _includeSubtypes;
-    }
+    public Boolean getIncludeSubtypes() { return _includeSubtypes; }
 
-    public QualifiedName getTargetName() {
-        return _targetName;
-    }
+    public QualifiedName getTargetName() { return _targetName; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(RelativePathElement relativePathElement, UaEncoder encoder) {

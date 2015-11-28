@@ -34,12 +34,14 @@ public class ReferenceTypeNode extends TypeNode {
     public static final NodeId BinaryEncodingId = Identifiers.ReferenceTypeNode_Encoding_DefaultBinary;
     public static final NodeId XmlEncodingId = Identifiers.ReferenceTypeNode_Encoding_DefaultXml;
 
+    protected final ReferenceNode[] _references;
     protected final Boolean _isAbstract;
     protected final Boolean _symmetric;
     protected final LocalizedText _inverseName;
 
     public ReferenceTypeNode() {
         super(null, null, null, null, null, null, null, null);
+        this._references = null;
         this._isAbstract = null;
         this._symmetric = null;
         this._inverseName = null;
@@ -47,37 +49,28 @@ public class ReferenceTypeNode extends TypeNode {
 
     public ReferenceTypeNode(NodeId _nodeId, NodeClass _nodeClass, QualifiedName _browseName, LocalizedText _displayName, LocalizedText _description, UInteger _writeMask, UInteger _userWriteMask, ReferenceNode[] _references, Boolean _isAbstract, Boolean _symmetric, LocalizedText _inverseName) {
         super(_nodeId, _nodeClass, _browseName, _displayName, _description, _writeMask, _userWriteMask, _references);
+        this._references = _references;
         this._isAbstract = _isAbstract;
         this._symmetric = _symmetric;
         this._inverseName = _inverseName;
     }
 
-    public Boolean getIsAbstract() {
-        return _isAbstract;
-    }
+    public ReferenceNode[] getReferences() { return _references; }
 
-    public Boolean getSymmetric() {
-        return _symmetric;
-    }
+    public Boolean getIsAbstract() { return _isAbstract; }
 
-    public LocalizedText getInverseName() {
-        return _inverseName;
-    }
+    public Boolean getSymmetric() { return _symmetric; }
+
+    public LocalizedText getInverseName() { return _inverseName; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(ReferenceTypeNode referenceTypeNode, UaEncoder encoder) {

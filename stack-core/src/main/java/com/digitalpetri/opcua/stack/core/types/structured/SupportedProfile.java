@@ -58,44 +58,26 @@ public class SupportedProfile implements UaStructure {
         this._unsupportedUnitIds = _unsupportedUnitIds;
     }
 
-    public String getOrganizationUri() {
-        return _organizationUri;
-    }
+    public String getOrganizationUri() { return _organizationUri; }
 
-    public String getProfileId() {
-        return _profileId;
-    }
+    public String getProfileId() { return _profileId; }
 
-    public String getComplianceTool() {
-        return _complianceTool;
-    }
+    public String getComplianceTool() { return _complianceTool; }
 
-    public DateTime getComplianceDate() {
-        return _complianceDate;
-    }
+    public DateTime getComplianceDate() { return _complianceDate; }
 
-    public ComplianceLevel getComplianceLevel() {
-        return _complianceLevel;
-    }
+    public ComplianceLevel getComplianceLevel() { return _complianceLevel; }
 
-    public String[] getUnsupportedUnitIds() {
-        return _unsupportedUnitIds;
-    }
+    public String[] getUnsupportedUnitIds() { return _unsupportedUnitIds; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(SupportedProfile supportedProfile, UaEncoder encoder) {

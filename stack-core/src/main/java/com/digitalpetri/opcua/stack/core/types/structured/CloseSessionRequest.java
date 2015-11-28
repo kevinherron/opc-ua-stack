@@ -44,28 +44,18 @@ public class CloseSessionRequest implements UaRequestMessage {
         this._deleteSubscriptions = _deleteSubscriptions;
     }
 
-    public RequestHeader getRequestHeader() {
-        return _requestHeader;
-    }
+    public RequestHeader getRequestHeader() { return _requestHeader; }
 
-    public Boolean getDeleteSubscriptions() {
-        return _deleteSubscriptions;
-    }
+    public Boolean getDeleteSubscriptions() { return _deleteSubscriptions; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(CloseSessionRequest closeSessionRequest, UaEncoder encoder) {

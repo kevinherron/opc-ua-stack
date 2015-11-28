@@ -48,32 +48,20 @@ public class CallMethodRequest implements UaStructure {
         this._inputArguments = _inputArguments;
     }
 
-    public NodeId getObjectId() {
-        return _objectId;
-    }
+    public NodeId getObjectId() { return _objectId; }
 
-    public NodeId getMethodId() {
-        return _methodId;
-    }
+    public NodeId getMethodId() { return _methodId; }
 
-    public Variant[] getInputArguments() {
-        return _inputArguments;
-    }
+    public Variant[] getInputArguments() { return _inputArguments; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(CallMethodRequest callMethodRequest, UaEncoder encoder) {

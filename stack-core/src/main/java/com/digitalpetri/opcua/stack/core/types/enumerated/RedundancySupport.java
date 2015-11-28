@@ -34,7 +34,7 @@ public enum RedundancySupport implements UaEnumeration {
 
     private final int value;
 
-    private RedundancySupport(int value) {
+    RedundancySupport(int value) {
         this.value = value;
     }
 

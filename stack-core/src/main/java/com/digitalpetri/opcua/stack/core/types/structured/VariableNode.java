@@ -69,52 +69,30 @@ public class VariableNode extends InstanceNode {
         this._historizing = _historizing;
     }
 
-    public Variant getValue() {
-        return _value;
-    }
+    public Variant getValue() { return _value; }
 
-    public NodeId getDataType() {
-        return _dataType;
-    }
+    public NodeId getDataType() { return _dataType; }
 
-    public Integer getValueRank() {
-        return _valueRank;
-    }
+    public Integer getValueRank() { return _valueRank; }
 
-    public UInteger[] getArrayDimensions() {
-        return _arrayDimensions;
-    }
+    public UInteger[] getArrayDimensions() { return _arrayDimensions; }
 
-    public UByte getAccessLevel() {
-        return _accessLevel;
-    }
+    public UByte getAccessLevel() { return _accessLevel; }
 
-    public UByte getUserAccessLevel() {
-        return _userAccessLevel;
-    }
+    public UByte getUserAccessLevel() { return _userAccessLevel; }
 
-    public Double getMinimumSamplingInterval() {
-        return _minimumSamplingInterval;
-    }
+    public Double getMinimumSamplingInterval() { return _minimumSamplingInterval; }
 
-    public Boolean getHistorizing() {
-        return _historizing;
-    }
+    public Boolean getHistorizing() { return _historizing; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(VariableNode variableNode, UaEncoder encoder) {

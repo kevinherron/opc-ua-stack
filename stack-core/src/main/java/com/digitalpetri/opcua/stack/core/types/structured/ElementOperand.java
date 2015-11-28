@@ -43,24 +43,16 @@ public class ElementOperand extends FilterOperand {
         this._index = _index;
     }
 
-    public UInteger getIndex() {
-        return _index;
-    }
+    public UInteger getIndex() { return _index; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(ElementOperand elementOperand, UaEncoder encoder) {

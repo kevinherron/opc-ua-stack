@@ -44,28 +44,18 @@ public class DeleteNodesRequest implements UaRequestMessage {
         this._nodesToDelete = _nodesToDelete;
     }
 
-    public RequestHeader getRequestHeader() {
-        return _requestHeader;
-    }
+    public RequestHeader getRequestHeader() { return _requestHeader; }
 
-    public DeleteNodesItem[] getNodesToDelete() {
-        return _nodesToDelete;
-    }
+    public DeleteNodesItem[] getNodesToDelete() { return _nodesToDelete; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(DeleteNodesRequest deleteNodesRequest, UaEncoder encoder) {

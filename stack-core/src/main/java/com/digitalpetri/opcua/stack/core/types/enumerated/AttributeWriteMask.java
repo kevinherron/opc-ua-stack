@@ -51,7 +51,7 @@ public enum AttributeWriteMask implements UaEnumeration {
 
     private final int value;
 
-    private AttributeWriteMask(int value) {
+    AttributeWriteMask(int value) {
         this.value = value;
     }
 

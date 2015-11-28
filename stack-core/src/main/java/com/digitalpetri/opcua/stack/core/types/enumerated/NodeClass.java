@@ -37,7 +37,7 @@ public enum NodeClass implements UaEnumeration {
 
     private final int value;
 
-    private NodeClass(int value) {
+    NodeClass(int value) {
         this.value = value;
     }
 

@@ -33,7 +33,7 @@ public enum ModelChangeStructureVerbMask implements UaEnumeration {
 
     private final int value;
 
-    private ModelChangeStructureVerbMask(int value) {
+    ModelChangeStructureVerbMask(int value) {
         this.value = value;
     }
 

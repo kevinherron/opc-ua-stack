@@ -44,28 +44,18 @@ public class ComplexNumberType implements UaStructure {
         this._imaginary = _imaginary;
     }
 
-    public Float getReal() {
-        return _real;
-    }
+    public Float getReal() { return _real; }
 
-    public Float getImaginary() {
-        return _imaginary;
-    }
+    public Float getImaginary() { return _imaginary; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(ComplexNumberType complexNumberType, UaEncoder encoder) {

@@ -49,32 +49,20 @@ public class UpdateEventDetails extends HistoryUpdateDetails {
         this._eventData = _eventData;
     }
 
-    public PerformUpdateType getPerformInsertReplace() {
-        return _performInsertReplace;
-    }
+    public PerformUpdateType getPerformInsertReplace() { return _performInsertReplace; }
 
-    public EventFilter getFilter() {
-        return _filter;
-    }
+    public EventFilter getFilter() { return _filter; }
 
-    public HistoryEventFieldList[] getEventData() {
-        return _eventData;
-    }
+    public HistoryEventFieldList[] getEventData() { return _eventData; }
 
     @Override
-    public NodeId getTypeId() {
-        return TypeId;
-    }
+    public NodeId getTypeId() { return TypeId; }
 
     @Override
-    public NodeId getBinaryEncodingId() {
-        return BinaryEncodingId;
-    }
+    public NodeId getBinaryEncodingId() { return BinaryEncodingId; }
 
     @Override
-    public NodeId getXmlEncodingId() {
-        return XmlEncodingId;
-    }
+    public NodeId getXmlEncodingId() { return XmlEncodingId; }
 
 
     public static void encode(UpdateEventDetails updateEventDetails, UaEncoder encoder) {

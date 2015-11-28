@@ -31,7 +31,7 @@ public enum MonitoringMode implements UaEnumeration {
 
     private final int value;
 
-    private MonitoringMode(int value) {
+    MonitoringMode(int value) {
         this.value = value;
     }
 
