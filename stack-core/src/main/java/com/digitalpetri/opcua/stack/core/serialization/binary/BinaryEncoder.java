@@ -431,64 +431,27 @@ public class BinaryEncoder implements UaEncoder {
             Object object = value.getEncoded();
 
             switch (value.getBodyType()) {
-                case ByteString:
+                case ByteString: {
                     ByteString byteString = (ByteString) object;
 
                     encodeNodeId(null, value.getEncodingTypeId());
                     buffer.writeByte(1); // Body is binary encoded
 
                     encodeByteString(null, byteString);
-                    break;
 
-                case XmlElement:
+                    break;
+                }
+                case XmlElement: {
                     XmlElement xmlElement = (XmlElement) object;
 
                     encodeNodeId(null, value.getEncodingTypeId());
                     buffer.writeByte(2);
 
                     encodeXmlElement(null, xmlElement);
-                    break;
-            }
 
-//            if (object instanceof UaSerializable) {
-//                UaSerializable serializable = (UaSerializable) object;
-//
-//                encodeNodeId(null, value.getEncodingTypeId());
-//                buffer.writeByte(1); // Body is binary encoded
-//
-//                // Record the current index and write a placeholder for the length.
-//                int lengthIndex = buffer.writerIndex();
-//                buffer.writeInt(0);
-//
-//                // Write the body.
-//                int indexBefore = buffer.writerIndex();
-//                encodeSerializable(null, serializable);
-//                int indexAfter = buffer.writerIndex();
-//                int bytesWritten = indexAfter - indexBefore;
-//
-//                // Go back and update the length.
-//                buffer.writerIndex(lengthIndex);
-//                buffer.writeInt(bytesWritten);
-//
-//                // Return to where we were after writing the body.
-//                buffer.writerIndex(indexAfter);
-//            } else if (object instanceof ByteString) {
-//                ByteString byteString = (ByteString) object;
-//
-//                encodeNodeId(null, value.getEncodingTypeId());
-//                buffer.writeByte(1); // Body is binary encoded
-//
-//                encodeByteString(null, byteString);
-//            } else if (object instanceof XmlElement) {
-//                XmlElement xmlElement = (XmlElement) object;
-//
-//                encodeNodeId(null, value.getEncodingTypeId());
-//                buffer.writeByte(2);
-//
-//                encodeXmlElement(null, xmlElement);
-//            } else {
-//                throw new UaSerializationException(StatusCodes.Bad_EncodingError, "unexpected object in ExtensionObject: " + object);
-//            }
+                    break;
+                }
+            }
         }
     }
 
@@ -551,15 +514,7 @@ public class BinaryEncoder implements UaEncoder {
                     for (int i = 0; i < length; i++) {
                         Object o = Array.get(value, i);
 
-                        if (structure) {
-                            ExtensionObject extensionObject = ExtensionObject.encode((UaStructure) o);
-
-                            encodeBuiltinType(typeId, extensionObject);
-                        } else if (enumeration) {
-                            encodeBuiltinType(typeId, ((UaEnumeration) o).getValue());
-                        } else {
-                            encodeBuiltinType(typeId, o);
-                        }
+                        encodeValue(o, typeId, structure, enumeration);
                     }
                 } else {
                     buffer.writeByte(typeId | 0xC0);
@@ -571,15 +526,7 @@ public class BinaryEncoder implements UaEncoder {
                     for (int i = 0; i < length; i++) {
                         Object o = Array.get(flattened, i);
 
-                        if (structure) {
-                            ExtensionObject extensionObject = ExtensionObject.encode((UaStructure) o);
-
-                            encodeBuiltinType(typeId, extensionObject);
-                        } else if (enumeration) {
-                            encodeBuiltinType(typeId, ((UaEnumeration) o).getValue());
-                        } else {
-                            encodeBuiltinType(typeId, o);
-                        }
+                        encodeValue(o, typeId, structure, enumeration);
                     }
 
                     encodeInt32(null, dimensions.length);
@@ -590,16 +537,20 @@ public class BinaryEncoder implements UaEncoder {
             } else {
                 buffer.writeByte(typeId);
 
-                if (structure) {
-                    ExtensionObject extensionObject = ExtensionObject.encode((UaStructure) value);
-
-                    encodeBuiltinType(typeId, extensionObject);
-                } else if (enumeration) {
-                    encodeBuiltinType(typeId, ((UaEnumeration) value).getValue());
-                } else {
-                    encodeBuiltinType(typeId, value);
-                }
+                encodeValue(value, typeId, structure, enumeration);
             }
+        }
+    }
+
+    private void encodeValue(Object value, int typeId, boolean structure, boolean enumeration) {
+        if (structure) {
+            ExtensionObject extensionObject = ExtensionObject.encode((UaStructure) value);
+
+            encodeBuiltinType(typeId, extensionObject);
+        } else if (enumeration) {
+            encodeBuiltinType(typeId, ((UaEnumeration) value).getValue());
+        } else {
+            encodeBuiltinType(typeId, value);
         }
     }
 
