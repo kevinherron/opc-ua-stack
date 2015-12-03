@@ -17,6 +17,7 @@
 package com.digitalpetri.opcua.stack.client;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.channels.ClosedChannelException;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
@@ -364,17 +365,16 @@ public class UaTcpStackClient implements UaStackClient {
                 });
 
         try {
-            URI uri = URI.create(client.getEndpointUrl());
+            URI uri = new URI(client.getEndpointUrl()).parseServerAuthority();
 
             bootstrap.connect(uri.getHost(), uri.getPort()).addListener((ChannelFuture f) -> {
                 if (!f.isSuccess()) {
                     handshake.completeExceptionally(f.cause());
                 }
             });
-        } catch (Throwable t) {
+        } catch (URISyntaxException e) {
             UaException failure = new UaException(
-                    StatusCodes.Bad_TcpEndpointUrlInvalid,
-                    "endpoint URL invalid: " + client.getEndpointUrl());
+                    StatusCodes.Bad_TcpEndpointUrlInvalid, e);
 
             handshake.completeExceptionally(failure);
         }

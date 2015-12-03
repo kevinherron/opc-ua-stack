@@ -471,12 +471,12 @@ public class UaTcpStackServer implements UaStackServer {
 
         private boolean filterEndpointUrls(EndpointDescription endpoint, String endpointUrl) {
             try {
-                String requestedHost = URI.create(endpointUrl).getHost();
-                String endpointHost = URI.create(endpoint.getEndpointUrl()).getHost();
+                String requestedHost = new URI(endpointUrl).parseServerAuthority().getHost();
+                String endpointHost = new URI(endpoint.getEndpointUrl()).parseServerAuthority().getHost();
 
                 return requestedHost.equalsIgnoreCase(endpointHost);
-            } catch (Throwable t) {
-                logger.warn("Unable to create URI.", t);
+            } catch (URISyntaxException e) {
+                logger.warn("Unable to create URI.", e);
                 return false;
             }
         }
@@ -510,12 +510,12 @@ public class UaTcpStackServer implements UaStackServer {
             List<String> matchingDiscoveryUrls = allDiscoveryUrls.stream()
                     .filter(discoveryUrl -> {
                         try {
-                            String requestedHost = URI.create(endpointUrl).getHost();
-                            String discoveryHost = URI.create(discoveryUrl).getHost();
+                            String requestedHost = new URI(endpointUrl).parseServerAuthority().getHost();
+                            String discoveryHost = new URI(discoveryUrl).parseServerAuthority().getHost();
 
                             return requestedHost.equalsIgnoreCase(discoveryHost);
-                        } catch (Throwable t) {
-                            logger.warn("Unable to create URI.", t);
+                        } catch (URISyntaxException e) {
+                            logger.warn("Unable to create URI.", e);
                             return false;
                         }
                     })
