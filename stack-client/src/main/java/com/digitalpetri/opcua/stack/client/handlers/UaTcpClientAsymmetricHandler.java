@@ -56,6 +56,7 @@ import com.digitalpetri.opcua.stack.core.util.NonceUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +69,8 @@ public class UaTcpClientAsymmetricHandler extends ByteToMessageDecoder implement
     private List<ByteBuf> chunkBuffers = new ArrayList<>();
 
     private ScheduledFuture renewFuture;
+
+    private volatile Timeout secureChannelTimeout;
 
     private final AtomicReference<AsymmetricSecurityHeader> headerRef = new AtomicReference<>();
 
@@ -105,7 +108,6 @@ public class UaTcpClientAsymmetricHandler extends ByteToMessageDecoder implement
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (renewFuture != null) renewFuture.cancel(false);
 
-
         handshakeFuture.completeExceptionally(
                 new UaException(StatusCodes.Bad_ConnectionClosed, "connection closed"));
 
@@ -131,7 +133,22 @@ public class UaTcpClientAsymmetricHandler extends ByteToMessageDecoder implement
                 secureChannel.getLocalNonce(),
                 client.getChannelLifetime());
 
+        secureChannelTimeout = startSecureChannelTimeout(ctx);
+
         sendOpenSecureChannelRequest(ctx, request);
+    }
+
+    private Timeout startSecureChannelTimeout(ChannelHandlerContext ctx) {
+        return client.getConfig().getWheelTimer().newTimeout(
+                timeout -> {
+                    if (!timeout.isCancelled()) {
+                        handshakeFuture.completeExceptionally(
+                                new UaException(StatusCodes.Bad_Timeout,
+                                        "timed out waiting for secure channel"));
+                        ctx.close();
+                    }
+                },
+                5, TimeUnit.SECONDS);
     }
 
     @Override
@@ -170,6 +187,15 @@ public class UaTcpClientAsymmetricHandler extends ByteToMessageDecoder implement
     }
 
     private void onOpenSecureChannel(ChannelHandlerContext ctx, ByteBuf buffer) throws UaException {
+        if (secureChannelTimeout != null && !secureChannelTimeout.cancel()) {
+            secureChannelTimeout = null;
+            handshakeFuture.completeExceptionally(
+                    new UaException(StatusCodes.Bad_Timeout,
+                            "timed out waiting for secure channel"));
+            ctx.close();
+            return;
+        }
+
         buffer.skipBytes(3 + 1 + 4); // skip messageType, chunkType, messageSize
 
         long secureChannelId = buffer.readUnsignedInt();
