@@ -115,7 +115,8 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                     break;
 
                 default:
-                    out.add(buffer.readSlice(messageLength).retain());
+                    throw new UaException(StatusCodes.Bad_TcpMessageTypeInvalid,
+                            "unexpected MessageType: " + messageType);
             }
         }
     }
@@ -394,7 +395,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
                 );
 
                 if (!symmetricHandlerAdded) {
-                    ctx.pipeline().addLast(new UaTcpServerSymmetricHandler(server, serializationQueue, secureChannel));
+                    ctx.pipeline().addFirst(new UaTcpServerSymmetricHandler(server, serializationQueue, secureChannel));
                     symmetricHandlerAdded = true;
                 }
 
