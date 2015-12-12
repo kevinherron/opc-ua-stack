@@ -129,16 +129,17 @@ public class UaTcpServerSymmetricHandler extends ByteToMessageCodec<ServiceRespo
 
             switch (messageType) {
                 case SecureMessage:
-                    onSecureMessage(ctx, buffer.readSlice(messageLength), out);
+                    onSecureMessage(ctx, buffer.readSlice(messageLength));
                     break;
 
                 default:
-                    out.add(buffer.readSlice(messageLength).retain());
+                    throw new UaException(StatusCodes.Bad_TcpMessageTypeInvalid,
+                            "unexpected MessageType: " + messageType);
             }
         }
     }
 
-    private void onSecureMessage(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws UaException {
+    private void onSecureMessage(ChannelHandlerContext ctx, ByteBuf buffer) throws UaException {
         buffer.skipBytes(3); // Skip messageType
 
         char chunkType = (char) buffer.readByte();
