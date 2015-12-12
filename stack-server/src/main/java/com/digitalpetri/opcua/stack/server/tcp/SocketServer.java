@@ -20,7 +20,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -154,7 +153,7 @@ public class SocketServer {
         try {
             URI uri = new URI(endpointUrl).parseServerAuthority();
             return uri.getPath();
-        } catch (URISyntaxException e) {
+        } catch (Throwable e) {
             logger.warn("Endpoint URL '{}' is not a valid URI: {}", e.getMessage(), e);
             return endpointUrl;
         }

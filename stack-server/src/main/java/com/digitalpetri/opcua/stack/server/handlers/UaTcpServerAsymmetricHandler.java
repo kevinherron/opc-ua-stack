@@ -18,7 +18,6 @@ package com.digitalpetri.opcua.stack.server.handlers;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.ByteOrder;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
@@ -287,7 +286,7 @@ public class UaTcpServerAsymmetricHandler extends ByteToMessageDecoder implement
         try {
             URI uri = new URI(endpointUrl).parseServerAuthority();
             return uri.getPath();
-        } catch (URISyntaxException e) {
+        } catch (Throwable e) {
             logger.warn("Endpoint URL '{}' is not a valid URI: {}", e.getMessage(), e);
             return endpointUrl;
         }

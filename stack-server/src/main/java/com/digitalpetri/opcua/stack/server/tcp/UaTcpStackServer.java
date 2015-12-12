@@ -17,7 +17,6 @@
 package com.digitalpetri.opcua.stack.server.tcp;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -401,7 +400,7 @@ public class UaTcpStackServer implements UaStackServer {
                 URI uri = new URI(endpointUri);
 
                 endpoints.add(new Endpoint(uri, bindAddress, certificate, securityPolicy, messageSecurity));
-            } catch (URISyntaxException e) {
+            } catch (Throwable e) {
                 logger.warn("Invalid endpoint URI, ignoring: {}", endpointUri);
             }
         }
@@ -475,7 +474,7 @@ public class UaTcpStackServer implements UaStackServer {
                 String endpointHost = new URI(endpoint.getEndpointUrl()).parseServerAuthority().getHost();
 
                 return requestedHost.equalsIgnoreCase(endpointHost);
-            } catch (URISyntaxException e) {
+            } catch (Throwable e) {
                 logger.warn("Unable to create URI.", e);
                 return false;
             }
@@ -514,7 +513,7 @@ public class UaTcpStackServer implements UaStackServer {
                             String discoveryHost = new URI(discoveryUrl).parseServerAuthority().getHost();
 
                             return requestedHost.equalsIgnoreCase(discoveryHost);
-                        } catch (URISyntaxException e) {
+                        } catch (Throwable e) {
                             logger.warn("Unable to create URI.", e);
                             return false;
                         }
