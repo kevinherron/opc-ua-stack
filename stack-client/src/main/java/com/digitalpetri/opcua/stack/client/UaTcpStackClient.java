@@ -293,7 +293,7 @@ public class UaTcpStackClient implements UaStackClient {
             Timeout timeout = timeouts.remove(requestHandle);
             if (timeout != null) timeout.cancel();
         } else {
-            logger.debug("Received {} for unknown requestHandle: {}",
+            logger.warn("Received {} for unknown requestHandle: {}",
                     response.getClass().getSimpleName(), requestHandle);
         }
     }
@@ -364,17 +364,16 @@ public class UaTcpStackClient implements UaStackClient {
                 });
 
         try {
-            URI uri = URI.create(client.getEndpointUrl());
+            URI uri = new URI(client.getEndpointUrl()).parseServerAuthority();
 
             bootstrap.connect(uri.getHost(), uri.getPort()).addListener((ChannelFuture f) -> {
                 if (!f.isSuccess()) {
                     handshake.completeExceptionally(f.cause());
                 }
             });
-        } catch (Throwable t) {
+        } catch (Throwable e) {
             UaException failure = new UaException(
-                    StatusCodes.Bad_TcpEndpointUrlInvalid,
-                    "endpoint URL invalid: " + client.getEndpointUrl());
+                    StatusCodes.Bad_TcpEndpointUrlInvalid, e);
 
             handshake.completeExceptionally(failure);
         }

@@ -1,8 +1,10 @@
 # OPC-UA Stack
 
+[![Join the chat at https://gitter.im/digitalpetri/opc-ua-stack](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/digitalpetri/opc-ua-stack?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A high-performance and open-source OPC-UA stack implementation.
 
-Note: this is just a *stack* implementation (channels, serialization, structures, security). If you're looking to build a client or server, try the [OPC-UA SDK](https://github.com/digitalpetri/opc-ua-sdk).
+Note: this is just a *stack* implementation (channels, serialization, structures, security). If you're looking to build a client or server, try the [OPC-UA Client SDK](https://github.com/digitalpetri/ua-client-sdk) or [OPC-UA Server SDK](https://github.com/digitalpetri/ua-server-sdk).
 
 Running the Example
 --------

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
 import com.digitalpetri.opcua.stack.client.config.UaTcpStackClientConfig;
@@ -50,6 +51,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
 import io.netty.util.AttributeKey;
+import io.netty.util.Timeout;
 import org.jooq.lambda.tuple.Tuple1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +64,8 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final List<UaMessage> awaitingHandshake = new ArrayList<>();
+
+    private volatile Timeout helloTimeout;
 
     private final ClientSecureChannel secureChannel;
 
@@ -128,6 +132,8 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        helloTimeout = startHelloTimeout(ctx);
+
         secureChannel.setChannel(ctx.channel());
 
         HelloMessage hello = new HelloMessage(
@@ -145,6 +151,19 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
         logger.debug("Sent Hello message on channel={}.", ctx.channel());
 
         super.channelActive(ctx);
+    }
+
+    private Timeout startHelloTimeout(ChannelHandlerContext ctx) {
+        return client.getConfig().getWheelTimer().newTimeout(
+                timeout -> {
+                    if (!timeout.isCancelled()) {
+                        handshakeFuture.completeExceptionally(
+                                new UaException(StatusCodes.Bad_Timeout,
+                                        "timed out waiting for acknowledge"));
+                        ctx.close();
+                    }
+                },
+                5, TimeUnit.SECONDS);
     }
 
     @Override
@@ -178,6 +197,15 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
     }
 
     private void onAcknowledge(ChannelHandlerContext ctx, ByteBuf buffer) {
+        if (helloTimeout != null && !helloTimeout.cancel()) {
+            helloTimeout = null;
+            handshakeFuture.completeExceptionally(
+                    new UaException(StatusCodes.Bad_Timeout,
+                            "timed out waiting for acknowledge"));
+            ctx.close();
+            return;
+        }
+
         logger.debug("Received Acknowledge message on channel={}.", ctx.channel());
 
         buffer.skipBytes(3 + 1 + 4); // Skip messageType, chunkType, and messageSize

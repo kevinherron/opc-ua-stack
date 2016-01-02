@@ -55,19 +55,22 @@ import com.digitalpetri.opcua.stack.core.util.LongSequence;
 import com.digitalpetri.opcua.stack.core.util.NonceUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.util.Timeout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.uint;
 
-public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<ByteBuf> implements HeaderDecoder {
+public class UaTcpClientAsymmetricHandler extends ByteToMessageDecoder implements HeaderDecoder {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private List<ByteBuf> chunkBuffers = new ArrayList<>();
 
     private ScheduledFuture renewFuture;
+
+    private volatile Timeout secureChannelTimeout;
 
     private final AtomicReference<AsymmetricSecurityHeader> headerRef = new AtomicReference<>();
 
@@ -105,7 +108,6 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (renewFuture != null) renewFuture.cancel(false);
 
-
         handshakeFuture.completeExceptionally(
                 new UaException(StatusCodes.Bad_ConnectionClosed, "connection closed"));
 
@@ -131,7 +133,22 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                 secureChannel.getLocalNonce(),
                 client.getChannelLifetime());
 
+        secureChannelTimeout = startSecureChannelTimeout(ctx);
+
         sendOpenSecureChannelRequest(ctx, request);
+    }
+
+    private Timeout startSecureChannelTimeout(ChannelHandlerContext ctx) {
+        return client.getConfig().getWheelTimer().newTimeout(
+                timeout -> {
+                    if (!timeout.isCancelled()) {
+                        handshakeFuture.completeExceptionally(
+                                new UaException(StatusCodes.Bad_Timeout,
+                                        "timed out waiting for secure channel"));
+                        ctx.close();
+                    }
+                },
+                5, TimeUnit.SECONDS);
     }
 
     @Override
@@ -144,7 +161,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, ByteBuf buffer) throws Exception {
+    protected void decode(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws Exception {
         buffer = buffer.order(ByteOrder.LITTLE_ENDIAN);
 
         while (buffer.readableBytes() >= HEADER_LENGTH &&
@@ -163,13 +180,22 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
                     break;
 
                 default:
-                    throw new UaException(StatusCodes.Bad_TcpMessageTypeInvalid,
-                            "unexpected MessageType: " + messageType);
+                    out.add(buffer.readSlice(messageLength).retain());
+
             }
         }
     }
 
     private void onOpenSecureChannel(ChannelHandlerContext ctx, ByteBuf buffer) throws UaException {
+        if (secureChannelTimeout != null && !secureChannelTimeout.cancel()) {
+            secureChannelTimeout = null;
+            handshakeFuture.completeExceptionally(
+                    new UaException(StatusCodes.Bad_Timeout,
+                            "timed out waiting for secure channel"));
+            ctx.close();
+            return;
+        }
+
         buffer.skipBytes(3 + 1 + 4); // skip messageType, chunkType, messageSize
 
         long secureChannelId = buffer.readUnsignedInt();
@@ -285,7 +311,7 @@ public class UaTcpClientAsymmetricHandler extends SimpleChannelInboundHandler<By
             // SecureChannel is ready; remove the acknowledge handler and add the symmetric handler.
             if (ctx.pipeline().get(UaTcpClientAcknowledgeHandler.class) != null) {
                 ctx.pipeline().remove(UaTcpClientAcknowledgeHandler.class);
-                ctx.pipeline().addFirst(new UaTcpClientSymmetricHandler(
+                ctx.pipeline().addLast(new UaTcpClientSymmetricHandler(
                         client, serializationQueue, secureChannel, handshakeFuture));
             }
         });

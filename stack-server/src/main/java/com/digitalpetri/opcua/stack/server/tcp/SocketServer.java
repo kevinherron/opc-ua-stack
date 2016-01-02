@@ -151,10 +151,10 @@ public class SocketServer {
 
     private String pathOrUrl(String endpointUrl) {
         try {
-            URI uri = URI.create(endpointUrl);
+            URI uri = new URI(endpointUrl).parseServerAuthority();
             return uri.getPath();
-        } catch (Throwable t) {
-            logger.warn("Endpoint URL '{}' is not a valid URI: {}", t.getMessage(), t);
+        } catch (Throwable e) {
+            logger.warn("Endpoint URL '{}' is not a valid URI: {}", e.getMessage(), e);
             return endpointUrl;
         }
     }
