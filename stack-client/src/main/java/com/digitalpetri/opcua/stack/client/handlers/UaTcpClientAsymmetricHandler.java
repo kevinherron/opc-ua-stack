@@ -134,6 +134,7 @@ public class UaTcpClientAsymmetricHandler extends ByteToMessageDecoder implement
                 client.getChannelLifetime());
 
         secureChannelTimeout = startSecureChannelTimeout(ctx);
+        logger.debug("OpenSecureChannel timeout scheduled for +5s");
 
         sendOpenSecureChannelRequest(ctx, request);
     }
@@ -187,13 +188,18 @@ public class UaTcpClientAsymmetricHandler extends ByteToMessageDecoder implement
     }
 
     private void onOpenSecureChannel(ChannelHandlerContext ctx, ByteBuf buffer) throws UaException {
-        if (secureChannelTimeout != null && !secureChannelTimeout.cancel()) {
-            secureChannelTimeout = null;
-            handshakeFuture.completeExceptionally(
-                    new UaException(StatusCodes.Bad_Timeout,
-                            "timed out waiting for secure channel"));
-            ctx.close();
-            return;
+        if (secureChannelTimeout != null) {
+            if (secureChannelTimeout.cancel()) {
+                secureChannelTimeout = null;
+                logger.debug("OpenSecureChannel timeout canceled");
+            } else {
+                secureChannelTimeout = null;
+                handshakeFuture.completeExceptionally(
+                        new UaException(StatusCodes.Bad_Timeout,
+                                "timed out waiting for secure channel"));
+                ctx.close();
+                return;
+            }
         }
 
         buffer.skipBytes(3 + 1 + 4); // skip messageType, chunkType, messageSize
