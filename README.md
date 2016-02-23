@@ -28,7 +28,7 @@ Releases are available from Maven Central:
 <dependency>
     <groupId>com.digitalpetri.opcua</groupId>
     <artifactId>stack-server</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 
@@ -37,7 +37,7 @@ Releases are available from Maven Central:
 <dependency>
     <groupId>com.digitalpetri.opcua</groupId>
     <artifactId>stack-client</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 
