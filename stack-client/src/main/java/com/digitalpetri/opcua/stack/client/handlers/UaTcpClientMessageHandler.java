@@ -36,7 +36,6 @@ import com.digitalpetri.opcua.stack.core.channel.MessageAbortedException;
 import com.digitalpetri.opcua.stack.core.channel.SerializationQueue;
 import com.digitalpetri.opcua.stack.core.channel.headers.AsymmetricSecurityHeader;
 import com.digitalpetri.opcua.stack.core.channel.headers.HeaderDecoder;
-import com.digitalpetri.opcua.stack.core.channel.headers.SymmetricSecurityHeader;
 import com.digitalpetri.opcua.stack.core.channel.messages.ErrorMessage;
 import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageDecoder;
@@ -516,8 +515,6 @@ public class UaTcpClientMessageHandler extends ByteToMessageCodec<UaRequestFutur
             final List<ByteBuf> buffersToDecode = ImmutableList.copyOf(chunkBuffers);
             chunkBuffers = new LinkedList<>();
 
-            validateChunkHeaders(buffersToDecode);
-
             serializationQueue.decode((binaryDecoder, chunkDecoder) -> {
                 ByteBuf decodedBuffer = null;
 
@@ -556,33 +553,6 @@ public class UaTcpClientMessageHandler extends ByteToMessageCodec<UaRequestFutur
                     }
                 }
             });
-        }
-    }
-
-    private void validateChunkHeaders(List<ByteBuf> chunkBuffers) throws UaException {
-        ChannelSecurity channelSecurity = secureChannel.getChannelSecurity();
-        long currentTokenId = channelSecurity.getCurrentToken().getTokenId().longValue();
-        long previousTokenId = channelSecurity.getPreviousToken()
-                .map(t -> t.getTokenId().longValue())
-                .orElse(-1L);
-
-        for (ByteBuf chunkBuffer : chunkBuffers) {
-            chunkBuffer.skipBytes(3 + 1 + 4 + 4); // skip messageType, chunkType, messageSize, secureChannelId
-
-            SymmetricSecurityHeader securityHeader = SymmetricSecurityHeader.decode(chunkBuffer);
-
-            if (securityHeader.getTokenId() != currentTokenId) {
-                if (securityHeader.getTokenId() != previousTokenId) {
-                    String message = String.format(
-                            "received unknown secure channel token. " +
-                                    "tokenId=%s, currentTokenId=%s, previousTokenId=%s",
-                            securityHeader.getTokenId(), currentTokenId, previousTokenId);
-
-                    throw new UaException(StatusCodes.Bad_SecureChannelTokenUnknown, message);
-                }
-            }
-
-            chunkBuffer.readerIndex(0);
         }
     }
 
