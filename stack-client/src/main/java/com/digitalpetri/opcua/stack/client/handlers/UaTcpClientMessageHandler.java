@@ -57,6 +57,7 @@ import com.digitalpetri.opcua.stack.core.types.structured.ServiceFault;
 import com.digitalpetri.opcua.stack.core.util.BufferUtil;
 import com.digitalpetri.opcua.stack.core.util.LongSequence;
 import com.digitalpetri.opcua.stack.core.util.NonceUtil;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -400,7 +401,7 @@ public class UaTcpClientMessageHandler extends ByteToMessageCodec<UaRequestFutur
         }
 
         if (accumulateChunk(buffer)) {
-            final List<ByteBuf> buffersToDecode = chunkBuffers;
+            final List<ByteBuf> buffersToDecode = ImmutableList.copyOf(chunkBuffers);
             chunkBuffers = new LinkedList<>();
 
             serializationQueue.decode((binaryDecoder, chunkDecoder) -> {
@@ -512,7 +513,7 @@ public class UaTcpClientMessageHandler extends ByteToMessageCodec<UaRequestFutur
         }
 
         if (accumulateChunk(buffer)) {
-            final List<ByteBuf> buffersToDecode = chunkBuffers;
+            final List<ByteBuf> buffersToDecode = ImmutableList.copyOf(chunkBuffers);
             chunkBuffers = new LinkedList<>();
 
             validateChunkHeaders(buffersToDecode);
