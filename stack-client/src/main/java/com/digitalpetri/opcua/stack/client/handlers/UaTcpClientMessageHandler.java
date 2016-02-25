@@ -316,32 +316,36 @@ public class UaTcpClientMessageHandler extends ByteToMessageCodec<UaRequestFutur
 
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws Exception {
-        buffer = buffer.order(ByteOrder.LITTLE_ENDIAN);
+        if (buffer.readableBytes() >= HEADER_LENGTH) {
+            buffer = buffer.order(ByteOrder.LITTLE_ENDIAN);
 
-        while (buffer.readableBytes() >= HEADER_LENGTH &&
-                buffer.readableBytes() >= getMessageLength(buffer)) {
-
-            int messageLength = getMessageLength(buffer);
-            MessageType messageType = MessageType.fromMediumInt(buffer.getMedium(buffer.readerIndex()));
-
-            switch (messageType) {
-                case Error:
-                    onError(ctx, buffer.readSlice(messageLength));
-                    break;
-
-                case OpenSecureChannel:
-                    onOpenSecureChannel(ctx, buffer.readSlice(messageLength));
-                    break;
-
-                case SecureMessage:
-                    onSecureMessage(ctx, buffer.readSlice(messageLength));
-                    break;
-
-                default:
-                    throw new UaException(
-                            StatusCodes.Bad_TcpMessageTypeInvalid,
-                            "unexpected MessageType: " + messageType);
+            if (buffer.readableBytes() >= getMessageLength(buffer)) {
+                decodeMessage(ctx, buffer);
             }
+        }
+    }
+
+    private void decodeMessage(ChannelHandlerContext ctx, ByteBuf buffer) throws UaException {
+        int messageLength = getMessageLength(buffer);
+        MessageType messageType = MessageType.fromMediumInt(buffer.getMedium(buffer.readerIndex()));
+
+        switch (messageType) {
+            case OpenSecureChannel:
+                onOpenSecureChannel(ctx, buffer.readSlice(messageLength));
+                break;
+
+            case SecureMessage:
+                onSecureMessage(ctx, buffer.readSlice(messageLength));
+                break;
+
+            case Error:
+                onError(ctx, buffer.readSlice(messageLength));
+                break;
+
+            default:
+                throw new UaException(
+                        StatusCodes.Bad_TcpMessageTypeInvalid,
+                        "unexpected MessageType: " + messageType);
         }
     }
 
