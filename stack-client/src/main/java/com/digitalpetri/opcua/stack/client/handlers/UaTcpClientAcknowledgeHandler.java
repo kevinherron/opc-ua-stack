@@ -19,10 +19,10 @@ package com.digitalpetri.opcua.stack.client.handlers;
 import java.nio.ByteOrder;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import com.digitalpetri.opcua.stack.client.UaTcpStackClient;
@@ -41,7 +41,6 @@ import com.digitalpetri.opcua.stack.core.channel.messages.MessageType;
 import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageDecoder;
 import com.digitalpetri.opcua.stack.core.channel.messages.TcpMessageEncoder;
 import com.digitalpetri.opcua.stack.core.security.SecurityPolicy;
-import com.digitalpetri.opcua.stack.core.serialization.UaMessage;
 import com.digitalpetri.opcua.stack.core.types.builtin.StatusCode;
 import com.digitalpetri.opcua.stack.core.types.enumerated.MessageSecurityMode;
 import com.digitalpetri.opcua.stack.core.types.structured.EndpointDescription;
@@ -56,14 +55,14 @@ import org.jooq.lambda.tuple.Tuple1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage> implements HeaderDecoder {
+public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaRequestFuture> implements HeaderDecoder {
 
-    public static final AttributeKey<List<UaMessage>> KEY_AWAITING_HANDSHAKE =
+    public static final AttributeKey<List<UaRequestFuture>> KEY_AWAITING_HANDSHAKE =
             AttributeKey.valueOf("awaiting-handshake");
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final List<UaMessage> awaitingHandshake = new ArrayList<>();
+    private final List<UaRequestFuture> awaitingHandshake = new CopyOnWriteArrayList<>();
 
     private volatile Timeout helloTimeout;
 
@@ -167,7 +166,7 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
     }
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, UaMessage message, ByteBuf out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, UaRequestFuture message, ByteBuf out) throws Exception {
         awaitingHandshake.add(message);
     }
 
@@ -258,13 +257,15 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
                     client.getConfig().getExecutor(),
                     parameters,
                     maxArrayLength,
-                    maxStringLength);
+                    maxStringLength
+            );
 
-            UaTcpClientAsymmetricHandler handler = new UaTcpClientAsymmetricHandler(
+            UaTcpClientMessageHandler handler = new UaTcpClientMessageHandler(
                     client,
-                    serializationQueue,
                     secureChannel,
-                    handshakeFuture);
+                    serializationQueue,
+                    handshakeFuture
+            );
 
             ctx.pipeline().addLast(handler);
         });
@@ -277,9 +278,9 @@ public class UaTcpClientAcknowledgeHandler extends ByteToMessageCodec<UaMessage>
             long errorCode = statusCode.getValue();
 
             boolean secureChannelError =
-                    errorCode == StatusCodes.Bad_TcpSecureChannelUnknown ||
-                            errorCode == StatusCodes.Bad_SecureChannelIdInvalid ||
-                            errorCode == StatusCodes.Bad_SecurityChecksFailed;
+                    errorCode == StatusCodes.Bad_SecurityChecksFailed ||
+                            errorCode == StatusCodes.Bad_TcpSecureChannelUnknown ||
+                            errorCode == StatusCodes.Bad_SecureChannelIdInvalid;
 
             if (secureChannelError) {
                 secureChannel.setChannelId(0);
