@@ -13,11 +13,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <guava.version>18.0</guava.version>
+        <guava.version>19.0</guava.version>
         <javassist.version>3.20.0-GA</javassist.version>
-        <jsr305.version>3.0.0</jsr305.version>
-        <netty.version>4.0.31.Final</netty.version>
-        <slf4j.version>1.7.12</slf4j.version>
+        <jool.version>0.9.10</jool.version>
+        <jsr305.version>3.0.1</jsr305.version>
+        <netty.version>4.0.34.Final</netty.version>
+        <slf4j.version>1.7.18</slf4j.version>
     </properties>
 
     <dependencies>
@@ -26,48 +27,42 @@
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>${jsr305.version}</version>
         </dependency>
-
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec</artifactId>
             <version>${netty.version}</version>
         </dependency>
-
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-handler</artifactId>
             <version>${netty.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jool</artifactId>
-            <version>0.9.6</version>
+            <version>${jool.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
-            <version>6.1.1</version>
+            <version>6.9.10</version>
             <scope>test</scope>
         </dependency>
-        
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.7</version>
+            <version>1.7.18</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
