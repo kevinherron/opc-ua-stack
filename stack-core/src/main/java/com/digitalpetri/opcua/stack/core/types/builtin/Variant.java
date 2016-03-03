@@ -44,11 +44,14 @@ public final class Variant {
      */
     public Variant(@Nullable Object value) {
         if (value != null) {
-            Class<?> clazz = value.getClass().isArray() ? ArrayUtil.getType(value) : value.getClass();
+            boolean clazzIsArray = value.getClass().isArray();
 
-            checkArgument(clazz.isArray() || !Variant.class.equals(clazz), "Variant cannot contain Variant");
-            checkArgument(!DataValue.class.equals(clazz), "Variant cannot contain DataValue");
-            checkArgument(!DiagnosticInfo.class.equals(clazz), "Variant cannot contain DiagnosticInfo");
+            Class<?> componentClazz = clazzIsArray ?
+                    ArrayUtil.getType(value) : value.getClass();
+
+            checkArgument(clazzIsArray || !Variant.class.equals(componentClazz), "Variant cannot contain Variant");
+            checkArgument(!DataValue.class.equals(componentClazz), "Variant cannot contain DataValue");
+            checkArgument(!DiagnosticInfo.class.equals(componentClazz), "Variant cannot contain DiagnosticInfo");
         }
 
         this.value = value;

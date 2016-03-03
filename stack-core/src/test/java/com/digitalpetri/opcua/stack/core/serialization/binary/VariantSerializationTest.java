@@ -40,7 +40,8 @@ public class VariantSerializationTest extends BinarySerializationFixture {
                 {new Variant(new Long[]{0L, 1L, 2L, 3L})},
                 {new Variant(new Long[][]{{0L, 1L}, {2L, 3L}})},
                 {new Variant(new UInteger[]{Unsigned.uint(0), Unsigned.uint(1), Unsigned.uint(2), Unsigned.uint(3)})},
-                {new Variant(new UInteger[][]{{Unsigned.uint(0), Unsigned.uint(1)}, {Unsigned.uint(2), Unsigned.uint(3)}})}
+                {new Variant(new UInteger[][]{{Unsigned.uint(0), Unsigned.uint(1)}, {Unsigned.uint(2), Unsigned.uint(3)}})},
+                {new Variant(new Variant[] {new Variant(0), new Variant(1), new Variant(2)})}
         };
     }
 
