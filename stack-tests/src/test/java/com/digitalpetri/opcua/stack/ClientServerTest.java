@@ -61,6 +61,7 @@ import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.
 import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ulong;
 import static com.digitalpetri.opcua.stack.core.types.builtin.unsigned.Unsigned.ushort;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 
 public class ClientServerTest extends SecurityFixture {
 
@@ -232,15 +233,15 @@ public class ClientServerTest extends SecurityFixture {
     @Test
     public void testClientStateMachine() throws Exception {
         EndpointDescription endpoint = endpoints[0];
-        Variant input = new Variant(42);
 
+        Variant input = new Variant(42);
         logger.info("SecurityPolicy={}, MessageSecurityMode={}, input={}",
                 SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()), endpoint.getSecurityMode(), input);
 
         UaTcpStackClient client = createClient(endpoint);
 
         // Test some where we don't wait for disconnect to finish...
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             RequestHeader header = new RequestHeader(
                     NodeId.NULL_VALUE,
                     DateTime.now(),
@@ -256,7 +257,7 @@ public class ClientServerTest extends SecurityFixture {
         }
 
         // and test some where we DO wait...
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             RequestHeader header = new RequestHeader(
                     NodeId.NULL_VALUE,
                     DateTime.now(),
@@ -270,6 +271,39 @@ public class ClientServerTest extends SecurityFixture {
 
             client.disconnect().get();
         }
+    }
+
+    @Test
+    public void testClientDisconnect() throws Exception {
+        EndpointDescription endpoint = endpoints[0];
+        Variant input = new Variant(42);
+
+        logger.info("SecurityPolicy={}, MessageSecurityMode={}, input={}",
+            SecurityPolicy.fromUri(endpoint.getSecurityPolicyUri()), endpoint.getSecurityMode(), input);
+
+        UaTcpStackClient client = createClient(endpoint);
+
+        RequestHeader header = new RequestHeader(
+            NodeId.NULL_VALUE,
+            DateTime.now(),
+            uint(0), uint(0), null, uint(60000), null);
+
+        TestStackRequest request = new TestStackRequest(header, uint(0), 0, input);
+
+        logger.info("sending request: {}", request);
+        UaResponseMessage response0 = client.sendRequest(request).get();
+        logger.info("got response: {}", response0);
+
+        // client doesn't wait for server to close the channel, it
+        // closes after flushing the message, so we need to delay
+        // here for the purpose of testing. we close the secure
+        // channel and sleep to give the server time to act, then
+        // assert that the server no longer knows about it.
+        long secureChannelId = client.getChannelFuture().get().getChannelId();
+        client.disconnect().get();
+        Thread.sleep(100);
+        logger.info("asserting channel closed...");
+        assertNull(server.getSecureChannel(secureChannelId));
     }
 
     @Test
@@ -293,14 +327,15 @@ public class ClientServerTest extends SecurityFixture {
         UaResponseMessage response0 = client.sendRequest(request).get();
         logger.info("got response: {}", response0);
 
+        logger.info("initiating a reconnect by closing channel in server...");
         long secureChannelId = client.getChannelFuture().get().getChannelId();
         server.getSecureChannel(secureChannelId).attr(UaTcpStackServer.BoundChannelKey).get().close().await();
-
-        Thread.sleep(500);
 
         logger.info("sending request: {}", request);
         UaResponseMessage response1 = client.sendRequest(request).get();
         logger.info("got response: {}", response1);
+
+        client.disconnect().get();
     }
 
     @Test

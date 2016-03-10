@@ -31,8 +31,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.digitalpetri.opcua.stack.client.config.UaTcpStackClientConfig;
-import com.digitalpetri.opcua.stack.client.fsm.ConnectionEvent;
-import com.digitalpetri.opcua.stack.client.fsm.ConnectionStateFsm;
 import com.digitalpetri.opcua.stack.client.handlers.UaRequestFuture;
 import com.digitalpetri.opcua.stack.client.handlers.UaTcpClientAcknowledgeHandler;
 import com.digitalpetri.opcua.stack.core.Stack;
@@ -86,7 +84,7 @@ public class UaTcpStackClient implements UaStackClient {
 
     private final ApplicationDescription application;
 
-    private final ConnectionStateFsm connectionFsm;
+    private final ClientChannelManager channelManager;
 
     private final UaTcpStackClientConfig config;
 
@@ -102,7 +100,7 @@ public class UaTcpStackClient implements UaStackClient {
                 ApplicationType.Client,
                 null, null, null);
 
-        connectionFsm = new ConnectionStateFsm(this);
+        channelManager = new ClientChannelManager(this);
     }
 
     public UaTcpStackClientConfig getConfig() {
@@ -113,7 +111,7 @@ public class UaTcpStackClient implements UaStackClient {
     public CompletableFuture<UaStackClient> connect() {
         CompletableFuture<UaStackClient> future = new CompletableFuture<>();
 
-        connectionFsm.getChannel().whenComplete((ch, ex) -> {
+        channelManager.getChannel().whenComplete((ch, ex) -> {
             if (ch != null) future.complete(this);
             else future.completeExceptionally(ex);
         });
@@ -123,13 +121,12 @@ public class UaTcpStackClient implements UaStackClient {
 
     @Override
     public CompletableFuture<UaStackClient> disconnect() {
-        return connectionFsm
-                .handleEvent(ConnectionEvent.DisconnectRequested)
-                .thenApply(s -> UaTcpStackClient.this);
+        return channelManager.disconnect()
+            .thenApply(v -> UaTcpStackClient.this);
     }
 
     public <T extends UaResponseMessage> CompletableFuture<T> sendRequest(UaRequestMessage request) {
-        return connectionFsm.getChannel()
+        return channelManager.getChannel()
                 .thenCompose(sc -> sendRequest(request, sc));
     }
 
@@ -192,7 +189,7 @@ public class UaTcpStackClient implements UaStackClient {
         Preconditions.checkArgument(requests.size() == futures.size(),
                 "requests and futures parameters must be same size");
 
-        connectionFsm.getChannel().whenComplete((sc, ex) -> {
+        channelManager.getChannel().whenComplete((sc, ex) -> {
             if (sc != null) {
                 sendRequests(requests, futures, sc);
             } else {
@@ -246,7 +243,7 @@ public class UaTcpStackClient implements UaStackClient {
     }
 
     public CompletableFuture<ClientSecureChannel> getChannelFuture() {
-        return connectionFsm.getChannel();
+        return channelManager.getChannel();
     }
 
     private void scheduleRequestTimeout(RequestHeader requestHeader) {
