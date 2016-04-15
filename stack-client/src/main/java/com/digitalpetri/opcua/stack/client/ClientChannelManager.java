@@ -51,13 +51,11 @@ class ClientChannelManager {
 
                 return connected.whenCompleteAsync((sc, ex) -> {
                     if (sc != null) {
-                        sc.getChannel().pipeline().addLast(new InactivityHandler());
-
-                        state.compareAndSet(nextState, new Connected(connected));
-                        connected.complete(sc);
+                        if (state.compareAndSet(nextState, new Connected(connected))) {
+                            sc.getChannel().pipeline().addLast(new InactivityHandler());
+                        }
                     } else {
                         state.compareAndSet(nextState, new Idle());
-                        connected.completeExceptionally(ex);
                     }
                 });
             } else {
@@ -220,9 +218,9 @@ class ClientChannelManager {
                 if (sc != null) {
                     logger.debug("Reconnect succeeded, channelId={}", sc.getChannelId());
 
-                    sc.getChannel().pipeline().addLast(new InactivityHandler());
-
-                    state.compareAndSet(reconnectState, new Connected(reconnected));
+                    if (state.compareAndSet(reconnectState, new Connected(reconnected))) {
+                        sc.getChannel().pipeline().addLast(new InactivityHandler());
+                    }
                 } else {
                     logger.debug("Reconnect failed: {}", ex.getMessage(), ex);
 
@@ -274,6 +272,13 @@ class ClientChannelManager {
                 Reconnecting nextState = new Reconnecting();
 
                 if (state.compareAndSet(currentState, nextState)) {
+                    if (currentState instanceof Connected &&
+                        !client.getConfig().isSecureChannelReauthenticationEnabled()) {
+
+                        ((Connected) currentState).connected
+                            .thenAccept(sc -> sc.setChannelId(0));
+                    }
+
                     reconnect(nextState, 0);
                 }
             }
